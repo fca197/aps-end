@@ -1,7 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
 import static com.alibaba.fastjson2.JSON.toJSONString;
-import static com.olivia.peanut.aps.utils.capacity.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
+import static com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
 import static com.olivia.sdk.utils.ValueUtils.value2Str;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -27,10 +27,10 @@ import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.aps.service.impl.po.OrderGoods;
 import com.olivia.peanut.aps.utils.ProcessUtils;
-import com.olivia.peanut.aps.utils.capacity.Limit;
-import com.olivia.peanut.aps.utils.capacity.Limit.LimitTypeEnum;
-import com.olivia.peanut.aps.utils.capacity.MakeCapacityResult;
 import com.olivia.peanut.aps.utils.capacity.MakeCapacityUtils;
+import com.olivia.peanut.aps.utils.capacity.model.Limit;
+import com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum;
+import com.olivia.peanut.aps.utils.capacity.model.MakeCapacityResult;
 import com.olivia.peanut.aps.utils.constrained.ConstrainedContentUtils;
 import com.olivia.peanut.aps.utils.constrained.model.ConstrainedResult;
 import com.olivia.peanut.aps.utils.constrained.model.sub.ConstrainedContent;

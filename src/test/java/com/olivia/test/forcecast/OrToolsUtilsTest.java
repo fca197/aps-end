@@ -2,8 +2,8 @@ package com.olivia.test.forcecast;
 
 import com.google.ortools.Loader;
 import com.olivia.peanut.aps.utils.forecast.OrToolsUtils;
-import com.olivia.peanut.aps.utils.forecast.entity.OrToolsComputeRes;
-import com.olivia.peanut.aps.utils.forecast.entity.SaleItemConfig;
+import com.olivia.peanut.aps.utils.forecast.model.OrToolsComputeRes;
+import com.olivia.peanut.aps.utils.forecast.model.SaleItemConfig;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;

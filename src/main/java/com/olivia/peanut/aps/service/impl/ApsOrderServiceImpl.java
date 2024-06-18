@@ -194,6 +194,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   @Override
   public DynamicsPage<ApsOrderTimeLineRes> timeLine(ApsOrderTimeLineReq req) {
 
+    LocalDate now = LocalDate.now();
     List<Long> orderIdList = apsOrderGoodsStatusDateService.list(new QueryWrapper<ApsOrderGoodsStatusDate>().select(Str.DISTINCT + "order_id").lambda()
             .and(Boolean.TRUE.equals(req.getIsActualMakeTime()),
                 r -> r.ge(ApsOrderGoodsStatusDate::getActualMakeBeginTime, req.getBeginDate()).le(ApsOrderGoodsStatusDate::getActualMakeEndTime, req.getEndDate()))
@@ -224,19 +225,22 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     if (CollUtil.isNotEmpty(list)) {
       list.forEach(t -> {
         t.setStatusInfoList(orderStatusMap.getOrDefault(t.getId(), List.of()).stream()
-            .map(s -> getStatusInfo(s, Boolean.TRUE.equals(req.getIsActualMakeTime())).setStatusName(sNameMap.get(s.getGoodsStatusId()))).collect(Collectors.toList()));
+            .map(s -> getStatusInfo(s, Boolean.TRUE.equals(req.getIsActualMakeTime()), now).setStatusName(sNameMap.get(s.getGoodsStatusId()))).collect(Collectors.toList()));
       });
     }
     page.setTotal(total).setRecords(list);
     return page;
   }
 
-  private StatusInfo getStatusInfo(ApsOrderGoodsStatusDate statusDate, Boolean isActualMakeTime) {
+  private StatusInfo getStatusInfo(ApsOrderGoodsStatusDate statusDate, Boolean isActualMakeTime, LocalDate now) {
     StatusInfo statusInfo = new StatusInfo().setStatusId(statusDate.getGoodsStatusId()).setBeginDate(statusDate.getExpectMakeBeginTime())
-        .setEndDate(statusDate.getExpectMakeEndTime());
+        .setEndDate(statusDate.getExpectMakeEndTime()).setExpectMakeEndTime(statusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(statusDate.getExpectMakeBeginTime())
+        .setActualMakeBeginTime(statusDate.getActualMakeBeginTime()).setActualMakeEndTime(statusDate.getActualMakeEndTime());
     if (Boolean.TRUE.equals(isActualMakeTime)) {
       statusInfo.setBeginDate(statusDate.getActualMakeBeginTime()).setEndDate(statusDate.getActualMakeEndTime());
     }
+    // 是否延期 ,实际实际大于预计时间
+    statusInfo.setIsDelay(statusInfo.getActualMakeBeginTime().isAfter(statusInfo.getExpectMakeBeginTime()));
     return statusInfo;
   }
   // 以下为私有对象封装

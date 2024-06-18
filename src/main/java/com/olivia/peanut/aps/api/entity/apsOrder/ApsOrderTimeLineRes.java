@@ -24,6 +24,17 @@ public class ApsOrderTimeLineRes extends ApsOrderDto {
     private String statusName;
     private LocalDate beginDate;
     private LocalDate endDate;
+    /*
+    是否延期
+     */
+    private Boolean isDelay;
+    private LocalDate expectMakeBeginTime;
+    private LocalDate expectMakeEndTime;
+    /***
+     *  实际制造时间
+     */
+    private LocalDate actualMakeBeginTime;
+    private LocalDate actualMakeEndTime;
   }
 }
 
