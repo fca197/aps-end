@@ -240,7 +240,12 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       statusInfo.setBeginDate(statusDate.getActualMakeBeginTime()).setEndDate(statusDate.getActualMakeEndTime());
     }
     // 是否延期 ,实际实际大于预计时间
-    statusInfo.setIsDelay(statusInfo.getActualMakeBeginTime().isAfter(statusInfo.getExpectMakeBeginTime()));
+    if (Objects.nonNull(statusInfo.getActualMakeBeginTime()) && Objects.nonNull(statusInfo.getExpectMakeBeginTime())) {
+      statusInfo.setIsDelay(statusInfo.getActualMakeBeginTime().isAfter(statusInfo.getExpectMakeBeginTime()));
+    }
+    if (Objects.nonNull(statusInfo.getExpectMakeBeginTime()) && Objects.isNull(statusInfo.getActualMakeBeginTime())) {
+      statusInfo.setIsDelay(now.isAfter(statusInfo.getExpectMakeBeginTime()));
+    }
     return statusInfo;
   }
   // 以下为私有对象封装
