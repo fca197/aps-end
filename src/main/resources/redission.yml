@@ -1,0 +1,8 @@
+threads: 2
+# Netty线程池数量
+nettyThreads: 2
+singleServerConfig:
+  address: redis://redis.com:36379
+  password: W1D3D
+  database: 3
+  timeout: 3000

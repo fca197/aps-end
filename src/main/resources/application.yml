@@ -1,0 +1,102 @@
+server:
+  netty:
+    connectionTimeout: 3000
+  port: 80
+  servlet:
+    context-path: /api/peanut
+  http2:
+    enabled: true
+peanut:
+  dbInit: false
+  mock:
+    enable: false
+  match:
+    passenger:
+      enable: true
+    driver:
+      enable: true
+  url-white-list:
+    - /loginAccount/login/phone/pwd
+    - /h2-console
+    - /fileUpload/getFileByte/
+    - /actuator
+    - /apsGoodsSaleProjectConfig/sale2project
+  #    - /uber/h3/geoToH3Address
+  redis-key:
+    user-token: ut_
+    login-lock: ll_
+  entity-package-name: com.olivia.peanut.portal.model
+  scan-property2-use-in-time-second: 60
+  sale2-project-thread-size: 3
+  aps:
+    forecast-main-prefix: MAIN-
+    forecast-main-suffix: 预测数据
+
+
+spring:
+  application:
+    name: peanut-api
+  servlet:
+    multipart:
+      max-request-size: 5MB # 上传最大值
+      max-file-size: 5MB  # 单个文件最大值
+  profiles:
+    active: local
+  banner:
+    location: banner.txt
+  datasource:
+    hikari:
+#      data-source-properties:
+#        cachePrepStmts: true
+#        prepStmtCacheSize: 250
+#        prepStmtCacheSqlLimit: 2048
+#        useServerPrepStmts: true
+      #最大连接数，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
+      maximum-pool-size: 10
+      #最小空闲连接，默认值 10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
+      minimum-idle: 5
+      #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
+      connection-timeout: 60000
+      #空闲连接超时时间，默认值600000ms（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；
+      #不等于0且小于10秒，会被重置为10秒。
+      #只有空闲连接数大于最大连接数且空闲时间超过该值，才会被释放(自动释放过期链接)
+      idle-timeout: 600000
+      #连接最大存活时间.不等于0且小于30秒，会被重置为默认值30分钟.设置应该比mysql设置的超时时间短
+      max-lifetime: 640000
+      #连接测试查询
+      connection-test-query: select 1
+      connection-init-sql: select 2
+      keepalive-time: 30000
+      validation-timeout: 3000
+      wait-timeout: 3000
+      unitTest: true
+      leakDetectionThreshold: 3000
+
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://local:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
+    username: root
+    password: 123456
+
+  redis:
+    database: 3
+    host: redis.com
+    password: admin!@#q123
+    port: 6379
+    redisson:
+      file: classpath:redission.yml
+
+  h2:
+    console:
+      path: /h2-console  #h2嵌入式数据库控制台，可以通过浏览器访问
+      enabled: true
+
+
+logging:
+  level:
+    root: info
+#    org.springframework: trace
+    "org.springframework.jdbc.core": debug
+#    com.olivia.peanut.aps.utils.forecast: error
+#    com.olivia.peanut.portal.model: error
+#    com.zaxxer.hikari: trace

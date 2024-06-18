@@ -1,0 +1,26 @@
+package com.olivia.peanut.aps.service;
+
+import com.olivia.sdk.utils.DynamicsPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.olivia.peanut.aps.model.ApsOrderGoodsStatusDate;
+import java.util.List;
+import com.github.yulichang.base.MPJBaseService;
+
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsStatusDate.*;
+
+/**
+ * 订单商品状态表(ApsOrderGoodsStatusDate)表服务接口
+ *
+ * @author peanut
+ * @since 2024-06-14 10:26:59
+ */
+public interface ApsOrderGoodsStatusDateService extends MPJBaseService<ApsOrderGoodsStatusDate> {
+
+  ApsOrderGoodsStatusDateQueryListRes queryList(ApsOrderGoodsStatusDateQueryListReq req);
+
+  DynamicsPage<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> queryPageList(ApsOrderGoodsStatusDateExportQueryPageListReq req);
+
+
+  void setName(List<? extends ApsOrderGoodsStatusDateDto> apsOrderGoodsStatusDateDtoList);
+}
+

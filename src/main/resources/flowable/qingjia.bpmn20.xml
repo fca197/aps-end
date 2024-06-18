@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:flowable="http://flowable.org/bpmn"
+  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" expressionLanguage="http://www.w3.org/1999/XPath"
+  targetNamespace="http://www.flowable.org/processdef" typeLanguage="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_qingjia">
+    <bpmndi:BPMNPlane bpmnElement="qingJia" id="BPMNPlane_qingjia">
+      <bpmndi:BPMNEdge bpmnElement="sid-46e131d2-3332-43ee-80ee-9223887f51d3" id="edge-59f8c7f0-450a-4f2c-9e89-f293d50db28c">
+        <omgdi:waypoint x="-235.0" y="-87.5"/>
+        <omgdi:waypoint x="-165.0" y="-100.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1218f04d-3ac3-4212-b401-c5801d0424d1" id="edge-7844cbee-b0f1-4c9f-90ce-a8ed7af0d7f6">
+        <omgdi:waypoint x="-65.0" y="-80.5"/>
+        <omgdi:waypoint x="5.5" y="-80.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-679f6b4a-9f4b-4862-8cad-602b14c50e92" id="edge-32f9fc80-d7f8-4c84-953a-8e858d8ded32">
+        <omgdi:waypoint x="105.5" y="-80.5"/>
+        <omgdi:waypoint x="185.0" y="-75.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-34f423e0-e80a-4491-bf34-de9b89dced7c" id="edge-97d698e1-9d25-4734-9ca5-0f4899e429cf">
+        <omgdi:waypoint x="210.0" y="-35.0"/>
+        <omgdi:waypoint x="172.5" y="10.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-55324949-a7fa-4603-9cc8-681bee1a9e86" id="edge-4651bf62-37d9-4e5a-94ff-ee21c5efe020">
+        <omgdi:waypoint x="105.5" y="-60.5"/>
+        <omgdi:waypoint x="157.5" y="17.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape bpmnElement="sid-b90bdff1-1015-4ed1-b235-fafc2b899ce9" id="shape-65035d48-658a-4c49-94a9-8552aa426000">
+        <omgdc:Bounds height="30.0" width="30.0" x="-265.0" y="-95.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-111a3638-696b-40b4-85f0-411c429b5b6a" id="shape-de6149b5-de96-4633-91c0-303b66522ed5">
+        <omgdc:Bounds height="80.0" width="100.0" x="-165.0" y="-120.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-e59fa8fc-1f4d-4b53-9a80-7200c9cd5199" id="shape-dbb17ee8-b9df-49d3-bac3-6f6ed1f6903e">
+        <omgdc:Bounds height="80.0" width="100.0" x="5.5" y="-120.5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-b4958c70-82a4-4d2c-865a-85f1573d8286" id="shape-fdec5f9b-3144-42ad-87c2-8f9e02803f02">
+        <omgdc:Bounds height="80.0" width="100.0" x="185.0" y="-115.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-de1231c7-4513-4cd2-900e-77191ed13060" id="shape-1dbe1666-62bd-4bdb-a3ef-6147cdc20462">
+        <omgdc:Bounds height="30.0" width="30.0" x="150.0" y="10.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <process id="qingJia41411" isExecutable="true" name="请假">
+    <endEvent id="sid-de1231c7-4513-4cd2-900e-77191ed13060"/>
+    <sequenceFlow id="sid-46e131d2-3332-43ee-80ee-9223887f51d3" sourceRef="sid-b90bdff1-1015-4ed1-b235-fafc2b899ce9" targetRef="sid-111a3638-696b-40b4-85f0-411c429b5b6a"/>
+    <sequenceFlow id="sid-1218f04d-3ac3-4212-b401-c5801d0424d1" sourceRef="sid-111a3638-696b-40b4-85f0-411c429b5b6a" targetRef="sid-e59fa8fc-1f4d-4b53-9a80-7200c9cd5199"/>
+    <sequenceFlow id="sid-679f6b4a-9f4b-4862-8cad-602b14c50e92" sourceRef="sid-e59fa8fc-1f4d-4b53-9a80-7200c9cd5199" targetRef="sid-b4958c70-82a4-4d2c-865a-85f1573d8286">
+      <conditionExpression>${dayCount&gt;=3}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-34f423e0-e80a-4491-bf34-de9b89dced7c" sourceRef="sid-b4958c70-82a4-4d2c-865a-85f1573d8286" targetRef="sid-de1231c7-4513-4cd2-900e-77191ed13060"/>
+    <sequenceFlow id="sid-55324949-a7fa-4603-9cc8-681bee1a9e86" sourceRef="sid-e59fa8fc-1f4d-4b53-9a80-7200c9cd5199" targetRef="sid-de1231c7-4513-4cd2-900e-77191ed13060">
+      <conditionExpression>${dayCount&lt;3}</conditionExpression>
+    </sequenceFlow>
+    <startEvent id="sid-b90bdff1-1015-4ed1-b235-fafc2b899ce9" name="开始"/>
+    <userTask id="sid-111a3638-696b-40b4-85f0-411c429b5b6a" name="请假单填写" flowable:candidateUsers="#assignee">
+
+      <extensionElements>
+        <flowable:executionListener class="com.motor.peanut.portal.flowable.listener.ManagerAssigneeListener" event="start"/>
+      </extensionElements>
+    </userTask>
+    <userTask id="sid-e59fa8fc-1f4d-4b53-9a80-7200c9cd5199" name="组长审批" flowable:assignee="wangWu"/>
+    <userTask id="sid-b4958c70-82a4-4d2c-865a-85f1573d8286" name="总经理审批" flowable:candidateUsers="${assignee}">
+    </userTask>
+  </process>
+</definitions>

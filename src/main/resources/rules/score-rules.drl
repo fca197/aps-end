@@ -1,0 +1,69 @@
+//package rules
+//
+//import utils.portal.peanut.com.com.olivia.BaseEntity;
+//global  Integer asx;
+//
+////规则1：100元以下, 不加积分
+//rule "score_1"
+//
+//when
+//    $s : Order(amount <= 100)
+//then
+//    $s.setScore(0);
+//    System.out.println("消费100元以下, 不加积分 ");
+//
+//end
+//
+////规则2：100元-500元 加100积分
+//rule "score_2"
+//when
+//    $s : Order(amount > 100 && amount <= 500)
+//then
+//    $s.setScore(100);
+//    System.out.println("消费100元-500元 加100积分 ");
+//end
+//
+////规则3：500元-1000元 加500积分
+//rule "score_3"
+//when
+//    $s : Order(amount > 500 && amount <= 1000)
+//then
+//    $s.setScore(500);
+//    System.out.println("消费500元-1000元 加500积分 ");
+//end
+//
+////规则4：1000元 以上 加1000积分
+//rule "score_4"
+//no-loop
+//when
+//    $s : Order(amount > 1000)
+//then
+////    $s.setScore(10000);
+//    System.out.println("消费1000元 以上 加1000积分 "+asx);
+//
+//        $s.setScore(100000);
+////drools.halt();
+//end//规则4：1000元 以上 加1000积分
+//rule "score_5"
+//no-loop
+//when
+//    $s : Order(amount < 10000)
+//then
+//    Integer score = $s.getScore();
+////    score=score==null?0:score;
+//    $s.setScore(score+10);
+//    System.out.println("10000 内 以上 加1000积分 "+asx);
+//
+//end
+//
+//query "score_max"
+//        $s: Order(amount > 1000)
+//end
+//
+//
+//
+//query "score_max2"
+//        $s2: Order(amount > 100)
+//end
+//
+//

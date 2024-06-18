@@ -1,0 +1,121 @@
+package com.olivia.peanut.aps.service.impl;
+
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.yulichang.base.MPJBaseServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsStatusDate.*;
+import com.olivia.peanut.aps.mapper.ApsOrderGoodsStatusDateMapper;
+import com.olivia.peanut.aps.model.ApsGoods;
+import com.olivia.peanut.aps.model.ApsOrderGoodsStatusDate;
+import com.olivia.peanut.aps.model.ApsStatus;
+import com.olivia.peanut.aps.service.ApsGoodsService;
+import com.olivia.peanut.aps.service.ApsOrderGoodsStatusDateService;
+import com.olivia.peanut.aps.service.ApsStatusService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * 订单商品状态表(ApsOrderGoodsStatusDate)表服务实现类
+ *
+ * @author peanut
+ * @since 2024-06-14 10:26:59
+ */
+@Service("apsOrderGoodsStatusDateService")
+@Transactional
+public class ApsOrderGoodsStatusDateServiceImpl extends MPJBaseServiceImpl<ApsOrderGoodsStatusDateMapper, ApsOrderGoodsStatusDate> implements ApsOrderGoodsStatusDateService {
+
+  final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
+
+  @Resource
+  BaseTableHeaderService tableHeaderService;
+  @Resource
+  ApsGoodsService apsGoodsService;
+  @Resource
+  ApsStatusService apsStatusService;
+
+  public @Override ApsOrderGoodsStatusDateQueryListRes queryList(ApsOrderGoodsStatusDateQueryListReq req) {
+
+    MPJLambdaWrapper<ApsOrderGoodsStatusDate> q = getWrapper(req.getData());
+    List<ApsOrderGoodsStatusDate> list = this.list(q);
+
+    List<ApsOrderGoodsStatusDateDto> dataList = list.stream().map(t -> $.copy(t, ApsOrderGoodsStatusDateDto.class)).collect(Collectors.toList());
+    this.setName(dataList);
+    return new ApsOrderGoodsStatusDateQueryListRes().setDataList(dataList);
+  }
+
+  public @Override DynamicsPage<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> queryPageList(ApsOrderGoodsStatusDateExportQueryPageListReq req) {
+
+    DynamicsPage<ApsOrderGoodsStatusDate> page = new DynamicsPage<>();
+    page.setCurrent(req.getPageNum()).setSize(req.getPageSize());
+    setQueryListHeader(page);
+    MPJLambdaWrapper<ApsOrderGoodsStatusDate> q = getWrapper(req.getData());
+    List<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> records;
+    if (Boolean.TRUE.equals(req.getQueryPage())) {
+      IPage<ApsOrderGoodsStatusDate> list = this.page(page, q);
+      IPage<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsOrderGoodsStatusDateExportQueryPageListInfoRes.class));
+      records = dataList.getRecords();
+    } else {
+      records = $.copyList(this.list(q), ApsOrderGoodsStatusDateExportQueryPageListInfoRes.class);
+    }
+
+    // 类型转换，  更换枚举 等操作
+
+    List<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsOrderGoodsStatusDateExportQueryPageListInfoRes.class);
+    this.setName(listInfoRes);
+    return DynamicsPage.init(page, listInfoRes);
+  }
+  // 以下为私有对象封装
+
+  public @Override void setName(List<? extends ApsOrderGoodsStatusDateDto> apsOrderGoodsStatusDateDtoList) {
+
+    if (CollUtil.isEmpty(apsOrderGoodsStatusDateDtoList)) {
+      return;
+    }
+    Map<Long, String> gMap = apsGoodsService.listByIds(apsOrderGoodsStatusDateDtoList.stream().map(ApsOrderGoodsStatusDateDto::getGoodsId).toList())
+        .stream().collect(Collectors.toMap(ApsGoods::getId, ApsGoods::getGoodsName, (k1, k2) -> k1));
+
+    Map<Long, String> sMap = apsStatusService.list().stream().collect(Collectors.toMap(ApsStatus::getId, ApsStatus::getStatusName, (k1, k2) -> k1));
+
+    apsOrderGoodsStatusDateDtoList.forEach(t -> t.setGoodsName(gMap.get(t.getGoodsId())).setGoodsStatusName(sMap.get(t.getGoodsStatusId()))
+    );
+  }
+
+
+  private MPJLambdaWrapper<ApsOrderGoodsStatusDate> getWrapper(ApsOrderGoodsStatusDateDto obj) {
+    MPJLambdaWrapper<ApsOrderGoodsStatusDate> q = new MPJLambdaWrapper<>();
+
+    if (Objects.nonNull(obj)) {
+      q
+          .eq(Objects.nonNull(obj.getOrderId()), ApsOrderGoodsStatusDate::getOrderId, obj.getOrderId())
+          .eq(Objects.nonNull(obj.getGoodsId()), ApsOrderGoodsStatusDate::getGoodsId, obj.getGoodsId())
+          .eq(Objects.nonNull(obj.getGoodsStatusId()), ApsOrderGoodsStatusDate::getGoodsStatusId, obj.getGoodsStatusId())
+          .eq(Objects.nonNull(obj.getFactoryId()), ApsOrderGoodsStatusDate::getFactoryId, obj.getFactoryId())
+
+      ;
+    }
+    q.orderByDesc(ApsOrderGoodsStatusDate::getId);
+    return q;
+
+  }
+
+  private void setQueryListHeader(DynamicsPage<ApsOrderGoodsStatusDate> page) {
+
+    tableHeaderService.listByBizKey(page, "ApsOrderGoodsStatusDateService#queryPageList");
+
+  }
+
+
+}
+

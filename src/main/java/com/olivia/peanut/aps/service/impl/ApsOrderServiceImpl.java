@@ -1,0 +1,301 @@
+package com.olivia.peanut.aps.service.impl;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.github.yulichang.base.MPJBaseServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.api.entity.apsOrder.*;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderTimeLineRes.StatusInfo;
+import com.olivia.peanut.aps.api.entity.apsOrderGoods.ApsOrderGoodsDto;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoodsProjectConfigDto;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
+import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
+import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigDto;
+import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListInfoRes;
+import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListReq;
+import com.olivia.peanut.aps.mapper.ApsOrderMapper;
+import com.olivia.peanut.aps.model.*;
+import com.olivia.peanut.aps.service.*;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.utils.*;
+import com.olivia.sdk.utils.model.UserInfo;
+import jakarta.annotation.Resource;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * (ApsOrder)表服务实现类
+ *
+ * @author peanut
+ * @since 2024-04-09 13:19:36
+ */
+@Service("apsOrderService")
+@Transactional
+public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsOrder> implements ApsOrderService {
+
+  final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
+
+  @Resource
+  BaseTableHeaderService tableHeaderService;
+  @Resource
+  ApsOrderGoodsService apsOrderGoodsService;
+  @Resource
+  ApsOrderGoodsProjectConfigService apsOrderGoodsProjectConfigService;
+  @Resource
+  ApsOrderUserService apsOrderUserService;
+  @Resource
+  ApsOrderGoodsSaleConfigService apsOrderGoodsSaleConfigService;
+  @Resource
+  ApsGoodsSaleItemService apsGoodsSaleItemService;
+  @Resource
+  ApsSaleConfigService apsSaleConfigService;
+  @Resource
+  ApsGoodsService apsGoodsService;
+  @Resource
+  ApsStatusService apsStatusService;
+  @Resource
+  ApsSchedulingGoodsStatusDateService apsSchedulingGoodsStatusDateService;
+  @Resource
+  @Lazy
+  ApsOrderGoodsStatusDateService apsOrderGoodsStatusDateService;
+
+  public @Override ApsOrderQueryListRes queryList(ApsOrderQueryListReq req) {
+
+    MPJLambdaWrapper<ApsOrder> q = getWrapper(req.getData());
+    List<ApsOrder> list = this.list(q);
+
+    List<ApsOrderDto> dataList = list.stream().map(t -> $.copy(t, ApsOrderDto.class)).collect(Collectors.toList());
+    this.setName(dataList);
+    return new ApsOrderQueryListRes().setDataList(dataList);
+  }
+
+  public @Override DynamicsPage<ApsOrderExportQueryPageListInfoRes> queryPageList(ApsOrderExportQueryPageListReq req) {
+
+    DynamicsPage<ApsOrder> page = new DynamicsPage<>();
+    page.setCurrent(req.getPageNum()).setSize(req.getPageSize());
+    setQueryListHeader(page);
+    MPJLambdaWrapper<ApsOrder> q = getWrapper(req.getData());
+    List<ApsOrderExportQueryPageListInfoRes> records;
+    if (Boolean.TRUE.equals(req.getQueryPage())) {
+      IPage<ApsOrder> list = this.page(page, q);
+      IPage<ApsOrderExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsOrderExportQueryPageListInfoRes.class));
+      records = dataList.getRecords();
+    } else {
+      records = $.copyList(this.list(q), ApsOrderExportQueryPageListInfoRes.class);
+    }
+
+    // 类型转换，  更换枚举 等操作
+
+    List<ApsOrderExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsOrderExportQueryPageListInfoRes.class);
+    this.setName(listInfoRes);
+    return DynamicsPage.init(page, listInfoRes);
+  }
+
+  @Override
+  public ApsOrderInsertRes save(ApsOrderInsertReq req) {
+    ApsOrder apsOrder = $.copy(req, ApsOrder.class);
+    apsOrder.setOrderNo(IdUtils.getUniqueId());
+    apsOrder.setId(IdWorker.getId());
+    this.save(apsOrder);
+    List<ApsOrderGoods> goodsList = $.copyList(req.getGoodsList(), ApsOrderGoods.class);
+    goodsList.forEach(t -> t.setOrderId(apsOrder.getId()));
+    List<ApsOrderGoodsProjectConfig> projectConfigList = $.copyList(req.getGoodsProjectConfigList(), ApsOrderGoodsProjectConfig.class);
+    projectConfigList.forEach(t -> t.setOrderId(apsOrder.getId()));
+    List<ApsOrderGoodsSaleConfig> saleConfigList = $.copyList(req.getGoodsSaleConfigList(), ApsOrderGoodsSaleConfig.class);
+    saleConfigList.forEach(t -> t.setOrderId(apsOrder.getId()).setFactoryId(req.getFactoryId()));
+    ApsOrderUser orderUser = $.copy(req.getOrderUser(), ApsOrderUser.class);
+    orderUser.setOrderId(apsOrder.getId());
+    this.apsOrderGoodsSaleConfigService.saveBatch(saleConfigList);
+    this.apsOrderGoodsProjectConfigService.saveBatch(projectConfigList);
+    this.apsOrderGoodsService.saveBatch(goodsList);
+    this.apsOrderUserService.save(orderUser);
+    return new ApsOrderInsertRes().setId(apsOrder.getId()).setCount(1);
+  }
+
+  @Override
+  public ApsOrderBatchInsertRes saveBatch(ApsOrderBatchInsertReq req) {
+
+    List<Long> idList = new ArrayList<>();
+    List<String> orderNoList = new ArrayList<>();
+    List<ApsGoods> goodsList = this.apsGoodsService.list();
+    List<ApsSaleConfigExportQueryPageListInfoRes> saleConfigList = apsSaleConfigService.queryPageList(new ApsSaleConfigExportQueryPageListReq().setPageNum(1).setPageSize(99999))
+        .getDataList();
+    List<ApsOrderGoodsSaleConfig> insertSaleConfigList = new ArrayList<>();
+    List<ApsOrderGoods> apsOrderGoodList = new ArrayList<>();
+    List<ApsOrder> apsOrderList = new ArrayList<>();
+    List<ApsOrderUser> apsOrderUserList = new ArrayList<>();
+    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, Boolean.TRUE));
+    Long statusId = Objects.nonNull(apsStatus) ? apsStatus.getId() : null;
+//           .stream().collect(Collectors.toMap(ApsGoodsSaleItemDto::getSaleConfigId))
+    IntStream.range(0, req.getCreateCount()).forEach(i -> {
+      long totalPrice = i;
+
+      LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
+      ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId())
+          .setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now()).setMakeFinishDate(dateTime.toLocalDate())
+          .setOrderTotalPrice(new BigDecimal(totalPrice)).setOrderStatus(1L);
+      apsOrder.setFinishPayedAmount(new BigDecimal(0)).setFinishPayedDatetime(dateTime.plusDays(RandomUtil.randomInt(3, 30)));
+      apsOrder.setDeliveryDate(dateTime.plusDays(RandomUtil.randomInt(30, 60)).toLocalDate());
+      apsOrder.setId(IdWorker.getId());
+      apsOrder.setOrderStatus(statusId);
+      apsOrderList.add(apsOrder);
+      ApsGoods goods = goodsList.get(RandomUtil.randomInt(0, goodsList.size()));
+
+      ApsOrderGoods apsOrderGood = new ApsOrderGoods().setOrderId(apsOrder.getId()).setGoodsId(goods.getId()).setGoodsName(goods.getGoodsName())
+          .setGoodsRemark(goods.getGoodsRemark()).setFactoryId(goods.getFactoryId()).setGoodsUnit("").setGoodsUnitPrice(new BigDecimal(RandomUtil.randomInt(100, 999)))
+
+          .setGoodsTotalPrice(new BigDecimal(totalPrice)).setGoodsAmount(new BigDecimal(RandomUtil.randomInt(50000)));
+      apsOrderGoodList.add(apsOrderGood);
+
+      saleConfigList.forEach(saleCode -> {
+        List<? extends ApsSaleConfigDto> saleItemDtoList = saleCode.getChildren();
+        if (CollUtil.isEmpty(saleItemDtoList)) {
+          return;
+        }
+        ApsSaleConfigDto goodsSaleItemDto = saleItemDtoList.get(RandomUtil.randomInt(0, saleItemDtoList.size()));
+        insertSaleConfigList.add(
+            new ApsOrderGoodsSaleConfig().setOrderId(apsOrder.getId()).setConfigId(goodsSaleItemDto.getId()).setFactoryId(goods.getId()).setGoodsId(goods.getId()));
+      });
+      UserInfo randomUser = RandomUserUtil.getRandomUser();
+      ApsOrderUser orderUser = new ApsOrderUser().setOrderId(apsOrder.getId()).setUserName(randomUser.getName()).setUserAddress(randomUser.getAddress())
+          .setUserPhone(randomUser.getPhone()).setUserSex(randomUser.getSex());
+      apsOrderUserList.add(orderUser);
+      orderNoList.add(apsOrder.getOrderNo());
+      idList.add(apsOrder.getId());
+    });
+    this.saveBatch(apsOrderList);
+    this.apsOrderGoodsService.saveBatch(apsOrderGoodList);
+    this.apsOrderGoodsSaleConfigService.saveBatch(insertSaleConfigList);
+    this.apsOrderUserService.saveBatch(apsOrderUserList);
+
+    return new ApsOrderBatchInsertRes().setOrderNoList(orderNoList).setIdList(idList);
+  }
+
+  @Override
+  public DynamicsPage<ApsOrderTimeLineRes> timeLine(ApsOrderTimeLineReq req) {
+
+    List<Long> orderIdList = apsOrderGoodsStatusDateService.list(new QueryWrapper<ApsOrderGoodsStatusDate>().select(Str.DISTINCT + "order_id").lambda()
+            .and(Boolean.TRUE.equals(req.getIsActualMakeTime()),
+                r -> r.ge(ApsOrderGoodsStatusDate::getActualMakeBeginTime, req.getBeginDate()).le(ApsOrderGoodsStatusDate::getActualMakeEndTime, req.getEndDate()))
+            .and(!Boolean.TRUE.equals(req.getIsActualMakeTime()),
+                r -> r.ge(ApsOrderGoodsStatusDate::getExpectMakeBeginTime, req.getBeginDate()).le(ApsOrderGoodsStatusDate::getExpectMakeEndTime, req.getEndDate()))).stream()
+        .map(ApsOrderGoodsStatusDate::getOrderId).toList();
+
+    DynamicsPage<ApsOrderTimeLineRes> page = new DynamicsPage<>();
+    page.setHeaderList(Lists.newArrayList()).setTotal(0);
+    List<LocalDate> localDateList = DateUtils.getLocalDateBetween(req.getBeginDate(), req.getEndDate());
+    localDateList.forEach(t -> page.addHeader(t.format(DatePattern.NORM_DATE_FORMATTER), t.format(DatePattern.NORM_DATE_FORMATTER), 100));
+    if (CollUtil.isEmpty(orderIdList)) {
+      return page;
+    }
+    int total = orderIdList.size();
+
+    orderIdList = CollUtil.sub(orderIdList, (req.getPageNum() - 1) * req.getPageSize(), req.getPageNum() * req.getPageSize());
+    if (CollUtil.isEmpty(orderIdList)) {
+      return page;
+    }
+
+    Map<Long, List<ApsOrderGoodsStatusDate>> orderStatusMap = this.apsOrderGoodsStatusDateService.list(
+            new LambdaQueryWrapper<ApsOrderGoodsStatusDate>().in(ApsOrderGoodsStatusDate::getOrderId, orderIdList)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoodsStatusDate::getOrderId));
+    Map<Long, String> sNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
+    List<ApsOrderTimeLineRes> list = $.copyList(this.listByIds(orderIdList), ApsOrderTimeLineRes.class);
+    setName(list);
+    if (CollUtil.isNotEmpty(list)) {
+      list.forEach(t -> {
+        t.setStatusInfoList(orderStatusMap.getOrDefault(t.getId(), List.of()).stream()
+            .map(s -> getStatusInfo(s, Boolean.TRUE.equals(req.getIsActualMakeTime())).setStatusName(sNameMap.get(s.getGoodsStatusId()))).collect(Collectors.toList()));
+      });
+    }
+    page.setTotal(total).setRecords(list);
+    return page;
+  }
+
+  private StatusInfo getStatusInfo(ApsOrderGoodsStatusDate statusDate, Boolean isActualMakeTime) {
+    StatusInfo statusInfo = new StatusInfo().setStatusId(statusDate.getGoodsStatusId()).setBeginDate(statusDate.getExpectMakeBeginTime())
+        .setEndDate(statusDate.getExpectMakeEndTime());
+    if (Boolean.TRUE.equals(isActualMakeTime)) {
+      statusInfo.setBeginDate(statusDate.getActualMakeBeginTime()).setEndDate(statusDate.getActualMakeEndTime());
+    }
+    return statusInfo;
+  }
+  // 以下为私有对象封装
+
+  public @Override void setName(List<? extends ApsOrderDto> apsOrderDtoList) {
+
+    if (CollUtil.isEmpty(apsOrderDtoList)) {
+      return;
+    }
+    Set<Long> oidSet = apsOrderDtoList.stream().map(BaseEntityDto::getId).collect(Collectors.toSet());
+
+    Map<Long, List<ApsOrderGoodsSaleConfig>> saleListMap = this.apsOrderGoodsSaleConfigService.list(
+            new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, oidSet)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId));
+    Map<Long, List<ApsOrderGoodsProjectConfig>> projectListMap = this.apsOrderGoodsProjectConfigService.list(
+            new LambdaQueryWrapper<ApsOrderGoodsProjectConfig>().in(ApsOrderGoodsProjectConfig::getOrderId, oidSet)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoodsProjectConfig::getOrderId));
+    Map<Long, List<ApsOrderGoods>> goodsListMap = this.apsOrderGoodsService.list(new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, oidSet)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoods::getOrderId));
+    Map<Long, ApsOrderUser> userMap = this.apsOrderUserService.list(new LambdaQueryWrapper<ApsOrderUser>().in(ApsOrderUser::getOrderId, oidSet)).stream()
+        .collect(Collectors.toMap(ApsOrderUser::getOrderId, Function.identity()));
+    apsOrderDtoList.forEach(t -> {
+      t.setGoodsProjectConfigList($.copyList(projectListMap.get(t.getId()), ApsOrderGoodsProjectConfigDto.class));
+      t.setGoodsSaleConfigList($.copyList(saleListMap.get(t.getId()), ApsOrderGoodsSaleConfigDto.class));
+      t.setGoodsList($.copyList(goodsListMap.get(t.getId()), ApsOrderGoodsDto.class));
+      t.setOrderUser($.copy(userMap.get(t.getId()), ApsOrderUserDto.class));
+    });
+  }
+
+
+  private MPJLambdaWrapper<ApsOrder> getWrapper(ApsOrderDto obj) {
+    MPJLambdaWrapper<ApsOrder> q = new MPJLambdaWrapper<>();
+
+    if (Objects.nonNull(obj)) {
+      q.eq(StringUtils.isNoneBlank(obj.getOrderNo()), ApsOrder::getOrderNo, obj.getOrderNo())
+          .eq(StringUtils.isNoneBlank(obj.getOrderRemark()), ApsOrder::getOrderRemark, obj.getOrderRemark())
+          .eq(Objects.nonNull(obj.getOrderStatus()), ApsOrder::getOrderStatus, obj.getOrderStatus())
+          .eq(Objects.nonNull(obj.getOrderTotalPrice()), ApsOrder::getOrderTotalPrice, obj.getOrderTotalPrice())
+          .eq(Objects.nonNull(obj.getReserveAmount()), ApsOrder::getReserveAmount, obj.getReserveAmount())
+          .eq(Objects.nonNull(obj.getReserveDatetime()), ApsOrder::getReserveDatetime, obj.getReserveDatetime())
+          .eq(Objects.nonNull(obj.getFinishPayedAmount()), ApsOrder::getFinishPayedAmount, obj.getFinishPayedAmount())
+          .eq(Objects.nonNull(obj.getFinishPayedDatetime()), ApsOrder::getFinishPayedDatetime, obj.getFinishPayedDatetime())
+          .eq(Objects.nonNull(obj.getMakeFinishDate()), ApsOrder::getMakeFinishDate, obj.getMakeFinishDate())
+          .eq(Objects.nonNull(obj.getDeliveryDate()), ApsOrder::getDeliveryDate, obj.getDeliveryDate())
+          .eq(Objects.nonNull(obj.getFactoryId()), ApsOrder::getFactoryId, obj.getFactoryId())
+
+      ;
+    }
+    q.orderByDesc(ApsOrder::getId);
+    return q;
+
+  }
+
+  private void setQueryListHeader(DynamicsPage<ApsOrder> page) {
+
+    tableHeaderService.listByBizKey(page, "ApsOrderService#queryPageList");
+
+  }
+
+
+}
+

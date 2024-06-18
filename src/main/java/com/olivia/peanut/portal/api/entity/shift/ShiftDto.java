@@ -1,0 +1,31 @@
+package com.olivia.peanut.portal.api.entity.shift;
+
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.peanut.portal.api.entity.shiftItem.ShiftItemDto;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+/**
+ * (Shift)查询对象返回
+ *
+ * @author peanut
+ * @since 2024-04-04 12:10:15
+ */
+//@Accessors(chain=true)
+@Getter
+@Setter
+@Accessors(chain = true)
+@SuppressWarnings("serial")
+public class ShiftDto extends BaseEntityDto {
+
+  private String shiftCode;
+  private String shiftName;
+  private Long factoryId;
+  private String factoryName;
+
+  private List<ShiftItemDto> shiftItemDtoList;
+}
+
+
