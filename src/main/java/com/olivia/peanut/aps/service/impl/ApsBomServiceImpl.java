@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -9,9 +10,12 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsBom.*;
 import com.olivia.peanut.aps.mapper.ApsBomMapper;
 import com.olivia.peanut.aps.model.ApsBom;
+import com.olivia.peanut.aps.model.ApsBomGroup;
+import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.peanut.aps.service.ApsBomService;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -37,7 +41,9 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
 
   @Resource
   BaseTableHeaderService tableHeaderService;
-
+  // 以下为私有对象封装
+  @Resource
+  ApsBomGroupService apsBomGroupService;
 
   public @Override ApsBomQueryListRes queryList(ApsBomQueryListReq req) {
 
@@ -48,7 +54,6 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     this.setName(dataList);
     return new ApsBomQueryListRes().setDataList(dataList);
   }
-
 
   public @Override DynamicsPage<ApsBomExportQueryPageListInfoRes> queryPageList(ApsBomExportQueryPageListReq req) {
 
@@ -72,8 +77,6 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  // 以下为私有对象封装
-
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
 
     if (CollUtil.isEmpty(apsBomDtoList)) {
@@ -87,18 +90,26 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     MPJLambdaWrapper<ApsBom> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsBom::getBomCode, obj.getBomCode())
+      q.eq(Objects.nonNull(obj.getGroupId()), ApsBom::getGroupId, obj.getGroupId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsBom::getBomCode, obj.getBomCode())
           .eq(StringUtils.isNoneBlank(obj.getBomName()), ApsBom::getBomName, obj.getBomName())
           .eq(Objects.nonNull(obj.getBomCostPrice()), ApsBom::getBomCostPrice, obj.getBomCostPrice())
           .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
           .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory())
-
       ;
+      if (Objects.nonNull(obj.getGroupId())) {
+        ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());
+        if (Objects.nonNull(apsBomGroup)) {
+          List<Long> idList = this.apsBomGroupService.list(
+                  new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId).likeRight(ApsBomGroup::getPathId, apsBomGroup.getPathId()))
+              .stream().map(BaseEntity::getId).toList();
+          if (CollUtil.isNotEmpty(idList)) {
+            q.in(ApsBom::getGroupId, idList);
+          }
+        }
+      }
     }
     q.orderByDesc(ApsBom::getId);
     return q;
-
   }
 
   private void setQueryListHeader(DynamicsPage<ApsBom> page) {

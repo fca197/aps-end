@@ -21,6 +21,10 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsBomDto extends BaseEntityDto {
 
+
+  @NotNull(message = "groupId不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long groupId;
+
   /***
    *  bom 编码
    */
