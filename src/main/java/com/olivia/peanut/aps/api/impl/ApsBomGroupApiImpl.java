@@ -68,8 +68,8 @@ public class ApsBomGroupApiImpl implements ApsBomGroupApi {
    *
    */
   public @Override ApsBomGroupUpdateByIdRes updateById(ApsBomGroupUpdateByIdReq req) {
-    apsBomGroupService.updateById($.copy(req, ApsBomGroup.class));
-    return new ApsBomGroupUpdateByIdRes();
+   return apsBomGroupService.updateById(req);
+
 
   }
 

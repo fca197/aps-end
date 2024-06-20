@@ -1,13 +1,20 @@
 package com.olivia.peanut.aps.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.aps.api.entity.apsBomGroup.*;
+import com.olivia.peanut.aps.mapper.ApsBomGroupMapper;
+import com.olivia.peanut.aps.model.ApsBomGroup;
+import com.olivia.peanut.aps.service.ApsBomGroupService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -16,13 +23,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsBomGroupMapper;
-import com.olivia.peanut.aps.model.ApsBomGroup;
-import com.olivia.peanut.aps.service.ApsBomGroupService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsBomGroup.*;
 
 /**
  * 零件组配置(ApsBomGroup)表服务实现类
@@ -73,6 +73,27 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @Override
+  public ApsBomGroupUpdateByIdRes updateById(ApsBomGroupUpdateByIdReq req) {
+    ApsBomGroup apsBomGroup = this.getById(req.getId());
+    $.requireNonNullCanIgnoreException(apsBomGroup, "数据不存在");
+    Long parentId = apsBomGroup.getParentId();
+    ApsBomGroup bomGroup = $.copy(req, ApsBomGroup.class);
+    if (Objects.equals(parentId, req.getParentId())) {
+      this.updateById(bomGroup);
+    } else {
+      String oldPathId = apsBomGroup.getPathId();
+      ApsBomGroup parentApsBomGroup = this.getById(req.getParentId());
+      bomGroup.setPathId(parentApsBomGroup.getPathId() + "/" + req.getId());
+      String newPathId = bomGroup.getPathId();
+      List<ApsBomGroup> apsBomGroupList = this.list(new LambdaQueryWrapper<ApsBomGroup>().likeRight(ApsBomGroup::getPathId, oldPathId));
+      apsBomGroupList.forEach(t -> t.setPathId(t.getPathId().replace(oldPathId, newPathId)));
+      apsBomGroupList.add(bomGroup);
+      this.updateBatchById(apsBomGroupList);
+    }
+
+    return new ApsBomGroupUpdateByIdRes();
+  }
   // 以下为私有对象封装
 
   public @Override void setName(List<? extends ApsBomGroupDto> apsBomGroupDtoList) {

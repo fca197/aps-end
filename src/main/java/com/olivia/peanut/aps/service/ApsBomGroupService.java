@@ -22,5 +22,7 @@ public interface ApsBomGroupService extends MPJBaseService<ApsBomGroup> {
 
 
   void setName(List<? extends ApsBomGroupDto> apsBomGroupDtoList);
+
+  ApsBomGroupUpdateByIdRes updateById(ApsBomGroupUpdateByIdReq req);
 }
 
