@@ -21,6 +21,7 @@ peanut:
     - /fileUpload/getFileByte/
     - /actuator
     - /apsGoodsSaleProjectConfig/sale2project
+    - /blog
   #    - /uber/h3/geoToH3Address
   redis-key:
     user-token: ut_

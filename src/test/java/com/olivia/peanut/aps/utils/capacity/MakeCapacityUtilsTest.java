@@ -2,6 +2,8 @@ package com.olivia.peanut.aps.utils.capacity;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson2.JSON;
+import com.olivia.peanut.aps.utils.capacity.model.Limit;
+import com.olivia.peanut.aps.utils.capacity.model.MakeCapacityResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
