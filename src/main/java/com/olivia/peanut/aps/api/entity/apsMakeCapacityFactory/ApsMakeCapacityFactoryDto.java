@@ -24,7 +24,7 @@ public class ApsMakeCapacityFactoryDto extends BaseEntityDto {
   private Long factoryId;
 
   private String factoryName;
-//  @NotNull(message = "容量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "容量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long makeCapacityQuantity;
   private Integer year;
   private Integer month;

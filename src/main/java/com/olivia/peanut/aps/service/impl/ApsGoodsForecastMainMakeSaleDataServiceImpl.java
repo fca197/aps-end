@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMainMakeSaleData.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMainMakeSaleDataMapper;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMainMakeSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainMakeSaleDataService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,9 +34,6 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
     ApsGoodsForecastMainMakeSaleDataService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsGoodsForecastMainMakeSaleDataQueryListRes queryList(ApsGoodsForecastMainMakeSaleDataQueryListReq req) {
@@ -470,7 +466,7 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsForecastMainMakeSaleData> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsForecastMainMakeSaleDataService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsForecastMainMakeSaleDataService#queryPageList");
 
   }
 

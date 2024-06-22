@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingVersionCapacity.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionCapacityMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionCapacity;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionCapacityService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,9 +34,6 @@ public class ApsSchedulingVersionCapacityServiceImpl extends MPJBaseServiceImpl<
     ApsSchedulingVersionCapacityService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSchedulingVersionCapacityQueryListRes queryList(ApsSchedulingVersionCapacityQueryListReq req) {
@@ -127,7 +123,7 @@ public class ApsSchedulingVersionCapacityServiceImpl extends MPJBaseServiceImpl<
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingVersionCapacity> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingVersionCapacityService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingVersionCapacityService#queryPageList");
 
   }
 

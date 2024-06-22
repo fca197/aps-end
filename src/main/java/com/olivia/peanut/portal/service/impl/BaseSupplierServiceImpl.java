@@ -9,10 +9,9 @@ import com.olivia.peanut.portal.api.entity.baseSupplier.*;
 import com.olivia.peanut.portal.mapper.BaseSupplierMapper;
 import com.olivia.peanut.portal.model.BaseSupplier;
 import com.olivia.peanut.portal.service.BaseSupplierService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,9 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BaseSupplierServiceImpl extends MPJBaseServiceImpl<BaseSupplierMapper, BaseSupplier> implements BaseSupplierService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override BaseSupplierQueryListRes queryList(BaseSupplierQueryListReq req) {
@@ -103,7 +99,7 @@ public class BaseSupplierServiceImpl extends MPJBaseServiceImpl<BaseSupplierMapp
 
   private void setQueryListHeader(DynamicsPage<BaseSupplier> page) {
 
-    tableHeaderService.listByBizKey(page, "BaseSupplierService#queryPageList");
+    ServiceComment.header(page, "BaseSupplierService#queryPageList");
 
   }
 

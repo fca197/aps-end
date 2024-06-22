@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsProjectConfig.*;
 import com.olivia.peanut.aps.mapper.ApsProjectConfigMapper;
 import com.olivia.peanut.aps.model.ApsProjectConfig;
 import com.olivia.peanut.aps.service.ApsProjectConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsProjectConfigServiceImpl extends MPJBaseServiceImpl<ApsProjectConfigMapper, ApsProjectConfig> implements ApsProjectConfigService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsProjectConfigQueryListRes queryList(ApsProjectConfigQueryListReq req) {
@@ -110,7 +106,7 @@ public class ApsProjectConfigServiceImpl extends MPJBaseServiceImpl<ApsProjectCo
 
   private void setQueryListHeader(DynamicsPage<ApsProjectConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsProjectConfigService#queryPageList");
+    ServiceComment.header(page, "ApsProjectConfigService#queryPageList");
 
   }
 

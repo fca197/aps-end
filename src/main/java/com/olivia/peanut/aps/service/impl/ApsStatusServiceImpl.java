@@ -9,10 +9,9 @@ import com.olivia.peanut.aps.api.entity.apsStatus.*;
 import com.olivia.peanut.aps.mapper.ApsStatusMapper;
 import com.olivia.peanut.aps.model.ApsStatus;
 import com.olivia.peanut.aps.service.ApsStatusService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,9 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, ApsStatus> implements ApsStatusService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsStatusQueryListRes queryList(ApsStatusQueryListReq req) {
@@ -95,7 +91,7 @@ public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, Ap
 
   private void setQueryListHeader(DynamicsPage<ApsStatus> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsStatusService#queryPageList");
+    ServiceComment.header(page, "ApsStatusService#queryPageList");
 
   }
 

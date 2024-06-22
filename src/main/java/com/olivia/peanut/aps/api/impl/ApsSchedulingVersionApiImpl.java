@@ -1,7 +1,6 @@
 package com.olivia.peanut.aps.api.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsSchedulingVersionApi;
@@ -10,7 +9,6 @@ import com.olivia.peanut.aps.api.impl.listener.ApsSchedulingVersionImportListene
 import com.olivia.peanut.aps.model.ApsSchedulingVersion;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionService;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import java.util.List;
@@ -121,7 +119,7 @@ public class ApsSchedulingVersionApiImpl implements ApsSchedulingVersionApi {
 
   @Override
   public ApsSchedulingVersionFinishRes finish(ApsSchedulingVersionFinishReq req) {
-  return   this.apsSchedulingVersionService.finish(req);
+    return this.apsSchedulingVersionService.finish(req);
 
   }
 }

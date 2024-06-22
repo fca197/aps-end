@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingVersionDay.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionDayMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionDay;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionDayService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsSchedulingVersionDayServiceImpl extends MPJBaseServiceImpl<ApsSchedulingVersionDayMapper, ApsSchedulingVersionDay> implements ApsSchedulingVersionDayService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSchedulingVersionDayQueryListRes queryList(ApsSchedulingVersionDayQueryListReq req) {
@@ -101,7 +97,7 @@ public class ApsSchedulingVersionDayServiceImpl extends MPJBaseServiceImpl<ApsSc
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingVersionDay> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingVersionDayService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingVersionDayService#queryPageList");
 
   }
 

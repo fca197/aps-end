@@ -1,12 +1,16 @@
 package com.olivia.peanut.blog.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.blog.api.entity.blogGroup.*;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.blog.mapper.BlogGroupMapper;
+import com.olivia.peanut.blog.model.BlogGroup;
+import com.olivia.peanut.blog.service.BlogGroupService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import java.util.List;
@@ -17,12 +21,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.blog.mapper.BlogGroupMapper;
-import com.olivia.peanut.blog.model.BlogGroup;
-import com.olivia.peanut.blog.service.BlogGroupService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.blog.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 
 
 /**
@@ -36,9 +34,6 @@ import com.olivia.peanut.portal.service.BaseTableHeaderService;
 public class BlogGroupServiceImpl extends MPJBaseServiceImpl<BlogGroupMapper, BlogGroup> implements BlogGroupService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override BlogGroupQueryListRes queryList(BlogGroupQueryListReq req) {
@@ -102,7 +97,7 @@ public class BlogGroupServiceImpl extends MPJBaseServiceImpl<BlogGroupMapper, Bl
 
   private void setQueryListHeader(DynamicsPage<BlogGroup> page) {
 
-    tableHeaderService.listByBizKey(page, "BlogGroupService#queryPageList");
+    ServiceComment.header(page, "BlogGroupService#queryPageList");
 
   }
 

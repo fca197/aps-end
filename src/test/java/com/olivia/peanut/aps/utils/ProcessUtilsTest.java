@@ -5,7 +5,6 @@ import cn.hutool.core.util.RandomUtil;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsProcessPathRoom.ApsProcessPathRoomDto;
 import com.olivia.peanut.aps.api.entity.apsRoomConfig.ApsRoomConfigDto;
-import com.olivia.peanut.aps.model.ApsRoomConfig;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.aps.utils.model.ShiftItemVo;
@@ -61,7 +60,7 @@ class ProcessUtilsTest {
     shiftItemList.add(new ShiftItem().setBeginTime(LocalTime.of(8, 0, 0)).setEndTime(LocalTime.of(20, 0, 0)));
     shiftItemList.add(new ShiftItem().setBeginTime(LocalTime.of(20, 0, 0)).setEndTime(LocalTime.of(8, 0, 0)));
     Long dayWorkSecond = ProcessUtils.getDayWorkSecond($.copyList(shiftItemList, ShiftItemVo.class));
-    ApsProcessPathInfo apsProcessPathInfo = ProcessUtils.apsProcessPathInfo($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList,LocalDate.now(), dayWorkSecond);
+    ApsProcessPathInfo apsProcessPathInfo = ProcessUtils.apsProcessPathInfo($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList, LocalDate.now(), dayWorkSecond);
 
   }
 

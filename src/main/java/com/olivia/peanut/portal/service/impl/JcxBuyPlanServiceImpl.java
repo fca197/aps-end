@@ -17,10 +17,10 @@ import com.olivia.peanut.portal.mapper.JcxBuyPlanMapper;
 import com.olivia.peanut.portal.model.JcxBuyPlan;
 import com.olivia.peanut.portal.model.JcxBuyPlanItem;
 import com.olivia.peanut.portal.model.JcxGoods;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.JcxBuyPlanItemService;
 import com.olivia.peanut.portal.service.JcxBuyPlanService;
 import com.olivia.peanut.portal.service.JcxGoodsService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -55,8 +55,6 @@ public class JcxBuyPlanServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanMapper, 
   JcxGoodsService jcxGoodsService;
 
   // 以下为私有对象封装
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
   public @Override JcxBuyPlanQueryListRes queryList(JcxBuyPlanQueryListReq req) {
 
@@ -127,7 +125,7 @@ public class JcxBuyPlanServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanMapper, 
 
   private void setQueryListHeader(DynamicsPage<JcxBuyPlan> page) {
     String bizKey = "JcxBuyPlanService#queryPageList";
-    tableHeaderService.listByBizKey(page, bizKey);
+    ServiceComment.header(page, bizKey);
 //    page.addHeader("planName", "计划名称")
 //        .addHeader("createTime", "创建时间").addHeader("updateTime", "修改时间");
   }

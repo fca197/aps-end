@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingVersionLimit.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionLimitMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionLimit;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionLimitService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,9 +34,6 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
     ApsSchedulingVersionLimitService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSchedulingVersionLimitQueryListRes queryList(ApsSchedulingVersionLimitQueryListReq req) {
@@ -106,7 +102,7 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingVersionLimit> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingVersionLimitService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingVersionLimitService#queryPageList");
 
   }
 

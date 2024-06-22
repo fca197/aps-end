@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @TableName("aps_bom")
 public class ApsBom extends BaseEntity {
 
-  private  Long groupId;
+  private Long groupId;
 
   /***
    *  bom 编码

@@ -6,7 +6,6 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class WorkshopSectionDto  extends BaseEntityDto {
+public class WorkshopSectionDto extends BaseEntityDto {
 
 
   /***
@@ -53,7 +52,6 @@ public class WorkshopSectionDto  extends BaseEntityDto {
   @ExcelProperty("工段状态 ")
   @NotNull(message = "工段状态不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String sectionStatus;
-
 
 
 }

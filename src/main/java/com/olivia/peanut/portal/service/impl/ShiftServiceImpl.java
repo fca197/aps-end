@@ -15,10 +15,10 @@ import com.olivia.peanut.portal.mapper.ShiftMapper;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.model.Shift;
 import com.olivia.peanut.portal.model.ShiftItem;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -44,8 +44,6 @@ public class ShiftServiceImpl extends MPJBaseServiceImpl<ShiftMapper, Shift> imp
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ShiftItemService shiftItemService;
   @Resource
@@ -142,7 +140,7 @@ public class ShiftServiceImpl extends MPJBaseServiceImpl<ShiftMapper, Shift> imp
 
   private void setQueryListHeader(DynamicsPage<Shift> page) {
 
-    tableHeaderService.listByBizKey(page, "ShiftService#queryPageList");
+    ServiceComment.header(page, "ShiftService#queryPageList");
 
   }
 

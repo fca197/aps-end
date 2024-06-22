@@ -15,7 +15,7 @@ import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsMakeCapacityGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsMakeCapacityGoodsService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DateUtils;
@@ -40,8 +40,6 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsService apsGoodsService;
 
@@ -219,7 +217,7 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
 
   private void setQueryListHeader(DynamicsPage<ApsMakeCapacityGoods> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsMakeCapacityGoodsService#queryPageList");
+    ServiceComment.header(page, "ApsMakeCapacityGoodsService#queryPageList");
 
   }
 

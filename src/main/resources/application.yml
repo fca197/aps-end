@@ -47,11 +47,11 @@ spring:
     location: banner.txt
   datasource:
     hikari:
-#      data-source-properties:
-#        cachePrepStmts: true
-#        prepStmtCacheSize: 250
-#        prepStmtCacheSqlLimit: 2048
-#        useServerPrepStmts: true
+      #      data-source-properties:
+      #        cachePrepStmts: true
+      #        prepStmtCacheSize: 250
+      #        prepStmtCacheSqlLimit: 2048
+      #        useServerPrepStmts: true
       #最大连接数，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
       maximum-pool-size: 30
       #最小空闲连接，默认值 10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
@@ -96,7 +96,7 @@ spring:
 logging:
   level:
     root: info
-#    org.springframework: trace
+    #    org.springframework: trace
     "org.springframework.jdbc.core": debug
 #    com.olivia.peanut.aps.utils.forecast: error
 #    com.olivia.peanut.portal.model: error

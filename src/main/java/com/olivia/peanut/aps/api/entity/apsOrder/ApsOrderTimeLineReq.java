@@ -19,7 +19,7 @@ public class ApsOrderTimeLineReq {
   @NotNull(message = "结束时间不能为空")
   private LocalDate endDate;
 
-  private  Boolean isActualMakeTime;
+  private Boolean isActualMakeTime;
   private Integer pageNum;
   private Integer pageSize;
 }

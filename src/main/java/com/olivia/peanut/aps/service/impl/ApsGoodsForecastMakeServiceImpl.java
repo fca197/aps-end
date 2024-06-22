@@ -37,10 +37,10 @@ import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.aps.utils.model.ShiftItemVo;
 import com.olivia.peanut.portal.model.Shift;
 import com.olivia.peanut.portal.model.ShiftItem;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.CalendarService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
@@ -75,8 +75,6 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
   static final Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
   static final Cache<Long, Map<Object, List<ApsGoodsBom>>> goodsBomCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
   private static final String DAY_NUM_FIELD = "dayNum";
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsForecastMakeSaleDataService apsGoodsForecastMakeSaleDataService;
   @Resource
@@ -164,7 +162,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     List<ApsGoodsSaleProjectConfigSale2ProjectRes> sale2ProjectResList = Collections.synchronizedList(new ArrayList<>());
 
     ApsProcessPathDto apsProcessPathDto = apsProcessPathQueryListRes.getDataList().get(0);
-    ApsProcessPathVo apsProcessPathVo= $.copy(apsProcessPathDto, ApsProcessPathVo.class);
+    ApsProcessPathVo apsProcessPathVo = $.copy(apsProcessPathDto, ApsProcessPathVo.class);
 
     Shift shift = shiftService.getOne(new LambdaQueryWrapper<Shift>().eq(Shift::getFactoryId, forecastMain.getFactoryId()), false);
 
@@ -585,7 +583,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsForecastMake> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsForecastMakeService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsForecastMakeService#queryPageList");
 
   }
 

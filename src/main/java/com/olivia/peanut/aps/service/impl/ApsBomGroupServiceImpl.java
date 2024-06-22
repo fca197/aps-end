@@ -11,10 +11,9 @@ import com.olivia.peanut.aps.api.entity.apsBomGroup.*;
 import com.olivia.peanut.aps.mapper.ApsBomGroupMapper;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,9 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper, ApsBomGroup> implements ApsBomGroupService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsBomGroupQueryListRes queryList(ApsBomGroupQueryListReq req) {
@@ -124,7 +120,7 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
 
   private void setQueryListHeader(DynamicsPage<ApsBomGroup> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsBomGroupService#queryPageList");
+    ServiceComment.header(page, "ApsBomGroupService#queryPageList");
 
   }
 

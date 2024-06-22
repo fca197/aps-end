@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 /**
  * 订单商品状态表(ApsSchedulingGoodsStatusDate)修改对象返回
  *

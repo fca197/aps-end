@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsSaleConfigMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoodsSaleConfig;
 import com.olivia.peanut.aps.service.ApsOrderGoodsSaleConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,9 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsOrderGoodsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsOrderGoodsSaleConfigMapper, ApsOrderGoodsSaleConfig> implements ApsOrderGoodsSaleConfigService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsOrderGoodsSaleConfigQueryListRes queryList(ApsOrderGoodsSaleConfigQueryListReq req) {
@@ -100,7 +96,7 @@ public class ApsOrderGoodsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsOr
 
   private void setQueryListHeader(DynamicsPage<ApsOrderGoodsSaleConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsOrderGoodsSaleConfigService#queryPageList");
+    ServiceComment.header(page, "ApsOrderGoodsSaleConfigService#queryPageList");
 
   }
 

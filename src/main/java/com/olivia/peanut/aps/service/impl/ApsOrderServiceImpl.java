@@ -24,7 +24,7 @@ import com.olivia.peanut.aps.mapper.ApsOrderMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.UserInfo;
 import jakarta.annotation.Resource;
@@ -55,8 +55,6 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsOrderGoodsService apsOrderGoodsService;
   @Resource
@@ -301,7 +299,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
 
   private void setQueryListHeader(DynamicsPage<ApsOrder> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsOrderService#queryPageList");
+    ServiceComment.header(page, "ApsOrderService#queryPageList");
 
   }
 

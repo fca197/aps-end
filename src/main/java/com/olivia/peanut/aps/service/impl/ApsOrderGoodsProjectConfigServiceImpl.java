@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsProjectConfigMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoodsProjectConfig;
 import com.olivia.peanut.aps.service.ApsOrderGoodsProjectConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +33,6 @@ public class ApsOrderGoodsProjectConfigServiceImpl extends MPJBaseServiceImpl<Ap
     ApsOrderGoodsProjectConfigService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsOrderGoodsProjectConfigQueryListRes queryList(ApsOrderGoodsProjectConfigQueryListReq req) {
@@ -101,7 +97,7 @@ public class ApsOrderGoodsProjectConfigServiceImpl extends MPJBaseServiceImpl<Ap
 
   private void setQueryListHeader(DynamicsPage<ApsOrderGoodsProjectConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsOrderGoodsProjectConfigService#queryPageList");
+    ServiceComment.header(page, "ApsOrderGoodsProjectConfigService#queryPageList");
 
   }
 

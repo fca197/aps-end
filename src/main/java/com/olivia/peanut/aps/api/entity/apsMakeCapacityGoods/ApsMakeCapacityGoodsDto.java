@@ -19,13 +19,13 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsMakeCapacityGoodsDto extends BaseEntityDto {
 
-//  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
   @NotNull(message = "商品不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long goodsId;
 
   private String goodsName;
-//  @NotNull(message = "数量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "数量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer makeCapacityQuantity;
   private Integer year;
   private Integer month;

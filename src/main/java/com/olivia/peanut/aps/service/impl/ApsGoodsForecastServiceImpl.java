@@ -24,7 +24,7 @@ import com.olivia.peanut.aps.service.impl.utils.ApsGoodsForecastUtils;
 import com.olivia.peanut.aps.utils.forecast.OrToolsUtils;
 import com.olivia.peanut.aps.utils.forecast.model.OrToolsComputeRes;
 import com.olivia.peanut.aps.utils.forecast.model.SaleItemConfig;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.dto.ExcelErrorMsg;
 import com.olivia.sdk.exception.CanIgnoreException;
@@ -62,8 +62,6 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsSaleItemService goodsSaleItemService;
   @Resource
@@ -444,7 +442,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsForecast> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsForecastService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsForecastService#queryPageList");
 
   }
 

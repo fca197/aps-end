@@ -9,10 +9,9 @@ import com.olivia.peanut.aps.api.entity.apsRoomConfig.*;
 import com.olivia.peanut.aps.mapper.ApsRoomConfigMapper;
 import com.olivia.peanut.aps.model.ApsRoomConfig;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,9 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsRoomConfigServiceImpl extends MPJBaseServiceImpl<ApsRoomConfigMapper, ApsRoomConfig> implements ApsRoomConfigService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsRoomConfigQueryListRes queryList(ApsRoomConfigQueryListReq req) {
@@ -98,7 +94,7 @@ public class ApsRoomConfigServiceImpl extends MPJBaseServiceImpl<ApsRoomConfigMa
 
   private void setQueryListHeader(DynamicsPage<ApsRoomConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsRoomConfigService#queryPageList");
+    ServiceComment.header(page, "ApsRoomConfigService#queryPageList");
 
   }
 

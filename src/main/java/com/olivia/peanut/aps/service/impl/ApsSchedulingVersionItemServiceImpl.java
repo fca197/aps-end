@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingVersionItem.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionItemMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionItem;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionItemService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsSchedulingVersionItemServiceImpl extends MPJBaseServiceImpl<ApsSchedulingVersionItemMapper, ApsSchedulingVersionItem> implements ApsSchedulingVersionItemService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSchedulingVersionItemQueryListRes queryList(ApsSchedulingVersionItemQueryListReq req) {
@@ -124,7 +120,7 @@ public class ApsSchedulingVersionItemServiceImpl extends MPJBaseServiceImpl<ApsS
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingVersionItem> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingVersionItemService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingVersionItemService#queryPageList");
 
   }
 

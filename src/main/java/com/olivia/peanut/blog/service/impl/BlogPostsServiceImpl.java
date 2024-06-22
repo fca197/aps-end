@@ -12,7 +12,7 @@ import com.olivia.peanut.blog.model.BlogGroup;
 import com.olivia.peanut.blog.model.BlogPosts;
 import com.olivia.peanut.blog.service.BlogGroupService;
 import com.olivia.peanut.blog.service.BlogPostsService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -40,8 +40,6 @@ public class BlogPostsServiceImpl extends MPJBaseServiceImpl<BlogPostsMapper, Bl
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   BlogGroupService blogGroupService;
 
@@ -112,7 +110,7 @@ public class BlogPostsServiceImpl extends MPJBaseServiceImpl<BlogPostsMapper, Bl
 
   private void setQueryListHeader(DynamicsPage<BlogPosts> page) {
 
-    tableHeaderService.listByBizKey(page, "BlogPostsService#queryPageList");
+    ServiceComment.header(page, "BlogPostsService#queryPageList");
 
   }
 

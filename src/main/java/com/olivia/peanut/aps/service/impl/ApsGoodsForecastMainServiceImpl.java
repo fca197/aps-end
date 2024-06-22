@@ -13,8 +13,8 @@ import com.olivia.peanut.aps.model.ApsGoodsForecastMain;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -40,8 +40,6 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   FactoryService factoryService;
   @Resource
@@ -116,7 +114,7 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsForecastMain> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsForecastMainService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsForecastMainService#queryPageList");
 
   }
 

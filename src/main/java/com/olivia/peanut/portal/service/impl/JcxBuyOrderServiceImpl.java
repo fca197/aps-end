@@ -15,6 +15,7 @@ import com.olivia.peanut.portal.api.entity.jcxBuyPlan.JcxBuyPlanStatusEnum;
 import com.olivia.peanut.portal.mapper.JcxBuyOrderMapper;
 import com.olivia.peanut.portal.model.*;
 import com.olivia.peanut.portal.service.*;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.exception.CanIgnoreException;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -41,8 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper, JcxBuyOrder> implements JcxBuyOrderService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   JcxGoodsService jcxGoodsService;
   @Resource
@@ -109,7 +108,7 @@ public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper
   }
 
   private void setQueryListHeader(DynamicsPage<JcxBuyOrder> page) {
-    tableHeaderService.listByBizKey(page, "JcxBuyOrderService#queryPageList");
+    ServiceComment.header(page, "JcxBuyOrderService#queryPageList");
   }
 
   @Override

@@ -1,11 +1,9 @@
 package com.olivia.peanut.aps.api.entity.apsBomGroup;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 零件组配置(ApsBomGroup)保存返回

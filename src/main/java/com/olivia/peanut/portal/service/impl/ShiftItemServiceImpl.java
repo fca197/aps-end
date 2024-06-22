@@ -8,11 +8,10 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.portal.api.entity.shiftItem.*;
 import com.olivia.peanut.portal.mapper.ShiftItemMapper;
 import com.olivia.peanut.portal.model.ShiftItem;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.ShiftItemService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,9 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShiftItemServiceImpl extends MPJBaseServiceImpl<ShiftItemMapper, ShiftItem> implements ShiftItemService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ShiftItemQueryListRes queryList(ShiftItemQueryListReq req) {
@@ -95,7 +91,7 @@ public class ShiftItemServiceImpl extends MPJBaseServiceImpl<ShiftItemMapper, Sh
 
   private void setQueryListHeader(DynamicsPage<ShiftItem> page) {
 
-    tableHeaderService.listByBizKey(page, "ShiftItemService#queryPageList");
+    ServiceComment.header(page, "ShiftItemService#queryPageList");
 
   }
 

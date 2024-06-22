@@ -16,7 +16,7 @@ import com.olivia.peanut.aps.model.ApsSaleConfig;
 import com.olivia.peanut.aps.service.ApsGoodsSaleProjectConfigService;
 import com.olivia.peanut.aps.service.ApsProjectConfigService;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -54,8 +54,6 @@ public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<Aps
 
   final static Cache<String, Map<Long, ApsProjectConfig>> projectConfigCache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(TIME_OUT, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsSaleConfigService apsSaleConfigService;
 
@@ -191,7 +189,7 @@ public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<Aps
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsSaleProjectConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsSaleProjectConfigService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsSaleProjectConfigService#queryPageList");
 
   }
 

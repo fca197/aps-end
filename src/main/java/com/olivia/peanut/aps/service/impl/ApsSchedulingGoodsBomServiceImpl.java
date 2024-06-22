@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBom.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsBomMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingGoodsBom;
 import com.olivia.peanut.aps.service.ApsSchedulingGoodsBomService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsSchedulingGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsSchedulingGoodsBomMapper, ApsSchedulingGoodsBom> implements ApsSchedulingGoodsBomService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSchedulingGoodsBomQueryListRes queryList(ApsSchedulingGoodsBomQueryListReq req) {
@@ -111,7 +107,7 @@ public class ApsSchedulingGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsSche
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingGoodsBom> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingGoodsBomService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingGoodsBomService#queryPageList");
 
   }
 

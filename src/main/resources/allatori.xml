@@ -1,28 +1,9 @@
 <config>
-  <input>
-    <!-- in表示输出的原始jar包，out表示输出的混淆后的jar包，后者名称可自定义，也可以是war -->
-    <jar in="../app.jar" out="../app-encrypted.jar"/>
-  </input>
-  <keep-names>
-    <class access="protected+">
-      <field access="protected+"/>
-      <method access="protected+"/>
-    </class>
-    <!-- 视图层的方法参数名称不做混淆，否则传参会对应不上，不怕麻烦的也可以加@RequestParam指定入参名称 -->
-    <class template="class *Controller">
-      <method template="private+ *(**)" parameters="keep"/>
-    </class>
-  </keep-names>
-
-  <property name="log-file" value="log.xml"/>
-  <property name="line-numbers" value="keep"/>
-
-  <!-- 忽略的包或类，这些文件将不被混淆 -->
   <ignore-classes>
-    <class template="class *springframework*" />
-    <class template="class *baomidou*" />
-    <class template="class *shardingjdbc*" />
-    <class template="class *jni*" />
+    <class template="class *springframework*"/>
+    <class template="class *baomidou*"/>
+    <class template="class *shardingjdbc*"/>
+    <class template="class *jni*"/>
     <class template="class *alibaba*"/>
     <class template="class *persistence*"/>
     <!-- 排除业务类 -->
@@ -35,10 +16,29 @@
     <class template="class com.olivia.peanut.portal.mapper.*"/>
     <class template="class com.olivia.peanut.aps.mapper.*"/>
   </ignore-classes>
+  <input>
+    <!-- in表示输出的原始jar包，out表示输出的混淆后的jar包，后者名称可自定义，也可以是war -->
+    <jar in="../app.jar" out="../app-encrypted.jar"/>
+  </input>
+
+  <keep-names>
+    <class access="protected+">
+      <field access="protected+"/>
+      <method access="protected+"/>
+    </class>
+    <!-- 视图层的方法参数名称不做混淆，否则传参会对应不上，不怕麻烦的也可以加@RequestParam指定入参名称 -->
+    <class template="class *Controller">
+      <method parameters="keep" template="private+ *(**)"/>
+    </class>
+  </keep-names>
+  <property name="line-numbers" value="keep"/>
+
+  <!-- 忽略的包或类，这些文件将不被混淆 -->
+  <property name="log-file" value="log.xml"/>
 
   <!-- 到期时间(到期后无法启动jar) 格式：yyyy/mm/dd-->
-<!--  <expiry date="2024/06/03" string="SERVICE EXPIRED!"/>-->
+  <!--  <expiry date="2024/06/03" string="SERVICE EXPIRED!"/>-->
   <!-- 随机命名混淆字符，默认用当前时间，每次打包混淆的类名、变量名都不一样，如果做了配置那么两次打包内容就一样-->
-<!--  <property name="random-seed" value="abcdef ghnljk svi"/>-->
+  <!--  <property name="random-seed" value="abcdef ghnljk svi"/>-->
 
 </config>

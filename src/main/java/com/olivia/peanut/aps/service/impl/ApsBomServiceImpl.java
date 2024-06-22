@@ -13,7 +13,7 @@ import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.peanut.aps.service.ApsBomService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -39,8 +39,6 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   // 以下为私有对象封装
   @Resource
   ApsBomGroupService apsBomGroupService;
@@ -114,7 +112,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
 
   private void setQueryListHeader(DynamicsPage<ApsBom> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsBomService#queryPageList");
+    ServiceComment.header(page, "ApsBomService#queryPageList");
 
   }
 

@@ -44,48 +44,36 @@
       </plugin>
       <!-- Allatori 混淆配置文件输出到target -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
         <executions>
           <execution>
-            <id>copy-and-filter-allatori-config</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
             <configuration>
               <outputDirectory>${basedir}/target</outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/lib</directory>
+                  <filtering>true</filtering>
                   <includes>
                     <include>allatori.xml</include>
                   </includes>
-                  <filtering>true</filtering>
                 </resource>
               </resources>
             </configuration>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <id>copy-and-filter-allatori-config</id>
+            <phase>package</phase>
           </execution>
         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>2.6</version>
       </plugin>
 
       <!-- Allatori 插件 -->
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <id>run-allatori</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
-          <executable>java</executable>
           <arguments>
             <argument>-Xms128m</argument>
             <argument>-Xmx512m</argument>
@@ -93,7 +81,19 @@
             <argument>${basedir}/lib/allatori.jar</argument>
             <argument>${basedir}/target/classes/allatori.xml</argument>
           </arguments>
+          <executable>java</executable>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <id>run-allatori</id>
+            <phase>package</phase>
+          </execution>
+        </executions>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.2.1</version>
       </plugin>
       <!-- Allatori plugin -->
     </plugins>
@@ -105,8 +105,8 @@
       <version>3.5.3.1</version>
     </dependency>
     <dependency>
-      <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
+      <groupId>mysql</groupId>
       <version>8.0.22</version>
     </dependency>
     <dependency>
@@ -180,15 +180,15 @@
       <version>${spring.boot.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
+      <groupId>org.aspectj</groupId>
       <version>1.9.22.1</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
-<!--      <groupId>com.baomidou</groupId>-->
-<!--      <version>3.6.1</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
+    <!--      <groupId>com.baomidou</groupId>-->
+    <!--      <version>3.6.1</version>-->
+    <!--    </dependency>-->
     <dependency>
       <artifactId>drools-compiler</artifactId>
       <groupId>org.drools</groupId>
@@ -242,11 +242,11 @@
       <groupId>com.alibaba.fastjson2</groupId>
       <version>2.0.46</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <artifactId>h2</artifactId>-->
-<!--      <groupId>com.h2database</groupId>-->
-<!--      <version>2.2.224</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <artifactId>h2</artifactId>-->
+    <!--      <groupId>com.h2database</groupId>-->
+    <!--      <version>2.2.224</version>-->
+    <!--    </dependency>-->
     <dependency>
       <artifactId>xmlbeans</artifactId>
       <groupId>org.apache.xmlbeans</groupId>
@@ -268,28 +268,28 @@
       <version>4.1.2</version>
     </dependency>
     <dependency>
-      <groupId>com.googlecode.aviator</groupId>
       <artifactId>aviator</artifactId>
+      <groupId>com.googlecode.aviator</groupId>
       <version>5.4.1</version>
     </dependency>
     <dependency>
-      <groupId>com.aliyun</groupId>
       <artifactId>dingtalk</artifactId>
+      <groupId>com.aliyun</groupId>
       <version>2.1.14</version>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
       <artifactId>netty-resolver-dns-native-macos</artifactId>
-      <version>4.1.111.Final</version>
+      <groupId>io.netty</groupId>
       <scope>runtime</scope>
+      <version>4.1.111.Final</version>
     </dependency>
 
     <dependency>
       <artifactId>peanut-sdk</artifactId>
       <groupId>com.olivia</groupId>
-      <version>1.0.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/peanut-sdk.jar</systemPath>
+      <version>1.0.0</version>
     </dependency>
 
   </dependencies>

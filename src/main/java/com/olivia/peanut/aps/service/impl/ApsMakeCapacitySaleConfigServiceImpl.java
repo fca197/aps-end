@@ -15,7 +15,7 @@ import com.olivia.peanut.aps.model.ApsMakeCapacitySaleConfig;
 import com.olivia.peanut.aps.model.ApsSaleConfig;
 import com.olivia.peanut.aps.service.ApsMakeCapacitySaleConfigService;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DateUtils;
@@ -41,8 +41,6 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   // 以下为私有对象封装
   @Resource
   ApsSaleConfigService apsSaleConfigService;
@@ -220,7 +218,7 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
 
   private void setQueryListHeader(DynamicsPage<ApsMakeCapacitySaleConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsMakeCapacitySaleConfigService#queryPageList");
+    ServiceComment.header(page, "ApsMakeCapacitySaleConfigService#queryPageList");
 
   }
 

@@ -16,8 +16,8 @@ import com.olivia.peanut.aps.model.ApsRoomConfig;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
 import com.olivia.peanut.aps.service.ApsRoomService;
 import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
@@ -44,8 +44,6 @@ public class ApsRoomServiceImpl extends MPJBaseServiceImpl<ApsRoomMapper, ApsRoo
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsRoomConfigService roomConfigService;
   @Resource
@@ -140,7 +138,7 @@ public class ApsRoomServiceImpl extends MPJBaseServiceImpl<ApsRoomMapper, ApsRoo
 
   private void setQueryListHeader(DynamicsPage<ApsRoom> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsRoomService#queryPageList");
+    ServiceComment.header(page, "ApsRoomService#queryPageList");
 
   }
 

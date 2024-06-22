@@ -23,7 +23,7 @@ class OrToolsUtilsTest {
 //     , List.of(new SaleItemConfig().setSaleCode("C1").setTarget(0.22), new SaleItemConfig().setSaleCode("D2").setTarget(0.78))
 //    ,  List.of(new SaleItemConfig().setSaleCode("D1").setTarget(0.2), new SaleItemConfig().setSaleCode("D2").setTarget(0.8))
 //    ,  List.of(new SaleItemConfig().setSaleCode("E1").setTarget(0.3), new SaleItemConfig().setSaleCode("E2").setTarget(0.7))
-    ,  List.of(new SaleItemConfig().setSaleCode("F1").setTarget(0.9), new SaleItemConfig().setSaleCode("F2").setTarget(0.1))
+      , List.of(new SaleItemConfig().setSaleCode("F1").setTarget(0.9), new SaleItemConfig().setSaleCode("F2").setTarget(0.1))
       , List.of(new SaleItemConfig().setSaleCode("G1").setTarget(0.4), new SaleItemConfig().setSaleCode("G2").setTarget(0.6)));
   int count = 160;
 

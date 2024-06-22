@@ -13,8 +13,8 @@ import com.olivia.peanut.aps.mapper.ApsMakeCapacityFactoryMapper;
 import com.olivia.peanut.aps.model.ApsMakeCapacityFactory;
 import com.olivia.peanut.aps.service.ApsMakeCapacityFactoryService;
 import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -38,8 +38,6 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   FactoryService factoryService;
 
@@ -213,7 +211,7 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
 
   private void setQueryListHeader(DynamicsPage<ApsMakeCapacityFactory> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsMakeCapacityFactoryService#queryPageList");
+    ServiceComment.header(page, "ApsMakeCapacityFactoryService#queryPageList");
 
   }
 

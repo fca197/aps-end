@@ -19,8 +19,8 @@ class RandomUserUtilTest {
   }
 
   @Test
-  public  void testRandom(){
-    ApsGoodsBomDto apsGoodsBomDto=new ApsGoodsBomDto();
+  public void testRandom() {
+    ApsGoodsBomDto apsGoodsBomDto = new ApsGoodsBomDto();
     apsGoodsBomDto.setBomName("xxxx").setCreateTime(LocalDateTime.now());
     ApsGoodsBomVo copy = $.copy(apsGoodsBomDto, ApsGoodsBomVo.class);
     log.info("copy {}", JSON.toJSONString(copy));

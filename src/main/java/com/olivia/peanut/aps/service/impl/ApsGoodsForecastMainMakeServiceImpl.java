@@ -17,8 +17,8 @@ import com.olivia.peanut.aps.model.ApsGoodsForecastMainMakeSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainMakeSaleDataService;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainMakeService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.CalendarService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -45,8 +45,6 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsService apsGoodsService;
   @Resource
@@ -117,7 +115,7 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
   }
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsForecastMainMake> page) {
-    tableHeaderService.listByBizKey(page, "ApsGoodsForecastMainMakeService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsForecastMainMakeService#queryPageList");
   }
 
   @Override

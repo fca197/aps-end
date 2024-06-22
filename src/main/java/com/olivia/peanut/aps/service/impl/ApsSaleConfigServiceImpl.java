@@ -10,10 +10,9 @@ import com.olivia.peanut.aps.api.entity.apsSaleConfig.*;
 import com.olivia.peanut.aps.mapper.ApsSaleConfigMapper;
 import com.olivia.peanut.aps.model.ApsSaleConfig;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsSaleConfigMapper, ApsSaleConfig> implements ApsSaleConfigService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override ApsSaleConfigQueryListRes queryList(ApsSaleConfigQueryListReq req) {
@@ -107,7 +103,7 @@ public class ApsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsSaleConfigMa
 
   private void setQueryListHeader(DynamicsPage<ApsSaleConfig> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSaleConfigService#queryPageList");
+    ServiceComment.header(page, "ApsSaleConfigService#queryPageList");
 
   }
 

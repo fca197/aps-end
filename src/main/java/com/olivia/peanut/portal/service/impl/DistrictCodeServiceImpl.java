@@ -9,11 +9,10 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.portal.api.entity.districtCode.*;
 import com.olivia.peanut.portal.mapper.DistrictCodeMapper;
 import com.olivia.peanut.portal.model.DistrictCode;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.DistrictCodeService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,9 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapper, DistrictCode> implements DistrictCodeService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override DistrictCodeQueryListRes queryList(DistrictCodeQueryListReq req) {
@@ -102,7 +98,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
 
   private void setQueryListHeader(DynamicsPage<DistrictCode> page) {
 
-    tableHeaderService.listByBizKey(page, "DistrictCodeService#queryPageList");
+    ServiceComment.header(page, "DistrictCodeService#queryPageList");
 
   }
 

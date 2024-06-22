@@ -32,7 +32,7 @@ class ApsGoodsBomTest {
 
   @Test
   public void test2() {
-    Object result = AviatorEvaluator.execute("(true && true )&& ( AB002 || true)", Map.of("AB002",false));
+    Object result = AviatorEvaluator.execute("(true && true )&& ( AB002 || true)", Map.of("AB002", false));
     log.debug("result: {}", result);
   }
 }

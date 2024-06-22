@@ -17,8 +17,8 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsBomTotalMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.ann.RedissonLockAnn;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -47,8 +47,6 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsBomService apsGoodsBomService;
   @Resource
@@ -154,7 +152,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     retList.sort(Comparator.comparingInt(t -> (int) t.get("enough")));
     retList.sort(Comparator.comparing(ApsSchedulingGoodsBomTotalQueryBomTotalRes::getIsNotFollow).reversed());
     retPage.setHeaderList(new ArrayList<>()).setDataList(retList);
-    tableHeaderService.listByBizKey(retPage, "ApsSchedulingGoodsBomTotalService#queryPageList");
+    ServiceComment.header(retPage, "ApsSchedulingGoodsBomTotalService#queryPageList");
     new ArrayList<>(headerSet).stream().sorted().forEach(h -> retPage.addHeader(h, h, 100));
     return retPage;
   }
@@ -233,7 +231,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingGoodsBomTotal> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingGoodsBomTotalService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingGoodsBomTotalService#queryPageList");
 
   }
 

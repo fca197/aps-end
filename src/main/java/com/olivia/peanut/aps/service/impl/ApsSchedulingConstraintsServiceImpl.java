@@ -11,14 +11,14 @@ import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPa
 import com.olivia.peanut.aps.api.entity.apsSchedulingConstraints.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingConstraintsMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingConstraints;
+import com.olivia.peanut.aps.service.ApsSaleConfigService;
+import com.olivia.peanut.aps.service.ApsSchedulingConstraintsService;
 import com.olivia.peanut.aps.utils.constrained.model.sub.OperatorEnum;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.FieldConfig;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.Operator;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.ValueItem;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.ValueType;
-import com.olivia.peanut.aps.service.ApsSaleConfigService;
-import com.olivia.peanut.aps.service.ApsSchedulingConstraintsService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -41,8 +41,6 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsSaleConfigService apsSaleConfigService;
 
@@ -139,7 +137,7 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
 
   private void setQueryListHeader(DynamicsPage<ApsSchedulingConstraints> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingConstraintsService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingConstraintsService#queryPageList");
 
   }
 

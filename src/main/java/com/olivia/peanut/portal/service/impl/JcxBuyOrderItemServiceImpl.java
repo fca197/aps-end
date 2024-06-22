@@ -8,11 +8,10 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.portal.api.entity.jcxBuyOrderItem.*;
 import com.olivia.peanut.portal.mapper.JcxBuyOrderItemMapper;
 import com.olivia.peanut.portal.model.JcxBuyOrderItem;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.JcxBuyOrderItemService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,9 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class JcxBuyOrderItemServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderItemMapper, JcxBuyOrderItem> implements JcxBuyOrderItemService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
-  @Resource
-  BaseTableHeaderService tableHeaderService;
 
 
   public @Override JcxBuyOrderItemQueryListRes queryList(JcxBuyOrderItemQueryListReq req) {
@@ -106,7 +102,7 @@ public class JcxBuyOrderItemServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderIt
 
   private void setQueryListHeader(DynamicsPage<JcxBuyOrderItem> page) {
 
-    tableHeaderService.listByBizKey(page, "JcxBuyOrderItemService#queryPageList");
+    ServiceComment.header(page, "JcxBuyOrderItemService#queryPageList");
 
   }
 

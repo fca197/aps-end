@@ -15,8 +15,8 @@ import com.olivia.peanut.aps.service.ApsGoodsBomService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
 import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -43,8 +43,6 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsGoodsService apsGoodsService;
   @Resource
@@ -128,7 +126,7 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
 
   private void setQueryListHeader(DynamicsPage<ApsGoodsBom> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsGoodsBomService#queryPageList");
+    ServiceComment.header(page, "ApsGoodsBomService#queryPageList");
 
   }
 

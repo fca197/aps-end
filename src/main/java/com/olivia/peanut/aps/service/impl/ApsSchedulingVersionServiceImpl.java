@@ -46,6 +46,7 @@ import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.model.Shift;
 import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.*;
+import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
@@ -79,8 +80,6 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
   private final String SALE = "sale";
   private final String PROJECT = "project";
-  @Resource
-  BaseTableHeaderService tableHeaderService;
   @Resource
   ApsSchedulingConstraintsService apsSchedulingConstraintsService;
   @Resource
@@ -727,7 +726,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
   private void setQueryListHeader(DynamicsPage<?> page) {
 
-    tableHeaderService.listByBizKey(page, "ApsSchedulingVersionService#queryPageList");
+    ServiceComment.header(page, "ApsSchedulingVersionService#queryPageList");
 
   }
 
