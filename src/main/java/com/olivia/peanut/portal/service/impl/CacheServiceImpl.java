@@ -22,7 +22,7 @@ public class CacheServiceImpl implements CacheService {
   Timer timer = new Timer();
   private Map<String, CacheItem> cacheItemMap = Collections.synchronizedMap(new HashMap<>());
 
-  @PostConstruct
+//  @PostConstruct
   public void init() {
     timer.schedule(new TimerTask() {
       @Override

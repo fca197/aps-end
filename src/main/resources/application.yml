@@ -35,6 +35,9 @@ peanut:
 
 
 spring:
+  boot:
+    custom:
+      classloader: com.olivia.peanut.MyClassLoader
   application:
     name: peanut-api
   servlet:

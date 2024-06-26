@@ -1,6 +1,8 @@
 package com.olivia;
 
 import com.google.ortools.Loader;
+import com.googlecode.aviator.AviatorEvaluator;
+import com.googlecode.aviator.Options;
 import com.olivia.sdk.config.ServiceNotice;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
@@ -23,9 +25,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BootstrapApplication {
 
   static {
+    // 加载 or-tools 库
     Loader.loadNativeLibraries();
-//    AviatorEvaluator.getInstance()
-//        .setOption(Options.OPTIMIZE_LEVEL, AviatorEvaluator.COMPILE);
+
+    AviatorEvaluator.getInstance().setOption(Options.OPTIMIZE_LEVEL, AviatorEvaluator.COMPILE);
   }
 
 
