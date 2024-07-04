@@ -116,29 +116,33 @@ public class CalendarApiImpl implements CalendarApi {
     calendarDayService.remove(new LambdaUpdateWrapper<CalendarDay>().eq(CalendarDay::getCalendarId, req.getId()));
     List<CalendarDay> calendarDayList = new ArrayList<>();
 
-    IntStream.range(1, 13).forEach(t -> {
-      CalendarDay day = new CalendarDay();
-      day.setCalendarId(req.getId()).setFactoryId(calendar.getFactoryId());
-      day.setDayMonth(t).setDayYear(req.getWorkYear());
-      IntStream.range(1, 32).forEach(d -> {
-        String cuDay = req.getWorkYear() + "-" + StringUtils.right("0" + t, 2) + "-" + StringUtils.right("0" + d, 2);
-        int week = DateUtil.parseDate(cuDay).dayOfWeekEnum().getIso8601Value();
-        boolean b = FALSE;
-        // 工作日
-        if (req.getDefaultWorkDayList().contains(week)) {
-          b = TRUE;
-        }
-        Boolean inSide = isInSide(req.getWorkDayList(), cuDay);
-        if (Objects.nonNull(inSide)) {
-          b = inSide;
-        }
-        inSide = isInSide(req.getNoWorkDayList(), cuDay);
-        if (Objects.nonNull(inSide)) {
-          b = !inSide;
-        }
-        ReflectUtil.setFieldValue(day, "day" + d, b);
+    List<Integer> workYearList = req.getWorkYear();
+    workYearList.forEach(workYear -> {
+      IntStream.range(1, 13).forEach(t -> {
+        CalendarDay day = new CalendarDay();
+        day.setCalendarId(req.getId()).setFactoryId(calendar.getFactoryId());
+
+        day.setDayMonth(t).setDayYear(workYear);
+        IntStream.range(1, 32).forEach(d -> {
+          String cuDay = workYear + "-" + StringUtils.right("0" + t, 2) + "-" + StringUtils.right("0" + d, 2);
+          int week = DateUtil.parseDate(cuDay).dayOfWeekEnum().getIso8601Value();
+          boolean b = FALSE;
+          // 工作日
+          if (req.getDefaultWorkDayList().contains(week)) {
+            b = TRUE;
+          }
+          Boolean inSide = isInSide(req.getWorkDayList(), cuDay);
+          if (Objects.nonNull(inSide)) {
+            b = inSide;
+          }
+          inSide = isInSide(req.getNoWorkDayList(), cuDay);
+          if (Objects.nonNull(inSide)) {
+            b = !inSide;
+          }
+          ReflectUtil.setFieldValue(day, "day" + d, b);
+        });
+        calendarDayList.add(day);
       });
-      calendarDayList.add(day);
     });
     this.calendarDayService.saveBatch(calendarDayList);
     return new CalendarDayUpdateRes();
