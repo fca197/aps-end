@@ -1,5 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
+import static java.lang.Boolean.TRUE;
+
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,10 +27,7 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -71,7 +70,7 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
     setQueryListHeader(page);
     MPJLambdaWrapper<ApsProcessPath> q = getWrapper(req.getData());
     List<ApsProcessPathExportQueryPageListInfoRes> records;
-    if (Boolean.TRUE.equals(req.getQueryPage())) {
+    if (TRUE.equals(req.getQueryPage())) {
       IPage<ApsProcessPath> list = this.page(page, q);
       IPage<ApsProcessPathExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsProcessPathExportQueryPageListInfoRes.class));
       records = dataList.getRecords();
@@ -113,6 +112,11 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
   @Override
   @Transactional
   public ApsProcessPathInsertRes save(ApsProcessPathInsertReq req) {
+    if (TRUE.equals(req.getIsDefault())) {
+      List<ApsProcessPath> pathList = this.list(new LambdaQueryWrapper<ApsProcessPath>()
+          .eq(ApsProcessPath::getFactoryId, req.getFactoryId()).eq(ApsProcessPath::getIsDefault, TRUE));
+      $.assertTrueCanIgnoreException(CollUtil.isEmpty(pathList), "该工厂已存在默认工艺路径");
+    }
     ApsProcessPath path = $.copy(req, ApsProcessPath.class);
     path.setId(IdWorker.getId());
     this.save(path);
@@ -134,6 +138,15 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
 
   }
 
+  @Override
+  @Transactional
+  public boolean removeByIds(Collection<?> list) {
+      super.removeByIds(list);
+      this.apsProcessPathRoomService.remove(new LambdaQueryWrapper<ApsProcessPathRoom>()
+          .in(ApsProcessPathRoom::getProcessPathId, list));
+      return  true;
+  }
+
   // 以下为私有对象封装
 
 
@@ -146,7 +159,7 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
           .eq(StringUtils.isNoneBlank(obj.getProcessPathRemark()), ApsProcessPath::getProcessPathRemark, obj.getProcessPathRemark())
           .eq(Objects.nonNull(obj.getIsDefault()), ApsProcessPath::getIsDefault, obj.getIsDefault())
           .eq(Objects.nonNull(obj.getFactoryId()), ApsProcessPath::getFactoryId, obj.getFactoryId())
-
+          .orderByDesc(ApsProcessPath::getIsDefault)
       ;
     }
     q.orderByDesc(ApsProcessPath::getId);
