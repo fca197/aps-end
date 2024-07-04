@@ -58,6 +58,7 @@
 | ResultResponseWrapper | 接口返回值修改  | 根据请求头判断返回值是否进行二次包装                   |
 | ServiceNotice         | 通知类接口    | 可以接入钉钉机器人等                           |
 | WebBeanConfig         | web配置    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏        |
+| DingEventBizService   | 钉钉消息处理接口 | 实现该接口,处理钉钉消息, 一个eventType可以多次处理      |
 
 # 数据库
 
