@@ -85,7 +85,7 @@ public class ShiftServiceImpl extends MPJBaseServiceImpl<ShiftMapper, Shift> imp
   @Transactional
   public ShiftInsertRes save(ShiftInsertReq req) {
     long size = this.list(new LambdaQueryWrapper<Shift>().eq(Shift::getFactoryId, req.getFactoryId())).size();
-    $.assertTrueCanIgnoreException(size > 1, "该工厂已存在一个班次，请删除后重试");
+    $.assertTrueCanIgnoreException(size == 0, "该工厂已存在一个班次，请删除后重试");
     Shift shift = $.copy(req, Shift.class);
     shift.setId(IdWorker.getId());
     List<ShiftItemDto> shiftItemDtoList = req.getShiftItemDtoList();
