@@ -14,10 +14,33 @@ create table if not exists aps_bom
     update_time         datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
     update_by           bigint                               null comment '修改人',
     trace_id            varchar(64)                          null comment '调用链路',
-    version_num         int        default 0                 null comment '版本号'
+    version_num         int        default 0                 null comment '版本号',
+    group_id            bigint                               null comment '组ID'
 )
-    comment 'BOM 清单';
+    comment 'BOM 清单' engine = InnoDB;
 
+
+
+-- comment on
+
+create table if not exists aps_bom_group
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    group_code  varchar(255)                         null comment '组编码',
+    group_name  varchar(255)                         null comment '组名称',
+    parent_id   bigint                               null comment '父级ID',
+    path_id     varchar(512)                         null comment '路径配置',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号'
+)
+    comment '零件组配置' engine = InnoDB;
 
 
 create table if not exists aps_goods
@@ -38,9 +61,7 @@ create table if not exists aps_goods
     factory_id      bigint                               null comment '工厂ID',
     process_path_id bigint                               null comment '工艺路线'
 )
-    comment 'aps 商品表';
-
-
+    comment 'aps 商品表' engine = InnoDB;
 
 
 
@@ -49,6 +70,7 @@ create table if not exists aps_goods_bom
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
     goods_id             bigint                                   null comment '商品ID',
+    group_id             bigint                                   null comment '零件组ID',
     bom_id               bigint                                   null comment '商品ID',
     bom_code             varchar(255)                             null comment 'bom 编码',
     bom_name             varchar(255)                             null comment 'bom 名称',
@@ -70,13 +92,12 @@ create table if not exists aps_goods_bom
     trace_id             varchar(64)                              null comment '调用链路',
     version_num          int            default 0                 null comment '版本号'
 )
-    comment 'BOM 清单';
+    comment 'BOM 清单' engine = InnoDB;
 
 
 
 
-
-
+-- comment on index
 
 create table if not exists aps_goods_bom_buy_plan
 (
@@ -95,8 +116,7 @@ create table if not exists aps_goods_bom_buy_plan
     trace_id          varchar(64)                          null comment '调用链路',
     version_num       int        default 0                 null comment '版本号'
 )
-    comment 'BOM 购买计划';
-
+    comment 'BOM 购买计划' engine = InnoDB;
 
 
 create table if not exists aps_goods_bom_buy_plan_item
@@ -122,10 +142,7 @@ create table if not exists aps_goods_bom_buy_plan_item
     version_num         int        default 0                 null comment '版本号',
     goods_bom_id        bigint                               not null comment '商品零件ID'
 )
-    comment 'BOM 购买清单';
-
-
-
+    comment 'BOM 购买清单' engine = InnoDB;
 
 
 
@@ -151,9 +168,7 @@ create table if not exists aps_goods_forecast
     months              text                                 null,
     forecast_status     tinyint                              null
 )
-    comment '预测表';
-
-
+    comment '预测表' engine = InnoDB;
 
 
 
@@ -186,9 +201,7 @@ create table if not exists aps_goods_forecast_compute_sale_data
     version_num      int        default 0                 null comment '版本号',
     sale_config_code varchar(255)                         null
 )
-    comment '预测计算销售数据';
-
-
+    comment '预测计算销售数据' engine = InnoDB;
 
 
 
@@ -213,10 +226,7 @@ create table if not exists aps_goods_forecast_main
     months              varchar(255)                         null,
     factory_id          bigint                               null comment '工厂ID'
 )
-    comment '预测主表';
-
-
-
+    comment '预测主表' engine = InnoDB;
 
 
 
@@ -249,7 +259,7 @@ create table if not exists aps_goods_forecast_main_goods_data
     version_num      int        default 0                 null comment '版本号',
     forecast_main_id bigint                               null
 )
-    comment '预测商品数据';
+    comment '预测商品数据' engine = InnoDB;
 
 create table if not exists aps_goods_forecast_main_make
 (
@@ -270,10 +280,7 @@ create table if not exists aps_goods_forecast_main_make
     trace_id                      varchar(64)                          null comment '调用链路',
     version_num                   int        default 0                 null comment '版本号'
 )
-    comment '预测生产主表';
-
-
-
+    comment '预测生产主表' engine = InnoDB;
 
 
 
@@ -662,11 +669,7 @@ create table if not exists aps_goods_forecast_main_make_sale_data
     trace_id         varchar(64)                          null comment '调用链路',
     version_num      int        default 0                 null comment '版本号'
 )
-    comment '商品预测主表-销售数据';
-
-
-
-
+    comment '商品预测主表-销售数据' engine = InnoDB;
 
 
 
@@ -701,10 +704,7 @@ create table if not exists aps_goods_forecast_main_sale_data
     version_num      int        default 0                 null comment '版本号',
     forecast_main_id bigint                               null
 )
-    comment '商品预测主表-销售数据';
-
-
-
+    comment '商品预测主表-销售数据' engine = InnoDB;
 
 
 
@@ -734,11 +734,7 @@ create table if not exists aps_goods_forecast_make
     bom_use_begin_date             varchar(255)                         null,
     bom_use_end_date               varchar(255)                         null
 )
-    comment '商品预测-制造';
-
-
-
-
+    comment '商品预测-制造' engine = InnoDB;
 
 
 
@@ -1129,11 +1125,7 @@ create table if not exists aps_goods_forecast_make_bom_use
     version_num         varchar(255) default '0'               null comment '版本号',
     make_sale_config_id bigint                                 null
 )
-    comment '商品预测-生产BOM使用';
-
-
-
-
+    comment '商品预测-生产BOM使用' engine = InnoDB;
 
 
 
@@ -1524,10 +1516,7 @@ create table if not exists aps_goods_forecast_make_project_data
     version_num         int        default 0                 null comment '版本号',
     make_sale_config_id bigint                               null
 )
-    comment '预测数据';
-
-
-
+    comment '预测数据' engine = InnoDB;
 
 
 
@@ -1919,11 +1908,7 @@ create table if not exists aps_goods_forecast_make_sale_data
     forecast_status  int                                  null,
     week_num01_0     int                                  null
 )
-    comment '预测数据';
-
-
-
-
+    comment '预测数据' engine = InnoDB;
 
 
 
@@ -1955,9 +1940,8 @@ create table if not exists aps_goods_forecast_user_goods_data
     update_by   bigint                               null comment '修改人',
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
-);
-
-
+)
+    engine = InnoDB;
 
 
 
@@ -1988,10 +1972,7 @@ create table if not exists aps_goods_forecast_user_sale_data
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '预测数据';
-
-
-
+    comment '预测数据' engine = InnoDB;
 
 
 
@@ -2014,10 +1995,7 @@ create table if not exists aps_goods_sale_item
     supplier_status varchar(255)                         null,
     version_num     int        default 0                 null comment '版本号'
 )
-    comment '商品销售配置';
-
-
-
+    comment '商品销售配置' engine = InnoDB;
 
 
 
@@ -2045,14 +2023,7 @@ create table if not exists aps_goods_sale_project_config
     version_num              int        default 0                 null comment '版本号',
     current_index            tinyint                              null
 )
-    comment '项目配置';
-
-
-
-
-
-
-
+    comment '项目配置' engine = InnoDB;
 
 
 
@@ -2140,9 +2111,7 @@ create table if not exists aps_make_capacity_factory
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能';
-
-
+    comment '工厂产能' engine = InnoDB;
 
 
 
@@ -2226,9 +2195,7 @@ create table if not exists aps_make_capacity_goods
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能商品';
-
-
+    comment '工厂产能商品' engine = InnoDB;
 
 
 
@@ -2311,9 +2278,7 @@ create table if not exists aps_make_capacity_sale_config
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能销售配置';
-
-
+    comment '工厂产能销售配置' engine = InnoDB;
 
 
 
@@ -2341,8 +2306,7 @@ create table if not exists aps_order
     trace_id              varchar(64)                          null comment '调用链路',
     version_num           int        default 0                 null comment '版本号'
 )
-    comment '订单表';
-
+    comment '订单表' engine = InnoDB;
 
 
 create table if not exists aps_order_goods
@@ -2370,11 +2334,7 @@ create table if not exists aps_order_goods
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '订单商品表';
-
-
-
-
+    comment '订单商品表' engine = InnoDB;
 
 
 
@@ -2406,11 +2366,7 @@ create table if not exists aps_order_goods_bom
     trace_id             varchar(64)                          null comment '调用链路',
     version_num          int        default 0                 null comment '版本号'
 )
-    comment '订单商品零件表';
-
-
-
-
+    comment '订单商品零件表' engine = InnoDB;
 
 
 
@@ -2435,11 +2391,7 @@ create table if not exists aps_order_goods_forecast_make
     trace_id           varchar(64)                          null comment '调用链路',
     version_num        int        default 0                 null comment '版本号'
 )
-    comment '订单商品节点预测表';
-
-
-
-
+    comment '订单商品节点预测表' engine = InnoDB;
 
 
 
@@ -2462,7 +2414,7 @@ create table if not exists aps_order_goods_project_config
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '订单商品项目配置表';
+    comment '订单商品项目配置表' engine = InnoDB;
 
 create table if not exists aps_order_goods_sale_config
 (
@@ -2481,12 +2433,7 @@ create table if not exists aps_order_goods_sale_config
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '订单商品销售配置表';
-
-
-
-
-
+    comment '订单商品销售配置表' engine = InnoDB;
 
 
 
@@ -2517,9 +2464,7 @@ create table if not exists aps_order_goods_status_date
     actual_make_begin_time date                                 null comment '实际开始时间',
     actual_make_end_time   date                                 null comment '实际结束时间'
 )
-    comment '订单商品状态表';
-
-
+    comment '订单商品状态表' engine = InnoDB;
 
 
 
@@ -2547,9 +2492,7 @@ create table if not exists aps_order_user
     trace_id      varchar(64)                          null comment '调用链路',
     version_num   int        default 0                 null comment '版本号'
 )
-    comment '订单用户表';
-
-
+    comment '订单用户表' engine = InnoDB;
 
 
 
@@ -2571,9 +2514,7 @@ create table if not exists aps_process_path
     trace_id            varchar(64)                          null comment '调用链路',
     version_num         int        default 0                 null comment '版本号'
 )
-    comment '流程路径表';
-
-
+    comment '流程路径表' engine = InnoDB;
 
 
 
@@ -2593,10 +2534,7 @@ create table if not exists aps_process_path_room
     trace_id        varchar(64)                          null comment '调用链路',
     version_num     int        default 0                 null comment '版本号'
 )
-    comment '流程路径房间表';
-
-
-
+    comment '流程路径房间表' engine = InnoDB;
 
 
 
@@ -2619,9 +2557,7 @@ create table if not exists aps_project_config
     is_value        tinyint                              null,
     parent_id       bigint                               null
 )
-    comment '项目配置表';
-
-
+    comment '项目配置表' engine = InnoDB;
 
 
 
@@ -2641,9 +2577,7 @@ create table if not exists aps_room
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '房间配置表';
-
-
+    comment '房间配置表' engine = InnoDB;
 
 
 
@@ -2666,12 +2600,7 @@ create table if not exists aps_room_config
     version_num  int        default 0                 null comment '版本号',
     status_id    bigint                               null
 )
-    comment '房间配置表';
-
-
-
-
-
+    comment '房间配置表' engine = InnoDB;
 
 
 
@@ -2696,9 +2625,7 @@ create table if not exists aps_sale_config
     is_value        tinyint                              null,
     parent_id       bigint                               null
 )
-    comment '销售配置表';
-
-
+    comment '销售配置表' engine = InnoDB;
 
 
 
@@ -2719,8 +2646,7 @@ create table if not exists aps_scheduling_constraints
     trace_id            varchar(64)                          null comment '调用链路',
     version_num         int        default 0                 null comment '版本号'
 )
-    comment '排产约束表';
-
+    comment '排产约束表' engine = InnoDB;
 
 
 create table if not exists aps_scheduling_goods_bom
@@ -2751,11 +2677,7 @@ create table if not exists aps_scheduling_goods_bom
     version_num          int        default 0                 null comment '版本号',
     goods_bom_id         bigint                               null comment '商品bom表id'
 )
-    comment '订单商品零件表';
-
-
-
-
+    comment '订单商品零件表' engine = InnoDB;
 
 
 
@@ -2786,9 +2708,7 @@ create table if not exists aps_scheduling_goods_bom_total
     trace_id             varchar(64)                          null comment '调用链路',
     version_num          int        default 0                 null comment '版本号'
 )
-    comment '订单商品零件汇总表';
-
-
+    comment '订单商品零件汇总表' engine = InnoDB;
 
 
 
@@ -2817,8 +2737,7 @@ create table if not exists aps_scheduling_goods_status_date
     actual_make_begin_time date                                 null comment '实际开始时间',
     actual_make_end_time   date                                 null comment '实际结束时间'
 )
-    comment '订单商品状态表';
-
+    comment '订单商品状态表' engine = InnoDB;
 
 
 create table if not exists aps_scheduling_version
@@ -2844,9 +2763,7 @@ create table if not exists aps_scheduling_version
     version_step_error        varchar(255)                         null,
     bom_total_end_date        date                                 null comment 'bom汇总结束日期'
 )
-    comment '排产版本表';
-
-
+    comment '排产版本表' engine = InnoDB;
 
 
 
@@ -2893,11 +2810,7 @@ create table if not exists aps_scheduling_version_capacity
     factory_id            bigint                               null comment '工厂id',
     goods_status_id       bigint                               null comment '商品状态'
 )
-    comment '排产版本容量表';
-
-
-
-
+    comment '排产版本容量表' engine = InnoDB;
 
 
 
@@ -2919,9 +2832,7 @@ create table if not exists aps_scheduling_version_day
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '排产版本天表';
-
-
+    comment '排产版本天表' engine = InnoDB;
 
 
 
@@ -2965,12 +2876,7 @@ create table if not exists aps_scheduling_version_item
     number_index          smallint                             null,
     factory_id            varchar(255)                         null
 )
-    comment '排产版本项表';
-
-
-
-
-
+    comment '排产版本项表' engine = InnoDB;
 
 
 
@@ -2999,9 +2905,7 @@ create table if not exists aps_scheduling_version_limit
     current_day   varchar(255)                         null,
     limit_type    varchar(255)                         null
 )
-    comment '排产版本限制表';
-
-
+    comment '排产版本限制表' engine = InnoDB;
 
 
 
@@ -3022,9 +2926,7 @@ create table if not exists aps_status
     version_num         int        default 0                 null comment '版本号',
     is_order_goods_init tinyint    default 0                 null comment '是否初始化订单状态'
 )
-    comment '排产状态表';
-
-
+    comment '排产状态表' engine = InnoDB;
 
 
 
@@ -3046,8 +2948,7 @@ create table if not exists aps_workshop_section
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '车间/工位表';
-
+    comment '车间/工位表' engine = InnoDB;
 
 
 create table if not exists aps_workshop_station
@@ -3069,8 +2970,7 @@ create table if not exists aps_workshop_station
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '车间/工位表';
-
+    comment '车间/工位表' engine = InnoDB;
 
 
 create table if not exists base_supplier
@@ -3093,8 +2993,7 @@ create table if not exists base_supplier
     version_num     int        default 0                 null comment '版本号',
     tenant_id       bigint                               null comment '租户ID'
 )
-    comment '供应商表';
-
+    comment '供应商表' engine = InnoDB;
 
 
 create table if not exists base_table_header
@@ -3117,8 +3016,49 @@ create table if not exists base_table_header
     version_num int        default 0                 null comment '版本号',
     tenant_id   bigint                               null comment '租户ID'
 )
-    comment '表头配置表';
+    comment '表头配置表' engine = InnoDB;
 
+
+create table if not exists blog_group
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    group_name  varchar(64)                          null comment '组名称',
+    group_code  varchar(64)                          null comment '组编码',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    group_id    bigint                               null comment '组ID'
+)
+    comment '帖子组清单' engine = InnoDB;
+
+create table if not exists blog_posts
+(
+    id             bigint auto_increment comment 'ID 自增'
+        primary key,
+    posts_group_id bigint                               null comment '帖子组ID',
+    posts_name     varchar(64)                          null comment '帖子名称',
+    posts_tags     varchar(64)                          null comment '帖子标签',
+    posts_code     varchar(64)                          null comment '帖子编码',
+    posts_content  longtext                             null comment '帖子内容',
+    read_number    int        default 0                 null comment '阅读数量',
+    is_top         tinyint(1) default 0                 null comment '是否置顶 0 否,1 是',
+    tenant_id      bigint                               null comment '租户ID',
+    is_delete      tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time    datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by      bigint                               null comment '创建人',
+    update_time    datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by      bigint                               null comment '修改人',
+    trace_id       varchar(64)                          null comment '调用链路',
+    version_num    int        default 0                 null comment '版本号',
+    group_id       bigint                               null comment '组ID'
+)
+    comment '帖子清单' engine = InnoDB;
 
 
 create table if not exists jcx_buy_order
@@ -3141,8 +3081,7 @@ create table if not exists jcx_buy_order
     goods_name             varchar(255)                         null,
     goods_cost_price_total decimal(15, 6)                       null comment '成本总价'
 )
-    comment '进销存-采购订单表';
-
+    comment '进销存-采购订单表' engine = InnoDB;
 
 
 create table if not exists jcx_buy_order_item
@@ -3169,11 +3108,7 @@ create table if not exists jcx_buy_order_item
     supplier_id            varchar(255)                         null,
     supplier_name          varchar(255)                         null
 )
-    comment '进销存-采购订单明细表';
-
-
-
-
+    comment '进销存-采购订单明细表' engine = InnoDB;
 
 
 
@@ -3199,9 +3134,7 @@ create table if not exists jcx_buy_plan
     goods_net_profit_total   decimal(15, 6)                       null comment '净利总额',
     buy_order_id             varchar(255)                         null
 )
-    comment '进销存-采购计划表';
-
-
+    comment '进销存-采购计划表' engine = InnoDB;
 
 
 
@@ -3232,10 +3165,7 @@ create table if not exists jcx_buy_plan_item
     goods_net_profit_total   decimal(15, 6)                       null comment '净利总额',
     supplier_id              bigint                               null
 )
-    comment '进销存-采购计划明细表';
-
-
-
+    comment '进销存-采购计划明细表' engine = InnoDB;
 
 
 
@@ -3268,9 +3198,7 @@ create table if not exists jcx_goods
     is_inventory          tinyint                              null,
     supplier_id           varchar(255)                         null
 )
-    comment '进销存-商品表';
-
-
+    comment '进销存-商品表' engine = InnoDB;
 
 
 
@@ -3298,9 +3226,7 @@ create table if not exists jcx_goods_warning
     version_num           int        default 0                 null comment '版本号',
     tenant_id             bigint                               null comment '租户ID'
 )
-    comment '进销存-库存预警表';
-
-
+    comment '进销存-库存预警表' engine = InnoDB;
 
 
 
@@ -3320,8 +3246,7 @@ create table if not exists jcx_order
     version_num            int        default 0                 null comment '版本号',
     order_total_sale_price decimal(15, 6)                       null comment '成本价'
 )
-    comment '进销存-订单表';
-
+    comment '进销存-订单表' engine = InnoDB;
 
 
 create table if not exists jcx_order_item
@@ -3346,10 +3271,7 @@ create table if not exists jcx_order_item
     version_num            int        default 0                 null comment '版本号',
     goods_total_sale_price decimal(15, 6)                       null comment '成本价'
 )
-    comment '进销存-订单明细表';
-
-
-
+    comment '进销存-订单明细表' engine = InnoDB;
 
 
 
@@ -3371,8 +3293,7 @@ create table if not exists msg_message
     version_num       int        default 0                 null comment '版本号',
     message_Json_data text                                 null
 )
-    comment '消息表';
-
+    comment '消息表' engine = InnoDB;
 
 
 create table if not exists msg_message_read
@@ -3391,9 +3312,7 @@ create table if not exists msg_message_read
     is_used        varchar(255)                         null,
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '消息已读表';
-
-
+    comment '消息已读表' engine = InnoDB;
 
 
 
@@ -3415,9 +3334,7 @@ create table if not exists t_brand
     is_used      tinyint                              null,
     version_num  int        default 0                 null comment '版本号'
 )
-    comment '品牌表';
-
-
+    comment '品牌表' engine = InnoDB;
 
 
 
@@ -3440,9 +3357,7 @@ create table if not exists t_calendar
     trace_id          varchar(64)                          null comment '调用链路',
     version_num       int        default 0                 null comment '版本号'
 )
-    comment '日历表';
-
-
+    comment '日历表' engine = InnoDB;
 
 
 
@@ -3494,10 +3409,7 @@ create table if not exists t_calendar_day
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '日历天表';
-
-
-
+    comment '日历天表' engine = InnoDB;
 
 
 
@@ -3518,9 +3430,7 @@ create table if not exists t_check_report
     version_num int        default 0                 null comment '版本号',
     is_over     varchar(255)                         null
 )
-    comment '检查报告表';
-
-
+    comment '检查报告表' engine = InnoDB;
 
 
 
@@ -3543,13 +3453,7 @@ create table if not exists t_check_report_list
     storey_id   bigint                               null,
     version_num int        default 0                 null comment '版本号'
 )
-    comment '检查报告明细表';
-
-
-
-
-
-
+    comment '检查报告明细表' engine = InnoDB;
 
 
 
@@ -3574,7 +3478,7 @@ create table if not exists t_dictionary
     trace_id         varchar(64)                          null comment '调用链路',
     version_num      int        default 0                 null comment '版本号'
 )
-    comment '数据字典表';
+    comment '数据字典表' engine = InnoDB;
 
 create table if not exists t_district_code
 (
@@ -3592,7 +3496,7 @@ create table if not exists t_district_code
     version_num int        default 0                 null comment '版本号',
     tenant_id   varchar(255)                         null
 )
-    comment '地区代码表';
+    comment '地区代码表' engine = InnoDB;
 
 create table if not exists t_factory
 (
@@ -3610,8 +3514,7 @@ create table if not exists t_factory
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '工厂表';
-
+    comment '工厂表' engine = InnoDB;
 
 
 create table if not exists t_file_upload
@@ -3634,8 +3537,7 @@ create table if not exists t_file_upload
     file_type       varchar(255)                         null,
     file_suffix     varchar(255)                         null
 )
-    comment '文件上传表';
-
+    comment '文件上传表' engine = InnoDB;
 
 
 create table if not exists t_login_account
@@ -3655,8 +3557,7 @@ create table if not exists t_login_account
     version_num int        default 0                 null comment '版本号',
     user_pwd    varchar(255)                         null
 )
-    comment '登录账号表';
-
+    comment '登录账号表' engine = InnoDB;
 
 
 create table if not exists t_process_line
@@ -3678,7 +3579,7 @@ create table if not exists t_process_line
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '产线表';
+    comment '产线表' engine = InnoDB;
 
 create table if not exists t_property
 (
@@ -3699,11 +3600,7 @@ create table if not exists t_property
     trace_id      varchar(64)                          null comment '调用链路',
     version_num   int        default 0                 null comment '版本号'
 )
-    comment '资产属性表';
-
-
-
-
+    comment '资产属性表' engine = InnoDB;
 
 
 
@@ -3726,10 +3623,7 @@ create table if not exists t_room
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '房间表';
-
-
-
+    comment '房间表' engine = InnoDB;
 
 
 
@@ -3750,9 +3644,7 @@ create table if not exists t_shift
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '班次表';
-
-
+    comment '班次表' engine = InnoDB;
 
 
 
@@ -3773,9 +3665,7 @@ create table if not exists t_shift_item
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '班次明细表';
-
-
+    comment '班次明细表' engine = InnoDB;
 
 
 
@@ -3796,9 +3686,7 @@ create table if not exists t_storey
     storey_code varchar(255)                         null,
     version_num int        default 0                 null comment '版本号'
 )
-    comment '楼层表';
-
-
+    comment '楼层表' engine = InnoDB;
 
 
 
@@ -3817,7 +3705,8 @@ create table if not exists t_tenant_info
     tenant_id   bigint                               null comment '租户ID',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '租户信息表';
+    comment '租户信息表' engine = InnoDB;
+
 
 
 
