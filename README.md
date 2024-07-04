@@ -48,6 +48,7 @@
 | DingConfig.robotCode         | String           | 钉钉编号                                 |
 | DingConfig.dingCode          | String           | 钉钉编号                                 |
 | DingConfig.dingName          | String           | 钉钉名称                                 |
+| DingConfig.useStream         | boolean          | 是否启用钉钉监听                             |
 
 ### 初始化类
 
