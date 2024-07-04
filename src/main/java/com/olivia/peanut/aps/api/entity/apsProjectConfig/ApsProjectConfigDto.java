@@ -24,7 +24,7 @@ public class ApsProjectConfigDto extends BaseEntityDto {
   private String saleCode;
   @NotNull(message = "销售名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String saleName;
-  @NotNull(message = "供应商状态不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotNull(message = "供应商状态不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer supplierStatus;
   @NotNull(message = "是否值不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer isValue;
