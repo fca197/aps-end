@@ -36,41 +36,39 @@
 |------------------------------|------------------|--------------------------------------|-----|
 | scanProperty2UseInTimeSecond | int              | 资产禁用时,N秒扫描内二次扫描时,启用该资产               | 60  |
 | entityPackageName            | String           | 指定包名下查找类的BelongDb 注解,进行数据库表字段的初始化与修改 |
-| redisKey                     | String           | redis key前缀                          |
-| urlWhiteList                 | List<String>     | 白名单,指定接口时,可访问的接口,不进行二次包装             |
-| aps.forecastMainPrefix       | String           | 预测主前缀                                |
-| aps.forecastMainSuffix       | String           | 预测前缀                                 |
-| sale2ProjectThreadSize       | int              | 预测子线程数                               |
-| dingConfigList               | List<DingConfig> | 钉钉机器人配置                              |
-| DingConfig.clientId          | String           | 钉钉clientId                           |
-| DingConfig.clientSecret      | String           | 钉钉clientSecret                       |
-| DingConfig.agentId           | Long             | 钉钉agentId                            |
-| DingConfig.robotCode         | String           | 钉钉编号                                 |
-| DingConfig.dingCode          | String           | 钉钉编号                                 |
-| DingConfig.dingName          | String           | 钉钉名称                                 |
-| DingConfig.useStream         | boolean          | 是否启用钉钉监听                             |
+| redisKey                     | String           | redis key前缀                          |     |
+| urlWhiteList                 | List<String>     | 白名单,指定接口时,可访问的接口,不进行二次包装             |     |
+| aps.forecastMainPrefix       | String           | 预测主前缀                                |     |
+| aps.forecastMainSuffix       | String           | 预测前缀                                 |     |
+| sale2ProjectThreadSize       | int              | 预测子线程数                               |     |
+| dingConfigList               | List<DingConfig> | 钉钉机器人配置                              |     |
+| DingConfig.clientId          | String           | 钉钉clientId                           |     |
+| DingConfig.clientSecret      | String           | 钉钉clientSecret                       |     |
+| DingConfig.agentId           | Long             | 钉钉agentId                            |     |
+| DingConfig.robotCode         | String           | 钉钉编号                                 |     |
+| DingConfig.dingCode          | String           | 钉钉编号                                 |     |
+| DingConfig.dingName          | String           | 钉钉名称                                 |     |
+| DingConfig.useStream         | boolean          | 是否启用钉钉监听                             |     |
 
 ### 初始化类
 
-| 初始化类                  | 说明       | 备注                                   |
-|-----------------------|----------|--------------------------------------|
-| MockResourceLoad      | mock数据配置 | 返回接口的mock值                           |
-| DbInitConfig          | 数据库初始化操作 | 指定包名下查找类的BelongDb 注解,进行数据库表字段的初始化与修改 |
-| ResultResponseWrapper | 接口返回值修改  | 根据请求头判断返回值是否进行二次包装                   |
-| ServiceNotice         | 通知类接口    | 可以接入钉钉机器人等                           |
-| WebBeanConfig         | web配置    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏        |
-| DingEventBizService   | 钉钉消息处理接口 | 实现该接口,处理钉钉消息, 一个eventType可以多次处理      |
+| 初始化类                  | 说明       | 备注                                      |
+|-----------------------|----------|-----------------------------------------|
+| MockResourceLoad      | mock数据配置 | 返回接口的mock值                              |
+| ResultResponseWrapper | 接口返回值修改  | 根据请求头判断返回值是否进行二次包装                      |
+| ServiceNotice         | 通知类接口    | 可以接入钉钉机器人等                              |
+| WebBeanConfig         | web配置    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏           |
+| DingEventBizService   | 钉钉消息处理接口 | 实现该接口,处理钉钉消息, 一个eventType可以多次实现处理(并行调用) |
 
 # 数据库
 
-| 组建名称        | 依赖版本     | 说明         |
-|-------------|----------|------------|
-| sqlite-jdbc | 3.45.1.0 | sqlite驱动版本 |
-| h2          | 2.2.224  | h2驱动版本     |
+| 组建名称  | 依赖版本 | 说明      |
+|-------|------|---------|
+| mysql | 8.0  | mysql版本 |
 
 ---
 
-# 杂记
+# idea 相关
 
 ## idea 插件
 
