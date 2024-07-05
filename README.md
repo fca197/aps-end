@@ -13,11 +13,10 @@
 | JDK               | jdk 17       | Jdk最低版本            |
 | Spring Boot       | 3.2.0        | springboot版本       |
 | mybatis-plus      | 3.5.3.1      | mybatisplus版本      |
-| mybatis-plus-join | 1.4.8.1      | mybatisplus-join版本 |
-| sqlite-jdbc       | 3.45.1.0     | sqlite驱动版本         |
+| mybatis-plus-join | 1.4.8.1      | mybatisplus-join版本 | 
 | lombok            | 1.18.22      | lombok版本           |
 | uber-h3           | 4.1.1        | 经纬度转code码          |
-| hutool            | 5.8.0        | 常用工具库              |
+| hutool            | 5.8.23       | 常用工具库              |
 | org.kie           | 7.14.0.Final | 规则引擎               |
 | fastjson2         | 2.0.46       | fastjson2版本        |
 
