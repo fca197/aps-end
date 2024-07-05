@@ -54,7 +54,7 @@ public class ApsGoodsBomDto extends BaseEntityDto {
   private Long bomUseWorkStation;
   private String bomUseWorkStationName;
   //使用表达 工程值: 格式 . 所有工序  (AA001&&AC002)&&(AB001||AB002)
-  @NotBlank(message = "零件使用工位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "零件使用表达式不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomUseExpression;
   //工厂ID
   @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})

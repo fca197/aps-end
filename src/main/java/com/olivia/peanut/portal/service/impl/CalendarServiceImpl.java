@@ -117,7 +117,7 @@ public class CalendarServiceImpl extends MPJBaseServiceImpl<CalendarMapper, Cale
           .eq(CalendarDay::getDayYear, Integer.valueOf(ys)).in(CalendarDay::getDayMonth, mListMap.keySet())).forEach(m -> {
         List<WeekInfo> weekInfos = mListMap.get(m.getDayMonth());
         IntStream.range(1, weekInfos.size()).forEach(i -> {
-          ReflectUtil.setFieldValue(weekInfos.get(i), "isWorkDay", TRUE.equals(ReflectUtil.getFieldValue(m, "day" + i)));
+          ReflectUtil.invoke(weekInfos.get(i), "setIsWorkDay", TRUE.equals(ReflectUtil.getFieldValue(m, "day" + i)));
         });
       });
     });
