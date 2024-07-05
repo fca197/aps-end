@@ -22,6 +22,7 @@ public class BaseTableHeaderDto extends BaseEntityDto {
   private String showName;
   private Integer widthPx;
   private Boolean isPicture;
+  private Integer sortIndex;
 }
 
 

@@ -2,6 +2,7 @@ package com.olivia.peanut.portal.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
@@ -70,6 +71,7 @@ public class BaseTableHeaderServiceImpl extends MPJBaseServiceImpl<BaseTableHead
 
   private MPJLambdaWrapper<BaseTableHeader> getWrapper(BaseTableHeaderDto obj) {
     MPJLambdaWrapper<BaseTableHeader> q = new MPJLambdaWrapper<>();
+    List<SFunction<BaseTableHeader, ?>> columns = List.of(BaseTableHeader::getBizKey, BaseTableHeader::getSortIndex);
 
     if (Objects.nonNull(obj)) {
       q.eq(Objects.nonNull(obj.getId()), BaseTableHeader::getId, obj.getId())
@@ -81,15 +83,16 @@ public class BaseTableHeaderServiceImpl extends MPJBaseServiceImpl<BaseTableHead
           .eq(Objects.nonNull(obj.getIsPicture()), BaseTableHeader::getIsPicture, obj.getIsPicture())
           .eq(Objects.nonNull(obj.getTenantId()), BaseTableHeader::getTenantId, obj.getTenantId())
 
+//          .orderByAsc(BaseTableHeader::getBizKey).orderByAsc(BaseTableHeader::getSortIndex)
       ;
     }
-    q.orderByDesc(BaseTableHeader::getId);
+    q.orderByAsc(columns);
     return q;
 
   }
 
   private void setQueryListHeader(DynamicsPage<BaseTableHeader> page) {
-    this.listByBizKey(page, "queryPageList");
+    this.listByBizKey(page, "BaseTableHeaderService#queryPageList");
   }
 
   @Override
