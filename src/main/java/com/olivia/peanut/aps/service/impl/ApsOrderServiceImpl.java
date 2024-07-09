@@ -289,10 +289,9 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
           .eq(Objects.nonNull(obj.getMakeFinishDate()), ApsOrder::getMakeFinishDate, obj.getMakeFinishDate())
           .eq(Objects.nonNull(obj.getDeliveryDate()), ApsOrder::getDeliveryDate, obj.getDeliveryDate())
           .eq(Objects.nonNull(obj.getFactoryId()), ApsOrder::getFactoryId, obj.getFactoryId())
-
       ;
     }
-    q.orderByDesc(ApsOrder::getId);
+    q.orderByDesc(ApsOrder::getUrgencyLevel).orderByDesc(ApsOrder::getId);
     return q;
 
   }

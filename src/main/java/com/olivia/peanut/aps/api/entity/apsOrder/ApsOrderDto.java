@@ -37,7 +37,10 @@ public class ApsOrderDto extends BaseEntityDto {
   private LocalDate makeFinishDate;
   private LocalDate deliveryDate;
   private Long factoryId;
-
+  /**
+   * 越大越紧急
+   */
+  private Integer urgencyLevel;
 
   private ApsOrderUserDto orderUser;
   private List<ApsOrderGoodsDto> goodsList;
