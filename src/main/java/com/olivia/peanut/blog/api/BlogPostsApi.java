@@ -48,7 +48,7 @@ public interface BlogPostsApi {
   /**
    * 分页查询 帖子清单
    */
-  @PostMapping("/blogPosts/queryPageList")
+  @PostMapping({"/blogPosts/queryPageList", "/blog-show/blogPosts/queryPageList"})
   DynamicsPage<BlogPostsExportQueryPageListInfoRes> queryPageList(@RequestBody @Valid BlogPostsExportQueryPageListReq req);
 
   /**

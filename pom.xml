@@ -189,11 +189,11 @@
     <!--      <groupId>com.baomidou</groupId>-->
     <!--      <version>3.6.1</version>-->
     <!--    </dependency>-->
-    <dependency>
-      <artifactId>drools-compiler</artifactId>
-      <groupId>org.drools</groupId>
-      <version>7.74.1.Final</version>
-    </dependency>
+<!--    <dependency>-->
+<!--      <artifactId>drools-compiler</artifactId>-->
+<!--      <groupId>org.drools</groupId>-->
+<!--      <version>7.74.1.Final</version>-->
+<!--    </dependency>-->
     <dependency>
       <artifactId>kie-spring</artifactId>
       <groupId>org.kie</groupId>

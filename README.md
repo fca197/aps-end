@@ -17,7 +17,7 @@
 | lombok            | 1.18.22      | lombok版本           |
 | uber-h3           | 4.1.1        | 经纬度转code码          |
 | hutool            | 5.8.23       | 常用工具库              |
-| org.kie           | 7.14.0.Final | 规则引擎               |
+| drools            | 7.74.1.Final | 规则引擎               |
 | fastjson2         | 2.0.46       | fastjson2版本        |
 
 ### mybatis-plus
@@ -78,6 +78,7 @@
 | drools                     | 规则引擎编辑器                                                  | 插件地址 [官网](https://plugins.jetbrains.com/plugin/16871-drools)                                                        |
 | mybatisLogFree             | 输出可执行 mybaits 日志                                         | 插件地址 [官网](https://plugins.jetbrains.com/plugin/17898-mybatis-log-free)                                              |
 | TONGYI Lingma              | 通义灵码 ,代码提示插件                                             | 插件地址 [官网](https://plugins.jetbrains.com/plugin/17809-tongyi-lingma--your-ai-coding-assistant-type-less-code-more- ) |
-| commitmessage              | git 提交规范插件                                               | 插件地址 [官网](https://plugins.jetbrains.com/plugin/17809-tongyi-lingma--your-ai-coding-assistant-type-less-code-more- ) |
+| CommitMessage              | git 提交规范插件                                               | 插件地址 [官网](https://plugins.jetbrains.com/plugin/17809-tongyi-lingma--your-ai-coding-assistant-type-less-code-more- ) |
+| ColorfulBrackets           | 括号变色插件                                                   | 插件地址 [官网](https://plugins.jetbrains.com/plugin/24565-colorfulbrackets )                                             |
 
 
