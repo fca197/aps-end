@@ -1,7 +1,7 @@
 package com.olivia.peanut.portal.api.entity.calendar;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import java.time.LocalTime;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -16,14 +16,9 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 
-public class CalendarExportQueryPageListInfoRes {
+public class CalendarExportQueryPageListInfoRes extends BaseEntityDto {
 
 
-  /***
-   *  id
-   */
-  @ExcelProperty("id")
-  private Long id;
   /***
    *  所属租户id
    */
@@ -59,33 +54,6 @@ public class CalendarExportQueryPageListInfoRes {
    */
   @ExcelProperty("日历状态 0 启用 ,1 禁用  ")
   private Boolean calendarDisabled;
-
-
-  /***
-   *  创建时间
-   */
-  @ExcelProperty("创建时间")
-  private LocalTime createTime;
-  /***
-   *  创建人id
-   */
-  @ExcelProperty("创建人id")
-  private Long createBy;
-  /***
-   *  更新时间
-   */
-  @ExcelProperty("更新时间")
-  private LocalTime updateTime;
-  /***
-   *  更新人id
-   */
-  @ExcelProperty("更新人id")
-  private Long updateBy;
-  /***
-   *  调用链
-   */
-  @ExcelProperty("调用链")
-  private String traceId;
 
 }
 

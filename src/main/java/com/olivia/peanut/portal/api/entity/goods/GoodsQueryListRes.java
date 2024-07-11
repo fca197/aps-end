@@ -1,5 +1,6 @@
 package com.olivia.peanut.portal.api.entity.goods;
 
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
@@ -27,12 +28,7 @@ public class GoodsQueryListRes {
 
   @Getter
   @Setter
-  public static class Info {
-
-    /***
-     *  id
-     */
-    private Long id;
+  public static class Info  extends BaseEntityDto {
     /***
      *  品牌ID
      */
@@ -69,38 +65,7 @@ public class GoodsQueryListRes {
      *  产品类型
      */
     private Long goodsType;
-    /***
-     *  所属租户id
-     */
-    private Long tenantId;
-    /***
-     *
-     */
 
-    /***
-     *  创建时间
-     */
-    private LocalTime createTime;
-    /***
-     *  创建人id
-     */
-    private Long createBy;
-    /***
-     *  更新时间
-     */
-    private LocalTime updateTime;
-    /***
-     *  更新人id
-     */
-    private Long updateBy;
-    /***
-     *  链路追踪ID
-     */
-    private String traceId;
-    /***
-     *  版本号
-     */
-    private Integer versionNum;
 
   }
 }

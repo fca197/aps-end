@@ -1,7 +1,9 @@
 package com.olivia.peanut.aps.api.entity.workshopStation;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -16,14 +18,9 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 
-public class WorkshopStationExportQueryPageListInfoRes {
+public class WorkshopStationExportQueryPageListInfoRes  extends BaseEntityDto {
 
 
-  /***
-   *  id
-   */
-  @ExcelProperty("id")
-  private Long id;
   /***
    *  所属租户id
    */
@@ -59,33 +56,6 @@ public class WorkshopStationExportQueryPageListInfoRes {
    */
   @ExcelProperty("工位状态 ")
   private String stationStatus;
-
-
-  /***
-   *  创建时间
-   */
-  @ExcelProperty("创建时间")
-  private LocalDateTime createTime;
-  /***
-   *  创建人id
-   */
-  @ExcelProperty("创建人id")
-  private Long createBy;
-  /***
-   *  更新时间
-   */
-  @ExcelProperty("更新时间")
-  private LocalDateTime updateTime;
-  /***
-   *  更新人id
-   */
-  @ExcelProperty("更新人id")
-  private Long updateBy;
-  /***
-   *  链路追踪ID
-   */
-  @ExcelProperty("链路追踪ID")
-  private String traceId;
 
 }
 

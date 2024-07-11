@@ -35,6 +35,9 @@ public class BaseEntityDto implements BaseCheck {
    */
   @ExcelProperty("创建时间")
   private LocalDateTime createTime;
+  private Long createBy;
+  private Long updateBy;
+
   /***
    *  更新时间
    */

@@ -1,6 +1,7 @@
 package com.olivia.peanut.portal.api.entity.dictionary;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,14 +16,9 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class DictionaryDto {
+public class DictionaryDto extends BaseEntityDto {
 
 
-  /***
-   *  id
-   */
-  @ExcelProperty("id")
-  private Long id;
   /***
    *  字典组
    */
@@ -43,44 +39,6 @@ public class DictionaryDto {
    */
   @ExcelProperty("而外信息")
   private String dictionaryExt;
-  /***
-   *  所属租户id
-   */
-  @ExcelProperty("所属租户id")
-  private Long tenantId;
-
-
-  /***
-   *  创建时间
-   */
-  @ExcelProperty("创建时间")
-  private LocalTime createTime;
-  /***
-   *  创建人id
-   */
-  @ExcelProperty("创建人id")
-  private Long createBy;
-  /***
-   *  更新时间
-   */
-  @ExcelProperty("更新时间")
-  private LocalTime updateTime;
-  /***
-   *  更新人id
-   */
-  @ExcelProperty("更新人id")
-  private Long updateBy;
-  /***
-   *  链路追踪ID
-   */
-  @ExcelProperty("链路追踪ID")
-  private String traceId;
-  /***
-   *  版本号
-   */
-  @ExcelProperty("版本号")
-  private Integer versionNum;
-
 }
 
 

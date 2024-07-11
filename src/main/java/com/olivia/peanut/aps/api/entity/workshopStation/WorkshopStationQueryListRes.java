@@ -1,6 +1,6 @@
 package com.olivia.peanut.aps.api.entity.workshopStation;
 
-import java.time.LocalDateTime;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,12 +26,8 @@ public class WorkshopStationQueryListRes {
 
   @Getter
   @Setter
-  public static class Info {
+  public static class Info extends BaseEntityDto {
 
-    /***
-     *  id
-     */
-    private Long id;
     /***
      *  所属租户id
      */
@@ -60,30 +56,7 @@ public class WorkshopStationQueryListRes {
      *  工位状态
      */
     private String stationStatus;
-    /***
-     *
-     */
 
-    /***
-     *  创建时间
-     */
-    private LocalDateTime createTime;
-    /***
-     *  创建人id
-     */
-    private Long createBy;
-    /***
-     *  更新时间
-     */
-    private LocalDateTime updateTime;
-    /***
-     *  更新人id
-     */
-    private Long updateBy;
-    /***
-     *  链路追踪ID
-     */
-    private String traceId;
 
   }
 }

@@ -2,7 +2,7 @@ package com.olivia.peanut.portal.api.entity.checkReport;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import java.time.LocalDateTime;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,14 +16,9 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class CheckReportDto {
+public class CheckReportDto extends BaseEntityDto {
 
 
-  /***
-   *  id
-   */
-  @ExcelProperty("id")
-  private Long id;
   /***
    *  所属租户id
    */
@@ -48,37 +43,6 @@ public class CheckReportDto {
   @ExcelProperty("报表名称")
   private String reportName;
 
-
-  /***
-   *  创建时间
-   */
-  @ExcelProperty("创建时间")
-  private LocalDateTime createTime;
-  /***
-   *  创建人id
-   */
-  @ExcelProperty("创建人id")
-  private Long createBy;
-  /***
-   *  更新时间
-   */
-  @ExcelProperty("更新时间")
-  private LocalDateTime updateTime;
-  /***
-   *  更新人id
-   */
-  @ExcelProperty("更新人id")
-  private Long updateBy;
-  /***
-   *  链路追踪ID
-   */
-  @ExcelProperty("链路追踪ID")
-  private String traceId;
-  /***
-   *  版本号
-   */
-  @ExcelProperty("版本号")
-  private Integer versionNum;
 
   @ExcelProperty("是否结束")
   private Boolean isOver;

@@ -22,10 +22,6 @@ import lombok.experimental.Accessors;
 public class ApsWorkshopStation extends BaseEntity {
 
   /***
-   *  id
-   */
-  private Long id;
-  /***
    *  所属租户id
    */
   private Long tenantId;
@@ -55,26 +51,6 @@ public class ApsWorkshopStation extends BaseEntity {
   private String stationStatus;
 
 
-  /***
-   *  创建时间
-   */
-  private LocalDateTime createTime;
-  /***
-   *  创建人id
-   */
-  private Long createBy;
-  /***
-   *  更新时间
-   */
-  private LocalDateTime updateTime;
-  /***
-   *  更新人id
-   */
-  private Long updateBy;
-  /***
-   *  链路追踪ID
-   */
-  private String traceId;
 
 }
 
