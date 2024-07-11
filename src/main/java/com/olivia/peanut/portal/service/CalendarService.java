@@ -8,6 +8,7 @@ import com.olivia.peanut.portal.api.entity.calendar.CalendarQueryListRes;
 import com.olivia.peanut.portal.model.Calendar;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.model.WeekInfo;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -23,5 +24,9 @@ public interface CalendarService extends MPJBaseService<Calendar> {
   DynamicsPage<CalendarExportQueryPageListInfoRes> queryPageList(CalendarExportQueryPageListReq req);
 
   List<WeekInfo> getWeekList(Long factoryId, String beginDate, String endDate);
+
+  default List<WeekInfo> getWeekList(Long factoryId, LocalDate beginDate, LocalDate endDate) {
+    return getWeekList(factoryId, beginDate.toString(), endDate.toString());
+  }
 }
 

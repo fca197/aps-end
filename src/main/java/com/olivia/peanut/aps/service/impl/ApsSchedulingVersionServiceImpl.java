@@ -20,12 +20,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
 import com.olivia.peanut.aps.api.entity.apsOrder.OrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
-import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathQueryListReq;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersion.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.aps.service.impl.po.OrderGoods;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
 import com.olivia.peanut.aps.utils.ProcessUtils;
 import com.olivia.peanut.aps.utils.capacity.MakeCapacityUtils;
 import com.olivia.peanut.aps.utils.capacity.model.Limit;
@@ -39,13 +40,10 @@ import com.olivia.peanut.aps.utils.model.ApsGoodsBomVo;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo.Info;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
-import com.olivia.peanut.aps.utils.model.ShiftItemVo;
-import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.model.CalendarDay;
 import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.model.Shift;
-import com.olivia.peanut.portal.model.ShiftItem;
-import com.olivia.peanut.portal.service.*;
+import com.olivia.peanut.portal.service.CalendarDayService;
+import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
@@ -112,19 +110,13 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   ApsMakeCapacitySaleConfigService apsMakeCapacitySaleConfigService;
   @Resource
   CalendarDayService calendarDayService;
-  @Resource
-  CalendarService calendarService;
 
   @Resource
   ApsSchedulingVersionDayService apsSchedulingVersionDayService;
-  @Resource
-  ApsProcessPathService apsProcessPathService;
+
   @Resource
   ApsGoodsBomService apsGoodsBomService;
-  @Resource
-  ShiftService shiftService;
-  @Resource
-  ShiftItemService shiftItemService;
+
   @Resource
   ApsSchedulingGoodsBomService apsSchedulingGoodsBomService;
   @Resource
@@ -134,6 +126,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   ApsOrderGoodsStatusDateService apsOrderGoodsStatusDateService;
   @Resource
   ApsSchedulingGoodsStatusDateService apsSchedulingGoodsStatusDateService;
+  @Resource
+
+  ApsFactoryService apsFactoryService;
 
   private static List<Runnable> getBomRunList(ApsSchedulingVersion schedulingVersion, List<ApsSchedulingVersionCapacity> apsSchedulingVersionCapacityList,
       Map<Long, ApsGoods> goodsMap, Map<Long, ApsProcessPathDto> apsProcessPathDtoMap, Map<Long, List<WeekInfo>> factoryWeekListMap, Map<Long, Long> dayWorkSecondMap,
@@ -332,21 +327,15 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     Map<Long, Long> dayWorkSecondMap = Maps.newHashMap();
     Map<Long, ApsProcessPathDto> apsProcessPathDtoMap = Maps.newHashMap();
     facortyList.forEach(f -> {
-      log.info("add factory configuration {} name:{}", f.getId(), f.getFactoryName());
-      List<WeekInfo> weekList = calendarService.getWeekList(f.getId(), nowDate.toString(), lastDate.plusDays(schedulingVersion.getSchedulingDayCount()).toString());
-      weekList.removeIf(w -> Boolean.FALSE.equals(w.getIsWorkDay()));
-      weekList.sort(Comparator.comparing(WeekInfo::getCurrentDate));
-      log.info("weekList {}: {}", f.getId(), toJSONString(weekList));
-      factoryWeekListMap.put(f.getId(), weekList);
-      Shift shift = shiftService.getOne(new LambdaQueryWrapper<Shift>().eq(Shift::getFactoryId, f.getId()), false);
-      $.requireNonNullCanIgnoreException(shift, f.getFactoryName() + "排产版本工厂没有班次");
-      List<ShiftItem> shiftItemList = shiftItemService.list(new LambdaQueryWrapper<ShiftItem>().eq(ShiftItem::getShiftId, shift.getId()).orderByAsc(ShiftItem::getBeginTime));
-      Long dayWorkSecond = ProcessUtils.getDayWorkSecond($.copyList(shiftItemList, ShiftItemVo.class));
-      log.info("dayWorkSecond {}: {}", f.getId(), dayWorkSecond);
 
+      FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
+          new FactoryConfigReq().setGetShift(Boolean.TRUE).setGetWeek(Boolean.TRUE).setGetPath(Boolean.TRUE).setWeekEndDate(nowDate)
+              .setWeekEndDate(lastDate.plusDays(schedulingVersion.getSchedulingDayCount())));
+      log.info("add factory configuration {} name:{}", f.getId(), f.getFactoryName());
+      factoryWeekListMap.put(f.getId(), factoryConfig.getWeekList());
+      Long dayWorkSecond = factoryConfig.getDayWorkSecond();
       dayWorkSecondMap.put(f.getId(), dayWorkSecond);
-      Map<Long, ApsProcessPathDto> pathDtoMap = apsProcessPathService.queryList(new ApsProcessPathQueryListReq().setData(new ApsProcessPathDto().setFactoryId(f.getId())))
-          .getDataList().stream().collect(Collectors.toMap(BaseEntityDto::getId, Function.identity()));
+      Map<Long, ApsProcessPathDto> pathDtoMap = factoryConfig.getPathDtoMap();
       log.info("Process {}: {}", f.getId(), toJSONString(pathDtoMap));
       apsProcessPathDtoMap.putAll(pathDtoMap);
     });
@@ -389,7 +378,6 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     }
 
     localDateBetween.forEach(ym -> {
-
       // 移除非工作日
       String currentDate = ym.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
       String ymKey = ym.getYear() + "-" + ym.getMonthValue();
