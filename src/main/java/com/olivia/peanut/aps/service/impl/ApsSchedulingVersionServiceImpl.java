@@ -147,7 +147,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         Map<Long, List<ApsGoodsBom>> apsGoodsBomList = goodsBomMap.getOrDefault(goodsId, Map.of());
         Map<Long, List<ApsGoodsBomVo>> apsGoodsBomVoMap = apsGoodsBomList.keySet().stream()
             .collect(Collectors.toMap(key -> key, vL -> $.copyList(apsGoodsBomList.get(vL), ApsGoodsBomVo.class)));
-        ApsProcessPathInfo scheduledPathDate = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList, dayWorkSecond,
+        ApsProcessPathInfo scheduledPathDate = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList,0L, dayWorkSecond,
             order.getGoodsStatusId(), apsGoodsBomVoMap, LocalDate.parse(order.getCurrentDay()));
         if (Objects.nonNull(scheduledPathDate)) {
           List<Info> dataList = scheduledPathDate.getDataList();

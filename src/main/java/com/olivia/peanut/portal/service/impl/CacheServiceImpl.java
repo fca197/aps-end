@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 public class CacheServiceImpl implements CacheService {
 
   Timer timer = new Timer();
-  private Map<String, CacheItem> cacheItemMap = Collections.synchronizedMap(new HashMap<>());
+  private final Map<String, CacheItem> cacheItemMap = Collections.synchronizedMap(new HashMap<>());
 
   //  @PostConstruct
   public void init() {
@@ -51,6 +51,7 @@ public class CacheServiceImpl implements CacheService {
 
   @Override
   @SneakyThrows
+  @SuppressWarnings("unchecked")
   public <T> T getKv(@NonNull String key) {
     CacheItem cacheItem = cacheItemMap.get(key);
     if (Objects.nonNull(cacheItem)) {
