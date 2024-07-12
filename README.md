@@ -20,6 +20,33 @@
 | drools            | 7.74.1.Final | 规则引擎               |
 | fastjson2         | 2.0.46       | fastjson2版本        |
 
+### 注解
+
+| 组件名称                                | 描述          | 使用点                          | 使用类                |
+|-------------------------------------|-------------|------------------------------|--------------------|
+| SetUserName                         | 设置用户名       | 增加用户名的查询                     | SetNameAspect      |
+| InsertCheck,DeleteCheck,UpdateCheck | 增删改检查       | spring Valid 校验              |                    |
+| MaskValue                           | 返回值掩码       | 返回字段标注,掩码类型:DesensitizedType | WebBeanConfig      |
+| MethodExt                           | 方法扩展        | 日志输出                         | WebLogAspect       |
+| MockRet                             | 模拟返回值       | 模拟返回值                        | MockRetAspect      |
+| RedissonLockAnn                     | redisson锁注解 | redisson锁注解                  | RedissonLockAspect |
+| Timed                               | 方法执行耗时      | 方法耗时判断                       | TimedAspect        |
+
+### BeanConfig
+
+| 类名                    | 描述                                       | --                                      |
+|-----------------------|------------------------------------------|-----------------------------------------|
+| DroolsConfig          | drools规则引擎配置                             |                                         |
+| MybatisConfig         | mybatis-plus配置,包含租户, 整表删除,数据过滤, 分页等      |                                         |
+| MyMetaObjectHandler   | mybatis-plus 数据自动填充  ,创建人、时间,修改人、时间,调用链等 |                                         |
+| PeanutProperties      | 配置文件   ,见后段参数                            |                                         |
+| ResultResponseWrapper | 预设 feign 拦截器,统一返回值                       |                                         |
+| MockResourceLoad      | mock数据配置                                 | 返回接口的mock值                              |
+| ResultResponseWrapper | 接口返回值修改                                  | 根据请求头判断返回值是否进行二次包装                      |
+| ServiceNotice         | 通知类接口                                    | 可以接入钉钉机器人等                              |
+| WebBeanConfig         | web配置                                    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏           |
+| DingEventBizService   | 钉钉消息处理接口                                 | 实现该接口,处理钉钉消息, 一个eventType可以多次实现处理(并行调用) |
+
 ### mybatis-plus
 
 | 组件名称                             | 描述     | 使用点                      |
@@ -48,16 +75,6 @@
 | DingConfig.dingCode          | String           | 钉钉编号                                 |     |
 | DingConfig.dingName          | String           | 钉钉名称                                 |     |
 | DingConfig.useStream         | boolean          | 是否启用钉钉监听                             |     |
-
-### 初始化类
-
-| 初始化类                  | 说明       | 备注                                      |
-|-----------------------|----------|-----------------------------------------|
-| MockResourceLoad      | mock数据配置 | 返回接口的mock值                              |
-| ResultResponseWrapper | 接口返回值修改  | 根据请求头判断返回值是否进行二次包装                      |
-| ServiceNotice         | 通知类接口    | 可以接入钉钉机器人等                              |
-| WebBeanConfig         | web配置    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏           |
-| DingEventBizService   | 钉钉消息处理接口 | 实现该接口,处理钉钉消息, 一个eventType可以多次实现处理(并行调用) |
 
 # 数据库
 
