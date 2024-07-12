@@ -6,6 +6,10 @@ server:
     context-path: /api/peanut
   http2:
     enabled: true
+  tomcat:
+    threads:
+      min-spare: 1
+      max: 300
 peanut:
   dbInit: false
   mock:
