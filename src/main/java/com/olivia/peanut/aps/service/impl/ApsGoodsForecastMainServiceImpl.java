@@ -14,6 +14,7 @@ import com.olivia.peanut.aps.service.ApsGoodsForecastMainService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +53,7 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
     List<ApsGoodsForecastMain> list = this.list(q);
 
     List<ApsGoodsForecastMainDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastMainDto.class)).collect(Collectors.toList());
+    ((ApsGoodsForecastMainServiceImpl) AopContext.currentProxy()).setName(dataList);
 
     return new ApsGoodsForecastMainQueryListRes().setDataList(dataList);
   }
@@ -73,10 +76,13 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsForecastMainExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastMainExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsGoodsForecastMainServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMainDto> apsGoodsForecastMainDtoList) {
     if (CollUtil.isEmpty(apsGoodsForecastMainDtoList)) {
       return;

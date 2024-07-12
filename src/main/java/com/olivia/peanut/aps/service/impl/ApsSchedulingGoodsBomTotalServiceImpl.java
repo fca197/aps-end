@@ -18,6 +18,7 @@ import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsBomTotalMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.sdk.ann.RedissonLockAnn;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -31,6 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +68,9 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     List<ApsSchedulingGoodsBomTotal> list = this.list(q);
 
     List<ApsSchedulingGoodsBomTotalDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingGoodsBomTotalDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsSchedulingGoodsBomTotalService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsSchedulingGoodsBomTotalQueryListRes().setDataList(dataList);
   }
 
@@ -88,7 +92,9 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingGoodsBomTotalExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingGoodsBomTotalExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsSchedulingGoodsBomTotalService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -197,6 +203,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingGoodsBomTotalDto> apsSchedulingGoodsBomTotalDtoList) {
 
     if (CollUtil.isEmpty(apsSchedulingGoodsBomTotalDtoList)) {

@@ -14,6 +14,7 @@ import com.olivia.peanut.aps.model.ApsStatus;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsStatusDateService;
 import com.olivia.peanut.aps.service.ApsStatusService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +51,9 @@ public class ApsOrderGoodsStatusDateServiceImpl extends MPJBaseServiceImpl<ApsOr
     List<ApsOrderGoodsStatusDate> list = this.list(q);
 
     List<ApsOrderGoodsStatusDateDto> dataList = list.stream().map(t -> $.copy(t, ApsOrderGoodsStatusDateDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsOrderGoodsStatusDateService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsOrderGoodsStatusDateQueryListRes().setDataList(dataList);
   }
 
@@ -71,11 +75,14 @@ public class ApsOrderGoodsStatusDateServiceImpl extends MPJBaseServiceImpl<ApsOr
     // 类型转换，  更换枚举 等操作
 
     List<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsOrderGoodsStatusDateExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsOrderGoodsStatusDateService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsOrderGoodsStatusDateDto> apsOrderGoodsStatusDateDtoList) {
 
     if (CollUtil.isEmpty(apsOrderGoodsStatusDateDtoList)) {

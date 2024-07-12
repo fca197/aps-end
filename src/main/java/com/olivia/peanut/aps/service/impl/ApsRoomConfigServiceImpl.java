@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.entity.apsRoomConfig.*;
 import com.olivia.peanut.aps.mapper.ApsRoomConfigMapper;
 import com.olivia.peanut.aps.model.ApsRoomConfig;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -67,6 +68,7 @@ public class ApsRoomConfigServiceImpl extends MPJBaseServiceImpl<ApsRoomConfigMa
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends ApsRoomConfigDto> apsRoomConfigDtoList) {
 
   }

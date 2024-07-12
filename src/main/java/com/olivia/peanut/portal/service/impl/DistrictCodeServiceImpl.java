@@ -10,6 +10,7 @@ import com.olivia.peanut.portal.api.entity.districtCode.*;
 import com.olivia.peanut.portal.mapper.DistrictCodeMapper;
 import com.olivia.peanut.portal.model.DistrictCode;
 import com.olivia.peanut.portal.service.DistrictCodeService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -41,7 +42,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
     List<DistrictCode> list = this.list(q);
 
     List<DistrictCodeDto> dataList = list.stream().map(t -> $.copy(t, DistrictCodeDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+   //  this.setName(dataList);
     return new DistrictCodeQueryListRes().setDataList(dataList);
   }
 
@@ -64,12 +65,13 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
     // 类型转换，  更换枚举 等操作
 
     List<DistrictCodeExportQueryPageListInfoRes> listInfoRes = $.copyList(records, DistrictCodeExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+   // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends DistrictCodeDto> districtCodeDtoList) {
 
     if (CollUtil.isEmpty(districtCodeDtoList)) {

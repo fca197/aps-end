@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBom.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsBomMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingGoodsBom;
 import com.olivia.peanut.aps.service.ApsSchedulingGoodsBomService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,9 @@ public class ApsSchedulingGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsSche
     List<ApsSchedulingGoodsBom> list = this.list(q);
 
     List<ApsSchedulingGoodsBomDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingGoodsBomDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsSchedulingGoodsBomServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsSchedulingGoodsBomQueryListRes().setDataList(dataList);
   }
 
@@ -64,12 +68,15 @@ public class ApsSchedulingGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsSche
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingGoodsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingGoodsBomExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsSchedulingGoodsBomServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingGoodsBomDto> apsSchedulingGoodsBomDtoList) {
 
     if (CollUtil.isEmpty(apsSchedulingGoodsBomDtoList)) {

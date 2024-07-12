@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlan.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsBomBuyPlanMapper;
 import com.olivia.peanut.aps.model.ApsGoodsBomBuyPlan;
 import com.olivia.peanut.aps.service.ApsGoodsBomBuyPlanService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -41,7 +42,8 @@ public class ApsGoodsBomBuyPlanServiceImpl extends MPJBaseServiceImpl<ApsGoodsBo
     List<ApsGoodsBomBuyPlan> list = this.list(q);
 
     List<ApsGoodsBomBuyPlanDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsBomBuyPlanDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+
     return new ApsGoodsBomBuyPlanQueryListRes().setDataList(dataList);
   }
 
@@ -64,12 +66,13 @@ public class ApsGoodsBomBuyPlanServiceImpl extends MPJBaseServiceImpl<ApsGoodsBo
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsBomBuyPlanExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsBomBuyPlanExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsBomBuyPlanDto> apsGoodsBomBuyPlanDtoList) {
 
     if (CollUtil.isEmpty(apsGoodsBomBuyPlanDtoList)) {

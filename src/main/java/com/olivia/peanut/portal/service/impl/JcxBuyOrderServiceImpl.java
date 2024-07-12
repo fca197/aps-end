@@ -15,6 +15,7 @@ import com.olivia.peanut.portal.api.entity.jcxBuyPlan.JcxBuyPlanStatusEnum;
 import com.olivia.peanut.portal.mapper.JcxBuyOrderMapper;
 import com.olivia.peanut.portal.model.*;
 import com.olivia.peanut.portal.service.*;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.exception.CanIgnoreException;
 import com.olivia.sdk.utils.$;
@@ -78,10 +79,11 @@ public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper
     }
     // 类型转换，  更换枚举 等操作
     List<JcxBuyOrderExportQueryPageListInfoRes> listInfoRes = $.copyList(records, JcxBuyOrderExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+   // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends JcxBuyOrderDto> jcxBuyOrderDtoList) {
     if (CollUtil.isEmpty(jcxBuyOrderDtoList)) {
       return;

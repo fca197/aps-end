@@ -40,6 +40,7 @@ import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.CalendarService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
@@ -58,6 +59,7 @@ import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,7 +114,9 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     List<ApsGoodsForecastMake> list = this.list(q);
 
     List<ApsGoodsForecastMakeDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastMakeDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsGoodsForecastMakeServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsGoodsForecastMakeQueryListRes().setDataList(dataList);
   }
 
@@ -134,7 +138,9 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsForecastMakeExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastMakeExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsGoodsForecastMakeServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -550,6 +556,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMakeDto> apsGoodsForecastMakeDtoList) {
 
     if (CollUtil.isEmpty(apsGoodsForecastMakeDtoList)) {

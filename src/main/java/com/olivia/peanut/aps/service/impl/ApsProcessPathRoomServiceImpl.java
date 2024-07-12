@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.entity.apsProcessPathRoom.*;
 import com.olivia.peanut.aps.mapper.ApsProcessPathRoomMapper;
 import com.olivia.peanut.aps.model.ApsProcessPathRoom;
 import com.olivia.peanut.aps.service.ApsProcessPathRoomService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -67,6 +68,7 @@ public class ApsProcessPathRoomServiceImpl extends MPJBaseServiceImpl<ApsProcess
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends ApsProcessPathRoomDto> apsProcessPathRoomDtoList) {
 
   }

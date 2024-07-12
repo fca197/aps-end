@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingVersionLimit.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionLimitMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionLimit;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionLimitService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -42,7 +43,7 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
     List<ApsSchedulingVersionLimit> list = this.list(q);
 
     List<ApsSchedulingVersionLimitDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingVersionLimitDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
     return new ApsSchedulingVersionLimitQueryListRes().setDataList(dataList);
   }
 
@@ -65,12 +66,13 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingVersionLimitExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingVersionLimitExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingVersionLimitDto> apsSchedulingVersionLimitDtoList) {
 
     if (CollUtil.isEmpty(apsSchedulingVersionLimitDtoList)) {

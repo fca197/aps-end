@@ -18,6 +18,7 @@ import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.FieldConfig
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.Operator;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.ValueItem;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.ValueType;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -26,6 +27,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +61,9 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
     List<ApsSchedulingConstraints> list = this.list(q);
 
     List<ApsSchedulingConstraintsDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingConstraintsDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsSchedulingConstraintsServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsSchedulingConstraintsQueryListRes().setDataList(dataList);
   }
 
@@ -81,7 +85,9 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingConstraintsExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingConstraintsExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsSchedulingConstraintsServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -110,6 +116,7 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
     return res;
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingConstraintsDto> apsSchedulingConstraintsDtoList) {
 
     if (CollUtil.isEmpty(apsSchedulingConstraintsDtoList)) {

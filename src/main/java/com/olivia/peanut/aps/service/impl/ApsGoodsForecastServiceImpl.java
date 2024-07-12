@@ -24,6 +24,7 @@ import com.olivia.peanut.aps.service.impl.utils.ApsGoodsForecastUtils;
 import com.olivia.peanut.aps.utils.forecast.OrToolsUtils;
 import com.olivia.peanut.aps.utils.forecast.model.OrToolsComputeRes;
 import com.olivia.peanut.aps.utils.forecast.model.SaleItemConfig;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.dto.ExcelErrorMsg;
@@ -45,6 +46,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,6 +89,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     List<ApsGoodsForecast> list = this.list(q);
 
     List<ApsGoodsForecastDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastDto.class)).collect(Collectors.toList());
+    ((ApsGoodsForecastServiceImpl) AopContext.currentProxy()).setName(dataList);
 
     return new ApsGoodsForecastQueryListRes().setDataList(dataList);
   }
@@ -109,10 +112,12 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsForecastExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastExportQueryPageListInfoRes.class);
+    ((ApsGoodsForecastServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
 
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastDto> apsGoodsForecastDtoList) {
 
   }

@@ -18,6 +18,7 @@ import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -107,6 +108,7 @@ public class ShiftServiceImpl extends MPJBaseServiceImpl<ShiftMapper, Shift> imp
     return new ShiftUpdateByIdRes();
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ShiftDto> shiftDtoList) {
     if (CollUtil.isEmpty(shiftDtoList)) {
       return;

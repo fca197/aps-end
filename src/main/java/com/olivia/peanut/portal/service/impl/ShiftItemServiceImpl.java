@@ -9,6 +9,7 @@ import com.olivia.peanut.portal.api.entity.shiftItem.*;
 import com.olivia.peanut.portal.mapper.ShiftItemMapper;
 import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.ShiftItemService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -67,6 +68,7 @@ public class ShiftItemServiceImpl extends MPJBaseServiceImpl<ShiftItemMapper, Sh
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends ShiftItemDto> shiftItemDtoList) {
 
   }

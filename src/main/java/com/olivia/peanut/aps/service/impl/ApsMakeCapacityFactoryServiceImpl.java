@@ -14,6 +14,7 @@ import com.olivia.peanut.aps.model.ApsMakeCapacityFactory;
 import com.olivia.peanut.aps.service.ApsMakeCapacityFactoryService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
@@ -23,6 +24,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +49,9 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
     List<ApsMakeCapacityFactory> list = this.list(q);
 
     List<ApsMakeCapacityFactoryDto> dataList = list.stream().map(t -> $.copy(t, ApsMakeCapacityFactoryDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsMakeCapacityFactoryServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsMakeCapacityFactoryQueryListRes().setDataList(dataList);
   }
 
@@ -69,7 +73,9 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
     // 类型转换，  更换枚举 等操作
 
     List<ApsMakeCapacityFactoryExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsMakeCapacityFactoryExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+
+    ((ApsMakeCapacityFactoryServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -122,6 +128,7 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
     return new ApsMakeCapacityFactoryInsertRes();
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsMakeCapacityFactoryDto> apsMakeCapacityFactoryDtoList) {
     if (CollUtil.isEmpty(apsMakeCapacityFactoryDtoList)) {
       return;

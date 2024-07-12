@@ -15,6 +15,7 @@ import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsMakeCapacityGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsMakeCapacityGoodsService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +51,9 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
     List<ApsMakeCapacityGoods> list = this.list(q);
 
     List<ApsMakeCapacityGoodsDto> dataList = list.stream().map(t -> $.copy(t, ApsMakeCapacityGoodsDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsMakeCapacityGoodsServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsMakeCapacityGoodsQueryListRes().setDataList(dataList);
   }
 
@@ -71,7 +75,9 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
     // 类型转换，  更换枚举 等操作
 
     List<ApsMakeCapacityGoodsExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsMakeCapacityGoodsExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsMakeCapacityGoodsServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -123,6 +129,7 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
     return new ApsMakeCapacityGoodsInsertRes();
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsMakeCapacityGoodsDto> apsMakeCapacityGoodsDtoList) {
 
     if (CollUtil.isEmpty(apsMakeCapacityGoodsDtoList)) {

@@ -9,6 +9,7 @@ import com.olivia.peanut.portal.api.entity.jcxBuyOrderItem.*;
 import com.olivia.peanut.portal.mapper.JcxBuyOrderItemMapper;
 import com.olivia.peanut.portal.model.JcxBuyOrderItem;
 import com.olivia.peanut.portal.service.JcxBuyOrderItemService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -68,6 +69,7 @@ public class JcxBuyOrderItemServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderIt
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends JcxBuyOrderItemDto> JcxBuyOrderItemDtoList) {
 
   }

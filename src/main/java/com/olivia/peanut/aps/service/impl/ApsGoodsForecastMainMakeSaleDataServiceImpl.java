@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMainMakeSaleData.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMainMakeSaleDataMapper;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMainMakeSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainMakeSaleDataService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -19,6 +20,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,9 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
     List<ApsGoodsForecastMainMakeSaleData> list = this.list(q);
 
     List<ApsGoodsForecastMainMakeSaleDataDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastMainMakeSaleDataDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+
+    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(dataList);
     return new ApsGoodsForecastMainMakeSaleDataQueryListRes().setDataList(dataList);
   }
 
@@ -65,12 +69,15 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsForecastMainMakeSaleDataExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastMainMakeSaleDataExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMainMakeSaleDataDto> apsGoodsForecastMainMakeSaleDataDtoList) {
 
     if (CollUtil.isEmpty(apsGoodsForecastMainMakeSaleDataDtoList)) {

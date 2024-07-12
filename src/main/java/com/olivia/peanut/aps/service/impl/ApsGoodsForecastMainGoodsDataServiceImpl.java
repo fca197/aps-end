@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMainGoodsData.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMainGoodsDataMapper;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMainGoodsData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainGoodsDataService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -68,6 +69,7 @@ public class ApsGoodsForecastMainGoodsDataServiceImpl extends MPJBaseServiceImpl
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMainGoodsDataDto> apsGoodsForecastMainGoodsDataDtoList) {
 
   }

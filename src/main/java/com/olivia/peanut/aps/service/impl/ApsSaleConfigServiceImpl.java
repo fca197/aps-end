@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsSaleConfig.*;
 import com.olivia.peanut.aps.mapper.ApsSaleConfigMapper;
 import com.olivia.peanut.aps.model.ApsSaleConfig;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,20 +67,18 @@ public class ApsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsSaleConfigMa
     // 类型转换，  更换枚举 等操作
 
     List<ApsSaleConfigExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSaleConfigExportQueryPageListInfoRes.class);
-    setName(listInfoRes);
+    ((ApsSaleConfigService) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
-
+//  @SetUserName
   public @Override void setName(List<? extends ApsSaleConfigDto> apsSaleConfigDtoList) {
     if (CollUtil.isEmpty(apsSaleConfigDtoList)) {
       return;
     }
     apsSaleConfigDtoList.sort(Comparator.comparing(ApsSaleConfigDto::getSaleCode));
     List<? extends ApsSaleConfigDto> parentList = apsSaleConfigDtoList.stream().filter(t -> Objects.equals(t.getParentId(), 0L)).toList();
-    parentList.forEach(p ->
-        p.setChildren(apsSaleConfigDtoList.stream().filter(t -> Objects.equals(t.getParentId(), p.getId())).toList())
-    );
+    parentList.forEach(p -> p.setChildren(apsSaleConfigDtoList.stream().filter(t -> Objects.equals(t.getParentId(), p.getId())).toList()));
     apsSaleConfigDtoList.removeIf(t -> !Objects.equals(t.getParentId(), 0L));
   }
 

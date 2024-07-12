@@ -9,6 +9,7 @@ import com.olivia.peanut.portal.api.entity.baseSupplier.*;
 import com.olivia.peanut.portal.mapper.BaseSupplierMapper;
 import com.olivia.peanut.portal.model.BaseSupplier;
 import com.olivia.peanut.portal.service.BaseSupplierService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -68,6 +69,7 @@ public class BaseSupplierServiceImpl extends MPJBaseServiceImpl<BaseSupplierMapp
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends BaseSupplierDto> BaseSupplierDtoList) {
 
   }

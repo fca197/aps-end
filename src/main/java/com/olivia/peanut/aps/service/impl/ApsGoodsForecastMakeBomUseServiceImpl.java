@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMakeBomUse.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMakeBomUseMapper;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMakeBomUse;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMakeBomUseService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,9 @@ public class ApsGoodsForecastMakeBomUseServiceImpl extends MPJBaseServiceImpl<Ap
     List<ApsGoodsForecastMakeBomUse> list = this.list(q);
 
     List<ApsGoodsForecastMakeBomUseDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastMakeBomUseDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsGoodsForecastMakeBomUseServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsGoodsForecastMakeBomUseQueryListRes().setDataList(dataList);
   }
 
@@ -64,12 +68,15 @@ public class ApsGoodsForecastMakeBomUseServiceImpl extends MPJBaseServiceImpl<Ap
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsForecastMakeBomUseExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastMakeBomUseExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsGoodsForecastMakeBomUseServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMakeBomUseDto> apsGoodsForecastMakeBomUseDtoList) {
 
     if (CollUtil.isEmpty(apsGoodsForecastMakeBomUseDtoList)) {

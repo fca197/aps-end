@@ -13,10 +13,12 @@ import com.olivia.peanut.aps.api.entity.apsRoomConfig.ApsRoomConfigDto;
 import com.olivia.peanut.aps.mapper.ApsRoomMapper;
 import com.olivia.peanut.aps.model.ApsRoom;
 import com.olivia.peanut.aps.model.ApsRoomConfig;
+import com.olivia.peanut.aps.service.ApsProjectConfigService;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
 import com.olivia.peanut.aps.service.ApsRoomService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -29,6 +31,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,7 +58,9 @@ public class ApsRoomServiceImpl extends MPJBaseServiceImpl<ApsRoomMapper, ApsRoo
     List<ApsRoom> list = this.list(q);
 
     List<ApsRoomDto> dataList = list.stream().map(t -> $.copy(t, ApsRoomDto.class)).collect(Collectors.toList());
-    setName(dataList);
+//    setName(dataList);
+    ((ApsRoomServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsRoomQueryListRes().setDataList(dataList);
   }
 
@@ -77,10 +82,13 @@ public class ApsRoomServiceImpl extends MPJBaseServiceImpl<ApsRoomMapper, ApsRoo
     // 类型转换，  更换枚举 等操作
 
     List<ApsRoomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsRoomExportQueryPageListInfoRes.class);
-    setName(listInfoRes);
+//    setName(listInfoRes);
+    ((ApsRoomServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsRoomDto> apsRoomDtoList) {
     if (CollUtil.isEmpty(apsRoomDtoList)) {
       return;

@@ -11,6 +11,7 @@ import com.olivia.peanut.aps.api.entity.apsBomGroup.*;
 import com.olivia.peanut.aps.mapper.ApsBomGroupMapper;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,8 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
     List<ApsBomGroup> list = this.list(q);
 
     List<ApsBomGroupDto> dataList = list.stream().map(t -> $.copy(t, ApsBomGroupDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+//   //  this.setName(dataList);
+    ((ApsBomGroupService) AopContext.currentProxy()).setName(dataList);
     return new ApsBomGroupQueryListRes().setDataList(dataList);
   }
 
@@ -65,7 +68,9 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
     // 类型转换，  更换枚举 等操作
 
     List<ApsBomGroupExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsBomGroupExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+//   // this.setName(listInfoRes);
+    ((ApsBomGroupService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -92,6 +97,7 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
   }
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsBomGroupDto> apsBomGroupDtoList) {
 
     if (CollUtil.isEmpty(apsBomGroupDtoList)) {
@@ -105,11 +111,9 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
     MPJLambdaWrapper<ApsBomGroup> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getGroupCode()), ApsBomGroup::getGroupCode, obj.getGroupCode())
+      q.eq(StringUtils.isNoneBlank(obj.getGroupCode()), ApsBomGroup::getGroupCode, obj.getGroupCode())
           .eq(StringUtils.isNoneBlank(obj.getGroupName()), ApsBomGroup::getGroupName, obj.getGroupName())
-          .eq(Objects.nonNull(obj.getParentId()), ApsBomGroup::getParentId, obj.getParentId())
-          .eq(StringUtils.isNoneBlank(obj.getPathId()), ApsBomGroup::getPathId, obj.getPathId())
+          .eq(Objects.nonNull(obj.getParentId()), ApsBomGroup::getParentId, obj.getParentId()).eq(StringUtils.isNoneBlank(obj.getPathId()), ApsBomGroup::getPathId, obj.getPathId())
 
       ;
     }

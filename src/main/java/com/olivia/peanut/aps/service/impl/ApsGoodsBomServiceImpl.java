@@ -16,6 +16,7 @@ import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -28,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,7 +59,9 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
 
     List<ApsGoodsBomDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsBomDto.class)).collect(Collectors.toList());
 
-    this.setName(dataList);
+    ((ApsGoodsBomServiceImpl) AopContext.currentProxy()).setName(dataList);
+
+    //  this.setName(dataList);
     return new ApsGoodsBomQueryListRes().setDataList(dataList);
   }
 
@@ -79,10 +83,12 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
     // 类型转换，  更换枚举 等操作
 
     List<ApsGoodsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsBomExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsGoodsBomServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsGoodsBomDto> apsGoodsBomDtoList) {
     if (CollUtil.isEmpty(apsGoodsBomDtoList)) {
       return;

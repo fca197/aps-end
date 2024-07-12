@@ -9,7 +9,9 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsForecastMake.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsForecastMakeMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoodsForecastMake;
+import com.olivia.peanut.aps.service.ApsMakeCapacitySaleConfigService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsForecastMakeService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +45,9 @@ public class ApsOrderGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<Aps
     List<ApsOrderGoodsForecastMake> list = this.list(q);
 
     List<ApsOrderGoodsForecastMakeDto> dataList = list.stream().map(t -> $.copy(t, ApsOrderGoodsForecastMakeDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsOrderGoodsForecastMakeService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsOrderGoodsForecastMakeQueryListRes().setDataList(dataList);
   }
 
@@ -65,12 +70,15 @@ public class ApsOrderGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<Aps
     // 类型转换，  更换枚举 等操作
 
     List<ApsOrderGoodsForecastMakeExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsOrderGoodsForecastMakeExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+
+    ((ApsOrderGoodsForecastMakeService) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsOrderGoodsForecastMakeDto> apsOrderGoodsForecastMakeDtoList) {
 
     if (CollUtil.isEmpty(apsOrderGoodsForecastMakeDtoList)) {

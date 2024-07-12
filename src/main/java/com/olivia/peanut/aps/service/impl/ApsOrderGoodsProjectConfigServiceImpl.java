@@ -9,7 +9,9 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsProjectConfigMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoodsProjectConfig;
+import com.olivia.peanut.aps.service.ApsOrderGoodsForecastMakeService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsProjectConfigService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -18,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +44,9 @@ public class ApsOrderGoodsProjectConfigServiceImpl extends MPJBaseServiceImpl<Ap
     List<ApsOrderGoodsProjectConfig> list = this.list(q);
 
     List<ApsOrderGoodsProjectConfigDto> dataList = list.stream().map(t -> $.copy(t, ApsOrderGoodsProjectConfigDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+
+    ((ApsOrderGoodsProjectConfigService) AopContext.currentProxy()).setName(dataList);
     return new ApsOrderGoodsProjectConfigQueryListRes().setDataList(dataList);
   }
 
@@ -64,12 +69,16 @@ public class ApsOrderGoodsProjectConfigServiceImpl extends MPJBaseServiceImpl<Ap
     // 类型转换，  更换枚举 等操作
 
     List<ApsOrderGoodsProjectConfigExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsOrderGoodsProjectConfigExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+
+    ((ApsOrderGoodsProjectConfigService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsOrderGoodsProjectConfigDto> apsOrderGoodsProjectConfigDtoList) {
 
     if (CollUtil.isEmpty(apsOrderGoodsProjectConfigDtoList)) {

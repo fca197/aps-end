@@ -22,6 +22,7 @@ import com.olivia.peanut.aps.service.ApsProcessPathService;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -31,6 +32,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,7 +61,9 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
     List<ApsProcessPath> list = this.list(q);
 
     List<ApsProcessPathDto> dataList = list.stream().map(t -> $.copy(t, ApsProcessPathDto.class)).collect(Collectors.toList());
-    setName(dataList);
+//    setName(dataList);
+    ((ApsProcessPathServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsProcessPathQueryListRes().setDataList(dataList);
   }
 
@@ -81,10 +85,13 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
     // 类型转换，  更换枚举 等操作
 
     List<ApsProcessPathExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsProcessPathExportQueryPageListInfoRes.class);
-    setName(listInfoRes);
+//    setName(listInfoRes);
+    ((ApsProcessPathServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsProcessPathDto> apsProcessPathDtoList) {
     if (CollUtil.isEmpty(apsProcessPathDtoList)) {
       return;
@@ -141,10 +148,10 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
   @Override
   @Transactional
   public boolean removeByIds(Collection<?> list) {
-      super.removeByIds(list);
-      this.apsProcessPathRoomService.remove(new LambdaQueryWrapper<ApsProcessPathRoom>()
-          .in(ApsProcessPathRoom::getProcessPathId, list));
-      return  true;
+    super.removeByIds(list);
+    this.apsProcessPathRoomService.remove(new LambdaQueryWrapper<ApsProcessPathRoom>()
+        .in(ApsProcessPathRoom::getProcessPathId, list));
+    return true;
   }
 
   // 以下为私有对象封装

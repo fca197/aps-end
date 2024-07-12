@@ -9,7 +9,9 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersionCapacity.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionCapacityMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionCapacity;
+import com.olivia.peanut.aps.service.ApsSchedulingGoodsStatusDateService;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionCapacityService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -19,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +45,9 @@ public class ApsSchedulingVersionCapacityServiceImpl extends MPJBaseServiceImpl<
     List<ApsSchedulingVersionCapacity> list = this.list(q);
 
     List<ApsSchedulingVersionCapacityDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingVersionCapacityDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+//    this.setName(dataList);
+    ((ApsSchedulingVersionCapacityService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsSchedulingVersionCapacityQueryListRes().setDataList(dataList);
   }
 
@@ -65,12 +70,15 @@ public class ApsSchedulingVersionCapacityServiceImpl extends MPJBaseServiceImpl<
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingVersionCapacityExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingVersionCapacityExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsSchedulingVersionCapacityService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingVersionCapacityDto> apsSchedulingVersionCapacityDtoList) {
 
     if (CollUtil.isEmpty(apsSchedulingVersionCapacityDtoList)) {

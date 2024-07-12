@@ -13,6 +13,7 @@ import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.peanut.aps.service.ApsBomService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -24,6 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +51,9 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     List<ApsBom> list = this.list(q);
 
     List<ApsBomDto> dataList = list.stream().map(t -> $.copy(t, ApsBomDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+//   //  this.setName(dataList);
+    ((ApsBomService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsBomQueryListRes().setDataList(dataList);
   }
 
@@ -71,10 +75,11 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     // 类型转换，  更换枚举 等操作
 
     List<ApsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsBomExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    ((ApsBomService) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
 
     if (CollUtil.isEmpty(apsBomDtoList)) {
@@ -92,14 +97,12 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
           .eq(StringUtils.isNoneBlank(obj.getBomName()), ApsBom::getBomName, obj.getBomName())
           .eq(Objects.nonNull(obj.getBomCostPrice()), ApsBom::getBomCostPrice, obj.getBomCostPrice())
           .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
-          .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory())
-      ;
+          .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory());
       if (Objects.nonNull(obj.getGroupId())) {
         ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());
         if (Objects.nonNull(apsBomGroup)) {
           List<Long> idList = this.apsBomGroupService.list(
-                  new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId).likeRight(ApsBomGroup::getPathId, apsBomGroup.getPathId()))
-              .stream().map(BaseEntity::getId).toList();
+              new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId).likeRight(ApsBomGroup::getPathId, apsBomGroup.getPathId())).stream().map(BaseEntity::getId).toList();
           if (CollUtil.isNotEmpty(idList)) {
             q.in(ApsBom::getGroupId, idList);
           }

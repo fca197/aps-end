@@ -44,6 +44,7 @@ import com.olivia.peanut.portal.model.CalendarDay;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.CalendarDayService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
@@ -60,6 +61,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -179,7 +181,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     List<ApsSchedulingVersion> list = this.list(q);
 
     List<ApsSchedulingVersionDto> dataList = list.stream().map(t -> $.copy(t, ApsSchedulingVersionDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsSchedulingVersionServiceImpl) AopContext.currentProxy()).setName(dataList);
+
     return new ApsSchedulingVersionQueryListRes().setDataList(dataList);
   }
 
@@ -201,7 +205,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     // 类型转换，  更换枚举 等操作
 
     List<ApsSchedulingVersionExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingVersionExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    ((ApsSchedulingVersionServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -682,6 +686,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     return headerList;
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsSchedulingVersionDto> apsSchedulingVersionDtoList) {
     if (CollUtil.isEmpty(apsSchedulingVersionDtoList)) {
       return;

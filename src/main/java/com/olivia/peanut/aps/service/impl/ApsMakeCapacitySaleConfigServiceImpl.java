@@ -15,6 +15,7 @@ import com.olivia.peanut.aps.model.ApsMakeCapacitySaleConfig;
 import com.olivia.peanut.aps.model.ApsSaleConfig;
 import com.olivia.peanut.aps.service.ApsMakeCapacitySaleConfigService;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +53,9 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
     List<ApsMakeCapacitySaleConfig> list = this.list(q);
 
     List<ApsMakeCapacitySaleConfigDto> dataList = list.stream().map(t -> $.copy(t, ApsMakeCapacitySaleConfigDto.class)).collect(Collectors.toList());
-    this.setName(dataList);
+    //  this.setName(dataList);
+    ((ApsMakeCapacitySaleConfigService) AopContext.currentProxy()).setName(dataList);
+
     return new ApsMakeCapacitySaleConfigQueryListRes().setDataList(dataList);
   }
 
@@ -73,7 +77,9 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
     // 类型转换，  更换枚举 等操作
 
     List<ApsMakeCapacitySaleConfigExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsMakeCapacitySaleConfigExportQueryPageListInfoRes.class);
-    this.setName(listInfoRes);
+    // this.setName(listInfoRes);
+    ((ApsMakeCapacitySaleConfigService) AopContext.currentProxy()).setName(listInfoRes);
+
     return DynamicsPage.init(page, listInfoRes);
   }
 
@@ -124,6 +130,7 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
     return new ApsMakeCapacitySaleConfigInsertRes();
   }
 
+  @SetUserName
   public @Override void setName(List<? extends ApsMakeCapacitySaleConfigDto> apsMakeCapacitySaleConfigDtoList) {
 
     if (CollUtil.isEmpty(apsMakeCapacitySaleConfigDtoList)) {

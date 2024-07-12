@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.entity.apsStatus.*;
 import com.olivia.peanut.aps.mapper.ApsStatusMapper;
 import com.olivia.peanut.aps.model.ApsStatus;
 import com.olivia.peanut.aps.service.ApsStatusService;
+import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -68,6 +69,7 @@ public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, Ap
   }
 
 
+  @SetUserName
   public @Override void setName(List<? extends ApsStatusDto> apsStatusDtoList) {
 
   }

@@ -44,6 +44,8 @@ public class BaseEntityDto implements BaseCheck {
   @ExcelProperty("更新时间")
   private LocalDateTime updateTime;
   private Integer versionNum;
+  private String createUserName;
+  private String updateUserName;
 
   @Override
   public String toString() {
