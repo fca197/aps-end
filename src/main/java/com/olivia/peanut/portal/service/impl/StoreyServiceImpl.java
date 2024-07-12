@@ -82,7 +82,6 @@ public class StoreyServiceImpl extends MPJBaseServiceImpl<StoreyMapper, Storey> 
           .eq(Objects.nonNull(obj.getCreateBy()), Storey::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), Storey::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), Storey::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), Storey::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), Storey::getVersionNum, obj.getVersionNum())
       ;
     }

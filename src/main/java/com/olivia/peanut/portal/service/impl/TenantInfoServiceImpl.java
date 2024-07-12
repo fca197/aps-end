@@ -79,7 +79,6 @@ public class TenantInfoServiceImpl extends MPJBaseServiceImpl<TenantInfoMapper, 
           .eq(Objects.nonNull(obj.getCreateBy()), TenantInfo::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), TenantInfo::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), TenantInfo::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), TenantInfo::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getTenantId()), TenantInfo::getTenantId, obj.getTenantId())
           .orderByDesc(TenantInfo::getId)
       ;

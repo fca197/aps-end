@@ -84,7 +84,6 @@ public class ProcessLineServiceImpl extends MPJBaseServiceImpl<ProcessLineMapper
           .eq(Objects.nonNull(obj.getCreateBy()), ProcessLine::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), ProcessLine::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), ProcessLine::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), ProcessLine::getTraceId, obj.getTraceId())
           .orderByDesc(ProcessLine::getId)
       ;
     }

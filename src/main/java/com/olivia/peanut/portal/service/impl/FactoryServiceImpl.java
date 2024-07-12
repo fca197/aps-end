@@ -81,7 +81,6 @@ public class FactoryServiceImpl extends MPJBaseServiceImpl<FactoryMapper, Factor
           .eq(Objects.nonNull(obj.getCreateBy()), Factory::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), Factory::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), Factory::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), Factory::getTraceId, obj.getTraceId())
           .orderByDesc(Factory::getId)
       ;
     }

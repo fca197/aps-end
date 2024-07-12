@@ -71,9 +71,7 @@ public class CheckReportListServiceImpl extends MPJBaseServiceImpl<CheckReportLi
     MPJLambdaWrapper<CheckReportList> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getId()), CheckReportList::getId, obj.getId())
-          .eq(Objects.nonNull(obj.getTenantId()), CheckReportList::getTenantId, obj.getTenantId())
+      q.eq(Objects.nonNull(obj.getId()), CheckReportList::getId, obj.getId()).eq(Objects.nonNull(obj.getTenantId()), CheckReportList::getTenantId, obj.getTenantId())
           .eq(Objects.nonNull(obj.getFactoryId()), CheckReportList::getFactoryId, obj.getFactoryId())
           .eq(Objects.nonNull(obj.getReportId()), CheckReportList::getReportId, obj.getReportId())
           .eq(Objects.nonNull(obj.getPropertyId()), CheckReportList::getPropertyId, obj.getPropertyId())
@@ -82,7 +80,6 @@ public class CheckReportListServiceImpl extends MPJBaseServiceImpl<CheckReportLi
           .eq(Objects.nonNull(obj.getCreateBy()), CheckReportList::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), CheckReportList::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), CheckReportList::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), CheckReportList::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), CheckReportList::getVersionNum, obj.getVersionNum())
 
       ;
@@ -94,21 +91,9 @@ public class CheckReportListServiceImpl extends MPJBaseServiceImpl<CheckReportLi
   }
 
   private void setQueryListHeader(DynamicsPage<CheckReportList> page) {
-    page
-        .addHeader("id", "id")
-        .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "工厂ID")
-        .addHeader("reportId", "报表编码")
-        .addHeader("propertyId", "资产ID")
-        .addHeader("remark", "备注")
-        .addHeader("isDelete", "是否删除(0:否 1:是)")
-        .addHeader("createTime", "创建时间")
-        .addHeader("createBy", "创建人id")
-        .addHeader("updateTime", "更新时间")
-        .addHeader("updateBy", "更新人id")
-        .addHeader("traceId", "链路追踪ID")
-        .addHeader("version", "版本号")
-    ;
+    page.addHeader("id", "id").addHeader("tenantId", "所属租户id").addHeader("factoryId", "工厂ID").addHeader("reportId", "报表编码").addHeader("propertyId", "资产ID")
+        .addHeader("remark", "备注").addHeader("isDelete", "是否删除(0:否 1:是)").addHeader("createTime", "创建时间").addHeader("createBy", "创建人id")
+        .addHeader("updateTime", "更新时间").addHeader("updateBy", "更新人id").addHeader("traceId", "链路追踪ID").addHeader("version", "版本号");
   }
 
 

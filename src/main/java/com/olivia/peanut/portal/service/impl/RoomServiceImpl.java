@@ -83,7 +83,6 @@ public class RoomServiceImpl extends MPJBaseServiceImpl<RoomMapper, Room> implem
           .eq(Objects.nonNull(obj.getCreateBy()), Room::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), Room::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), Room::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), Room::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), Room::getVersionNum, obj.getVersionNum())
           .orderByDesc(Room::getId)
       ;

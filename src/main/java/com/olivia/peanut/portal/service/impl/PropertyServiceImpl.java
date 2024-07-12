@@ -116,7 +116,6 @@ public class PropertyServiceImpl extends MPJBaseServiceImpl<PropertyMapper, Prop
           .eq(Objects.nonNull(obj.getInUse()), Property::getInUse, obj.getInUse())
           .eq(Objects.nonNull(obj.getCreateTime()), Property::getCreateTime, obj.getCreateTime()).eq(Objects.nonNull(obj.getCreateBy()), Property::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), Property::getUpdateTime, obj.getUpdateTime()).eq(Objects.nonNull(obj.getUpdateBy()), Property::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), Property::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), Property::getVersionNum, obj.getVersionNum())
       ;
     }

@@ -17,12 +17,6 @@ import lombok.Setter;
 
 public class CheckReportListDto extends BaseEntityDto {
 
-
-  /***
-   *  所属租户id
-   */
-  @ExcelProperty("所属租户id")
-  private Long tenantId;
   /***
    *  工厂ID
    */

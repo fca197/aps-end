@@ -19,11 +19,7 @@ import lombok.Setter;
 public class TenantInfoDto extends BaseEntityDto {
 
 
-  /***
-   *  租户名称
-   */
-  @ExcelProperty("租户名称")
-  private String tenantName;
+
   /***
    *  租户编码
    */

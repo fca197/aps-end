@@ -20,11 +20,6 @@ public class FactoryDto extends BaseEntityDto {
 
 
   /***
-   *  所属租户id
-   */
-  @ExcelProperty("所属租户id")
-  private Long tenantId;
-  /***
    *  工厂名称
    */
   @ExcelProperty("工厂名称")

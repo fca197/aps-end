@@ -78,8 +78,6 @@ public class FileUploadServiceImpl extends MPJBaseServiceImpl<FileUploadMapper, 
           .eq(StringUtils.isNoneBlank(obj.getLocalFilePath()), FileUpload::getLocalFilePath, obj.getLocalFilePath())
           .eq(StringUtils.isNoneBlank(obj.getCloudFilePath()), FileUpload::getCloudFilePath, obj.getCloudFilePath())
           .eq(StringUtils.isNoneBlank(obj.getExpireTime()), FileUpload::getExpireTime, obj.getExpireTime())
-          .eq(StringUtils.isNoneBlank(obj.getCreateTime()), FileUpload::getCreateTime, obj.getCreateTime())
-          .eq(StringUtils.isNoneBlank(obj.getUpdateTime()), FileUpload::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getVersionNum()), FileUpload::getVersionNum, obj.getVersionNum())
           .orderByDesc(FileUpload::getId)
       ;

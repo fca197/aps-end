@@ -82,7 +82,6 @@ public class DictionaryServiceImpl extends MPJBaseServiceImpl<DictionaryMapper, 
           .eq(Objects.nonNull(obj.getCreateBy()), Dictionary::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), Dictionary::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), Dictionary::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), Dictionary::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), Dictionary::getVersionNum, obj.getVersionNum())
           .orderByDesc(Dictionary::getId)
       ;

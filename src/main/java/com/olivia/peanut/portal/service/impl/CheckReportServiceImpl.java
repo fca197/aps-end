@@ -102,7 +102,6 @@ public class CheckReportServiceImpl extends MPJBaseServiceImpl<CheckReportMapper
           .eq(Objects.nonNull(obj.getCreateBy()), CheckReport::getCreateBy, obj.getCreateBy())
           .eq(Objects.nonNull(obj.getUpdateTime()), CheckReport::getUpdateTime, obj.getUpdateTime())
           .eq(Objects.nonNull(obj.getUpdateBy()), CheckReport::getUpdateBy, obj.getUpdateBy())
-          .eq(StringUtils.isNoneBlank(obj.getTraceId()), CheckReport::getTraceId, obj.getTraceId())
           .eq(Objects.nonNull(obj.getVersionNum()), CheckReport::getVersionNum, obj.getVersionNum())
           .eq(Objects.nonNull(obj.getIsOver()), CheckReport::getIsOver, obj.getIsOver())
       ;

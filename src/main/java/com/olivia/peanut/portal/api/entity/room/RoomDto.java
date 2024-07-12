@@ -17,11 +17,7 @@ import lombok.Setter;
 
 public class RoomDto extends BaseEntityDto {
 
-  /***
-   *  所属租户id
-   */
-  @ExcelProperty("所属租户id")
-  private Long tenantId;
+
   /***
    *  所属工厂id
    */
