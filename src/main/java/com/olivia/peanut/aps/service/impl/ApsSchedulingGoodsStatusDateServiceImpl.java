@@ -9,7 +9,6 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsSchedulingGoodsStatusDate.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsStatusDateMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingGoodsStatusDate;
-import com.olivia.peanut.aps.service.ApsSchedulingGoodsBomTotalService;
 import com.olivia.peanut.aps.service.ApsSchedulingGoodsStatusDateService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
@@ -71,7 +70,6 @@ public class ApsSchedulingGoodsStatusDateServiceImpl extends MPJBaseServiceImpl<
     List<ApsSchedulingGoodsStatusDateExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSchedulingGoodsStatusDateExportQueryPageListInfoRes.class);
     // this.setName(listInfoRes);
     ((ApsSchedulingGoodsStatusDateService) AopContext.currentProxy()).setName(listInfoRes);
-
 
     return DynamicsPage.init(page, listInfoRes);
   }

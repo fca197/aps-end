@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.olivia.peanut.portal.service.CacheService;
-import jakarta.annotation.PostConstruct;
 import java.util.*;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,7 +21,7 @@ public class CacheServiceImpl implements CacheService {
   Timer timer = new Timer();
   private Map<String, CacheItem> cacheItemMap = Collections.synchronizedMap(new HashMap<>());
 
-//  @PostConstruct
+  //  @PostConstruct
   public void init() {
     timer.schedule(new TimerTask() {
       @Override

@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.storey;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class StoreyDto  extends BaseEntityDto {
+public class StoreyDto extends BaseEntityDto {
 
 
   /***
@@ -37,7 +36,6 @@ public class StoreyDto  extends BaseEntityDto {
    */
   @ExcelProperty("排序")
   private Integer storeySort;
-
 
 
 }

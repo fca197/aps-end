@@ -18,7 +18,7 @@ public class CalendarDayUpdateReq {
   @NotNull(message = "请选择日历")
   private Long id;
   @NotNull(message = "工作年份不能为空")
-  @Size(min = 1,max = 10,message = "年限范围为当前{max}年内")
+  @Size(min = 1, max = 10, message = "年限范围为当前{max}年内")
   private List<Integer> workYear;
   @NotNull(message = "工作日不能为空")
   private List<Integer> defaultWorkDayList;

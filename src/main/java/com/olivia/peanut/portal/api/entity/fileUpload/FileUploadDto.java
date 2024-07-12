@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @BelongDb(SQLITE)
-public class FileUploadDto  extends BaseEntityDto {
+public class FileUploadDto extends BaseEntityDto {
 
   @ExcelProperty("文件名称")
   private String fileName;

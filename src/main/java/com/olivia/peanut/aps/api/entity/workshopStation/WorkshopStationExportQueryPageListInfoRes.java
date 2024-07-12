@@ -2,8 +2,6 @@ package com.olivia.peanut.aps.api.entity.workshopStation;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalDateTime;
-import java.util.Base64;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -18,7 +16,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 
-public class WorkshopStationExportQueryPageListInfoRes  extends BaseEntityDto {
+public class WorkshopStationExportQueryPageListInfoRes extends BaseEntityDto {
 
 
   /***

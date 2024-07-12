@@ -9,7 +9,6 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsSaleConfigMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoodsSaleConfig;
-import com.olivia.peanut.aps.service.ApsOrderGoodsProjectConfigService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsSaleConfigService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;

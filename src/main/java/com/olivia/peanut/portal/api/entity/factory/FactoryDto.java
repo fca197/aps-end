@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.factory;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +33,6 @@ public class FactoryDto extends BaseEntityDto {
    */
   @ExcelProperty("工厂状态 ")
   private String factoryStatus;
-
 
 
 }

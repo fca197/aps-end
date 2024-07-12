@@ -19,7 +19,6 @@ import lombok.Setter;
 public class CheckReportDto extends BaseEntityDto {
 
 
-
   /***
    *  工厂ID
    */

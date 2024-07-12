@@ -1,7 +1,6 @@
 package com.olivia.peanut.portal.api.entity.factory;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;

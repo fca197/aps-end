@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +27,8 @@ public class GoodsQueryListRes {
 
   @Getter
   @Setter
-  public static class Info  extends BaseEntityDto {
+  public static class Info extends BaseEntityDto {
+
     /***
      *  品牌ID
      */

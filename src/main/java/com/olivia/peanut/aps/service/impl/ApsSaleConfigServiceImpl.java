@@ -71,7 +71,7 @@ public class ApsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsSaleConfigMa
     return DynamicsPage.init(page, listInfoRes);
   }
 
-//  @SetUserName
+  @SetUserName
   public @Override void setName(List<? extends ApsSaleConfigDto> apsSaleConfigDtoList) {
     if (CollUtil.isEmpty(apsSaleConfigDtoList)) {
       return;

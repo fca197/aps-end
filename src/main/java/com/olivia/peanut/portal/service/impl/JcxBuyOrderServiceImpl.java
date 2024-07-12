@@ -79,7 +79,7 @@ public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper
     }
     // 类型转换，  更换枚举 等操作
     List<JcxBuyOrderExportQueryPageListInfoRes> listInfoRes = $.copyList(records, JcxBuyOrderExportQueryPageListInfoRes.class);
-   // this.setName(listInfoRes);
+    // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 

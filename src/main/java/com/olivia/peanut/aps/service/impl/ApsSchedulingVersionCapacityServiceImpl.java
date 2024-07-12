@@ -9,7 +9,6 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersionCapacity.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionCapacityMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingVersionCapacity;
-import com.olivia.peanut.aps.service.ApsSchedulingGoodsStatusDateService;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionCapacityService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;

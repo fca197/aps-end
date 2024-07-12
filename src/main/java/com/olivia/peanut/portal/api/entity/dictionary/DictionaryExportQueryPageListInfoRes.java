@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.dictionary;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

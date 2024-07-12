@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.tenantInfo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,7 +16,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 
-public class TenantInfoExportQueryPageListInfoRes  extends BaseEntityDto {
+public class TenantInfoExportQueryPageListInfoRes extends BaseEntityDto {
 
   /***
    *  租户名称
@@ -29,7 +28,6 @@ public class TenantInfoExportQueryPageListInfoRes  extends BaseEntityDto {
    */
   @ExcelProperty("租户编码")
   private String tenantCode;
-
 
 
 }

@@ -42,7 +42,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
     List<DistrictCode> list = this.list(q);
 
     List<DistrictCodeDto> dataList = list.stream().map(t -> $.copy(t, DistrictCodeDto.class)).collect(Collectors.toList());
-   //  this.setName(dataList);
+    //  this.setName(dataList);
     return new DistrictCodeQueryListRes().setDataList(dataList);
   }
 
@@ -65,7 +65,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
     // 类型转换，  更换枚举 等操作
 
     List<DistrictCodeExportQueryPageListInfoRes> listInfoRes = $.copyList(records, DistrictCodeExportQueryPageListInfoRes.class);
-   // this.setName(listInfoRes);
+    // this.setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
 

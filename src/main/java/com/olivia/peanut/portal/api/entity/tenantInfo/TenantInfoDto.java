@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.api.entity.tenantInfo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +16,6 @@ import lombok.Setter;
 @Setter
 
 public class TenantInfoDto extends BaseEntityDto {
-
 
 
   /***

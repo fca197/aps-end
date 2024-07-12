@@ -11,7 +11,6 @@ import com.olivia.peanut.aps.api.entity.apsGoods.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsMapper;
 import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsProcessPath;
-import com.olivia.peanut.aps.service.ApsGoodsSaleProjectConfigService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsProcessPathService;
 import com.olivia.sdk.ann.SetUserName;
