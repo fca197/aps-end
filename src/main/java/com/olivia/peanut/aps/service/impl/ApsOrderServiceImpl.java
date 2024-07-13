@@ -17,15 +17,23 @@ import com.olivia.peanut.aps.api.entity.apsOrderGoods.ApsOrderGoodsDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoodsProjectConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
+import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListReq;
 import com.olivia.peanut.aps.mapper.ApsOrderMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
+import com.olivia.peanut.aps.utils.ProcessUtils;
+import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo;
+import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo.Info;
+import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.UserInfo;
 import jakarta.annotation.Resource;
@@ -41,6 +49,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,6 +87,10 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   @Resource
   @Lazy
   ApsOrderGoodsStatusDateService apsOrderGoodsStatusDateService;
+  @Autowired
+  ApsFactoryService apsFactoryService;
+  @Resource
+  PeanutProperties peanutProperties;
 
   public @Override ApsOrderQueryListRes queryList(ApsOrderQueryListReq req) {
 
@@ -252,6 +265,54 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     }
     return statusInfo;
   }
+
+  @Override
+  public ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req) {
+    ApsOrder apsOrder = this.getById(req.getOrderId());
+    $.requireNonNullCanIgnoreException(apsOrder, "订单不存在");
+    List<ApsOrderGoods> apsOrderGoods = apsOrderGoodsService.getApsOrderGoodsByOrderId(apsOrder.getId());
+    $.requireNonNullCanIgnoreException(apsOrderGoods, "订单商品不存在");
+    ApsOrderGoods orderGoods = apsOrderGoods.get(0);
+    ApsGoods apsGoods = apsGoodsService.getById(orderGoods.getId());
+    LocalDate now = LocalDate.now();
+    FactoryConfigRes factoryConfig = this.apsFactoryService.getFactoryConfig(
+        new FactoryConfigReq().setFactoryId(apsOrder.getFactoryId()).setGetPath(Boolean.TRUE).setWeekBeginDate(now)
+            .setWeekEndDate(now.plusDays(peanutProperties.getOrderStatusUpdateNeedDayCount())).setGetWeek(Boolean.TRUE).setGetShift(Boolean.TRUE)
+            .setNowDateTime(LocalDateTime.now()));
+    Long dayWorkSecond = factoryConfig.getDayWorkSecond();
+    Long dayWorkLastSecond = factoryConfig.getDayWorkLastSecond();
+    ApsProcessPathDto apsProcessPathDto = factoryConfig.getPathDtoMap().get(apsGoods.getProcessPathId());
+    ApsProcessPathInfo apsProcessPathInfo = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), factoryConfig.getWeekList(), req.getGoodsStatusId(),
+        dayWorkLastSecond, dayWorkSecond, Map.of(), LocalDate.now());
+    List<Info> dataList = apsProcessPathInfo.getDataList();
+
+    Map<Long, ApsOrderGoodsStatusDate> statusDateMap = this.apsOrderGoodsStatusDateService.listByOrderIdGoodsId(orderGoods.getOrderId(), apsGoods.getId()).stream()
+        .collect(Collectors.toMap(ApsOrderGoodsStatusDate::getGoodsStatusId, Function.identity()));
+
+    List<ApsOrderGoodsStatusDate> updateList = new ArrayList<>();
+    List<ApsOrderGoodsStatusDate> insertList = new ArrayList<>();
+    dataList.forEach(t -> {
+      ApsOrderGoodsStatusDate apsOrderGoodsStatusDate = statusDateMap.get(t.getStatusId());
+      if (Objects.nonNull(apsOrderGoodsStatusDate)) {
+        updateList.add(
+            apsOrderGoodsStatusDate.setExpectMakeEndTime(apsOrderGoodsStatusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(apsOrderGoodsStatusDate.getExpectMakeBeginTime()));
+      } else {
+        ApsOrderGoodsStatusDate statusDate = new ApsOrderGoodsStatusDate().setOrderId(req.getOrderId()).setGoodsStatusId(t.getStatusId()).setStatusIndex(t.getSortIndex())
+            .setFactoryId(apsOrder.getFactoryId()).setGoodsStatusId(t.getStatusId()).setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
+            .setGoodsId(apsGoods.getId());
+        insertList.add(statusDate);
+      }
+    });
+    if (CollUtil.isNotEmpty(insertList)) {
+      this.apsOrderGoodsStatusDateService.saveBatch(updateList);
+    }
+    if (CollUtil.isNotEmpty(updateList)) {
+      this.apsOrderGoodsStatusDateService.updateBatchById(updateList);
+    }
+
+    return new ApsOrderUpdateOrderStatusRes();
+  }
+
   // 以下为私有对象封装
 
   @SetUserName
@@ -295,8 +356,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
           .eq(Objects.nonNull(obj.getFinishPayedDatetime()), ApsOrder::getFinishPayedDatetime, obj.getFinishPayedDatetime())
           .eq(Objects.nonNull(obj.getMakeFinishDate()), ApsOrder::getMakeFinishDate, obj.getMakeFinishDate())
           .eq(Objects.nonNull(obj.getDeliveryDate()), ApsOrder::getDeliveryDate, obj.getDeliveryDate())
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsOrder::getFactoryId, obj.getFactoryId())
-      ;
+          .eq(Objects.nonNull(obj.getFactoryId()), ApsOrder::getFactoryId, obj.getFactoryId());
     }
     q.orderByDesc(ApsOrder::getUrgencyLevel).orderByDesc(ApsOrder::getId);
     return q;

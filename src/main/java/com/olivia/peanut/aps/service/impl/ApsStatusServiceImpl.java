@@ -14,10 +14,10 @@ import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("apsStatusService")
 @Transactional
-public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, ApsStatus> implements ApsStatusService {
+public class                                          ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, ApsStatus> implements ApsStatusService {
 
-  final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
+  final static Cache<String, List<ApsStatus>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
 
   public @Override ApsStatusQueryListRes queryList(ApsStatusQueryListReq req) {
@@ -72,6 +72,12 @@ public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, Ap
   @SetUserName
   public @Override void setName(List<? extends ApsStatusDto> apsStatusDtoList) {
 
+  }
+
+  @Override
+  @SneakyThrows
+  public List<ApsStatus> list() {
+    return cache.get("all", super::list);
   }
 
   // 以下为私有对象封装

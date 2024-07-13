@@ -30,14 +30,7 @@ public class ApsOrderGoodsStatusDate extends BaseEntity {
    *  订单状态
    */
   private Long goodsStatusId;
-  /***
-   *  期望制造时间
-   */
-  private LocalDate expectMakeTime;
-  /***
-   *  实际制造时间
-   */
-  private LocalDate actualMakeTime;
+
   /***
    *  工厂ID
    */

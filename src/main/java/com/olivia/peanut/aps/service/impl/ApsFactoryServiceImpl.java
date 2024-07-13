@@ -25,6 +25,7 @@ import com.olivia.sdk.utils.RunUtils;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -87,8 +88,10 @@ public class ApsFactoryServiceImpl implements ApsFactoryService {
             $.requireNonNullCanIgnoreException(shift, req.getFactoryName() + "排产版本工厂没有班次");
             return shiftItemService.list(new LambdaQueryWrapper<ShiftItem>().eq(ShiftItem::getShiftId, shift.getId()).orderByAsc(ShiftItem::getBeginTime));
           });
-          Long dayWorkSecond = ProcessUtils.getDayWorkSecond($.copyList(shiftItemList, ShiftItemVo.class));
-          res.setShiftItemList(shiftItemList).setDayWorkSecond(dayWorkSecond);
+          List<ShiftItemVo> shiftItemVoList = $.copyList(shiftItemList, ShiftItemVo.class);
+          Long dayWorkSecond = ProcessUtils.getDayWorkSecond(shiftItemVoList);
+          Long dayWorkLastSecond = ProcessUtils.getDayWorkLastSecond(shiftItemVoList, LocalTime.now());
+          res.setShiftItemList(shiftItemList).setDayWorkSecond(dayWorkSecond).setDayWorkLastSecond(dayWorkLastSecond);
         } catch (Exception e) {
           log.error("shiftItemList error {} error:{}", factoryId, e.getMessage(), e);
         }

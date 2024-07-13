@@ -2,6 +2,7 @@ package com.olivia.peanut.aps.service;
 
 import com.github.yulichang.base.MPJBaseService;
 import com.olivia.peanut.aps.api.entity.apsOrderGoods.*;
+import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsOrderGoods;
 import com.olivia.sdk.utils.DynamicsPage;
 import java.util.List;
@@ -20,5 +21,7 @@ public interface ApsOrderGoodsService extends MPJBaseService<ApsOrderGoods> {
 
 
   void setName(List<? extends ApsOrderGoodsDto> apsOrderGoodsDtoList);
+
+  public List<ApsOrderGoods> getApsOrderGoodsByOrderId(Long orderId);
 }
 

@@ -18,6 +18,7 @@ public interface ApsOrderGoodsStatusDateService extends MPJBaseService<ApsOrderG
 
   DynamicsPage<ApsOrderGoodsStatusDateExportQueryPageListInfoRes> queryPageList(ApsOrderGoodsStatusDateExportQueryPageListReq req);
 
+  List<ApsOrderGoodsStatusDate> listByOrderIdGoodsId(Long orderId, Long goodsId);
 
   void setName(List<? extends ApsOrderGoodsStatusDateDto> apsOrderGoodsStatusDateDtoList);
 }

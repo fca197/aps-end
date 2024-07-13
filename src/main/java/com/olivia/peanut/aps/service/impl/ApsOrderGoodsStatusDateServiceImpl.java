@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -97,6 +98,10 @@ public class ApsOrderGoodsStatusDateServiceImpl extends MPJBaseServiceImpl<ApsOr
     );
   }
 
+  @Override
+  public List<ApsOrderGoodsStatusDate> listByOrderIdGoodsId(Long orderId, Long goodsId) {
+    return this.list(new LambdaQueryWrapper<ApsOrderGoodsStatusDate>().eq(ApsOrderGoodsStatusDate::getOrderId, orderId).eq(ApsOrderGoodsStatusDate::getGoodsId, goodsId));
+  }
 
   private MPJLambdaWrapper<ApsOrderGoodsStatusDate> getWrapper(ApsOrderGoodsStatusDateDto obj) {
     MPJLambdaWrapper<ApsOrderGoodsStatusDate> q = new MPJLambdaWrapper<>();

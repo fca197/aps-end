@@ -75,4 +75,8 @@ public interface ApsOrderApi {
 
   @PostMapping("/apsOrder/timeLine")
   DynamicsPage<ApsOrderTimeLineRes> timeLine(@RequestBody @Valid ApsOrderTimeLineReq req);
+
+  @PostMapping("/apsOrder/updateOrderStatus")
+  ApsOrderUpdateOrderStatusRes updateOrderStatus(@RequestBody @Valid ApsOrderUpdateOrderStatusReq req);
+
 }

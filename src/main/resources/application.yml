@@ -36,7 +36,7 @@ peanut:
   aps:
     forecast-main-prefix: MAIN-
     forecast-main-suffix: 预测数据
-
+  orderStatusUpdateNeedDayCount: 60
 
 spring:
   boot:

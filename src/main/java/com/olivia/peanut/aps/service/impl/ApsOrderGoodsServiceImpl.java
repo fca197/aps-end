@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -87,6 +89,10 @@ public class ApsOrderGoodsServiceImpl extends MPJBaseServiceImpl<ApsOrderGoodsMa
     }
   }
 
+  @Override
+  public List<ApsOrderGoods> getApsOrderGoodsByOrderId(@NonNull Long orderId) {
+    return this.list(new LambdaQueryWrapper<ApsOrderGoods>().eq(ApsOrderGoods::getOrderId, orderId));
+  }
 
   private MPJLambdaWrapper<ApsOrderGoods> getWrapper(ApsOrderGoodsDto obj) {
     MPJLambdaWrapper<ApsOrderGoods> q = new MPJLambdaWrapper<>();

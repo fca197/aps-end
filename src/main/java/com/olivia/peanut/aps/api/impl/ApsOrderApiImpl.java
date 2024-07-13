@@ -102,4 +102,9 @@ public class ApsOrderApiImpl implements ApsOrderApi {
   public ApsOrderBatchInsertRes batchInsert(ApsOrderBatchInsertReq req) {
     return apsOrderService.saveBatch(req);
   }
+
+  @Override
+  public ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req) {
+    return this.apsOrderService.updateOrderStatus(req);
+  }
 }

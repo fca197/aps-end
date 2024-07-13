@@ -20,5 +20,6 @@ public interface ApsStatusService extends MPJBaseService<ApsStatus> {
 
 
   void setName(List<? extends ApsStatusDto> apsStatusDtoList);
+
 }
 
