@@ -100,7 +100,7 @@ public class ApsFactoryServiceImpl implements ApsFactoryService {
     if (TRUE.equals(req.getGetPath())) {
       runnableList.add(() -> {
         try {
-          Map<Long, ApsProcessPathDto> pathDtoMap = factoryPathCache.get(req.getFactoryName(),
+          Map<Long, ApsProcessPathDto> pathDtoMap = factoryPathCache.get(req.getFactoryId().toString(),
               () -> apsProcessPathService.queryList(new ApsProcessPathQueryListReq().setData(new ApsProcessPathDto().setFactoryId(factoryId).setIsDefault(req.getGetPathDefault())))
                   .getDataList().stream().collect(Collectors.toMap(BaseEntityDto::getId, Function.identity())));
           res.setPathDtoMap(pathDtoMap);

@@ -273,10 +273,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     List<ApsOrderGoods> apsOrderGoods = apsOrderGoodsService.getApsOrderGoodsByOrderId(apsOrder.getId());
     $.requireNonNullCanIgnoreException(apsOrderGoods, "订单商品不存在");
     ApsOrderGoods orderGoods = apsOrderGoods.get(0);
-    ApsGoods apsGoods = apsGoodsService.getById(orderGoods.getId());
+    ApsGoods apsGoods = apsGoodsService.getById(orderGoods.getGoodsId());
     LocalDate now = LocalDate.now();
+    Long factoryId = orderGoods.getFactoryId();
     FactoryConfigRes factoryConfig = this.apsFactoryService.getFactoryConfig(
-        new FactoryConfigReq().setFactoryId(apsOrder.getFactoryId()).setGetPath(Boolean.TRUE).setWeekBeginDate(now)
+        new FactoryConfigReq().setFactoryId(factoryId).setGetPath(Boolean.TRUE).setWeekBeginDate(now)
             .setWeekEndDate(now.plusDays(peanutProperties.getOrderStatusUpdateNeedDayCount())).setGetWeek(Boolean.TRUE).setGetShift(Boolean.TRUE)
             .setNowDateTime(LocalDateTime.now()));
     Long dayWorkSecond = factoryConfig.getDayWorkSecond();
@@ -298,7 +299,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
             apsOrderGoodsStatusDate.setExpectMakeEndTime(apsOrderGoodsStatusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(apsOrderGoodsStatusDate.getExpectMakeBeginTime()));
       } else {
         ApsOrderGoodsStatusDate statusDate = new ApsOrderGoodsStatusDate().setOrderId(req.getOrderId()).setGoodsStatusId(t.getStatusId()).setStatusIndex(t.getSortIndex())
-            .setFactoryId(apsOrder.getFactoryId()).setGoodsStatusId(t.getStatusId()).setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
+            .setFactoryId(factoryId).setGoodsStatusId(t.getStatusId()).setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
             .setGoodsId(apsGoods.getId());
         insertList.add(statusDate);
       }
