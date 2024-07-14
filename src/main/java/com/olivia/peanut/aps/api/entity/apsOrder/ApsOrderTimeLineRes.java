@@ -23,7 +23,7 @@ public class ApsOrderTimeLineRes extends ApsOrderDto {
 
     private Long statusId;
     private String statusName;
-//    private LocalDate beginDate;
+    private LocalDate beginDate;
 //    private LocalDate endDate;
     /*
     是否延期
