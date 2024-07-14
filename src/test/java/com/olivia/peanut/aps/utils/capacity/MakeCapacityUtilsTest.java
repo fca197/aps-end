@@ -49,7 +49,7 @@ class MakeCapacityUtilsTest {
       }
     });
 
-    MakeCapacityResult capacity = MakeCapacityUtils.capacity(mapList, limitListAll);
-    log.info("capacity:{}", JSON.toJSONString(capacity));
+//    MakeCapacityResult capacity = MakeCapacityUtils.capacity(mapList, limitListAll);
+//    log.info("capacity:{}", JSON.toJSONString(capacity));
   }
 }

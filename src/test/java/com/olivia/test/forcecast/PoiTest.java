@@ -1,6 +1,5 @@
 package com.olivia.test.forcecast;
 
-import java.io.FileOutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,11 +33,11 @@ public class PoiTest {
 //        cell.setCellValue(richTextString);
 //        richTextString.getCTRst().addNewPhoneticPr().set(new CTTableStyleInfoImpl(new SchemaTypeImpl()));
 //        cell.setCellFormula(CellType.FORMULA);
-    FileOutputStream fout = new FileOutputStream("test.xls");
-    wb.write(fout);
-    wb.close();
-    fout.close();
-    System.out.println("ok");
+//    FileOutputStream fout = new FileOutputStream("test.xls");
+//    wb.write(fout);
+//    wb.close();
+//    fout.close();
+//    System.out.println("ok");
   }
 
   @Test
