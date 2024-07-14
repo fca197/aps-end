@@ -44,6 +44,7 @@
            port: 6379
            password:
            redisson:
+             # 此处也需要修改
              file: classpath:redisson.yml
 ```
 
