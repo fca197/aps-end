@@ -1,4 +1,9 @@
-create table if not exists aps_bom
+
+create database if not exists peanut_prod;
+
+use peanut_prod;
+
+create table if not exists peanut_prod.aps_bom
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -17,13 +22,16 @@ create table if not exists aps_bom
     version_num         int        default 0                 null comment '版本号',
     group_id            bigint                               null comment '组ID'
 )
-    comment 'BOM 清单' engine = InnoDB;
+    comment 'BOM 清单';
 
+create index idx_aps_bom_tenant_id
+    on peanut_prod.aps_bom (tenant_id);
 
+create index idx_g_id
+    on peanut_prod.aps_bom (group_id)
+    comment '组';
 
--- comment on
-
-create table if not exists aps_bom_group
+create table if not exists peanut_prod.aps_bom_group
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -40,10 +48,12 @@ create table if not exists aps_bom_group
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '零件组配置' engine = InnoDB;
+    comment '零件组配置';
 
+create index id_tenant_id
+    on peanut_prod.aps_bom_group (tenant_id);
 
-create table if not exists aps_goods
+create table if not exists peanut_prod.aps_goods
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -61,11 +71,15 @@ create table if not exists aps_goods
     factory_id      bigint                               null comment '工厂ID',
     process_path_id bigint                               null comment '工艺路线'
 )
-    comment 'aps 商品表' engine = InnoDB;
+    comment 'aps 商品表';
 
+create index idx_aps_goods_factory_id
+    on peanut_prod.aps_goods (factory_id);
 
+create index idx_aps_goods_tenant_id
+    on peanut_prod.aps_goods (tenant_id);
 
-create table if not exists aps_goods_bom
+create table if not exists peanut_prod.aps_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -92,14 +106,22 @@ create table if not exists aps_goods_bom
     trace_id             varchar(64)                              null comment '调用链路',
     version_num          int            default 0                 null comment '版本号'
 )
-    comment 'BOM 清单' engine = InnoDB;
+    comment 'BOM 清单';
 
+create index idx_aps_goods_bom_factory_id
+    on peanut_prod.aps_goods_bom (factory_id);
 
+create index idx_aps_goods_bom_goods_id
+    on peanut_prod.aps_goods_bom (goods_id);
 
+create index idx_aps_goods_bom_tenant_id
+    on peanut_prod.aps_goods_bom (tenant_id);
 
--- comment on index
+create index idx_g_id
+    on peanut_prod.aps_goods_bom (group_id)
+    comment '组Id ';
 
-create table if not exists aps_goods_bom_buy_plan
+create table if not exists peanut_prod.aps_goods_bom_buy_plan
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -116,10 +138,12 @@ create table if not exists aps_goods_bom_buy_plan
     trace_id          varchar(64)                          null comment '调用链路',
     version_num       int        default 0                 null comment '版本号'
 )
-    comment 'BOM 购买计划' engine = InnoDB;
+    comment 'BOM 购买计划';
 
+create index idx_aps_goods_bom_plan_tenant_id
+    on peanut_prod.aps_goods_bom_buy_plan (tenant_id);
 
-create table if not exists aps_goods_bom_buy_plan_item
+create table if not exists peanut_prod.aps_goods_bom_buy_plan_item
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -142,12 +166,18 @@ create table if not exists aps_goods_bom_buy_plan_item
     version_num         int        default 0                 null comment '版本号',
     goods_bom_id        bigint                               not null comment '商品零件ID'
 )
-    comment 'BOM 购买清单' engine = InnoDB;
+    comment 'BOM 购买清单';
 
+create index idx_aps_goods_bom_buy_plan_item_buy_plan_id_index
+    on peanut_prod.aps_goods_bom_buy_plan_item (buy_plan_id);
 
+create index idx_aps_goods_bom_plan_item_factory_id
+    on peanut_prod.aps_goods_bom_buy_plan_item (bom_id);
 
+create index idx_aps_goods_bom_plan_item_tenant_id
+    on peanut_prod.aps_goods_bom_buy_plan_item (tenant_id);
 
-create table if not exists aps_goods_forecast
+create table if not exists peanut_prod.aps_goods_forecast
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -168,11 +198,15 @@ create table if not exists aps_goods_forecast
     months              text                                 null,
     forecast_status     tinyint                              null
 )
-    comment '预测表' engine = InnoDB;
+    comment '预测表';
 
+create index idx_aps_goods_forecast_goods_id
+    on peanut_prod.aps_goods_forecast (goods_id);
 
+create index idx_aps_goods_forecast_tenant_id
+    on peanut_prod.aps_goods_forecast (tenant_id);
 
-create table if not exists aps_goods_forecast_compute_sale_data
+create table if not exists peanut_prod.aps_goods_forecast_compute_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -201,11 +235,15 @@ create table if not exists aps_goods_forecast_compute_sale_data
     version_num      int        default 0                 null comment '版本号',
     sale_config_code varchar(255)                         null
 )
-    comment '预测计算销售数据' engine = InnoDB;
+    comment '预测计算销售数据';
 
+create index idx_aps_goods_forecast_compute_sale_data_forecast_id
+    on peanut_prod.aps_goods_forecast_compute_sale_data (forecast_id);
 
+create index idx_aps_goods_forecast_compute_sale_data_tenant_id
+    on peanut_prod.aps_goods_forecast_compute_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_main
+create table if not exists peanut_prod.aps_goods_forecast_main
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -226,12 +264,18 @@ create table if not exists aps_goods_forecast_main
     months              varchar(255)                         null,
     factory_id          bigint                               null comment '工厂ID'
 )
-    comment '预测主表' engine = InnoDB;
+    comment '预测主表';
 
+create index idx_aps_goods_forecast_main_factory_id
+    on peanut_prod.aps_goods_forecast_main (factory_id);
 
+create index idx_aps_goods_forecast_main_goods_id
+    on peanut_prod.aps_goods_forecast_main (goods_id);
 
+create index idx_aps_goods_forecast_main_tenant_id
+    on peanut_prod.aps_goods_forecast_main (tenant_id);
 
-create table if not exists aps_goods_forecast_main_goods_data
+create table if not exists peanut_prod.aps_goods_forecast_main_goods_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -259,9 +303,9 @@ create table if not exists aps_goods_forecast_main_goods_data
     version_num      int        default 0                 null comment '版本号',
     forecast_main_id bigint                               null
 )
-    comment '预测商品数据' engine = InnoDB;
+    comment '预测商品数据';
 
-create table if not exists aps_goods_forecast_main_make
+create table if not exists peanut_prod.aps_goods_forecast_main_make
 (
     id                            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -280,12 +324,18 @@ create table if not exists aps_goods_forecast_main_make
     trace_id                      varchar(64)                          null comment '调用链路',
     version_num                   int        default 0                 null comment '版本号'
 )
-    comment '预测生产主表' engine = InnoDB;
+    comment '预测生产主表';
 
+create index idx_aps_goods_forecast_main_make_factory_id
+    on peanut_prod.aps_goods_forecast_main_make (factory_id);
 
+create index idx_aps_goods_forecast_main_make_goods_id
+    on peanut_prod.aps_goods_forecast_main_make (goods_id);
 
+create index idx_aps_goods_forecast_main_make_tenant_id
+    on peanut_prod.aps_goods_forecast_main_make (tenant_id);
 
-create table if not exists aps_goods_forecast_main_make_sale_data
+create table if not exists peanut_prod.aps_goods_forecast_main_make_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -669,13 +719,21 @@ create table if not exists aps_goods_forecast_main_make_sale_data
     trace_id         varchar(64)                          null comment '调用链路',
     version_num      int        default 0                 null comment '版本号'
 )
-    comment '商品预测主表-销售数据' engine = InnoDB;
+    comment '商品预测主表-销售数据';
 
+create index idx_aps_goods_forecast_main_make_sale_data_factory_id
+    on peanut_prod.aps_goods_forecast_main_make_sale_data (factory_id);
 
+create index idx_aps_goods_forecast_main_make_sale_data_goods_id
+    on peanut_prod.aps_goods_forecast_main_make_sale_data (goods_id);
 
+create index idx_aps_goods_forecast_main_make_sale_data_main_make_id
+    on peanut_prod.aps_goods_forecast_main_make_sale_data (main_make_id);
 
+create index idx_aps_goods_forecast_main_make_sale_data_tenant_id
+    on peanut_prod.aps_goods_forecast_main_make_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_main_sale_data
+create table if not exists peanut_prod.aps_goods_forecast_main_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -704,12 +762,18 @@ create table if not exists aps_goods_forecast_main_sale_data
     version_num      int        default 0                 null comment '版本号',
     forecast_main_id bigint                               null
 )
-    comment '商品预测主表-销售数据' engine = InnoDB;
+    comment '商品预测主表-销售数据';
 
+create index idx_aps_goods_forecast_main_sale_data_forecast_main_id
+    on peanut_prod.aps_goods_forecast_main_sale_data (forecast_main_id);
 
+create index idx_aps_goods_forecast_main_sale_data_goods_id
+    on peanut_prod.aps_goods_forecast_main_sale_data (goods_id);
 
+create index idx_aps_goods_forecast_main_sale_data_tenant_id
+    on peanut_prod.aps_goods_forecast_main_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_make
+create table if not exists peanut_prod.aps_goods_forecast_make
 (
     id                             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -734,13 +798,21 @@ create table if not exists aps_goods_forecast_make
     bom_use_begin_date             varchar(255)                         null,
     bom_use_end_date               varchar(255)                         null
 )
-    comment '商品预测-制造' engine = InnoDB;
+    comment '商品预测-制造';
 
+create index idx_aps_goods_forecast_make_factory_id
+    on peanut_prod.aps_goods_forecast_make (factory_id);
 
+create index idx_aps_goods_forecast_make_forecast_main_id
+    on peanut_prod.aps_goods_forecast_make (forecast_main_id);
 
+create index idx_aps_goods_forecast_make_goods_id
+    on peanut_prod.aps_goods_forecast_make (goods_id);
 
+create index idx_aps_goods_forecast_make_tenant_id
+    on peanut_prod.aps_goods_forecast_make (tenant_id);
 
-create table if not exists aps_goods_forecast_make_bom_use
+create table if not exists peanut_prod.aps_goods_forecast_make_bom_use
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1125,13 +1197,21 @@ create table if not exists aps_goods_forecast_make_bom_use
     version_num         varchar(255) default '0'               null comment '版本号',
     make_sale_config_id bigint                                 null
 )
-    comment '商品预测-生产BOM使用' engine = InnoDB;
+    comment '商品预测-生产BOM使用';
 
+create index idx_aps_goods_forecast_make_bom_use_bom_id
+    on peanut_prod.aps_goods_forecast_make_bom_use (bom_id);
 
+create index idx_aps_goods_forecast_make_bom_use_factory_id
+    on peanut_prod.aps_goods_forecast_make_bom_use (factory_id);
 
+create index idx_aps_goods_forecast_make_bom_use_make_month_id
+    on peanut_prod.aps_goods_forecast_make_bom_use (make_month_id);
 
+create index idx_aps_goods_forecast_make_bom_use_tenant_id
+    on peanut_prod.aps_goods_forecast_make_bom_use (tenant_id);
 
-create table if not exists aps_goods_forecast_make_project_data
+create table if not exists peanut_prod.aps_goods_forecast_make_project_data
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1516,12 +1596,18 @@ create table if not exists aps_goods_forecast_make_project_data
     version_num         int        default 0                 null comment '版本号',
     make_sale_config_id bigint                               null
 )
-    comment '预测数据' engine = InnoDB;
+    comment '预测数据';
 
+create index idx_aps_goods_forecast_make_project_data_make_month_id
+    on peanut_prod.aps_goods_forecast_make_project_data (make_month_id);
 
+create index idx_aps_goods_forecast_make_project_data_make_sale_config_id
+    on peanut_prod.aps_goods_forecast_make_project_data (make_sale_config_id);
 
+create index idx_aps_goods_forecast_make_project_data_tenant_id
+    on peanut_prod.aps_goods_forecast_make_project_data (tenant_id);
 
-create table if not exists aps_goods_forecast_make_sale_data
+create table if not exists peanut_prod.aps_goods_forecast_make_sale_data
 (
     id               bigint                               null,
     goods_id         bigint                               null comment '商品ID',
@@ -1908,13 +1994,21 @@ create table if not exists aps_goods_forecast_make_sale_data
     forecast_status  int                                  null,
     week_num01_0     int                                  null
 )
-    comment '预测数据' engine = InnoDB;
+    comment '预测数据';
 
+create index idx_aps_goods_forecast_make_sale_data_factory_id
+    on peanut_prod.aps_goods_forecast_make_sale_data (factory_id);
 
+create index idx_aps_goods_forecast_make_sale_data_goods_id
+    on peanut_prod.aps_goods_forecast_make_sale_data (goods_id);
 
+create index idx_aps_goods_forecast_make_sale_data_make_month_id
+    on peanut_prod.aps_goods_forecast_make_sale_data (make_month_id);
 
+create index idx_aps_goods_forecast_make_sale_data_tenant_id
+    on peanut_prod.aps_goods_forecast_make_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_user_goods_data
+create table if not exists peanut_prod.aps_goods_forecast_user_goods_data
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1940,12 +2034,15 @@ create table if not exists aps_goods_forecast_user_goods_data
     update_by   bigint                               null comment '修改人',
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
-)
-    engine = InnoDB;
+);
 
+create index idx_aps_goods_forecast_user_goods_data_forecast_id
+    on peanut_prod.aps_goods_forecast_user_goods_data (forecast_id);
 
+create index idx_aps_goods_forecast_user_goods_data_tenant_id
+    on peanut_prod.aps_goods_forecast_user_goods_data (tenant_id);
 
-create table if not exists aps_goods_forecast_user_sale_data
+create table if not exists peanut_prod.aps_goods_forecast_user_sale_data
 (
     id             bigint                               null,
     forecast_id    bigint                               null,
@@ -1972,12 +2069,18 @@ create table if not exists aps_goods_forecast_user_sale_data
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '预测数据' engine = InnoDB;
+    comment '预测数据';
 
+create index idx_aps_goods_forecast_user_sale_data_forecast_id
+    on peanut_prod.aps_goods_forecast_user_sale_data (forecast_id);
 
+create index idx_aps_goods_forecast_user_sale_data_sale_config_id
+    on peanut_prod.aps_goods_forecast_user_sale_data (sale_config_id);
 
+create index idx_aps_goods_forecast_user_sale_data_tenant_id
+    on peanut_prod.aps_goods_forecast_user_sale_data (tenant_id);
 
-create table if not exists aps_goods_sale_item
+create table if not exists peanut_prod.aps_goods_sale_item
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1995,12 +2098,18 @@ create table if not exists aps_goods_sale_item
     supplier_status varchar(255)                         null,
     version_num     int        default 0                 null comment '版本号'
 )
-    comment '商品销售配置' engine = InnoDB;
+    comment '商品销售配置';
 
+create index idx_aps_goods_sale_item_goods_id
+    on peanut_prod.aps_goods_sale_item (goods_id);
 
+create index idx_aps_goods_sale_item_sale_config_id
+    on peanut_prod.aps_goods_sale_item (sale_config_id);
 
+create index idx_aps_goods_sale_item_tenant_id
+    on peanut_prod.aps_goods_sale_item (tenant_id);
 
-create table if not exists aps_goods_sale_project_config
+create table if not exists peanut_prod.aps_goods_sale_project_config
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2023,16 +2132,30 @@ create table if not exists aps_goods_sale_project_config
     version_num              int        default 0                 null comment '版本号',
     current_index            tinyint                              null
 )
-    comment '项目配置' engine = InnoDB;
+    comment '项目配置';
 
+create index idx_aps_goods_sale_project_config_factory_id
+    on peanut_prod.aps_goods_sale_project_config (factory_id);
 
+create index idx_aps_goods_sale_project_config_goods_id
+    on peanut_prod.aps_goods_sale_project_config (goods_id);
 
+create index idx_aps_goods_sale_project_config_project_config_id
+    on peanut_prod.aps_goods_sale_project_config (project_config_id);
 
+create index idx_aps_goods_sale_project_config_project_config_parent_id
+    on peanut_prod.aps_goods_sale_project_config (project_config_parent_id);
 
+create index idx_aps_goods_sale_project_config_sale_config_id
+    on peanut_prod.aps_goods_sale_project_config (sale_config_id);
 
+create index idx_aps_goods_sale_project_config_sale_config_parent_id
+    on peanut_prod.aps_goods_sale_project_config (sale_config_parent_id);
 
+create index idx_aps_goods_sale_project_config_tenant_id
+    on peanut_prod.aps_goods_sale_project_config (tenant_id);
 
-create table if not exists aps_make_capacity_factory
+create table if not exists peanut_prod.aps_make_capacity_factory
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2111,11 +2234,15 @@ create table if not exists aps_make_capacity_factory
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能' engine = InnoDB;
+    comment '工厂产能';
 
+create index idx_aps_make_capacity_factory_factory_id
+    on peanut_prod.aps_make_capacity_factory (factory_id);
 
+create index idx_aps_make_capacity_factory_tenant_id
+    on peanut_prod.aps_make_capacity_factory (tenant_id);
 
-create table if not exists aps_make_capacity_goods
+create table if not exists peanut_prod.aps_make_capacity_goods
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2195,11 +2322,15 @@ create table if not exists aps_make_capacity_goods
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能商品' engine = InnoDB;
+    comment '工厂产能商品';
 
+create index idx_aps_make_capacity_goods_goods_id
+    on peanut_prod.aps_make_capacity_goods (goods_id);
 
+create index idx_aps_make_capacity_goods_tenant_id
+    on peanut_prod.aps_make_capacity_goods (tenant_id);
 
-create table if not exists aps_make_capacity_sale_config
+create table if not exists peanut_prod.aps_make_capacity_sale_config
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2278,16 +2409,20 @@ create table if not exists aps_make_capacity_sale_config
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '工厂产能销售配置' engine = InnoDB;
+    comment '工厂产能销售配置';
 
+create index idx_aps_make_capacity_sale_config_sale_config_id
+    on peanut_prod.aps_make_capacity_sale_config (sale_config_id);
 
+create index idx_aps_make_capacity_sale_config_tenant_id
+    on peanut_prod.aps_make_capacity_sale_config (tenant_id);
 
-create table if not exists aps_order
+create table if not exists peanut_prod.aps_order
 (
     id                    bigint                               null,
     order_no              varchar(255)                         null,
     order_remark          varchar(255)                         null,
-    order_status          tinyint                              null,
+    order_status          bigint                               null comment '订单状态',
     order_total_price     decimal(15, 6)                       null comment '成本价',
     goods_id              bigint                               null comment '商品ID',
     reserve_amount        decimal(15, 6)                       null comment '总价',
@@ -2304,12 +2439,15 @@ create table if not exists aps_order
     update_time           datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
     update_by             bigint                               null comment '修改人',
     trace_id              varchar(64)                          null comment '调用链路',
-    version_num           int        default 0                 null comment '版本号'
+    version_num           int        default 0                 null comment '版本号',
+    urgency_level         int        default 0                 null comment '紧急度0最小,越大越紧急'
 )
-    comment '订单表' engine = InnoDB;
+    comment '订单表';
 
+create index idx_aps_order_tenant_id
+    on peanut_prod.aps_order (tenant_id);
 
-create table if not exists aps_order_goods
+create table if not exists peanut_prod.aps_order_goods
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2334,13 +2472,21 @@ create table if not exists aps_order_goods
     trace_id               varchar(64)                          null comment '调用链路',
     version_num            int        default 0                 null comment '版本号'
 )
-    comment '订单商品表' engine = InnoDB;
+    comment '订单商品表';
 
+create index idx_aps_order_goods_factory_id
+    on peanut_prod.aps_order_goods (factory_id);
 
+create index idx_aps_order_goods_goods_id
+    on peanut_prod.aps_order_goods (goods_id);
 
+create index idx_aps_order_goods_order_id
+    on peanut_prod.aps_order_goods (order_id);
 
+create index idx_aps_order_goods_tenant_id
+    on peanut_prod.aps_order_goods (tenant_id);
 
-create table if not exists aps_order_goods_bom
+create table if not exists peanut_prod.aps_order_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2366,13 +2512,21 @@ create table if not exists aps_order_goods_bom
     trace_id             varchar(64)                          null comment '调用链路',
     version_num          int        default 0                 null comment '版本号'
 )
-    comment '订单商品零件表' engine = InnoDB;
+    comment '订单商品零件表';
 
+create index idx_aps_order_goods_bom_factory_id
+    on peanut_prod.aps_order_goods_bom (factory_id);
 
+create index idx_aps_order_goods_bom_goods_id
+    on peanut_prod.aps_order_goods_bom (goods_id);
 
+create index idx_aps_order_goods_bom_order_id
+    on peanut_prod.aps_order_goods_bom (order_id);
 
+create index idx_aps_order_goods_bom_tenant_id
+    on peanut_prod.aps_order_goods_bom (tenant_id);
 
-create table if not exists aps_order_goods_forecast_make
+create table if not exists peanut_prod.aps_order_goods_forecast_make
 (
     id                 bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2391,13 +2545,21 @@ create table if not exists aps_order_goods_forecast_make
     trace_id           varchar(64)                          null comment '调用链路',
     version_num        int        default 0                 null comment '版本号'
 )
-    comment '订单商品节点预测表' engine = InnoDB;
+    comment '订单商品节点预测表';
 
+create index idx_aps_order_goods_factory_id
+    on peanut_prod.aps_order_goods_forecast_make (factory_id);
 
+create index idx_aps_order_goods_goods_id
+    on peanut_prod.aps_order_goods_forecast_make (goods_id);
 
+create index idx_aps_order_goods_order_id
+    on peanut_prod.aps_order_goods_forecast_make (order_id);
 
+create index idx_aps_order_goods_tenant_id
+    on peanut_prod.aps_order_goods_forecast_make (tenant_id);
 
-create table if not exists aps_order_goods_project_config
+create table if not exists peanut_prod.aps_order_goods_project_config
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2414,9 +2576,9 @@ create table if not exists aps_order_goods_project_config
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '订单商品项目配置表' engine = InnoDB;
+    comment '订单商品项目配置表';
 
-create table if not exists aps_order_goods_sale_config
+create table if not exists peanut_prod.aps_order_goods_sale_config
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2433,22 +2595,30 @@ create table if not exists aps_order_goods_sale_config
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '订单商品销售配置表' engine = InnoDB;
+    comment '订单商品销售配置表';
 
+create index idx_aps_order_goods_sale_config_config_id
+    on peanut_prod.aps_order_goods_sale_config (config_id);
 
+create index idx_aps_order_goods_sale_config_factory_id
+    on peanut_prod.aps_order_goods_sale_config (factory_id);
 
+create index idx_aps_order_goods_sale_config_goods_id
+    on peanut_prod.aps_order_goods_sale_config (goods_id);
 
+create index idx_aps_order_goods_sale_config_order_id
+    on peanut_prod.aps_order_goods_sale_config (order_id);
 
+create index idx_aps_order_goods_sale_config_tenant_id
+    on peanut_prod.aps_order_goods_sale_config (tenant_id);
 
-create table if not exists aps_order_goods_status_date
+create table if not exists peanut_prod.aps_order_goods_status_date
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
     order_id               bigint                               null,
     goods_id               bigint                               null comment '商品ID',
     goods_status_id        bigint                               null comment '订单状态',
-    expect_make_time       date                                 null comment '期望制造时间',
-    actual_make_time       date                                 null comment '实际制造时间',
     factory_id             bigint                               null comment '工厂ID',
     tenant_id              bigint                               null comment '租户ID',
     is_delete              tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
@@ -2461,14 +2631,18 @@ create table if not exists aps_order_goods_status_date
     status_index           int        default 0                 null comment '状态索引',
     expect_make_begin_time date                                 null comment '预计开始时间',
     expect_make_end_time   date                                 null comment '预计结束时间',
-    actual_make_begin_time date                                 null comment '实际开始时间',
-    actual_make_end_time   date                                 null comment '实际结束时间'
+    actual_make_begin_time datetime                             null comment '实际开始时间',
+    actual_make_end_time   datetime                             null comment '实际结束时间'
 )
-    comment '订单商品状态表' engine = InnoDB;
+    comment '订单商品状态表';
 
+create index idx_order_goods_id
+    on peanut_prod.aps_order_goods_status_date (goods_id);
 
+create index idx_order_id
+    on peanut_prod.aps_order_goods_status_date (order_id);
 
-create table if not exists aps_order_user
+create table if not exists peanut_prod.aps_order_user
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2492,11 +2666,15 @@ create table if not exists aps_order_user
     trace_id      varchar(64)                          null comment '调用链路',
     version_num   int        default 0                 null comment '版本号'
 )
-    comment '订单用户表' engine = InnoDB;
+    comment '订单用户表';
 
+create index idx_aps_order_user_order_id
+    on peanut_prod.aps_order_user (order_id);
 
+create index idx_aps_order_user_tenant_id
+    on peanut_prod.aps_order_user (tenant_id);
 
-create table if not exists aps_process_path
+create table if not exists peanut_prod.aps_process_path
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2514,11 +2692,15 @@ create table if not exists aps_process_path
     trace_id            varchar(64)                          null comment '调用链路',
     version_num         int        default 0                 null comment '版本号'
 )
-    comment '流程路径表' engine = InnoDB;
+    comment '流程路径表';
 
+create index idx_aps_process_path_factory_id
+    on peanut_prod.aps_process_path (factory_id);
 
+create index idx_aps_process_path_tenant_id
+    on peanut_prod.aps_process_path (tenant_id);
 
-create table if not exists aps_process_path_room
+create table if not exists peanut_prod.aps_process_path_room
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2534,12 +2716,18 @@ create table if not exists aps_process_path_room
     trace_id        varchar(64)                          null comment '调用链路',
     version_num     int        default 0                 null comment '版本号'
 )
-    comment '流程路径房间表' engine = InnoDB;
+    comment '流程路径房间表';
 
+create index idx_aps_process_path_room_process_path_id
+    on peanut_prod.aps_process_path_room (process_path_id);
 
+create index idx_aps_process_path_room_room_id
+    on peanut_prod.aps_process_path_room (room_id);
 
+create index idx_aps_process_path_room_tenant_id
+    on peanut_prod.aps_process_path_room (tenant_id);
 
-create table if not exists aps_project_config
+create table if not exists peanut_prod.aps_project_config
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2557,11 +2745,15 @@ create table if not exists aps_project_config
     is_value        tinyint                              null,
     parent_id       bigint                               null
 )
-    comment '项目配置表' engine = InnoDB;
+    comment '项目配置表';
 
+create index idx_aps_project_config_parent_id
+    on peanut_prod.aps_project_config (parent_id);
 
+create index idx_aps_project_config_tenant_id
+    on peanut_prod.aps_project_config (tenant_id);
 
-create table if not exists aps_room
+create table if not exists peanut_prod.aps_room
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2577,11 +2769,15 @@ create table if not exists aps_room
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '房间配置表' engine = InnoDB;
+    comment '房间配置表';
 
+create index idx_aps_room_factory_id
+    on peanut_prod.aps_room (factory_id);
 
+create index idx_aps_room_tenant_id
+    on peanut_prod.aps_room (tenant_id);
 
-create table if not exists aps_room_config
+create table if not exists peanut_prod.aps_room_config
 (
     id           bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2600,14 +2796,24 @@ create table if not exists aps_room_config
     version_num  int        default 0                 null comment '版本号',
     status_id    bigint                               null
 )
-    comment '房间配置表' engine = InnoDB;
+    comment '房间配置表';
 
+create index idx_aps_room_config_room_id
+    on peanut_prod.aps_room_config (room_id);
 
+create index idx_aps_room_config_section_id
+    on peanut_prod.aps_room_config (section_id);
 
+create index idx_aps_room_config_station_id
+    on peanut_prod.aps_room_config (station_id);
 
+create index idx_aps_room_config_status_id
+    on peanut_prod.aps_room_config (status_id);
 
+create index idx_aps_room_config_tenant_id
+    on peanut_prod.aps_room_config (tenant_id);
 
-create table if not exists aps_sale_config
+create table if not exists peanut_prod.aps_sale_config
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2625,11 +2831,15 @@ create table if not exists aps_sale_config
     is_value        tinyint                              null,
     parent_id       bigint                               null
 )
-    comment '销售配置表' engine = InnoDB;
+    comment '销售配置表';
 
+create index idx_aps_sale_config_parent_id
+    on peanut_prod.aps_sale_config (parent_id);
 
+create index idx_aps_sale_config_tenant_id
+    on peanut_prod.aps_sale_config (tenant_id);
 
-create table if not exists aps_scheduling_constraints
+create table if not exists peanut_prod.aps_scheduling_constraints
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2646,10 +2856,12 @@ create table if not exists aps_scheduling_constraints
     trace_id            varchar(64)                          null comment '调用链路',
     version_num         int        default 0                 null comment '版本号'
 )
-    comment '排产约束表' engine = InnoDB;
+    comment '排产约束表';
 
+create index idx_aps_scheduling_constraints_tenant_id
+    on peanut_prod.aps_scheduling_constraints (tenant_id);
 
-create table if not exists aps_scheduling_goods_bom
+create table if not exists peanut_prod.aps_scheduling_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2677,13 +2889,21 @@ create table if not exists aps_scheduling_goods_bom
     version_num          int        default 0                 null comment '版本号',
     goods_bom_id         bigint                               null comment '商品bom表id'
 )
-    comment '订单商品零件表' engine = InnoDB;
+    comment '订单商品零件表';
 
+create index idx_aps_scheduling_goods_bom_factory_id
+    on peanut_prod.aps_scheduling_goods_bom (factory_id);
 
+create index idx_aps_scheduling_goods_bom_goods_id
+    on peanut_prod.aps_scheduling_goods_bom (goods_id);
 
+create index idx_aps_scheduling_goods_bom_scheduling_id
+    on peanut_prod.aps_scheduling_goods_bom (scheduling_id);
 
+create index idx_aps_scheduling_goods_bom_tenant_id
+    on peanut_prod.aps_scheduling_goods_bom (tenant_id);
 
-create table if not exists aps_scheduling_goods_bom_total
+create table if not exists peanut_prod.aps_scheduling_goods_bom_total
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2708,11 +2928,15 @@ create table if not exists aps_scheduling_goods_bom_total
     trace_id             varchar(64)                          null comment '调用链路',
     version_num          int        default 0                 null comment '版本号'
 )
-    comment '订单商品零件汇总表' engine = InnoDB;
+    comment '订单商品零件汇总表';
 
+create index idx_aps_scheduling_goods_bom_total_scheduling_id
+    on peanut_prod.aps_scheduling_goods_bom_total (scheduling_id);
 
+create index idx_aps_scheduling_goods_bom_total_tenant_id
+    on peanut_prod.aps_scheduling_goods_bom_total (tenant_id);
 
-create table if not exists aps_scheduling_goods_status_date
+create table if not exists peanut_prod.aps_scheduling_goods_status_date
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2737,10 +2961,12 @@ create table if not exists aps_scheduling_goods_status_date
     actual_make_begin_time date                                 null comment '实际开始时间',
     actual_make_end_time   date                                 null comment '实际结束时间'
 )
-    comment '订单商品状态表' engine = InnoDB;
+    comment '订单商品状态表';
 
+create index idx_scheduling_id
+    on peanut_prod.aps_scheduling_goods_status_date (scheduling_id);
 
-create table if not exists aps_scheduling_version
+create table if not exists peanut_prod.aps_scheduling_version
 (
     id                        bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2763,11 +2989,15 @@ create table if not exists aps_scheduling_version
     version_step_error        varchar(255)                         null,
     bom_total_end_date        date                                 null comment 'bom汇总结束日期'
 )
-    comment '排产版本表' engine = InnoDB;
+    comment '排产版本表';
 
+create index idx_aps_scheduling_version_scheduling_constraints_id
+    on peanut_prod.aps_scheduling_version (scheduling_constraints_id);
 
+create index idx_aps_scheduling_version_tenant_id
+    on peanut_prod.aps_scheduling_version (tenant_id);
 
-create table if not exists aps_scheduling_version_capacity
+create table if not exists peanut_prod.aps_scheduling_version_capacity
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2810,13 +3040,21 @@ create table if not exists aps_scheduling_version_capacity
     factory_id            bigint                               null comment '工厂id',
     goods_status_id       bigint                               null comment '商品状态'
 )
-    comment '排产版本容量表' engine = InnoDB;
+    comment '排产版本容量表';
 
+create index idx_aps_scheduling_version_capacity_goods_id
+    on peanut_prod.aps_scheduling_version_capacity (goods_id);
 
+create index idx_aps_scheduling_version_capacity_order_id
+    on peanut_prod.aps_scheduling_version_capacity (order_id);
 
+create index idx_aps_scheduling_version_capacity_scheduling_version_id
+    on peanut_prod.aps_scheduling_version_capacity (scheduling_version_id);
 
+create index idx_aps_scheduling_version_capacity_tenant_id
+    on peanut_prod.aps_scheduling_version_capacity (tenant_id);
 
-create table if not exists aps_scheduling_version_day
+create table if not exists peanut_prod.aps_scheduling_version_day
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2832,11 +3070,15 @@ create table if not exists aps_scheduling_version_day
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '排产版本天表' engine = InnoDB;
+    comment '排产版本天表';
 
+create index idx_aps_scheduling_version_day_tenant_id
+    on peanut_prod.aps_scheduling_version_day (tenant_id);
 
+create index idx_aps_scheduling_version_day_version_id
+    on peanut_prod.aps_scheduling_version_day (version_id);
 
-create table if not exists aps_scheduling_version_item
+create table if not exists peanut_prod.aps_scheduling_version_item
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2876,14 +3118,24 @@ create table if not exists aps_scheduling_version_item
     number_index          smallint                             null,
     factory_id            varchar(255)                         null
 )
-    comment '排产版本项表' engine = InnoDB;
+    comment '排产版本项表';
 
+create index idx_aps_scheduling_version_item_factory_id
+    on peanut_prod.aps_scheduling_version_item (factory_id);
 
+create index idx_aps_scheduling_version_item_goods_id
+    on peanut_prod.aps_scheduling_version_item (goods_id);
 
+create index idx_aps_scheduling_version_item_order_id
+    on peanut_prod.aps_scheduling_version_item (order_id);
 
+create index idx_aps_scheduling_version_item_scheduling_version_id
+    on peanut_prod.aps_scheduling_version_item (scheduling_version_id);
 
+create index idx_aps_scheduling_version_item_tenant_id
+    on peanut_prod.aps_scheduling_version_item (tenant_id);
 
-create table if not exists aps_scheduling_version_limit
+create table if not exists peanut_prod.aps_scheduling_version_limit
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2905,11 +3157,15 @@ create table if not exists aps_scheduling_version_limit
     current_day   varchar(255)                         null,
     limit_type    varchar(255)                         null
 )
-    comment '排产版本限制表' engine = InnoDB;
+    comment '排产版本限制表';
 
+create index idx_aps_scheduling_version_limit_tenant_id
+    on peanut_prod.aps_scheduling_version_limit (tenant_id);
 
+create index idx_aps_scheduling_version_limit_version_id
+    on peanut_prod.aps_scheduling_version_limit (version_id);
 
-create table if not exists aps_status
+create table if not exists peanut_prod.aps_status
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2926,11 +3182,15 @@ create table if not exists aps_status
     version_num         int        default 0                 null comment '版本号',
     is_order_goods_init tinyint    default 0                 null comment '是否初始化订单状态'
 )
-    comment '排产状态表' engine = InnoDB;
+    comment '排产状态表';
 
+create index idx_aps_status_factory_id
+    on peanut_prod.aps_status (factory_id);
 
+create index idx_aps_status_tenant_id
+    on peanut_prod.aps_status (tenant_id);
 
-create table if not exists aps_workshop_section
+create table if not exists peanut_prod.aps_workshop_section
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2948,10 +3208,12 @@ create table if not exists aps_workshop_section
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '车间/工位表' engine = InnoDB;
+    comment '车间/工位表';
 
+create index idx_aps_workshop_section_tenant_id
+    on peanut_prod.aps_workshop_section (tenant_id);
 
-create table if not exists aps_workshop_station
+create table if not exists peanut_prod.aps_workshop_station
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2970,10 +3232,12 @@ create table if not exists aps_workshop_station
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '车间/工位表' engine = InnoDB;
+    comment '车间/工位表';
 
+create index idx_aps_workshop_station_tenant_id
+    on peanut_prod.aps_workshop_station (tenant_id);
 
-create table if not exists base_supplier
+create table if not exists peanut_prod.base_supplier
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2993,10 +3257,12 @@ create table if not exists base_supplier
     version_num     int        default 0                 null comment '版本号',
     tenant_id       bigint                               null comment '租户ID'
 )
-    comment '供应商表' engine = InnoDB;
+    comment '供应商表';
 
+create index idx_base_supplier_tenant_id
+    on peanut_prod.base_supplier (tenant_id);
 
-create table if not exists base_table_header
+create table if not exists peanut_prod.base_table_header
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3016,52 +3282,12 @@ create table if not exists base_table_header
     version_num int        default 0                 null comment '版本号',
     tenant_id   bigint                               null comment '租户ID'
 )
-    comment '表头配置表' engine = InnoDB;
+    comment '表头配置表';
 
+create index idx_base_table_header_tenant_id
+    on peanut_prod.base_table_header (tenant_id);
 
-create table if not exists blog_group
-(
-    id          bigint auto_increment comment 'ID 自增'
-        primary key,
-    group_name  varchar(64)                          null comment '组名称',
-    group_code  varchar(64)                          null comment '组编码',
-    tenant_id   bigint                               null comment '租户ID',
-    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by   bigint                               null comment '创建人',
-    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by   bigint                               null comment '修改人',
-    trace_id    varchar(64)                          null comment '调用链路',
-    version_num int        default 0                 null comment '版本号',
-    group_id    bigint                               null comment '组ID'
-)
-    comment '帖子组清单' engine = InnoDB;
-
-create table if not exists blog_posts
-(
-    id             bigint auto_increment comment 'ID 自增'
-        primary key,
-    posts_group_id bigint                               null comment '帖子组ID',
-    posts_name     varchar(64)                          null comment '帖子名称',
-    posts_tags     varchar(64)                          null comment '帖子标签',
-    posts_code     varchar(64)                          null comment '帖子编码',
-    posts_content  longtext                             null comment '帖子内容',
-    read_number    int        default 0                 null comment '阅读数量',
-    is_top         tinyint(1) default 0                 null comment '是否置顶 0 否,1 是',
-    tenant_id      bigint                               null comment '租户ID',
-    is_delete      tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time    datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by      bigint                               null comment '创建人',
-    update_time    datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by      bigint                               null comment '修改人',
-    trace_id       varchar(64)                          null comment '调用链路',
-    version_num    int        default 0                 null comment '版本号',
-    group_id       bigint                               null comment '组ID'
-)
-    comment '帖子清单' engine = InnoDB;
-
-
-create table if not exists jcx_buy_order
+create table if not exists peanut_prod.jcx_buy_order
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3081,10 +3307,12 @@ create table if not exists jcx_buy_order
     goods_name             varchar(255)                         null,
     goods_cost_price_total decimal(15, 6)                       null comment '成本总价'
 )
-    comment '进销存-采购订单表' engine = InnoDB;
+    comment '进销存-采购订单表';
 
+create index idx_jcx_buy_order_tenant_id
+    on peanut_prod.jcx_buy_order (tenant_id);
 
-create table if not exists jcx_buy_order_item
+create table if not exists peanut_prod.jcx_buy_order_item
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3108,13 +3336,21 @@ create table if not exists jcx_buy_order_item
     supplier_id            varchar(255)                         null,
     supplier_name          varchar(255)                         null
 )
-    comment '进销存-采购订单明细表' engine = InnoDB;
+    comment '进销存-采购订单明细表';
 
+create index idx_jcx_buy_order_item_goods_id
+    on peanut_prod.jcx_buy_order_item (goods_id);
 
+create index idx_jcx_buy_order_item_order_id
+    on peanut_prod.jcx_buy_order_item (order_id);
 
+create index idx_jcx_buy_order_item_supplier_id
+    on peanut_prod.jcx_buy_order_item (supplier_id);
 
+create index idx_jcx_buy_order_item_tenant_id
+    on peanut_prod.jcx_buy_order_item (tenant_id);
 
-create table if not exists jcx_buy_plan
+create table if not exists peanut_prod.jcx_buy_plan
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3134,11 +3370,15 @@ create table if not exists jcx_buy_plan
     goods_net_profit_total   decimal(15, 6)                       null comment '净利总额',
     buy_order_id             varchar(255)                         null
 )
-    comment '进销存-采购计划表' engine = InnoDB;
+    comment '进销存-采购计划表';
 
+create index idx_jcx_buy_plan_buy_order_id
+    on peanut_prod.jcx_buy_plan (buy_order_id);
 
+create index idx_jcx_buy_plan_tenant_id
+    on peanut_prod.jcx_buy_plan (tenant_id);
 
-create table if not exists jcx_buy_plan_item
+create table if not exists peanut_prod.jcx_buy_plan_item
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3165,12 +3405,18 @@ create table if not exists jcx_buy_plan_item
     goods_net_profit_total   decimal(15, 6)                       null comment '净利总额',
     supplier_id              bigint                               null
 )
-    comment '进销存-采购计划明细表' engine = InnoDB;
+    comment '进销存-采购计划明细表';
 
+create index idx_jcx_buy_plan_item_goods_id
+    on peanut_prod.jcx_buy_plan_item (goods_id);
 
+create index idx_jcx_buy_plan_item_plan_id
+    on peanut_prod.jcx_buy_plan_item (plan_id);
 
+create index idx_jcx_buy_plan_item_tenant_id
+    on peanut_prod.jcx_buy_plan_item (tenant_id);
 
-create table if not exists jcx_goods
+create table if not exists peanut_prod.jcx_goods
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3198,11 +3444,15 @@ create table if not exists jcx_goods
     is_inventory          tinyint                              null,
     supplier_id           varchar(255)                         null
 )
-    comment '进销存-商品表' engine = InnoDB;
+    comment '进销存-商品表';
 
+create index idx_jcx_goods_supplier_id
+    on peanut_prod.jcx_goods (supplier_id);
 
+create index idx_jcx_goods_tenant_id
+    on peanut_prod.jcx_goods (tenant_id);
 
-create table if not exists jcx_goods_warning
+create table if not exists peanut_prod.jcx_goods_warning
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3226,11 +3476,15 @@ create table if not exists jcx_goods_warning
     version_num           int        default 0                 null comment '版本号',
     tenant_id             bigint                               null comment '租户ID'
 )
-    comment '进销存-库存预警表' engine = InnoDB;
+    comment '进销存-库存预警表';
 
+create index idx_jcx_goods_warning_goods_id
+    on peanut_prod.jcx_goods_warning (goods_id);
 
+create index idx_jcx_goods_warning_tenant_id
+    on peanut_prod.jcx_goods_warning (tenant_id);
 
-create table if not exists jcx_order
+create table if not exists peanut_prod.jcx_order
 (
     id                     bigint                               null,
     tenant_id              bigint                               null comment '租户ID',
@@ -3246,10 +3500,12 @@ create table if not exists jcx_order
     version_num            int        default 0                 null comment '版本号',
     order_total_sale_price decimal(15, 6)                       null comment '成本价'
 )
-    comment '进销存-订单表' engine = InnoDB;
+    comment '进销存-订单表';
 
+create index idx_jcx_order_tenant_id
+    on peanut_prod.jcx_order (tenant_id);
 
-create table if not exists jcx_order_item
+create table if not exists peanut_prod.jcx_order_item
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3271,12 +3527,18 @@ create table if not exists jcx_order_item
     version_num            int        default 0                 null comment '版本号',
     goods_total_sale_price decimal(15, 6)                       null comment '成本价'
 )
-    comment '进销存-订单明细表' engine = InnoDB;
+    comment '进销存-订单明细表';
 
+create index idx_jcx_order_item_goods_id
+    on peanut_prod.jcx_order_item (goods_id);
 
+create index idx_jcx_order_item_order_id
+    on peanut_prod.jcx_order_item (order_id);
 
+create index idx_jcx_order_item_tenant_id
+    on peanut_prod.jcx_order_item (tenant_id);
 
-create table if not exists msg_message
+create table if not exists peanut_prod.msg_message
 (
     id                bigint                               null,
     tenant_id         bigint                               null comment '租户ID',
@@ -3293,10 +3555,12 @@ create table if not exists msg_message
     version_num       int        default 0                 null comment '版本号',
     message_Json_data text                                 null
 )
-    comment '消息表' engine = InnoDB;
+    comment '消息表';
 
+create index idx_msg_message_tenant_id
+    on peanut_prod.msg_message (tenant_id);
 
-create table if not exists msg_message_read
+create table if not exists peanut_prod.msg_message_read
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3312,11 +3576,15 @@ create table if not exists msg_message_read
     is_used        varchar(255)                         null,
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '消息已读表' engine = InnoDB;
+    comment '消息已读表';
 
+create index idx_msg_message_read_tenant_id
+    on peanut_prod.msg_message_read (tenant_id);
 
+create index idx_msg_message_read_user_id
+    on peanut_prod.msg_message_read (user_id);
 
-create table if not exists t_brand
+create table if not exists peanut_prod.t_brand
 (
     id           bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3334,11 +3602,15 @@ create table if not exists t_brand
     is_used      tinyint                              null,
     version_num  int        default 0                 null comment '版本号'
 )
-    comment '品牌表' engine = InnoDB;
+    comment '品牌表';
 
+create index idx_t_brand_factory_id
+    on peanut_prod.t_brand (factory_id);
 
+create index idx_t_brand_tenant_id
+    on peanut_prod.t_brand (tenant_id);
 
-create table if not exists t_calendar
+create table if not exists peanut_prod.t_calendar
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3357,11 +3629,15 @@ create table if not exists t_calendar
     trace_id          varchar(64)                          null comment '调用链路',
     version_num       int        default 0                 null comment '版本号'
 )
-    comment '日历表' engine = InnoDB;
+    comment '日历表';
 
+create index idx_t_calendar_factory_id
+    on peanut_prod.t_calendar (factory_id);
 
+create index idx_t_calendar_tenant_id
+    on peanut_prod.t_calendar (tenant_id);
 
-create table if not exists t_calendar_day
+create table if not exists peanut_prod.t_calendar_day
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3409,12 +3685,18 @@ create table if not exists t_calendar_day
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '日历天表' engine = InnoDB;
+    comment '日历天表';
 
+create index idx_t_calendar_day_calendar_id
+    on peanut_prod.t_calendar_day (calendar_id);
 
+create index idx_t_calendar_day_factory_id
+    on peanut_prod.t_calendar_day (factory_id);
 
+create index idx_t_calendar_day_tenant_id
+    on peanut_prod.t_calendar_day (tenant_id);
 
-create table if not exists t_check_report
+create table if not exists peanut_prod.t_check_report
 (
     id          bigint                               null,
     tenant_id   bigint                               null comment '租户ID',
@@ -3430,11 +3712,15 @@ create table if not exists t_check_report
     version_num int        default 0                 null comment '版本号',
     is_over     varchar(255)                         null
 )
-    comment '检查报告表' engine = InnoDB;
+    comment '检查报告表';
 
+create index idx_t_check_report_factory_id
+    on peanut_prod.t_check_report (factory_id);
 
+create index idx_t_check_report_tenant_id
+    on peanut_prod.t_check_report (tenant_id);
 
-create table if not exists t_check_report_list
+create table if not exists peanut_prod.t_check_report_list
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3453,15 +3739,27 @@ create table if not exists t_check_report_list
     storey_id   bigint                               null,
     version_num int        default 0                 null comment '版本号'
 )
-    comment '检查报告明细表' engine = InnoDB;
+    comment '检查报告明细表';
 
+create index idx_t_check_report_list_factory_id
+    on peanut_prod.t_check_report_list (factory_id);
 
+create index idx_t_check_report_list_property_id
+    on peanut_prod.t_check_report_list (property_id);
 
+create index idx_t_check_report_list_report_id
+    on peanut_prod.t_check_report_list (report_id);
 
+create index idx_t_check_report_list_room_id
+    on peanut_prod.t_check_report_list (room_id);
 
+create index idx_t_check_report_list_storey_id
+    on peanut_prod.t_check_report_list (storey_id);
 
+create index idx_t_check_report_list_tenant_id
+    on peanut_prod.t_check_report_list (tenant_id);
 
-create table if not exists t_dictionary
+create table if not exists peanut_prod.t_dictionary
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3478,9 +3776,9 @@ create table if not exists t_dictionary
     trace_id         varchar(64)                          null comment '调用链路',
     version_num      int        default 0                 null comment '版本号'
 )
-    comment '数据字典表' engine = InnoDB;
+    comment '数据字典表';
 
-create table if not exists t_district_code
+create table if not exists peanut_prod.t_district_code
 (
     id          smallint                             null,
     code        varchar(255)                         null,
@@ -3496,9 +3794,9 @@ create table if not exists t_district_code
     version_num int        default 0                 null comment '版本号',
     tenant_id   varchar(255)                         null
 )
-    comment '地区代码表' engine = InnoDB;
+    comment '地区代码表';
 
-create table if not exists t_factory
+create table if not exists peanut_prod.t_factory
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3514,10 +3812,12 @@ create table if not exists t_factory
     trace_id       varchar(64)                          null comment '调用链路',
     version_num    int        default 0                 null comment '版本号'
 )
-    comment '工厂表' engine = InnoDB;
+    comment '工厂表';
 
+create index idx_t_factory_tenant_id
+    on peanut_prod.t_factory (tenant_id);
 
-create table if not exists t_file_upload
+create table if not exists peanut_prod.t_file_upload
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3537,10 +3837,12 @@ create table if not exists t_file_upload
     file_type       varchar(255)                         null,
     file_suffix     varchar(255)                         null
 )
-    comment '文件上传表' engine = InnoDB;
+    comment '文件上传表';
 
+create index idx_t_file_upload_tenant_id
+    on peanut_prod.t_file_upload (tenant_id);
 
-create table if not exists t_login_account
+create table if not exists peanut_prod.t_login_account
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3557,10 +3859,12 @@ create table if not exists t_login_account
     version_num int        default 0                 null comment '版本号',
     user_pwd    varchar(255)                         null
 )
-    comment '登录账号表' engine = InnoDB;
+    comment '登录账号表';
 
+create index idx_t_login_account_tenant_id
+    on peanut_prod.t_login_account (tenant_id);
 
-create table if not exists t_process_line
+create table if not exists peanut_prod.t_process_line
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3579,9 +3883,9 @@ create table if not exists t_process_line
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '产线表' engine = InnoDB;
+    comment '产线表';
 
-create table if not exists t_property
+create table if not exists peanut_prod.t_property
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3600,13 +3904,21 @@ create table if not exists t_property
     trace_id      varchar(64)                          null comment '调用链路',
     version_num   int        default 0                 null comment '版本号'
 )
-    comment '资产属性表' engine = InnoDB;
+    comment '资产属性表';
 
+create index idx_t_property_factory_id
+    on peanut_prod.t_property (factory_id);
 
+create index idx_t_property_room_id
+    on peanut_prod.t_property (room_id);
 
+create index idx_t_property_storey_id
+    on peanut_prod.t_property (storey_id);
 
+create index idx_t_property_tenant_id
+    on peanut_prod.t_property (tenant_id);
 
-create table if not exists t_room
+create table if not exists peanut_prod.t_room
 (
     id          bigint                               null,
     tenant_id   bigint                               null comment '租户ID',
@@ -3623,12 +3935,18 @@ create table if not exists t_room
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '房间表' engine = InnoDB;
+    comment '房间表';
 
+create index idx_t_room_factory_id
+    on peanut_prod.t_room (factory_id);
 
+create index idx_t_room_storey_id
+    on peanut_prod.t_room (storey_id);
 
+create index idx_t_room_tenant_id
+    on peanut_prod.t_room (tenant_id);
 
-create table if not exists t_shift
+create table if not exists peanut_prod.t_shift
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3644,11 +3962,15 @@ create table if not exists t_shift
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '班次表' engine = InnoDB;
+    comment '班次表';
 
+create index idx_t_shift_factory_id
+    on peanut_prod.t_shift (factory_id);
 
+create index idx_t_shift_tenant_id
+    on peanut_prod.t_shift (tenant_id);
 
-create table if not exists t_shift_item
+create table if not exists peanut_prod.t_shift_item
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3665,11 +3987,15 @@ create table if not exists t_shift_item
     trace_id    varchar(64)                          null comment '调用链路',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '班次明细表' engine = InnoDB;
+    comment '班次明细表';
 
+create index idx_t_shift_item_shift_id
+    on peanut_prod.t_shift_item (shift_id);
 
+create index idx_t_shift_item_tenant_id
+    on peanut_prod.t_shift_item (tenant_id);
 
-create table if not exists t_storey
+create table if not exists peanut_prod.t_storey
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3686,11 +4012,15 @@ create table if not exists t_storey
     storey_code varchar(255)                         null,
     version_num int        default 0                 null comment '版本号'
 )
-    comment '楼层表' engine = InnoDB;
+    comment '楼层表';
 
+create index idx_t_storey_factory_id
+    on peanut_prod.t_storey (factory_id);
 
+create index idx_t_storey_tenant_id
+    on peanut_prod.t_storey (tenant_id);
 
-create table if not exists t_tenant_info
+create table if not exists peanut_prod.t_tenant_info
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3705,9 +4035,5 @@ create table if not exists t_tenant_info
     tenant_id   bigint                               null comment '租户ID',
     version_num int        default 0                 null comment '版本号'
 )
-    comment '租户信息表' engine = InnoDB;
+    comment '租户信息表';
 
-
-
-
-INSERT INTO t_login_account (id, user_name, login_phone, pwd, is_delete, create_time, create_by, update_time, update_by, trace_id, tenant_id, version_num, user_pwd) VALUES (2, 'admin', 18600000000, null, 0, '2024-05-31 19:23:34', null, '2024-06-03 16:41:05', null, null, 1001, 0, '21232F297A57A5A743894A0E4A801FC3');
