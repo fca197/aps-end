@@ -5,6 +5,7 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,9 +55,9 @@ public class ApsSchedulingGoodsStatusDateDto extends BaseEntityDto {
    *  实际制造时间
    */
   @NotNull(message = "实际开始制造时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private LocalDate actualMakeBeginTime;
+  private LocalDateTime actualMakeBeginTime;
   @NotNull(message = "实际结束制造时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private LocalDate actualMakeEndTime;
+  private LocalDateTime actualMakeEndTime;
   /***
    *  工厂ID
    */

@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.entity.apsOrder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +23,8 @@ public class ApsOrderTimeLineRes extends ApsOrderDto {
 
     private Long statusId;
     private String statusName;
-    private LocalDate beginDate;
-    private LocalDate endDate;
+//    private LocalDate beginDate;
+//    private LocalDate endDate;
     /*
     是否延期
      */
@@ -33,8 +34,8 @@ public class ApsOrderTimeLineRes extends ApsOrderDto {
     /***
      *  实际制造时间
      */
-    private LocalDate actualMakeBeginTime;
-    private LocalDate actualMakeEndTime;
+    private LocalDateTime actualMakeBeginTime;
+    private LocalDateTime actualMakeEndTime;
   }
 }
 

@@ -20,6 +20,7 @@ public class ApsOrderTimeLineReq {
   private LocalDate endDate;
 
   private Boolean isActualMakeTime;
+  private String orderNo;
   private Integer pageNum;
   private Integer pageSize;
 }

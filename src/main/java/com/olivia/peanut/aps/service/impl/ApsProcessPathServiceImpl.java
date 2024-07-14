@@ -113,7 +113,7 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
         });
       });
     });
-    RunUtils.run("apsProcessPathService", runnableList);
+    RunUtils.run("apsProcessPathService ", runnableList);
   }
 
   @Override

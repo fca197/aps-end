@@ -23,6 +23,8 @@ public interface ApsOrderService extends MPJBaseService<ApsOrder> {
 
   ApsOrderInsertRes save(ApsOrderInsertReq req);
 
+  ApsOrder getApsOrderByNo(String orderNo);
+
   ApsOrderBatchInsertRes saveBatch(ApsOrderBatchInsertReq req);
 
   DynamicsPage<ApsOrderTimeLineRes> timeLine(ApsOrderTimeLineReq req);

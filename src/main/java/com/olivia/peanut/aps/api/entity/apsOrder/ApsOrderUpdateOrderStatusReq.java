@@ -17,4 +17,6 @@ public class ApsOrderUpdateOrderStatusReq {
   private Long orderId;
   @NotNull(message = "goodsStatusId不能为空")
   private Long goodsStatusId;
+
+  private Boolean isBeginTime = Boolean.TRUE;
 }

@@ -333,7 +333,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     facortyList.forEach(f -> {
 
       FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
-          new FactoryConfigReq().setGetShift(Boolean.TRUE).setGetWeek(Boolean.TRUE).setGetPath(Boolean.TRUE).setWeekEndDate(nowDate)
+          new FactoryConfigReq().setFactoryId(f.getId()).setGetShift(Boolean.TRUE).
+              setGetWeek(Boolean.TRUE).setGetPath(Boolean.TRUE).setWeekBeginDate(nowDate)
               .setWeekEndDate(lastDate.plusDays(schedulingVersion.getSchedulingDayCount())));
       log.info("add factory configuration {} name:{}", f.getId(), f.getFactoryName());
       factoryWeekListMap.put(f.getId(), factoryConfig.getWeekList());

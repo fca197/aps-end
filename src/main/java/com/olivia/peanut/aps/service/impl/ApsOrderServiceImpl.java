@@ -5,6 +5,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.base.MPJBaseServiceImpl;
@@ -211,9 +212,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   @Override
   public DynamicsPage<ApsOrderTimeLineRes> timeLine(ApsOrderTimeLineReq req) {
 
+    ApsOrder apsOrder = this.getApsOrderByNo(req.getOrderNo());
+
     LocalDate now = LocalDate.now();
     List<Long> orderIdList = apsOrderGoodsStatusDateService.list(new QueryWrapper<ApsOrderGoodsStatusDate>().select(Str.DISTINCT + "order_id").lambda()
-            .and(Boolean.TRUE.equals(req.getIsActualMakeTime()),
+            .eq(Objects.nonNull(apsOrder), ApsOrderGoodsStatusDate::getOrderId, Objects.nonNull(apsOrder) ? apsOrder.getId() : null).and(Boolean.TRUE.equals(req.getIsActualMakeTime()),
                 r -> r.ge(ApsOrderGoodsStatusDate::getActualMakeBeginTime, req.getBeginDate()).le(ApsOrderGoodsStatusDate::getActualMakeEndTime, req.getEndDate()))
             .and(!Boolean.TRUE.equals(req.getIsActualMakeTime()),
                 r -> r.ge(ApsOrderGoodsStatusDate::getExpectMakeBeginTime, req.getBeginDate()).le(ApsOrderGoodsStatusDate::getExpectMakeEndTime, req.getEndDate()))).stream()
@@ -250,15 +253,17 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   }
 
   private StatusInfo getStatusInfo(ApsOrderGoodsStatusDate statusDate, Boolean isActualMakeTime, LocalDate now) {
-    StatusInfo statusInfo = new StatusInfo().setStatusId(statusDate.getGoodsStatusId()).setBeginDate(statusDate.getExpectMakeBeginTime())
-        .setEndDate(statusDate.getExpectMakeEndTime()).setExpectMakeEndTime(statusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(statusDate.getExpectMakeBeginTime())
+    StatusInfo statusInfo = new StatusInfo().setStatusId(statusDate.getGoodsStatusId())
+        //.setBeginDate(statusDate.getExpectMakeBeginTime())
+//        .setEndDate(statusDate.getExpectMakeEndTime())
+        .setExpectMakeEndTime(statusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(statusDate.getExpectMakeBeginTime())
         .setActualMakeBeginTime(statusDate.getActualMakeBeginTime()).setActualMakeEndTime(statusDate.getActualMakeEndTime());
-    if (Boolean.TRUE.equals(isActualMakeTime)) {
-      statusInfo.setBeginDate(statusDate.getActualMakeBeginTime()).setEndDate(statusDate.getActualMakeEndTime());
-    }
+//    if (Boolean.TRUE.equals(isActualMakeTime)) {
+////      statusInfo.setBeginDate(statusDate.getActualMakeBeginTime()).setEndDate(statusDate.getActualMakeEndTime());
+//    }
     // 是否延期 ,实际实际大于预计时间
     if (Objects.nonNull(statusInfo.getActualMakeBeginTime()) && Objects.nonNull(statusInfo.getExpectMakeBeginTime())) {
-      statusInfo.setIsDelay(statusInfo.getActualMakeBeginTime().isAfter(statusInfo.getExpectMakeBeginTime()));
+      statusInfo.setIsDelay(statusInfo.getActualMakeBeginTime().toLocalDate().isAfter(statusInfo.getExpectMakeBeginTime()));
     }
     if (Objects.nonNull(statusInfo.getExpectMakeBeginTime()) && Objects.isNull(statusInfo.getActualMakeBeginTime())) {
       statusInfo.setIsDelay(now.isAfter(statusInfo.getExpectMakeBeginTime()));
@@ -267,19 +272,21 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   }
 
   @Override
+  @Transactional
   public ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req) {
     ApsOrder apsOrder = this.getById(req.getOrderId());
     $.requireNonNullCanIgnoreException(apsOrder, "订单不存在");
+    ApsStatus byId = this.apsStatusService.getById(req.getGoodsStatusId());
+    $.requireNonNullCanIgnoreException(byId, "状态不存在");
     List<ApsOrderGoods> apsOrderGoods = apsOrderGoodsService.getApsOrderGoodsByOrderId(apsOrder.getId());
     $.requireNonNullCanIgnoreException(apsOrderGoods, "订单商品不存在");
     ApsOrderGoods orderGoods = apsOrderGoods.get(0);
     ApsGoods apsGoods = apsGoodsService.getById(orderGoods.getGoodsId());
+
     LocalDate now = LocalDate.now();
     Long factoryId = orderGoods.getFactoryId();
-    FactoryConfigRes factoryConfig = this.apsFactoryService.getFactoryConfig(
-        new FactoryConfigReq().setFactoryId(factoryId).setGetPath(Boolean.TRUE).setWeekBeginDate(now)
-            .setWeekEndDate(now.plusDays(peanutProperties.getOrderStatusUpdateNeedDayCount())).setGetWeek(Boolean.TRUE).setGetShift(Boolean.TRUE)
-            .setNowDateTime(LocalDateTime.now()));
+    FactoryConfigRes factoryConfig = this.apsFactoryService.getFactoryConfig(new FactoryConfigReq().setFactoryId(factoryId).setGetPath(Boolean.TRUE).setWeekBeginDate(now)
+        .setWeekEndDate(now.plusDays(peanutProperties.getOrderStatusUpdateNeedDayCount())).setGetWeek(Boolean.TRUE).setGetShift(Boolean.TRUE).setNowDateTime(LocalDateTime.now()));
     Long dayWorkSecond = factoryConfig.getDayWorkSecond();
     Long dayWorkLastSecond = factoryConfig.getDayWorkLastSecond();
     ApsProcessPathDto apsProcessPathDto = factoryConfig.getPathDtoMap().get(apsGoods.getProcessPathId());
@@ -296,7 +303,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       ApsOrderGoodsStatusDate apsOrderGoodsStatusDate = statusDateMap.get(t.getStatusId());
       if (Objects.nonNull(apsOrderGoodsStatusDate)) {
         updateList.add(
-            apsOrderGoodsStatusDate.setExpectMakeEndTime(apsOrderGoodsStatusDate.getExpectMakeEndTime()).setExpectMakeBeginTime(apsOrderGoodsStatusDate.getExpectMakeBeginTime()));
+            apsOrderGoodsStatusDate.setExpectMakeEndTime(t.getBeginLocalDate()).setExpectMakeBeginTime(t.getEndLocalDate()));
       } else {
         ApsOrderGoodsStatusDate statusDate = new ApsOrderGoodsStatusDate().setOrderId(req.getOrderId()).setGoodsStatusId(t.getStatusId()).setStatusIndex(t.getSortIndex())
             .setFactoryId(factoryId).setGoodsStatusId(t.getStatusId()).setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
@@ -305,15 +312,25 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       }
     });
     if (CollUtil.isNotEmpty(insertList)) {
-      this.apsOrderGoodsStatusDateService.saveBatch(updateList);
+      this.apsOrderGoodsStatusDateService.saveBatch(insertList);
     }
     if (CollUtil.isNotEmpty(updateList)) {
       this.apsOrderGoodsStatusDateService.updateBatchById(updateList);
     }
+    this.update(new LambdaUpdateWrapper<ApsOrder>().eq(BaseEntity::getId, apsOrder.getId()).set(ApsOrder::getOrderStatus, req.getGoodsStatusId()));
+
+    this.apsOrderGoodsStatusDateService.update(new LambdaUpdateWrapper<ApsOrderGoodsStatusDate>().eq(ApsOrderGoodsStatusDate::getOrderId, req.getOrderId())
+        .eq(ApsOrderGoodsStatusDate::getGoodsStatusId, req.getGoodsStatusId()).eq(ApsOrderGoodsStatusDate::getGoodsId, orderGoods.getGoodsId())
+        .set(Boolean.TRUE.equals(req.getIsBeginTime()), ApsOrderGoodsStatusDate::getActualMakeBeginTime, LocalDateTime.now())
+        .set(Boolean.FALSE.equals(req.getIsBeginTime()), ApsOrderGoodsStatusDate::getActualMakeEndTime, LocalDateTime.now()));
 
     return new ApsOrderUpdateOrderStatusRes();
   }
 
+  @Override
+  public ApsOrder getApsOrderByNo(String orderNo) {
+    return StringUtils.isNotBlank(orderNo) ? this.getOne(new LambdaQueryWrapper<ApsOrder>().eq(ApsOrder::getOrderNo, orderNo)) : null;
+  }
   // 以下为私有对象封装
 
   @SetUserName
