@@ -10,7 +10,6 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity.*;
 import com.olivia.peanut.aps.mapper.ApsRollingForecastFactoryCapacityMapper;
 import com.olivia.peanut.aps.model.ApsRollingForecastFactoryCapacity;
@@ -22,11 +21,14 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.YearMonth;
 import jakarta.annotation.Resource;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -107,34 +109,33 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
 //    req.setCapacityList(req.getCapacityList().stream().sorted(Comparator.comparing(ApsRollingForecastFactoryCapacityDtoInfo::getBeginTime)).toList());
 
-    AtomicReference<LocalDate> beginDateAtomicReference = new AtomicReference<>();
-    AtomicReference<LocalDate> endDateAtomicReference = new AtomicReference<>();
-    req.getCapacityList().forEach(t -> {
-      LocalDate beginDateTmp = beginDateAtomicReference.get();
-      if (Objects.isNull(beginDateTmp)) {
-        beginDateAtomicReference.set(t.getBeginTime());
-      } else {
-        if (t.getBeginTime().isBefore(beginDateTmp)) {
-          beginDateAtomicReference.set(t.getBeginTime());
-        }
-      }
-      LocalDate endDateTmp = endDateAtomicReference.get();
-      if (Objects.isNull(endDateTmp)) {
-        endDateAtomicReference.set(t.getEndTime());
-      } else {
-        if (t.getEndTime().isAfter(endDateTmp)) {
-          endDateAtomicReference.set(t.getEndTime());
-        }
-      }
-
-    });
+    List<LocalDate> minMaxDate = DateUtils.getMinMaxDate(req.getCapacityList().stream().map(t -> List.of(t.getBeginTime(), t.getEndTime())).toList());
 
     Map<String, ApsRollingForecastFactoryCapacity> capacityMap = Maps.newHashMap();
+
+    LocalDate beginDate = minMaxDate.get(0);
+    LocalDate endDate = minMaxDate.get(1);
+    log.info("time range :{} - {}", beginDate, endDate);
+
+    List<YearMonth> monthList = DateUtils.getMonthList(beginDate, endDate);
+    $.requireNonNullCanIgnoreException(monthList, "时间范围获取失败,请检查时间范围");
+    List<ApsRollingForecastFactoryCapacity> factoryCapacityList = this.list(new LambdaQueryWrapper<ApsRollingForecastFactoryCapacity>()//
+        .eq(ApsRollingForecastFactoryCapacity::getFactoryId, req.getFactoryId())//
+        .and(r -> {
+          monthList.forEach((ym) -> {
+            r.or(rt -> {
+              rt.eq(ApsRollingForecastFactoryCapacity::getYear, ym.getYear()).eq(ApsRollingForecastFactoryCapacity::getMonth, ym.getMonth());
+            });
+          });
+        }));
+    factoryCapacityList.forEach(t -> {
+      capacityMap.put(t.getYear() + "-" + t.getMonth(), t);
+    });
 
     req.getCapacityList().forEach(t -> {
       List<LocalDate> localDateBetween = DateUtils.getLocalDateBetween(t.getBeginTime(), t.getEndTime());
       localDateBetween.forEach(t1 -> {
-        String key = t1.getYear() + "-" + t1.getMonth();
+        String key = t1.getYear() + "-" + t1.getMonthValue();
         ApsRollingForecastFactoryCapacity apsRollingForecastFactoryCapacity = capacityMap.get(key);
         if (Objects.isNull(apsRollingForecastFactoryCapacity)) {
           apsRollingForecastFactoryCapacity = new ApsRollingForecastFactoryCapacity();
@@ -145,35 +146,12 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
       });
     });
 
-    LocalDate endDate = endDateAtomicReference.get();
-    LocalDate beginDate = beginDateAtomicReference.get();
-    log.info("time range :{} - {}", beginDate, endDate);
-
-    List<LocalDate> localDateBetween = DateUtils.getLocalDateBetween(beginDate, endDate);
-    log.info("local date between :{}", localDateBetween);
-
-    Map<Integer, Set<Integer>> ymMap = new HashMap<>();
-    localDateBetween.forEach(t -> {
-      Set<Integer> mL = ymMap.getOrDefault(t.getYear(), Sets.newHashSet());
-      mL.add(t.getMonthValue());
-      ymMap.put(t.getYear(), mL);
-    });
-    log.info("ym map :{}", ymMap);
-    this.remove(new LambdaQueryWrapper<ApsRollingForecastFactoryCapacity>()//
-        .eq(ApsRollingForecastFactoryCapacity::getFactoryId, req.getFactoryId())//
-        .and(r -> {
-          r.or(r3 -> {
-            ymMap.forEach((y, ml) -> {
-              r3.eq(ApsRollingForecastFactoryCapacity::getYear, y).and(r1 -> {
-                ml.forEach(m -> {
-                  r1.or(r2 -> r2.eq(ApsRollingForecastFactoryCapacity::getMonth, m));
-                });
-              });
-            });
-          });
-        }));
-    if (CollUtil.isNotEmpty(capacityMap)) {
-      this.saveBatch(capacityMap.values());
+    Collection<ApsRollingForecastFactoryCapacity> values = capacityMap.values();
+    if (CollUtil.isNotEmpty(values)) {
+      List<ApsRollingForecastFactoryCapacity> insertList = values.stream().filter(t -> Objects.isNull(t.getId())).toList();
+      this.saveBatch(insertList);
+      List<ApsRollingForecastFactoryCapacity> updateList = values.stream().filter(t -> Objects.nonNull(t.getId())).toList();
+      this.updateBatchById(updateList);
     }
 
     return new ApsRollingForecastFactoryCapacityInsertRes();
