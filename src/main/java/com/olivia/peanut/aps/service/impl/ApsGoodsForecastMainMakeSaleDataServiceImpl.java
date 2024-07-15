@@ -46,7 +46,7 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
     List<ApsGoodsForecastMainMakeSaleDataDto> dataList = list.stream().map(t -> $.copy(t, ApsGoodsForecastMainMakeSaleDataDto.class)).collect(Collectors.toList());
     //  this.setName(dataList);
 
-    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(dataList);
+//    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(dataList);
     return new ApsGoodsForecastMainMakeSaleDataQueryListRes().setDataList(dataList);
   }
 
@@ -70,7 +70,7 @@ public class ApsGoodsForecastMainMakeSaleDataServiceImpl extends MPJBaseServiceI
 
     List<ApsGoodsForecastMainMakeSaleDataExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsGoodsForecastMainMakeSaleDataExportQueryPageListInfoRes.class);
     // this.setName(listInfoRes);
-    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
+//    ((ApsGoodsForecastMainMakeSaleDataServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
 
     return DynamicsPage.init(page, listInfoRes);
   }

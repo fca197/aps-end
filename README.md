@@ -36,20 +36,37 @@
 | RedissonLockAnn                     | redisson锁注解 | redisson锁注解                  | RedissonLockAspect |
 | Timed                               | 方法执行耗时      | 方法耗时判断                       | TimedAspect        |
 
+### AOP 切面
+
+| 组件名称               | 描述                    |
+|--------------------|-----------------------|
+| WebLogAspect       | 日志切面                  |
+| NextSpanAspect     | 链路追踪切面,不同方法使用不同spanId |
+| SetNameAspect      | 根据指定字段根据Id设置指定字段的用户名  |
+| MockRetAspect      | 模拟返回值切面               |
+| TimedAspect        | 方法执行耗时切面              |
+| RedissonLockAspect | redisson锁切面           |
+
 ### BeanConfig
 
-| 类名                    | 描述                                       | --                                      |
-|-----------------------|------------------------------------------|-----------------------------------------|
-| DroolsConfig          | drools规则引擎配置                             |                                         |
-| MybatisConfig         | mybatis-plus配置,包含租户, 整表删除,数据过滤, 分页等      |                                         |
-| MyMetaObjectHandler   | mybatis-plus 数据自动填充  ,创建人、时间,修改人、时间,调用链等 |                                         |
-| PeanutProperties      | 配置文件   ,见后段参数                            |                                         |
-| ResultResponseWrapper | 预设 feign 拦截器,统一返回值                       |                                         |
-| MockResourceLoad      | mock数据配置                                 | 返回接口的mock值                              |
-| ResultResponseWrapper | 接口返回值修改                                  | 根据请求头判断返回值是否进行二次包装                      |
-| ServiceNotice         | 通知类接口                                    | 可以接入钉钉机器人等                              |
-| WebBeanConfig         | web配置                                    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏           |
-| DingEventBizService   | 钉钉消息处理接口                                 | 实现该接口,处理钉钉消息, 一个eventType可以多次实现处理(并行调用) |
+| 类名                    | 描述                                       | --                            |
+|-----------------------|------------------------------------------|-------------------------------|
+| DroolsConfig          | drools规则引擎配置                             |                               |
+| MybatisConfig         | mybatis-plus配置,包含租户, 整表删除,数据过滤, 分页等      |                               |
+| MyMetaObjectHandler   | mybatis-plus 数据自动填充  ,创建人、时间,修改人、时间,调用链等 |                               |
+| PeanutProperties      | 配置文件   ,见后段参数                            |                               |
+| ResultResponseWrapper | 预设 feign 拦截器,统一返回值                       |                               |
+| MockResourceLoad      | mock数据配置                                 | 返回接口的mock值                    |
+| ResultResponseWrapper | 接口返回值修改                                  | 根据请求头判断返回值是否进行二次包装            |
+| ServiceNotice         | 通知类接口                                    | 可以接入钉钉机器人等                    |
+| WebBeanConfig         | web配置                                    | 字段序列化等配置,字段指定时MaskValue进行数据脱敏 |
+
+### Service
+
+| 组件名称                | 描述       | --                                                                            |
+|---------------------|----------|-------------------------------------------------------------------------------|
+| DingEventBizService | 钉钉消息处理接口 | 实现该接口,处理钉钉消息, 一个eventType可以多次实现处理(并行调用)                                       |
+| SetNameService      | 设置显示名称   | 调用该接口可以根据指定字段的ID设置对应的字段的显示名称,如根据工厂ID设置工厂名称,eq: ApsGoodsBomServiceImpl.setName |
 
 ### mybatis-plus
 

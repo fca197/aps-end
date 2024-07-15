@@ -1,6 +1,9 @@
 package com.olivia.peanut.aps.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import static com.olivia.peanut.util.SetNamePojoUtils.FACTORY;
+import static com.olivia.peanut.util.SetNamePojoUtils.GOODS;
+import static com.olivia.peanut.util.SetNamePojoUtils.OP_USER_NAME;
+
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -8,24 +11,20 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsGoodsBom.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsBomMapper;
-import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsGoodsBom;
-import com.olivia.peanut.aps.model.ApsWorkshopStation;
 import com.olivia.peanut.aps.service.ApsGoodsBomService;
-import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
-import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
+import com.olivia.sdk.service.pojo.NameConfig;
+import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -46,11 +45,7 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
   @Resource
-  ApsGoodsService apsGoodsService;
-  @Resource
-  FactoryService factoryService;
-  @Resource
-  ApsWorkshopStationService apsWorkshopStationService;
+  SetNameService setNameService;
 
   public @Override ApsGoodsBomQueryListRes queryList(ApsGoodsBomQueryListReq req) {
 
@@ -88,20 +83,13 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  @SetUserName
+//  @SetUserName
   public @Override void setName(List<? extends ApsGoodsBomDto> apsGoodsBomDtoList) {
-    if (CollUtil.isEmpty(apsGoodsBomDtoList)) {
-      return;
-    }
 
-    Set<Long> fidSet = apsGoodsBomDtoList.stream().map(ApsGoodsBomDto::getFactoryId).collect(Collectors.toSet());
-    Set<Long> gidSet = apsGoodsBomDtoList.stream().map(ApsGoodsBomDto::getGoodsId).collect(Collectors.toSet());
-    Set<Long> widSet = apsGoodsBomDtoList.stream().map(ApsGoodsBomDto::getBomUseWorkStation).collect(Collectors.toSet());
-    Map<Long, String> wNMap = apsWorkshopStationService.listByIds(widSet).stream().collect(Collectors.toMap(BaseEntity::getId, ApsWorkshopStation::getStationName));
-    Map<Long, String> fNMap = this.apsGoodsService.listByIds(gidSet).stream().collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
-    Map<Long, String> gNMap = this.factoryService.listByIds(fidSet).stream().collect(Collectors.toMap(BaseEntity::getId, Factory::getFactoryName));
-    apsGoodsBomDtoList.forEach(
-        t -> t.setGoodsName(fNMap.get(t.getGoodsId())).setFactoryName(gNMap.get(t.getFactoryId())).setBomUseWorkStationName(wNMap.get(t.getBomUseWorkStation())));
+    setNameService.setName(apsGoodsBomDtoList, List.of(FACTORY, GOODS,//
+        OP_USER_NAME,
+        new SetNamePojo().setNameFieldName("stationName").setServiceName(ApsWorkshopStationService.class)
+            .setNameConfigList(List.of(new NameConfig().setIdField("bomUseWorkStation").setNameFieldList(List.of("bomUseWorkStationName"))))));
   }
 
   // 以下为私有对象封装
@@ -111,9 +99,7 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
     MPJLambdaWrapper<ApsGoodsBom> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsBom::getGoodsId, obj.getGoodsId())
-          .eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsGoodsBom::getBomCode, obj.getBomCode())
+      q.eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsBom::getGoodsId, obj.getGoodsId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsGoodsBom::getBomCode, obj.getBomCode())
           .likeRight(StringUtils.isNoneBlank(obj.getBomName()), ApsGoodsBom::getBomName, obj.getBomName())
           .eq(Objects.nonNull(obj.getBomUsage()), ApsGoodsBom::getBomUsage, obj.getBomUsage())
           .eq(StringUtils.isNoneBlank(obj.getBomUnit()), ApsGoodsBom::getBomUnit, obj.getBomUnit())

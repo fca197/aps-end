@@ -1,6 +1,5 @@
 package com.olivia.peanut.aps.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -8,16 +7,15 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsGoodsForecastMain.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMainMapper;
-import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMain;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
-import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -82,17 +80,13 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
     return DynamicsPage.init(page, listInfoRes);
   }
 
+
+  @Resource
+  SetNameService setNameService;
   @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMainDto> apsGoodsForecastMainDtoList) {
-    if (CollUtil.isEmpty(apsGoodsForecastMainDtoList)) {
-      return;
-    }
-    List<Long> list = apsGoodsForecastMainDtoList.stream().map(ApsGoodsForecastMainDto::getFactoryId).distinct().toList();
-    Map<Long, String> fMap = this.factoryService.listByIds(list).stream().collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
-    apsGoodsForecastMainDtoList.forEach(t -> t.setFactoryName(fMap.get(t.getFactoryId())));
-    List<Long> idList = apsGoodsForecastMainDtoList.stream().map(ApsGoodsForecastMainDto::getGoodsId).toList();
-    Map<Long, String> longStringMap = this.apsGoodsService.listByIds(idList).stream().collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
-    apsGoodsForecastMainDtoList.forEach(t -> t.setGoodsName(longStringMap.get(t.getGoodsId())));
+
+    setNameService.setName(apsGoodsForecastMainDtoList, List.of(SetNamePojoUtils.GOODS,SetNamePojoUtils.FACTORY));
   }
 
   // 以下为私有对象封装
