@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service("apsStatusService")
 @Transactional
-public class                                          ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, ApsStatus> implements ApsStatusService {
+public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, ApsStatus> implements ApsStatusService {
 
   final static Cache<String, List<ApsStatus>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 

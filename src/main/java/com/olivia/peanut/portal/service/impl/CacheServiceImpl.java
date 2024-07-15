@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CacheServiceImpl implements CacheService {
 
-  Timer timer = new Timer();
   private final Map<String, CacheItem> cacheItemMap = Collections.synchronizedMap(new HashMap<>());
+  Timer timer = new Timer();
 
   //  @PostConstruct
   public void init() {

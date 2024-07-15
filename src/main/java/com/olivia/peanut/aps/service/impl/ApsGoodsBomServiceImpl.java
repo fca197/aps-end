@@ -14,7 +14,6 @@ import com.olivia.peanut.aps.mapper.ApsGoodsBomMapper;
 import com.olivia.peanut.aps.model.ApsGoodsBom;
 import com.olivia.peanut.aps.service.ApsGoodsBomService;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
-import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.service.pojo.NameConfig;
@@ -83,7 +82,7 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
     return DynamicsPage.init(page, listInfoRes);
   }
 
-//  @SetUserName
+  //  @SetUserName
   public @Override void setName(List<? extends ApsGoodsBomDto> apsGoodsBomDtoList) {
 
     setNameService.setName(apsGoodsBomDtoList, List.of(FACTORY, GOODS,//

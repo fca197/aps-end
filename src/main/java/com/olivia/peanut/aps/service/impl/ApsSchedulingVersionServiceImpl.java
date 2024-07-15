@@ -44,8 +44,10 @@ import com.olivia.peanut.portal.model.CalendarDay;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.CalendarDayService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
@@ -131,6 +133,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   @Resource
 
   ApsFactoryService apsFactoryService;
+  @Resource
+  SetNameService setNameService;
 
   private static List<Runnable> getBomRunList(ApsSchedulingVersion schedulingVersion, List<ApsSchedulingVersionCapacity> apsSchedulingVersionCapacityList,
       Map<Long, ApsGoods> goodsMap, Map<Long, ApsProcessPathDto> apsProcessPathDtoMap, Map<Long, List<WeekInfo>> factoryWeekListMap, Map<Long, Long> dayWorkSecondMap,
@@ -147,7 +151,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         Map<Long, List<ApsGoodsBom>> apsGoodsBomList = goodsBomMap.getOrDefault(goodsId, Map.of());
         Map<Long, List<ApsGoodsBomVo>> apsGoodsBomVoMap = apsGoodsBomList.keySet().stream()
             .collect(Collectors.toMap(key -> key, vL -> $.copyList(apsGoodsBomList.get(vL), ApsGoodsBomVo.class)));
-        ApsProcessPathInfo scheduledPathDate = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList,0L, dayWorkSecond,
+        ApsProcessPathInfo scheduledPathDate = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), weekInfoList, 0L, dayWorkSecond,
             order.getGoodsStatusId(), apsGoodsBomVoMap, LocalDate.parse(order.getCurrentDay()));
         if (Objects.nonNull(scheduledPathDate)) {
           List<Info> dataList = scheduledPathDate.getDataList();
@@ -333,8 +337,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     facortyList.forEach(f -> {
 
       FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
-          new FactoryConfigReq().setFactoryId(f.getId()).setGetShift(Boolean.TRUE).
-              setGetWeek(Boolean.TRUE).setGetPath(Boolean.TRUE).setWeekBeginDate(nowDate)
+          new FactoryConfigReq().setFactoryId(f.getId()).setGetShift(Boolean.TRUE).setGetWeek(Boolean.TRUE).setGetPath(Boolean.TRUE).setWeekBeginDate(nowDate)
               .setWeekEndDate(lastDate.plusDays(schedulingVersion.getSchedulingDayCount())));
       log.info("add factory configuration {} name:{}", f.getId(), f.getFactoryName());
       factoryWeekListMap.put(f.getId(), factoryConfig.getWeekList());
@@ -689,19 +692,21 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
   @SetUserName
   public @Override void setName(List<? extends ApsSchedulingVersionDto> apsSchedulingVersionDtoList) {
-    if (CollUtil.isEmpty(apsSchedulingVersionDtoList)) {
-      return;
-    }
-    Map<Long, String> snMap = apsSchedulingConstraintsService.listByIds(
-            apsSchedulingVersionDtoList.stream().map(ApsSchedulingVersionDto::getSchedulingConstraintsId).collect(Collectors.toSet())).stream()
-        .collect(Collectors.toMap(BaseEntity::getId, ApsSchedulingConstraints::getConstraintsName));
-//    Map<Long, List<ApsSchedulingVersionLimit>> limitMap = this.apsSchedulingVersionLimitService.list(
-//        new LambdaQueryWrapper<ApsSchedulingVersionLimit>().in(ApsSchedulingVersionLimit::getVersionId, apsSchedulingVersionDtoList.stream().map(
-//            BaseEntityDto::getId).toList())).stream().collect(Collectors.groupingBy(ApsSchedulingVersionLimit::getVersionId));
-    apsSchedulingVersionDtoList.forEach(t -> {
-      t.setSchedulingConstraintsName(snMap.get(t.getSchedulingConstraintsId()));
-//      t.setLimitDtoList($.copyList(limitMap.getOrDefault(t.getId(), Collections.emptyList()), ApsSchedulingVersionLimitDto.class));
-    });
+
+    setNameService.setName(apsSchedulingVersionDtoList,//
+        SetNamePojoUtils.getSetNamePojo(ApsSchedulingConstraintsService.class, //
+            "constraintsName", "schedulingConstraintsId", "schedulingConstraintsName"));
+
+//    Map<Long, String> snMap = apsSchedulingConstraintsService.listByIds(
+//            apsSchedulingVersionDtoList.stream().map(ApsSchedulingVersionDto::getSchedulingConstraintsId).collect(Collectors.toSet())).stream()
+//        .collect(Collectors.toMap(BaseEntity::getId, ApsSchedulingConstraints::getConstraintsName));
+////    Map<Long, List<ApsSchedulingVersionLimit>> limitMap = this.apsSchedulingVersionLimitService.list(
+////        new LambdaQueryWrapper<ApsSchedulingVersionLimit>().in(ApsSchedulingVersionLimit::getVersionId, apsSchedulingVersionDtoList.stream().map(
+////            BaseEntityDto::getId).toList())).stream().collect(Collectors.groupingBy(ApsSchedulingVersionLimit::getVersionId));
+//    apsSchedulingVersionDtoList.forEach(t -> {
+//      t.setSchedulingConstraintsName(snMap.get(t.getSchedulingConstraintsId()));
+////      t.setLimitDtoList($.copyList(limitMap.getOrDefault(t.getId(), Collections.emptyList()), ApsSchedulingVersionLimitDto.class));
+//    });
   }
 
 

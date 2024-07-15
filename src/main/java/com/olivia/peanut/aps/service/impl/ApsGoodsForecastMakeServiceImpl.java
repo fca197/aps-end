@@ -40,9 +40,11 @@ import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.CalendarService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.config.PeanutProperties;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
@@ -103,6 +105,8 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
   ShiftItemService shiftItemService;
   @Resource
   ApsGoodsForecastMakeBomUseService apsGoodsForecastMakeBomUseService;
+  @Resource
+  SetNameService setNameService;
   @Resource
   private ApsGoodsForecastMainMakeSaleDataService apsGoodsForecastMainMakeSaleDataService;
   @Resource
@@ -509,6 +513,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     return new DynamicsPage<ApsGoodsForecastMakeQueryDataByIdRes>().setHeaderList(headerList).setDataList(values);
   }
 
+  // 以下为私有对象封装
 
   @Override
   public DynamicsPage<ApsGoodsForecastMakeQueryUseBomByIdRes> queryBomUseDataById(ApsGoodsForecastMakeQueryUseBomByIdReq req) {
@@ -554,17 +559,17 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     return new DynamicsPage<ApsGoodsForecastMakeQueryUseBomByIdRes>().setHeaderList(headerList).setDataList(values);
   }
 
-  // 以下为私有对象封装
-
   @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMakeDto> apsGoodsForecastMakeDtoList) {
 
-    if (CollUtil.isEmpty(apsGoodsForecastMakeDtoList)) {
-      return;
-    }
-    Set<Long> gIdSet = apsGoodsForecastMakeDtoList.stream().map(ApsGoodsForecastMakeDto::getGoodsId).collect(Collectors.toSet());
-    Map<Long, String> gnMap = this.apsGoodsService.listByIds(gIdSet).stream().collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
-    apsGoodsForecastMakeDtoList.forEach(t -> t.setGoodsName(gnMap.get(t.getGoodsId())));
+    setNameService.setName(apsGoodsForecastMakeDtoList, SetNamePojoUtils.GOODS, SetNamePojoUtils.OP_USER_NAME);
+
+//    if (CollUtil.isEmpty(apsGoodsForecastMakeDtoList)) {
+//      return;
+//    }
+//    Set<Long> gIdSet = apsGoodsForecastMakeDtoList.stream().map(ApsGoodsForecastMakeDto::getGoodsId).collect(Collectors.toSet());
+//    Map<Long, String> gnMap = this.apsGoodsService.listByIds(gIdSet).stream().collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
+//    apsGoodsForecastMakeDtoList.forEach(t -> t.setGoodsName(gnMap.get(t.getGoodsId())));
   }
 
 

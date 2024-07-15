@@ -1,13 +1,8 @@
 package com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity;
 
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)查询对象入参

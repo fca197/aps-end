@@ -1,12 +1,10 @@
 package com.olivia.peanut.aps.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.olivia.peanut.aps.model.ApsRollingForecastFactoryCapacity;
-import java.util.List;
 import com.github.yulichang.base.MPJBaseService;
-
 import com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity.*;
+import com.olivia.peanut.aps.model.ApsRollingForecastFactoryCapacity;
+import com.olivia.sdk.utils.DynamicsPage;
+import java.util.List;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)表服务接口

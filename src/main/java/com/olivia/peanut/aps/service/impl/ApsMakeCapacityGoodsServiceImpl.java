@@ -11,14 +11,13 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsMakeCapacityFactory.MakeCapacityConfig;
 import com.olivia.peanut.aps.api.entity.apsMakeCapacityGoods.*;
 import com.olivia.peanut.aps.mapper.ApsMakeCapacityGoodsMapper;
-import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.model.ApsMakeCapacityGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsMakeCapacityGoodsService;
-import com.olivia.sdk.ann.SetUserName;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -44,6 +43,8 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
 
   @Resource
   ApsGoodsService apsGoodsService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsMakeCapacityGoodsQueryListRes queryList(ApsMakeCapacityGoodsQueryListReq req) {
 
@@ -56,6 +57,8 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
 
     return new ApsMakeCapacityGoodsQueryListRes().setDataList(dataList);
   }
+
+  // 以下为私有对象封装
 
   public @Override DynamicsPage<ApsMakeCapacityGoodsExportQueryPageListInfoRes> queryPageList(ApsMakeCapacityGoodsExportQueryPageListReq req) {
 
@@ -80,8 +83,6 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
 
     return DynamicsPage.init(page, listInfoRes);
   }
-
-  // 以下为私有对象封装
 
   @Override
   public ApsMakeCapacityGoodsInsertRes save(ApsMakeCapacityGoodsInsertReq req) {
@@ -129,17 +130,20 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
     return new ApsMakeCapacityGoodsInsertRes();
   }
 
-  @SetUserName
+  //  @SetUserName
   public @Override void setName(List<? extends ApsMakeCapacityGoodsDto> apsMakeCapacityGoodsDtoList) {
 
-    if (CollUtil.isEmpty(apsMakeCapacityGoodsDtoList)) {
-      return;
-    }
-    Map<Long, String> gnMap = this.apsGoodsService.listByIds(apsMakeCapacityGoodsDtoList.stream()
-            .map(ApsMakeCapacityGoodsDto::getGoodsId).toList()).stream()
-        .collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
-    apsMakeCapacityGoodsDtoList.forEach(t -> t.setGoodsName(gnMap.get(t.getGoodsId())));
-
+    setNameService.setName(apsMakeCapacityGoodsDtoList,
+//        SetNamePojoUtils.OP_USER_NAME,
+        SetNamePojoUtils.GOODS
+    );
+//    if (CollUtil.isEmpty(apsMakeCapacityGoodsDtoList)) {
+//      return;
+//    }
+//    Map<Long, String> gnMap = this.apsGoodsService.listByIds(apsMakeCapacityGoodsDtoList.stream()
+//            .map(ApsMakeCapacityGoodsDto::getGoodsId).toList()).stream()
+//        .collect(Collectors.toMap(BaseEntity::getId, ApsGoods::getGoodsName));
+//    apsMakeCapacityGoodsDtoList.forEach(t -> t.setGoodsName(gnMap.get(t.getGoodsId())));
 
   }
 

@@ -1,7 +1,6 @@
 package com.olivia.peanut.aps.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrder;
 import org.apache.ibatis.annotations.Mapper;
 

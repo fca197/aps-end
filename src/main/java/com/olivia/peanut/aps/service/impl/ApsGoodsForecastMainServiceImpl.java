@@ -9,8 +9,6 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMain.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsForecastMainMapper;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMain;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainService;
-import com.olivia.peanut.aps.service.ApsGoodsService;
-import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
@@ -39,11 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoodsForecastMainMapper, ApsGoodsForecastMain> implements ApsGoodsForecastMainService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
   @Resource
-  FactoryService factoryService;
-  @Resource
-  ApsGoodsService apsGoodsService;
+  SetNameService setNameService;
 
   public @Override ApsGoodsForecastMainQueryListRes queryList(ApsGoodsForecastMainQueryListReq req) {
 
@@ -80,13 +75,10 @@ public class ApsGoodsForecastMainServiceImpl extends MPJBaseServiceImpl<ApsGoods
     return DynamicsPage.init(page, listInfoRes);
   }
 
-
-  @Resource
-  SetNameService setNameService;
   @SetUserName
   public @Override void setName(List<? extends ApsGoodsForecastMainDto> apsGoodsForecastMainDtoList) {
 
-    setNameService.setName(apsGoodsForecastMainDtoList, List.of(SetNamePojoUtils.GOODS,SetNamePojoUtils.FACTORY));
+    setNameService.setName(apsGoodsForecastMainDtoList, List.of(SetNamePojoUtils.GOODS, SetNamePojoUtils.FACTORY));
   }
 
   // 以下为私有对象封装

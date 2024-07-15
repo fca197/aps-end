@@ -11,12 +11,10 @@ import com.olivia.peanut.aps.api.entity.apsOrderGoods.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsMapper;
 import com.olivia.peanut.aps.model.ApsOrderGoods;
 import com.olivia.peanut.aps.service.ApsOrderGoodsService;
-import com.olivia.peanut.aps.service.ApsProcessPathService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,8 +38,6 @@ public class ApsOrderGoodsServiceImpl extends MPJBaseServiceImpl<ApsOrderGoodsMa
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
-  @Resource
-  ApsProcessPathService apsProcessPathService;
 
   public @Override ApsOrderGoodsQueryListRes queryList(ApsOrderGoodsQueryListReq req) {
 

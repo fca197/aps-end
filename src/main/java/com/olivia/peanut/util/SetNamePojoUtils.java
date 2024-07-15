@@ -2,6 +2,7 @@ package com.olivia.peanut.util;
 
 import static com.olivia.sdk.utils.Str.FACTORY_NAME;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.peanut.portal.service.LoginAccountService;
@@ -27,4 +28,9 @@ public class SetNamePojoUtils {
       .setNameFieldName("userName").setServiceName(LoginAccountService.class) //
       .setNameConfigList(List.of(new NameConfig().setIdField("createBy").setNameField("createUserName"),//
           new NameConfig().setIdField("updateBy").setNameField("updateUserName")));
+
+
+  public static SetNamePojo getSetNamePojo(Class<? extends IService<?>> beanClass, String nameFieldName, String idField, String nameField) {
+    return new SetNamePojo().setServiceName(beanClass).setNameFieldName(nameFieldName).setNameConfigList(List.of(new NameConfig().setIdField(idField).setNameField(nameField)));
+  }
 }

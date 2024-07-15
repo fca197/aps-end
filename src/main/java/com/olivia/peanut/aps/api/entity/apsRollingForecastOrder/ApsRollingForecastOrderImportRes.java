@@ -1,11 +1,9 @@
 package com.olivia.peanut.aps.api.entity.apsRollingForecastOrder;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 滚动预测(ApsRollingForecastOrder)保存返回

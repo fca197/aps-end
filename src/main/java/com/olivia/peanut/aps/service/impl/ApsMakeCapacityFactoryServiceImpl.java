@@ -12,10 +12,10 @@ import com.olivia.peanut.aps.api.entity.apsMakeCapacityFactory.*;
 import com.olivia.peanut.aps.mapper.ApsMakeCapacityFactoryMapper;
 import com.olivia.peanut.aps.model.ApsMakeCapacityFactory;
 import com.olivia.peanut.aps.service.ApsMakeCapacityFactoryService;
-import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
-import com.olivia.sdk.ann.SetUserName;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -42,6 +42,8 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
 
   @Resource
   FactoryService factoryService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsMakeCapacityFactoryQueryListRes queryList(ApsMakeCapacityFactoryQueryListReq req) {
 
@@ -54,6 +56,8 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
 
     return new ApsMakeCapacityFactoryQueryListRes().setDataList(dataList);
   }
+
+  // 以下为私有对象封装
 
   public @Override DynamicsPage<ApsMakeCapacityFactoryExportQueryPageListInfoRes> queryPageList(ApsMakeCapacityFactoryExportQueryPageListReq req) {
 
@@ -78,8 +82,6 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
     ((ApsMakeCapacityFactoryServiceImpl) AopContext.currentProxy()).setName(listInfoRes);
     return DynamicsPage.init(page, listInfoRes);
   }
-
-  // 以下为私有对象封装
 
   @Override
   @Transactional
@@ -128,14 +130,17 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
     return new ApsMakeCapacityFactoryInsertRes();
   }
 
-  @SetUserName
+  //  @SetUserName
   public @Override void setName(List<? extends ApsMakeCapacityFactoryDto> apsMakeCapacityFactoryDtoList) {
-    if (CollUtil.isEmpty(apsMakeCapacityFactoryDtoList)) {
-      return;
-    }
-    Map<Long, String> fnMap = factoryService.listByIds(apsMakeCapacityFactoryDtoList.stream().map(ApsMakeCapacityFactoryDto::getFactoryId).collect(Collectors.toSet())).stream()
-        .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
-    apsMakeCapacityFactoryDtoList.forEach(t -> t.setFactoryName(fnMap.get(t.getFactoryId())));
+
+    setNameService.setName(apsMakeCapacityFactoryDtoList, SetNamePojoUtils.FACTORY);
+
+//    if (CollUtil.isEmpty(apsMakeCapacityFactoryDtoList)) {
+//      return;
+//    }
+//    Map<Long, String> fnMap = factoryService.listByIds(apsMakeCapacityFactoryDtoList.stream().map(ApsMakeCapacityFactoryDto::getFactoryId).collect(Collectors.toSet())).stream()
+//        .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
+//    apsMakeCapacityFactoryDtoList.forEach(t -> t.setFactoryName(fnMap.get(t.getFactoryId())));
   }
 
 

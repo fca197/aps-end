@@ -1,8 +1,6 @@
 package com.olivia.peanut.aps.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
@@ -10,19 +8,17 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsGoods.*;
 import com.olivia.peanut.aps.mapper.ApsGoodsMapper;
 import com.olivia.peanut.aps.model.ApsGoods;
-import com.olivia.peanut.aps.model.ApsProcessPath;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsProcessPathService;
-import com.olivia.sdk.ann.SetUserName;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -44,6 +40,8 @@ public class ApsGoodsServiceImpl extends MPJBaseServiceImpl<ApsGoodsMapper, ApsG
 
   @Resource
   ApsProcessPathService apsProcessPathService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsGoodsQueryListRes queryList(ApsGoodsQueryListReq req) {
 
@@ -78,16 +76,21 @@ public class ApsGoodsServiceImpl extends MPJBaseServiceImpl<ApsGoodsMapper, ApsG
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  @SetUserName
-  public @Override void setName(List<? extends ApsGoodsDto> ApsGoodsDtoList) {
-    if (CollUtil.isEmpty(ApsGoodsDtoList)) {
-      return;
-    }
+  //  @SetUserName
+  public @Override void setName(List<? extends ApsGoodsDto> apsGoodsDtoList) {
 
-    Set<Long> pathSetId = ApsGoodsDtoList.stream().map(ApsGoodsDto::getProcessPathId).collect(Collectors.toSet());
-    Map<Long, String> pNameMap = apsProcessPathService.list(Wrappers.<ApsProcessPath>lambdaQuery().in(BaseEntity::getId, pathSetId)).stream()
-        .collect(Collectors.toMap(BaseEntity::getId, ApsProcessPath::getProcessPathName));
-    ApsGoodsDtoList.forEach(t -> t.setProcessPathName(pNameMap.get(t.getProcessPathId())));
+    setNameService.setName(apsGoodsDtoList,//
+        SetNamePojoUtils.OP_USER_NAME,
+        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName"));
+
+//    if (CollUtil.isEmpty(ApsGoodsDtoList)) {
+//      return;
+//    }
+//
+//    Set<Long> pathSetId = ApsGoodsDtoList.stream().map(ApsGoodsDto::getProcessPathId).collect(Collectors.toSet());
+//    Map<Long, String> pNameMap = apsProcessPathService.list(Wrappers.<ApsProcessPath>lambdaQuery().in(BaseEntity::getId, pathSetId)).stream()
+//        .collect(Collectors.toMap(BaseEntity::getId, ApsProcessPath::getProcessPathName));
+//    ApsGoodsDtoList.forEach(t -> t.setProcessPathName(pNameMap.get(t.getProcessPathId())));
   }
 
   // 以下为私有对象封装

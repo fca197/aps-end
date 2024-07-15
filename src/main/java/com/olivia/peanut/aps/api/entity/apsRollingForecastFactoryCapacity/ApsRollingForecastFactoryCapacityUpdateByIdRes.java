@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)修改对象返回
  *

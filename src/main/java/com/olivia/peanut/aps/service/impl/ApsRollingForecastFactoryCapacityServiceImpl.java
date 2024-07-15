@@ -15,9 +15,10 @@ import com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity.*;
 import com.olivia.peanut.aps.mapper.ApsRollingForecastFactoryCapacityMapper;
 import com.olivia.peanut.aps.model.ApsRollingForecastFactoryCapacity;
 import com.olivia.peanut.aps.service.ApsRollingForecastFactoryCapacityService;
-import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -50,6 +51,10 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
   BaseTableHeaderService tableHeaderService;
   @Resource
   FactoryService factoryService;
+  @Resource
+  SetNameService setNameService;
+
+  // 以下为私有对象封装
 
   public @Override ApsRollingForecastFactoryCapacityQueryListRes queryList(ApsRollingForecastFactoryCapacityQueryListReq req) {
 
@@ -60,8 +65,6 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
     ((ApsRollingForecastFactoryCapacityService) AopContext.currentProxy()).setName(dataList);
     return new ApsRollingForecastFactoryCapacityQueryListRes().setDataList(dataList);
   }
-
-  // 以下为私有对象封装
 
   public @Override DynamicsPage<ApsRollingForecastFactoryCapacityExportQueryPageListInfoRes> queryPageList(ApsRollingForecastFactoryCapacityExportQueryPageListReq req) {
 
@@ -88,12 +91,13 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
   public @Override void setName(List<? extends ApsRollingForecastFactoryCapacityDto> list) {
 
-    if (CollUtil.isEmpty(list)) {
-      return;
-    }
-    Map<Long, String> fnMap = this.factoryService.listByIds(list.stream().map(ApsRollingForecastFactoryCapacityDto::getFactoryId).collect(Collectors.toSet())).stream()
-        .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
-    list.forEach(t -> t.setFactoryName(fnMap.get(t.getFactoryId())));
+    setNameService.setName(list, SetNamePojoUtils.FACTORY);
+//    if (CollUtil.isEmpty(list)) {
+//      return;
+//    }
+//    Map<Long, String> fnMap = this.factoryService.listByIds(list.stream().map(ApsRollingForecastFactoryCapacityDto::getFactoryId).collect(Collectors.toSet())).stream()
+//        .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
+//    list.forEach(t -> t.setFactoryName(fnMap.get(t.getFactoryId())));
   }
 
 
