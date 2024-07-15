@@ -14,11 +14,8 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMainSaleData.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastMainSaleDataImportListener;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMainSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainSaleDataService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.DateUtils;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
-import com.olivia.sdk.utils.PoiExcelUtil;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -123,9 +120,9 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         headerList.add(DateUtil.format(instance.getTime(), DatePattern.NORM_MONTH_FORMAT));
       });
     } else {
-      List<String> monthList = DateUtils.getMonthList(req.getDateRange().get(0), req.getDateRange().get(1));
-      monthList.stream().mapToInt(t -> Integer.parseInt(t.substring(0, 4))).distinct().forEach(yearSet::add);
-      headerList.addAll(monthList);
+      List<YearMonth> monthList = DateUtils.getMonthList(req.getDateRange().get(0), req.getDateRange().get(1));
+      monthList.stream().mapToInt(YearMonth::getYear).distinct().forEach(yearSet::add);
+      headerList.addAll(monthList.stream().map(YearMonth::toString).toList());
     }
 
     log.info("yearSet:{}", headerList);
