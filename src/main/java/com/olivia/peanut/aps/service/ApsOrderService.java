@@ -30,5 +30,7 @@ public interface ApsOrderService extends MPJBaseService<ApsOrder> {
   DynamicsPage<ApsOrderTimeLineRes> timeLine(ApsOrderTimeLineReq req);
 
   ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req);
+
+  ApsOrderUpdateSchedulingDateRes updateSchedulingDate(ApsOrderUpdateSchedulingDateReq req);
 }
 

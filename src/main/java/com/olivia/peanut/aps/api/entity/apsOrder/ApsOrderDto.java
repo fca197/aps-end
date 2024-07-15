@@ -41,7 +41,7 @@ public class ApsOrderDto extends BaseEntityDto {
    * 越大越紧急
    */
   private Integer urgencyLevel;
-
+  private LocalDate schedulingDate;
   private ApsOrderUserDto orderUser;
   private List<ApsOrderGoodsDto> goodsList;
   private List<ApsOrderGoodsProjectConfigDto> goodsProjectConfigList;

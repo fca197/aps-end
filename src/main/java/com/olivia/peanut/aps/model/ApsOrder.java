@@ -35,6 +35,7 @@ public class ApsOrder extends BaseEntity {
   private LocalDate deliveryDate;
   private Long factoryId;
 
+  private LocalDate  schedulingDate;
   /**
    * 越大越紧急
    */

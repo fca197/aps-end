@@ -107,4 +107,9 @@ public class ApsOrderApiImpl implements ApsOrderApi {
   public ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req) {
     return this.apsOrderService.updateOrderStatus(req);
   }
+
+  @Override
+  public ApsOrderUpdateSchedulingDateRes updateSchedulingDate(ApsOrderUpdateSchedulingDateReq req) {
+    return this.apsOrderService.updateSchedulingDate(req);
+  }
 }

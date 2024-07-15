@@ -292,8 +292,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     Long dayWorkSecond = factoryConfig.getDayWorkSecond();
     Long dayWorkLastSecond = factoryConfig.getDayWorkLastSecond();
     ApsProcessPathDto apsProcessPathDto = factoryConfig.getPathDtoMap().get(apsGoods.getProcessPathId());
-    ApsProcessPathInfo apsProcessPathInfo = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class),
-        factoryConfig.getWeekList(), dayWorkLastSecond,
+    ApsProcessPathInfo apsProcessPathInfo = ProcessUtils.schedulePathDate($.copy(apsProcessPathDto, ApsProcessPathVo.class), factoryConfig.getWeekList(), dayWorkLastSecond,
         dayWorkSecond, req.getGoodsStatusId(), Map.of(), LocalDate.now());
     List<Info> dataList = apsProcessPathInfo.getDataList();
 
@@ -305,14 +304,10 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     dataList.forEach(t -> {
       ApsOrderGoodsStatusDate apsOrderGoodsStatusDate = statusDateMap.get(t.getStatusId());
       if (Objects.nonNull(apsOrderGoodsStatusDate)) {
-        updateList.add(
-            apsOrderGoodsStatusDate.setExpectMakeBeginTime(t.getEndLocalDate()).setExpectMakeEndTime(t.getBeginLocalDate())
-                .setStatusIndex(t.getSortIndex()));
+        updateList.add(apsOrderGoodsStatusDate.setExpectMakeBeginTime(t.getEndLocalDate()).setExpectMakeEndTime(t.getBeginLocalDate()).setStatusIndex(t.getSortIndex()));
       } else {
-        ApsOrderGoodsStatusDate statusDate = new ApsOrderGoodsStatusDate().setOrderId(req.getOrderId())
-            .setGoodsStatusId(t.getStatusId()).setStatusIndex(t.getSortIndex())
-            .setFactoryId(factoryId).setGoodsStatusId(t.getStatusId())
-            .setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
+        ApsOrderGoodsStatusDate statusDate = new ApsOrderGoodsStatusDate().setOrderId(req.getOrderId()).setGoodsStatusId(t.getStatusId()).setStatusIndex(t.getSortIndex())
+            .setFactoryId(factoryId).setGoodsStatusId(t.getStatusId()).setExpectMakeBeginTime(t.getBeginLocalDate()).setExpectMakeEndTime(t.getEndLocalDate())
             .setGoodsId(apsGoods.getId());
         insertList.add(statusDate);
       }
@@ -331,6 +326,13 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
         .set(Boolean.FALSE.equals(req.getIsBeginTime()), ApsOrderGoodsStatusDate::getActualMakeEndTime, LocalDateTime.now()));
 
     return new ApsOrderUpdateOrderStatusRes();
+  }
+
+  @Override
+  public ApsOrderUpdateSchedulingDateRes updateSchedulingDate(ApsOrderUpdateSchedulingDateReq req) {
+    $.assertTrueCanIgnoreException(Objects.isNull(req.getSchedulingDate()) || LocalDate.now().isBefore(req.getSchedulingDate()), "排产日期不能小于今天");
+    this.update(new LambdaUpdateWrapper<ApsOrder>().eq(BaseEntity::getId, req.getId()).set(ApsOrder::getSchedulingDate, req.getSchedulingDate()));
+    return new ApsOrderUpdateSchedulingDateRes();
   }
 
   @Override
