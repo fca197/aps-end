@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.service.ApsRollingForecastOrderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+import com.olivia.sdk.utils.RunUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,8 +32,9 @@ public class ApsRollingForecastOrderApiImpl implements ApsRollingForecastOrderAp
    *
    */
   public @Override ApsRollingForecastOrderInsertRes insert(ApsRollingForecastOrderInsertReq req) {
-    this.apsRollingForecastOrderService.save($.copy(req, ApsRollingForecastOrder.class));
-    return new ApsRollingForecastOrderInsertRes().setCount(1);
+//    this.apsRollingForecastOrderService.save($.copy(req, ApsRollingForecastOrder.class));
+    return this.apsRollingForecastOrderService.save(req);
+//    return new ApsRollingForecastOrderInsertRes().setCount(1);
   }
 
   /****
@@ -57,6 +59,7 @@ public class ApsRollingForecastOrderApiImpl implements ApsRollingForecastOrderAp
    *
    */
   public @Override ApsRollingForecastOrderUpdateByIdRes updateById(ApsRollingForecastOrderUpdateByIdReq req) {
+    RunUtils.noImpl();
     apsRollingForecastOrderService.updateById($.copy(req, ApsRollingForecastOrder.class));
     return new ApsRollingForecastOrderUpdateByIdRes();
 

@@ -20,5 +20,7 @@ public interface ApsRollingForecastOrderService extends MPJBaseService<ApsRollin
 
 
   void setName(List<? extends ApsRollingForecastOrderDto> apsRollingForecastOrderDtoList);
+
+  ApsRollingForecastOrderInsertRes save(ApsRollingForecastOrderInsertReq req);
 }
 

@@ -1,5 +1,6 @@
 
-create database if not exists peanut_prod;
+create database if not exists peanut_prod  character set utf8mb4;
+;
 
 use peanut_prod;
 

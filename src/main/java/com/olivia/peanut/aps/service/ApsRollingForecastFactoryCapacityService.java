@@ -3,7 +3,9 @@ package com.olivia.peanut.aps.service;
 import com.github.yulichang.base.MPJBaseService;
 import com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity.*;
 import com.olivia.peanut.aps.model.ApsRollingForecastFactoryCapacity;
+import com.olivia.peanut.aps.service.pojo.FactoryCapacityDay;
 import com.olivia.sdk.utils.DynamicsPage;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -22,5 +24,7 @@ public interface ApsRollingForecastFactoryCapacityService extends MPJBaseService
   void setName(List<? extends ApsRollingForecastFactoryCapacityDto> apsRollingForecastFactoryCapacityDtoList);
 
   ApsRollingForecastFactoryCapacityInsertRes save(ApsRollingForecastFactoryCapacityInsertReq req);
+
+  List<FactoryCapacityDay> list(Long factoryId , LocalDate beginDate,LocalDate endDate);
 }
 

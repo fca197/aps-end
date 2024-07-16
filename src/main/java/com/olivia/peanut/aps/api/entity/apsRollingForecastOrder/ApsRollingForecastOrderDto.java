@@ -21,6 +21,13 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsRollingForecastOrderDto extends BaseEntityDto {
 
+  @NotNull(message = "工厂id不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long factoryId;
+  private String factoryName;
+  @NotNull(message = "开始状态id不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long beginStatusId;
+  @NotNull(message = "结束状态id不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long endStatusId;
   /***
    *  唯一编码
    */

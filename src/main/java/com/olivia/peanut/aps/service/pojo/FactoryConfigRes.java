@@ -23,5 +23,6 @@ public class FactoryConfigRes {
   private List<ShiftItem> shiftItemList;
   private Long dayWorkSecond;
   private Map<Long, ApsProcessPathDto> pathDtoMap;
+  private ApsProcessPathDto defaultApsProcessPathDto;
   private Long dayWorkLastSecond;
 }

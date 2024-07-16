@@ -20,6 +20,7 @@ import com.olivia.peanut.portal.model.ShiftItem;
 import com.olivia.peanut.portal.service.CalendarService;
 import com.olivia.peanut.portal.service.ShiftItemService;
 import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.sdk.exception.RunException;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.RunUtils;
 import com.olivia.sdk.utils.model.WeekInfo;
@@ -104,6 +105,8 @@ public class ApsFactoryServiceImpl implements ApsFactoryService {
               () -> apsProcessPathService.queryList(new ApsProcessPathQueryListReq().setData(new ApsProcessPathDto().setFactoryId(factoryId).setIsDefault(req.getGetPathDefault())))
                   .getDataList().stream().collect(Collectors.toMap(BaseEntityDto::getId, Function.identity())));
           res.setPathDtoMap(pathDtoMap);
+          res.setDefaultApsProcessPathDto(
+              pathDtoMap.values().stream().filter(t -> TRUE.equals(t.getIsDefault())).findAny().orElseThrow(() -> new RunException("没有默认工单路径")));
         } catch (Exception e) {
           log.error("factoryPathCache {} error: {}", factoryId, e.getMessage(), e);
         }

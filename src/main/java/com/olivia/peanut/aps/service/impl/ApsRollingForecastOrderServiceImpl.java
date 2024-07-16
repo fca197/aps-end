@@ -1,24 +1,38 @@
 package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsRollingForecastOrder.*;
 import com.olivia.peanut.aps.mapper.ApsRollingForecastOrderMapper;
+import com.olivia.peanut.aps.model.ApsOrder;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrder;
-import com.olivia.peanut.aps.service.ApsRollingForecastOrderService;
+import com.olivia.peanut.aps.model.ApsRollingForecastOrderItem;
+import com.olivia.peanut.aps.service.*;
+import com.olivia.peanut.aps.service.pojo.FactoryCapacityDay;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
+import com.olivia.peanut.aps.utils.ProcessUtils;
+import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.ann.SetUserName;
+import com.olivia.sdk.service.SetNameService;
+import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -30,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author peanut
  * @since 2024-07-14 20:22:28
  */
+@Slf4j
 @Service("apsRollingForecastOrderService")
 @Transactional
 public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRollingForecastOrderMapper, ApsRollingForecastOrder> implements ApsRollingForecastOrderService {
@@ -38,7 +53,14 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
 
   @Resource
   BaseTableHeaderService tableHeaderService;
-
+  @Resource
+  ApsOrderService apsOrderService;
+  @Resource
+  ApsFactoryService apsFactoryService;
+  @Resource
+  ApsRollingForecastFactoryCapacityService apsRollingForecastFactoryCapacityService;
+  @Resource
+  ApsRollingForecastOrderItemService apsRollingForecastOrderItemService;
 
   public @Override ApsRollingForecastOrderQueryListRes queryList(ApsRollingForecastOrderQueryListReq req) {
 
@@ -49,7 +71,6 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
     ((ApsRollingForecastOrderService) AopContext.currentProxy()).setName(dataList);
     return new ApsRollingForecastOrderQueryListRes().setDataList(dataList);
   }
-
 
   public @Override DynamicsPage<ApsRollingForecastOrderExportQueryPageListInfoRes> queryPageList(ApsRollingForecastOrderExportQueryPageListReq req) {
 
@@ -74,14 +95,66 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  // 以下为私有对象封装
-
-  public @Override void setName(List<? extends ApsRollingForecastOrderDto> apsRollingForecastOrderDtoList) {
-
-    if (CollUtil.isEmpty(apsRollingForecastOrderDtoList)) {
+  @Override
+  public ApsRollingForecastOrderInsertRes save(ApsRollingForecastOrderInsertReq req) {
+    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(new FactoryConfigReq().setGetPath(Boolean.TRUE).setGetPathDefault(Boolean.TRUE));
+    ApsProcessPathDto defaultApsProcessPathDto = factoryConfig.getDefaultApsProcessPathDto();
+    List<Long> allStatusIdList = ProcessUtils.getStatusBetween($.copy(defaultApsProcessPathDto, ApsProcessPathVo.class), req.getBeginStatusId(), req.getEndStatusId());
+    log.info("factoryId: {} allStatusIdList: {}", req.getFactoryId(), allStatusIdList);
+    if (CollUtil.isEmpty(allStatusIdList)) {
+      return new ApsRollingForecastOrderInsertRes().setCount(-1);
+    }
+    List<ApsOrder> orderList = this.apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().select(BaseEntity::getId, ApsOrder::getUrgencyLevel, ApsOrder::getOrderStatus)//
+        .eq(ApsOrder::getFactoryId, req.getFactoryId()).in(ApsOrder::getOrderStatus, allStatusIdList));
+    if (CollUtil.isEmpty(orderList)) {
+      log.info("factoryId: {} orderList: is null", req.getFactoryId());
+      return new ApsRollingForecastOrderInsertRes().setCount(-2);
     }
 
+    List<FactoryCapacityDay> capacityDayList = apsRollingForecastFactoryCapacityService.list(req.getFactoryId(), req.getBeginTime(), req.getEndTime());
 
+    if (CollUtil.isEmpty(capacityDayList)) {
+      log.info("factoryId: {} capacityDayList: is null", req.getFactoryId());
+      return new ApsRollingForecastOrderInsertRes().setCount(-3);
+    }
+//    Map<Long, String> statusIdNameMap = apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
+    Map<Long, List<ApsOrder>> orderMap = orderList.stream()
+        .collect(Collectors.groupingBy(ApsOrder::getOrderStatus, Collectors.collectingAndThen(Collectors.<ApsOrder>toList(), list -> {
+          list.sort(Comparator.comparing(ApsOrder::getUrgencyLevel).reversed());
+          return list;
+        })));
+
+    Long forecastId = IdWorker.getId();
+    List<ApsRollingForecastOrderItem> insertList = new ArrayList<>();
+    allStatusIdList.forEach(statusId -> {
+      List<ApsOrder> apsOrderList = orderMap.get(statusId);
+      if (CollUtil.isEmpty(apsOrderList)) {
+        return;
+      }
+      List<ApsOrder> apsOrdersTmp = new ArrayList<>(apsOrderList);
+      capacityDayList.forEach(t -> {
+        if (CollUtil.isEmpty(apsOrdersTmp)) {
+          return;
+        }
+        for (int i = 0; i < t.getCapacity() && CollUtil.isNotEmpty(apsOrdersTmp); i++) {
+          ApsOrder currApsOrder = apsOrdersTmp.remove(0);
+          insertList.add(new ApsRollingForecastOrderItem().setFactoryId(req.getFactoryId())//
+              .setForecastId(forecastId).setGoodsStatusId(statusId).setOrderId(currApsOrder.getId()).setStatusBeginDate(t.getLocalDate()));
+        }
+      });
+    });
+    this.apsRollingForecastOrderItemService.saveBatch(insertList);
+    return new ApsRollingForecastOrderInsertRes().setId(forecastId).setCount(insertList.size());
+  }
+
+  // 以下为私有对象封装
+
+  @Resource
+  SetNameService setNameService;
+//  @SetUserName
+  public @Override void setName(List<? extends ApsRollingForecastOrderDto> apsRollingForecastOrderDtoList) {
+
+    setNameService.setName(apsRollingForecastOrderDtoList, SetNamePojoUtils.FACTORY,SetNamePojoUtils.OP_USER_NAME);
   }
 
 
@@ -89,8 +162,7 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
     MPJLambdaWrapper<ApsRollingForecastOrder> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getRollCode()), ApsRollingForecastOrder::getRollCode, obj.getRollCode())
+      q.eq(StringUtils.isNoneBlank(obj.getRollCode()), ApsRollingForecastOrder::getRollCode, obj.getRollCode())
           .eq(StringUtils.isNoneBlank(obj.getRollName()), ApsRollingForecastOrder::getRollName, obj.getRollName())
           .eq(Objects.nonNull(obj.getBeginTime()), ApsRollingForecastOrder::getBeginTime, obj.getBeginTime())
           .eq(Objects.nonNull(obj.getEndTime()), ApsRollingForecastOrder::getEndTime, obj.getEndTime())
@@ -103,9 +175,7 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
   }
 
   private void setQueryListHeader(DynamicsPage<ApsRollingForecastOrder> page) {
-
     tableHeaderService.listByBizKey(page, "ApsRollingForecastOrderService#queryPageList");
-
   }
 
 

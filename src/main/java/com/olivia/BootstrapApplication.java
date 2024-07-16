@@ -1,5 +1,6 @@
 package com.olivia;
 
+import cn.hutool.system.SystemUtil;
 import com.google.ortools.Loader;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.Options;
@@ -26,8 +27,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BootstrapApplication {
 
   static {
-    // 加载 or-tools 库
-    Loader.loadNativeLibraries();
+    // 非window下 加载 or-tools 库
+    // window下使用修改pom.xml中 ortools-java依赖排除的节点删除,增加window依赖
+    log.info("load or-tools {}", SystemUtil.getOsInfo().getName());
+    if (Boolean.FALSE.equals(SystemUtil.getOsInfo().isWindows())) {
+      Loader.loadNativeLibraries();
+    }
 
     AviatorEvaluator.getInstance().setOption(Options.OPTIMIZE_LEVEL, AviatorEvaluator.COMPILE);
   }
