@@ -22,8 +22,8 @@ import com.olivia.peanut.aps.utils.ProcessUtils;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.service.SetNameService;
+import com.olivia.sdk.service.pojo.NameConfig;
 import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
@@ -61,6 +61,8 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
   ApsRollingForecastFactoryCapacityService apsRollingForecastFactoryCapacityService;
   @Resource
   ApsRollingForecastOrderItemService apsRollingForecastOrderItemService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsRollingForecastOrderQueryListRes queryList(ApsRollingForecastOrderQueryListReq req) {
 
@@ -95,9 +97,13 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  // 以下为私有对象封装
+
   @Override
+  @Transactional
   public ApsRollingForecastOrderInsertRes save(ApsRollingForecastOrderInsertReq req) {
-    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(new FactoryConfigReq().setGetPath(Boolean.TRUE).setGetPathDefault(Boolean.TRUE));
+    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
+        new FactoryConfigReq().setFactoryId(req.getFactoryId()).setGetPath(Boolean.TRUE).setGetPathDefault(Boolean.TRUE));
     ApsProcessPathDto defaultApsProcessPathDto = factoryConfig.getDefaultApsProcessPathDto();
     List<Long> allStatusIdList = ProcessUtils.getStatusBetween($.copy(defaultApsProcessPathDto, ApsProcessPathVo.class), req.getBeginStatusId(), req.getEndStatusId());
     log.info("factoryId: {} allStatusIdList: {}", req.getFactoryId(), allStatusIdList);
@@ -143,18 +149,21 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
         }
       });
     });
+    ApsRollingForecastOrder forecastOrder = $.copy(req, ApsRollingForecastOrder.class);
+    forecastOrder.setId(forecastId);
+    this.save(forecastOrder);
     this.apsRollingForecastOrderItemService.saveBatch(insertList);
     return new ApsRollingForecastOrderInsertRes().setId(forecastId).setCount(insertList.size());
   }
 
-  // 以下为私有对象封装
-
-  @Resource
-  SetNameService setNameService;
-//  @SetUserName
+  //  @SetUserName
   public @Override void setName(List<? extends ApsRollingForecastOrderDto> apsRollingForecastOrderDtoList) {
 
-    setNameService.setName(apsRollingForecastOrderDtoList, SetNamePojoUtils.FACTORY,SetNamePojoUtils.OP_USER_NAME);
+    SetNamePojo statusNamePojo = new SetNamePojo()//
+        .setNameFieldName("statusName").setServiceName(ApsStatusService.class) //
+        .setNameConfigList(List.of(new NameConfig().setIdField("beginStatusId").setNameField("beginStatusName"),//
+            new NameConfig().setIdField("endStatusId").setNameField("endStatusName")));
+    setNameService.setName(apsRollingForecastOrderDtoList, SetNamePojoUtils.FACTORY, statusNamePojo, SetNamePojoUtils.OP_USER_NAME);
   }
 
 

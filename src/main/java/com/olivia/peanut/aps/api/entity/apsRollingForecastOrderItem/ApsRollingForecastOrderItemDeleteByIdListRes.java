@@ -3,10 +3,6 @@ package com.olivia.peanut.aps.api.entity.apsRollingForecastOrderItem;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import java.util.List;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 滚动预测订单节点表(ApsRollingForecastOrderItem)根据ID删除多个反参

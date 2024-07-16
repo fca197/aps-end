@@ -25,6 +25,6 @@ public interface ApsRollingForecastFactoryCapacityService extends MPJBaseService
 
   ApsRollingForecastFactoryCapacityInsertRes save(ApsRollingForecastFactoryCapacityInsertReq req);
 
-  List<FactoryCapacityDay> list(Long factoryId , LocalDate beginDate,LocalDate endDate);
+  List<FactoryCapacityDay> list(Long factoryId, LocalDate beginDate, LocalDate endDate);
 }
 

@@ -16,6 +16,6 @@ public class ApsOrderUpdateSchedulingDateReq {
 
   @NotNull(message = "id不能为空")
   private Long id;
-//  @NotNull(message = "schedulingDate不能为空")
+  //  @NotNull(message = "schedulingDate不能为空")
   private LocalDate schedulingDate;
 }

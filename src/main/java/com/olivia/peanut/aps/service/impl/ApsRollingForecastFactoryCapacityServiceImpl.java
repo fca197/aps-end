@@ -178,7 +178,7 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
     List<FactoryCapacityDay> dayList = new ArrayList<>();
     localDateBetween.forEach(t -> {
-      ApsRollingForecastFactoryCapacity apsRollingForecastFactoryCapacity = capacityMap.get(t.getYear() + "-" + t.getMonth());
+      ApsRollingForecastFactoryCapacity apsRollingForecastFactoryCapacity = capacityMap.get(t.getYear() + "-" + t.getMonthValue());
       if (Objects.nonNull(apsRollingForecastFactoryCapacity)) {
         Integer capacity = (Integer) ReflectUtil.getFieldValue(apsRollingForecastFactoryCapacity, "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth()));
         capacity = Objects.isNull(capacity) ? 0 : capacity;

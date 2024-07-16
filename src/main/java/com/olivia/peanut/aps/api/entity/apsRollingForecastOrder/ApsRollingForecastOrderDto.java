@@ -26,8 +26,10 @@ public class ApsRollingForecastOrderDto extends BaseEntityDto {
   private String factoryName;
   @NotNull(message = "开始状态id不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long beginStatusId;
+  private String beginStatusName;
   @NotNull(message = "结束状态id不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long endStatusId;
+  private String endStatusName;
   /***
    *  唯一编码
    */
