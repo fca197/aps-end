@@ -1,5 +1,7 @@
 package com.olivia.peanut.aps.service.impl;
 
+import static java.lang.Boolean.TRUE;
+
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -19,6 +21,7 @@ import com.olivia.peanut.aps.service.pojo.FactoryCapacityDay;
 import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
 import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
 import com.olivia.peanut.aps.utils.ProcessUtils;
+import com.olivia.peanut.aps.utils.model.ApsProcessPathInfo;
 import com.olivia.peanut.aps.utils.model.ApsProcessPathVo;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
@@ -28,6 +31,7 @@ import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -81,7 +85,7 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
     setQueryListHeader(page);
     MPJLambdaWrapper<ApsRollingForecastOrder> q = getWrapper(req.getData());
     List<ApsRollingForecastOrderExportQueryPageListInfoRes> records;
-    if (Boolean.TRUE.equals(req.getQueryPage())) {
+    if (TRUE.equals(req.getQueryPage())) {
       IPage<ApsRollingForecastOrder> list = this.page(page, q);
       IPage<ApsRollingForecastOrderExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsRollingForecastOrderExportQueryPageListInfoRes.class));
       records = dataList.getRecords();
@@ -102,10 +106,13 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
   @Override
   @Transactional
   public ApsRollingForecastOrderInsertRes save(ApsRollingForecastOrderInsertReq req) {
-    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
-        new FactoryConfigReq().setFactoryId(req.getFactoryId()).setGetPath(Boolean.TRUE).setGetPathDefault(Boolean.TRUE));
+    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(//
+        new FactoryConfigReq().setFactoryId(req.getFactoryId()).setGetPath(TRUE).setGetPathDefault(TRUE)//
+            .setGetShift(TRUE).setGetWeek(TRUE).setWeekBeginDate(req.getBeginTime()).setWeekEndDate(req.getEndTime())//
+    );
     ApsProcessPathDto defaultApsProcessPathDto = factoryConfig.getDefaultApsProcessPathDto();
-    List<Long> allStatusIdList = ProcessUtils.getStatusBetween($.copy(defaultApsProcessPathDto, ApsProcessPathVo.class), req.getBeginStatusId(), req.getEndStatusId());
+    ApsProcessPathVo apsProcessPathVo = $.copy(defaultApsProcessPathDto, ApsProcessPathVo.class);
+    List<Long> allStatusIdList = ProcessUtils.getStatusBetween(apsProcessPathVo, req.getBeginStatusId(), req.getEndStatusId());
     log.info("factoryId: {} allStatusIdList: {}", req.getFactoryId(), allStatusIdList);
     if (CollUtil.isEmpty(allStatusIdList)) {
       return new ApsRollingForecastOrderInsertRes().setCount(-1);
@@ -131,7 +138,12 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
         })));
 
     Long forecastId = IdWorker.getId();
-    List<ApsRollingForecastOrderItem> insertList = new ArrayList<>();
+    List<ApsRollingForecastOrderItem> insertList = Collections.synchronizedList(new ArrayList<>());
+
+    List<Runnable> runnableList = new ArrayList<>();
+
+    ProcessUtils.getPathBetween(apsProcessPathVo, req.getBeginStatusId(), req.getEndStatusId());
+
     allStatusIdList.forEach(statusId -> {
       List<ApsOrder> apsOrderList = orderMap.get(statusId);
       if (CollUtil.isEmpty(apsOrderList)) {
@@ -146,9 +158,22 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
           ApsOrder currApsOrder = apsOrdersTmp.remove(0);
           insertList.add(new ApsRollingForecastOrderItem().setFactoryId(req.getFactoryId())//
               .setForecastId(forecastId).setGoodsStatusId(statusId).setOrderId(currApsOrder.getId()).setStatusBeginDate(t.getLocalDate()));
+          runnableList.add(() -> {
+            ApsProcessPathInfo schedulePathDate = ProcessUtils.schedulePathDate(apsProcessPathVo, factoryConfig.getWeekList(), factoryConfig.getDayWorkLastSecond(),
+                factoryConfig.getDayWorkSecond(), statusId, Map.of(), t.getLocalDate());
+            if (Objects.isNull(schedulePathDate) || CollUtil.isEmpty(schedulePathDate.getDataList())) {
+              return;
+            }
+            schedulePathDate.getDataList().forEach(info -> {
+              ApsRollingForecastOrderItem item = new ApsRollingForecastOrderItem().setFactoryId(req.getFactoryId())//
+                  .setForecastId(forecastId).setGoodsStatusId(info.getStatusId()).setOrderId(currApsOrder.getId()).setStatusBeginDate(info.getBeginLocalDate());
+              insertList.add(item);
+            });
+          });
         }
       });
     });
+    RunUtils.run("status forecast " + forecastId, 10, runnableList);
     ApsRollingForecastOrder forecastOrder = $.copy(req, ApsRollingForecastOrder.class);
     forecastOrder.setId(forecastId);
     this.save(forecastOrder);
