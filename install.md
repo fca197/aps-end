@@ -92,7 +92,13 @@
     方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖  
 
 2. 打包后文件  
-  答: 打包后在[target](target) 生成两个jar文件 ,  app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
+    答: 打包后在[target](target) 生成两个jar文件 ,  app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
 
-3. 执行时数据库缺少字段
-  答: 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构
+3. 执行时数据库缺少字段  
+    答: 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构  
+
+4. 列表展示字段为空,或修改字段显示宽度
+    答: 请修改base_table_header中配置, 或菜单:基础配置=>表格头管理  
+   biz_key: 来自对应的业务ServiceImpl中setQueryListHeader方法查看
+    
+
