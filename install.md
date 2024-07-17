@@ -31,6 +31,7 @@
 2. 切换到项目目录,并修改mysql,redis配置
 
 ```bash
+  
     cd  peanut-end
     # 修改mysql,redis配置
     resources/application.yml
@@ -46,6 +47,7 @@
            redisson:
              # 此处也需要修改
              file: classpath:redisson.yml
+             
 ```
 
 3. 编译打包
@@ -53,7 +55,7 @@
 ```bash
 
     mvn install -DskipTests clean package
-
+  
 ```
 
 4. 获取打包文件
@@ -70,7 +72,7 @@
  
     rm -rf   log.log
     nohup java  -Dfile.encoding=UTF-8    -Xms512m -Xmx3000m -XX:+UseG1GC   -jar   -Dspring.profiles.active=fwq  -Dserver.port=8080 app.jar >  log.log  2>&1 &
-
+  
 ```
 
 6. 启动app
@@ -89,5 +91,8 @@
     方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句  
     方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖  
 
-2. 
+2. 打包后文件  
+  答: 打包后在[target](target) 生成两个jar文件 ,  app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
 
+3. 执行时数据库缺少字段
+  答: 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构
