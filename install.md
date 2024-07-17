@@ -85,9 +85,9 @@
 # 问题
 1. 启动报错:  Resource ortools-win32-x86-64/ was not found in ClassLoader jdk.internal.loader.ClassLoaders  
  答:
-    问题原因: ortools依赖的window组建依赖过大,生产为linux系统,不用此组建,为避免打包过大,所以删除该依赖
-    方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句
-    方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖
+    问题原因: ortools依赖的window组建依赖过大,生产为linux系统,不用此组建,为避免打包过大,所以删除该依赖  
+    方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句  
+    方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖  
 
 2. 
 
