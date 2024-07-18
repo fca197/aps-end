@@ -48,6 +48,7 @@ public class ApsLogisticsPathDto extends BaseEntityDto {
    */
   @NotNull(message = "工厂ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
+  private String factoryName;
 
   @NotNull(message = "物流路径明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   @Size(min = 0, max = 100, message = "物流路径明细不能超过100条", groups = {InsertCheck.class, UpdateCheck.class})
