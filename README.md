@@ -12,17 +12,18 @@
 
 ## 后端
 
-| 组建名称              | 依赖版本         | 说明                 |
-|-------------------|--------------|--------------------|
-| JDK               | jdk 17       | Jdk最低版本            |
-| Spring Boot       | 3.2.0        | springboot版本       |
-| mybatis-plus      | 3.5.3.1      | mybatisplus版本      |
-| mybatis-plus-join | 1.4.8.1      | mybatisplus-join版本 | 
-| lombok            | 1.18.22      | lombok版本           |
-| uber-h3           | 4.1.1        | 经纬度转code码          |
-| hutool            | 5.8.23       | 常用工具库              |
-| drools            | 7.74.1.Final | 规则引擎               |
-| fastjson2         | 2.0.46       | fastjson2版本        |
+| 组建名称              | 依赖版本         | 说明                                                                           |
+|-------------------|--------------|------------------------------------------------------------------------------|
+| JDK               | jdk 17       | Jdk最低版本                                                                      |
+| Spring Boot       | 3.2.0        | springboot版本                                                                 |
+| mybatis-plus      | 3.5.3.1      | mybatisplus版本                                                                |
+| mybatis-plus-join | 1.4.8.1      | mybatisplus-join版本                                                           | 
+| lombok            | 1.18.22      | lombok版本                                                                     |
+| uber-h3           | 4.1.1        | 经纬度转code码                                                                    |
+| hutool            | 5.8.23       | 常用工具库                                                                        |
+| drools            | 7.74.1.Final | 规则引擎                                                                         |
+| fastjson2         | 2.0.46       | fastjson2版本                                                                  |
+| or-tools          | 9.9.3963     | 算法求解器  [帮助文档](https://developers.google.cn/optimization?authuser=0&hl=zh-cn) |
 
 ### 注解
 

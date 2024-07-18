@@ -1,6 +1,7 @@
 package com.olivia.peanut.portal.api.entity.districtCode;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,8 +20,11 @@ public class DistrictCodeDto extends BaseEntityDto {
   private String code;
   private String name;
   private String parentCode;
-  private Integer level;
 
+  // 0国,1省,2市,3区
+  private Integer level;
+  private String path;
+  private List<DistrictCodeDto> children;
 }
 
 

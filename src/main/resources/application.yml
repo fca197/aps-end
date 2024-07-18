@@ -25,7 +25,7 @@ peanut:
     - /fileUpload/getFileByte/
     - /actuator
     - /apsGoodsSaleProjectConfig/sale2project
-    - /blog-show
+    - /districtCode
   #    - /uber/h3/geoToH3Address
   redis-key:
     user-token: ut_
@@ -78,7 +78,7 @@ spring:
       validation-timeout: 3000
       wait-timeout: 3000
       unitTest: true
-      leakDetectionThreshold: 3000
+      leakDetectionThreshold: 30000
 
 
     driver-class-name: com.mysql.cj.jdbc.Driver

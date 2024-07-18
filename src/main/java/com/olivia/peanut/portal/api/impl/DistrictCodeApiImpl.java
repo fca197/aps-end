@@ -1,6 +1,7 @@
 package com.olivia.peanut.portal.api.impl;
 
 
+import cn.hutool.core.collection.CollUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.portal.api.DistrictCodeApi;
 import com.olivia.peanut.portal.api.entity.districtCode.*;
@@ -11,6 +12,7 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,11 +87,38 @@ public class DistrictCodeApiImpl implements DistrictCodeApi {
   }
 
   public @Override DistrictCodeQueryByIdListRes queryByIdListRes(DistrictCodeQueryByIdListReq req) {
-    MPJLambdaWrapper<DistrictCode> q = new MPJLambdaWrapper<DistrictCode>(DistrictCode.class)
-        .selectAll(DistrictCode.class).in(DistrictCode::getId, req.getIdList());
+    MPJLambdaWrapper<DistrictCode> q = new MPJLambdaWrapper<DistrictCode>(DistrictCode.class).selectAll(DistrictCode.class).in(DistrictCode::getId, req.getIdList());
     List<DistrictCode> list = this.districtCodeService.list(q);
     List<DistrictCodeDto> dataList = $.copyList(list, DistrictCodeDto.class);
     this.districtCodeService.setName(dataList);
     return new DistrictCodeQueryByIdListRes().setDataList(dataList);
   }
+
+  public @Override DistrictCodeUpdateLevelRes updateLevel(DistrictCodeUpdateLevelReq req) {
+    List<DistrictCode> districtCodeList = this.districtCodeService.list();
+
+    districtCodeList.stream().filter(t -> Objects.equals("0", t.getParentCode())).forEach(t -> {
+      t.setPath("0/" + t.getCode());
+      this.distinct(districtCodeList, t);
+    });
+    this.districtCodeService.updateBatchById(districtCodeList);
+    return new DistrictCodeUpdateLevelRes();
+  }
+
+  // 转tree
+  private void distinct(List<DistrictCode> list, DistrictCode dto) {
+
+    List<DistrictCode> districtCodeList = list.stream()//
+        .filter(t -> Objects.equals(dto.getCode(), t.getParentCode())).peek(t -> {
+          t.setPath(dto.getPath() + "/" + t.getCode());
+        }).toList();
+    dto.setChildren(districtCodeList);
+    if (CollUtil.isEmpty(districtCodeList)) {
+      return;
+    }
+    districtCodeList.forEach(t -> {
+      this.distinct(list, t);
+    });
+  }
+
 }

@@ -70,5 +70,8 @@ public interface DistrictCodeApi {
   @PostMapping("/districtCode/queryByIdList")
   DistrictCodeQueryByIdListRes queryByIdListRes(@RequestBody @Valid DistrictCodeQueryByIdListReq req);
 
+  //更新level
+  @PostMapping("/districtCode/updateLevel")
+  DistrictCodeUpdateLevelRes updateLevel(@RequestBody @Valid DistrictCodeUpdateLevelReq req);
 
 }
