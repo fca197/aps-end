@@ -84,32 +84,38 @@
 ```
 
 # 问题
+0. 启动报错:  ServiceNotice.* 依赖注入失败
+
+> 检查 mysql是否正确, mysql版本,mysql驱动版本, jdbc连接地址,用户名,密码
+> 检查 redis是否正确, 包含 application.yml中 redis节点和 redisson.yml 配置
+
 
 1. 启动报错:  Resource ortools-win32-x86-64/ was not found in ClassLoader jdk.internal.loader.ClassLoaders答:
 
-   > 问题原因: ortools依赖的window组建依赖过大,生产为linux系统,不用此组建,为避免打包过大,所以删除该依赖
-   > 方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句
-   > 方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖
+> 问题原因: ortools依赖的window组建依赖过大,生产为linux系统,不用此组建,为避免打包过大,所以删除该依赖
+> 方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句
+> 方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖
 
->
+
 
 2. 打包后文件
 
-   > 打包后在[target](target) 生成两个jar文件 , app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
-
->
-
+> 打包后在[target](target) 生成两个jar文件 , app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
+   
 3. 执行时数据库缺少字段
 
-   > 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构
-
->
-
+> 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构
+   
 4. 列表展示字段为空,或修改字段显示宽度
 
 > 请修改base_table_header中配置, 或菜单:基础配置=>表格头管理
 > biz_key: 来自对应的业务ServiceImpl中setQueryListHeader方法查看
 
 5. SpringBoot启动报错:java.nio.charset.MalformedInputException: Input length = 1解决方案
+
 > https://blog.51cto.com/u_2870645/5295690
 > 修改后,重新获取源码,重新编译,重新打包
+
+6. CLASS NOT FOUND: com/olivia/sdk/*****
+
+>  peanut-sdk.jar  包存在于 lib/下,请确认是否存在

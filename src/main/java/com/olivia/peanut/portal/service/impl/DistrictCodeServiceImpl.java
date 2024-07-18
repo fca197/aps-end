@@ -93,7 +93,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
 
       ;
     }
-    q.orderByDesc(DistrictCode::getId);
+    q.orderByAsc(DistrictCode::getCode);
     return q;
 
   }

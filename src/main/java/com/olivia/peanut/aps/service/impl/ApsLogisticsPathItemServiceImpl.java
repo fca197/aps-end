@@ -91,7 +91,7 @@ public class ApsLogisticsPathItemServiceImpl extends MPJBaseServiceImpl<ApsLogis
 
     if (Objects.nonNull(obj)) {
       q
-          .eq(StringUtils.isNoneBlank(obj.getLogisticsPathId()), ApsLogisticsPathItem::getLogisticsPathId, obj.getLogisticsPathId())
+          .eq(Objects.nonNull(obj.getLogisticsPathId()), ApsLogisticsPathItem::getLogisticsPathId, obj.getLogisticsPathId())
           .eq(StringUtils.isNoneBlank(obj.getProvinceCode()), ApsLogisticsPathItem::getProvinceCode, obj.getProvinceCode())
           .eq(StringUtils.isNoneBlank(obj.getProvinceName()), ApsLogisticsPathItem::getProvinceName, obj.getProvinceName())
           .eq(StringUtils.isNoneBlank(obj.getCityCode()), ApsLogisticsPathItem::getCityCode, obj.getCityCode())
