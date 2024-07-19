@@ -200,7 +200,7 @@ public class ApsRollingForecastFactoryCapacityDto extends BaseEntityDto {
 
 
   @NotNull(message = "产能不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @Size(min = 0, max = 20, message = "产能不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @Size(min = 1, max = 20, message = "产能不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private List<ApsRollingForecastFactoryCapacityDtoInfo> capacityList;
 
 

@@ -1,0 +1,48 @@
+package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig;
+
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.ApsSchedulingDayConfigItemDto;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.sdk.ann.InsertCheck;
+import com.olivia.sdk.ann.UpdateCheck;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 排程版本表(ApsSchedulingDayConfig)查询对象返回
+ *
+ * @author peanut
+ * @since 2024-07-19 15:05:01
+ */
+//@Accessors(chain=true)
+@Getter
+@Setter
+@SuppressWarnings("serial")
+public class ApsSchedulingDayConfigDto extends BaseEntityDto {
+
+
+  /***
+   *  工厂ID
+   */
+  @NotNull(message = "工厂ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long factoryId;
+  private String factoryName;
+  @NotBlank(message = "编号不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private String schedulingDayNo;
+  @NotBlank(message = "名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private String schedulingDayName;
+  /***
+   *  是否默认 0 否,1 是
+   */
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Boolean isDefault;
+
+  @NotNull(message = "排程版本明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @Size(min = 1, message = "排程版本明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private List<ApsSchedulingDayConfigItemDto> schedulingDayConfigItemDtoList;
+}
+
+

@@ -1,0 +1,52 @@
+package com.olivia.peanut.aps.model;
+
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.olivia.sdk.utils.BaseEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+/**
+ * 排程版本配置表(ApsSchedulingDayConfigItem)表实体类
+ *
+ * @author peanut
+ * @since 2024-07-19 15:05:04
+ */
+@Accessors(chain = true)
+@Getter
+@Setter
+//@SuppressWarnings("serial")
+@TableName("aps_scheduling_day_config_item")
+public class ApsSchedulingDayConfigItem extends BaseEntity {
+
+  private Long schedulingDayId;
+  /***
+   *  配置类型 sale,part,bom ,sleep
+   */
+  private String configBizType;
+  /***
+   *  配置业务ID
+   */
+  private Long configBizId;
+  /***
+   *  配置业务名称
+   */
+  private String configBizName;
+  /***
+   *  配置业务数量
+   */
+  private Long configBizNum;
+  /***
+   *  配置业务耗时(秒)
+   */
+  private Long configBizTime;
+//  /***
+//   *  是否默认 0 否,1 是
+//   */
+//  private Boolean isDefault;
+
+}
+
