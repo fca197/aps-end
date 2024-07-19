@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)表实体类
  *
  * @author peanut
- * @since 2024-07-19 15:05:09
+ * @since 2024-07-19 19:19:57
  */
 @Accessors(chain = true)
 @Getter
@@ -48,13 +48,17 @@ public class ApsSchedulingDayConfigVersionDetail extends BaseEntity {
    */
   private String orderNo;
   /***
+   *  是否匹配 0 否,1 是
+   */
+  private Boolean isMatch;
+  /***
    *  循环次数
    */
   private Integer loopIndex;
   /***
-   *  是否匹配 0 否,1 是
+   *  是否满足 0 否,1 是
    */
-  private Boolean isMatch;
+  private Boolean loopEnough;
 
 }
 

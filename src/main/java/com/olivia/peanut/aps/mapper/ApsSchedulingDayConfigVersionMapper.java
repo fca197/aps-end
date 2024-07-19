@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 排程版本(ApsSchedulingDayConfigVersion)表数据库访问层
  *
  * @author peanut
- * @since 2024-07-19 15:05:07
+ * @since 2024-07-19 19:19:55
  */
 @Mapper
 public interface ApsSchedulingDayConfigVersionMapper extends MPJBaseMapper<ApsSchedulingDayConfigVersion> {

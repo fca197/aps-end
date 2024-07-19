@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)文件导入监听
  *
  * @author peanut
- * @since 2024-07-19 15:05:10
+ * @since 2024-07-19 19:19:58
  */
 public class ApsSchedulingDayConfigVersionDetailImportListener extends AnalysisEventListener<ApsSchedulingDayConfigVersionDetailImportReq> {
 

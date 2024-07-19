@@ -1,35 +1,35 @@
 package com.olivia.peanut.aps.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
+import org.springframework.aop.framework.AopContext;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
-import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigItemMapper;
-import com.olivia.peanut.aps.model.ApsSchedulingDayConfigItem;
-import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import jakarta.annotation.Resource;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigItemMapper;
+import com.olivia.peanut.aps.model.ApsSchedulingDayConfigItem;
+import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
+import cn.hutool.core.collection.CollUtil;
+//import com.olivia.peanut.aps.service.BaseTableHeaderService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
 
 /**
  * 排程版本配置表(ApsSchedulingDayConfigItem)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:04
+ * @since 2024-07-19 19:19:52
  */
 @Service("apsSchedulingDayConfigItemService")
 @Transactional
@@ -41,13 +41,6 @@ public class ApsSchedulingDayConfigItemServiceImpl extends MPJBaseServiceImpl<Ap
   @Resource
   BaseTableHeaderService tableHeaderService;
 
-  @Override
-  public ApsSchedulingDayConfigItemInsertRes save(ApsSchedulingDayConfigItemInsertReq req) {
-    ApsSchedulingDayConfigItem configItem = $.copy(req, ApsSchedulingDayConfigItem.class);
-    configItem.setId(IdWorker.getId());
-    this.save(configItem);
-    return new ApsSchedulingDayConfigItemInsertRes().setId(configItem.getId());
-  }
 
   public @Override ApsSchedulingDayConfigItemQueryListRes queryList(ApsSchedulingDayConfigItemQueryListReq req) {
 
@@ -100,11 +93,16 @@ public class ApsSchedulingDayConfigItemServiceImpl extends MPJBaseServiceImpl<Ap
     if (Objects.nonNull(obj)) {
       q
           .eq(Objects.nonNull(obj.getSchedulingDayId()), ApsSchedulingDayConfigItem::getSchedulingDayId, obj.getSchedulingDayId())
+          .eq(Objects.nonNull(obj.getProcessId()), ApsSchedulingDayConfigItem::getProcessId, obj.getProcessId())
+          .eq(Objects.nonNull(obj.getRoomId()), ApsSchedulingDayConfigItem::getRoomId, obj.getRoomId())
+          .eq(Objects.nonNull(obj.getStatusId()), ApsSchedulingDayConfigItem::getStatusId, obj.getStatusId())
           .eq(StringUtils.isNoneBlank(obj.getConfigBizType()), ApsSchedulingDayConfigItem::getConfigBizType, obj.getConfigBizType())
           .eq(Objects.nonNull(obj.getConfigBizId()), ApsSchedulingDayConfigItem::getConfigBizId, obj.getConfigBizId())
           .eq(StringUtils.isNoneBlank(obj.getConfigBizName()), ApsSchedulingDayConfigItem::getConfigBizName, obj.getConfigBizName())
           .eq(Objects.nonNull(obj.getConfigBizNum()), ApsSchedulingDayConfigItem::getConfigBizNum, obj.getConfigBizNum())
           .eq(Objects.nonNull(obj.getConfigBizTime()), ApsSchedulingDayConfigItem::getConfigBizTime, obj.getConfigBizTime())
+          .eq(Objects.nonNull(obj.getIsDefault()), ApsSchedulingDayConfigItem::getIsDefault, obj.getIsDefault())
+
       ;
     }
     q.orderByDesc(ApsSchedulingDayConfigItem::getId);

@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)查询对象返回
  *
  * @author peanut
- * @since 2024-07-19 15:05:10
+ * @since 2024-07-19 19:19:58
  */
 //@Accessors(chain=true)
 @Getter
@@ -59,15 +59,20 @@ public class ApsSchedulingDayConfigVersionDetailDto extends BaseEntityDto {
   @NotBlank(message = "订单编号不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String orderNo;
   /***
+   *  是否匹配 0 否,1 是
+   */
+  @NotNull(message = "是否匹配 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Boolean isMatch;
+  /***
    *  循环次数
    */
   @NotNull(message = "循环次数不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer loopIndex;
   /***
-   *  是否匹配 0 否,1 是
+   *  是否满足 0 否,1 是
    */
-  @NotNull(message = "是否匹配 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Boolean isMatch;
+  @NotNull(message = "是否满足 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Boolean loopEnough;
 
 }
 

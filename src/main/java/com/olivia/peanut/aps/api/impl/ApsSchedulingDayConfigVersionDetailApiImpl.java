@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:08
+ * @since 2024-07-19 19:19:57
  */
 @RestController
 public class ApsSchedulingDayConfigVersionDetailApiImpl implements ApsSchedulingDayConfigVersionDetailApi {

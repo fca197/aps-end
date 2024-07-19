@@ -1,35 +1,25 @@
 package com.olivia.peanut.aps.api.impl;
 
-import java.time.LocalDateTime;
-
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.olivia.peanut.aps.api.ApsSchedulingDayConfigApi;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.*;
+import com.olivia.peanut.aps.api.impl.listener.ApsSchedulingDayConfigImportListener;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfig;
+import com.olivia.peanut.aps.service.ApsSchedulingDayConfigService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-import java.util.stream.Collectors;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.*;
-import com.olivia.peanut.aps.service.ApsSchedulingDayConfigService;
-import com.olivia.peanut.aps.model.*;
-import com.baomidou.mybatisplus.core.conditions.query.*;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import org.springframework.web.bind.annotation.*;
-import com.olivia.peanut.aps.api.ApsSchedulingDayConfigApi;
-
-import com.olivia.peanut.aps.api.impl.listener.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 排程版本表(ApsSchedulingDayConfig)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:04:59
+ * @since 2024-07-19 19:19:48
  */
 @RestController
 public class ApsSchedulingDayConfigApiImpl implements ApsSchedulingDayConfigApi {
@@ -41,7 +31,7 @@ public class ApsSchedulingDayConfigApiImpl implements ApsSchedulingDayConfigApi 
    *
    */
   public @Override ApsSchedulingDayConfigInsertRes insert(ApsSchedulingDayConfigInsertReq req) {
-  return   this.apsSchedulingDayConfigService.save(req);
+    return this.apsSchedulingDayConfigService.save(req);
 //    return new ApsSchedulingDayConfigInsertRes().setCount(1);
   }
 
@@ -67,8 +57,7 @@ public class ApsSchedulingDayConfigApiImpl implements ApsSchedulingDayConfigApi 
    *
    */
   public @Override ApsSchedulingDayConfigUpdateByIdRes updateById(ApsSchedulingDayConfigUpdateByIdReq req) {
- return    apsSchedulingDayConfigService.updateById(req);
-//    return new ApsSchedulingDayConfigUpdateByIdRes();
+    return apsSchedulingDayConfigService.updateById(req);
 
   }
 

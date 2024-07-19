@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
  * 排程版本(ApsSchedulingDayConfigVersion)表实体类
  *
  * @author peanut
- * @since 2024-07-19 15:05:06
+ * @since 2024-07-19 19:19:55
  */
 @Accessors(chain = true)
 @Getter

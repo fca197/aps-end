@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * 排程版本(ApsSchedulingDayConfigVersion)表实体类
  *
  * @author peanut
- * @since 2024-07-19 15:05:06
+ * @since 2024-07-19 19:19:55
  */
 @Accessors(chain = true)
 @Getter
@@ -26,8 +26,10 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
    *  工厂ID
    */
   private Long factoryId;
+  /***
+   *  排程版本号
+   */
   private String schedulingDayVersionNo;
-  private String schedulingDayVersionName;
   /***
    *  排程日期
    */

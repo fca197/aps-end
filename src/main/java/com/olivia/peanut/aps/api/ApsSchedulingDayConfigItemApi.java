@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 排程版本配置表(ApsSchedulingDayConfigItem)对外API
  *
  * @author peanut
- * @since 2024-07-19 15:05:03
+ * @since 2024-07-19 19:19:51
  */
 // @FeignClient(value = "",contextId = "apsSchedulingDayConfigItem-api",url = "${ portal..center.endpoint:}")
 public interface ApsSchedulingDayConfigItemApi {

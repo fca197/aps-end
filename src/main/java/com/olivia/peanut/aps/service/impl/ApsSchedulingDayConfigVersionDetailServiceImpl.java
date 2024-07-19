@@ -29,7 +29,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetail.*;
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:09
+ * @since 2024-07-19 19:19:58
  */
 @Service("apsSchedulingDayConfigVersionDetailService")
 @Transactional
@@ -100,8 +100,9 @@ public class ApsSchedulingDayConfigVersionDetailServiceImpl extends MPJBaseServi
           .eq(Objects.nonNull(obj.getConfigBizNum()), ApsSchedulingDayConfigVersionDetail::getConfigBizNum, obj.getConfigBizNum())
           .eq(Objects.nonNull(obj.getOrderId()), ApsSchedulingDayConfigVersionDetail::getOrderId, obj.getOrderId())
           .eq(StringUtils.isNoneBlank(obj.getOrderNo()), ApsSchedulingDayConfigVersionDetail::getOrderNo, obj.getOrderNo())
-          .eq(Objects.nonNull(obj.getLoopIndex()), ApsSchedulingDayConfigVersionDetail::getLoopIndex, obj.getLoopIndex())
           .eq(Objects.nonNull(obj.getIsMatch()), ApsSchedulingDayConfigVersionDetail::getIsMatch, obj.getIsMatch())
+          .eq(Objects.nonNull(obj.getLoopIndex()), ApsSchedulingDayConfigVersionDetail::getLoopIndex, obj.getLoopIndex())
+          .eq(Objects.nonNull(obj.getLoopEnough()), ApsSchedulingDayConfigVersionDetail::getLoopEnough, obj.getLoopEnough())
 
       ;
     }

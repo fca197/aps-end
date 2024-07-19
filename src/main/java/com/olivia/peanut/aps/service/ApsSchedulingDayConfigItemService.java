@@ -12,7 +12,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
  * 排程版本配置表(ApsSchedulingDayConfigItem)表服务接口
  *
  * @author peanut
- * @since 2024-07-19 15:05:04
+ * @since 2024-07-19 19:19:52
  */
 public interface ApsSchedulingDayConfigItemService extends MPJBaseService<ApsSchedulingDayConfigItem> {
 
@@ -22,7 +22,5 @@ public interface ApsSchedulingDayConfigItemService extends MPJBaseService<ApsSch
 
 
   void setName(List<? extends ApsSchedulingDayConfigItemDto> apsSchedulingDayConfigItemDtoList);
-
-  ApsSchedulingDayConfigItemInsertRes save(ApsSchedulingDayConfigItemInsertReq req);
 }
 

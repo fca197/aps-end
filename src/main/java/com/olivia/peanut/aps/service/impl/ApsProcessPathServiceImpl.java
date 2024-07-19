@@ -16,15 +16,18 @@ import com.olivia.peanut.aps.api.entity.apsRoomConfig.ApsRoomConfigDto;
 import com.olivia.peanut.aps.mapper.ApsProcessPathMapper;
 import com.olivia.peanut.aps.model.ApsProcessPath;
 import com.olivia.peanut.aps.model.ApsProcessPathRoom;
+import com.olivia.peanut.aps.model.ApsRoom;
 import com.olivia.peanut.aps.model.ApsRoomConfig;
 import com.olivia.peanut.aps.service.ApsProcessPathRoomService;
 import com.olivia.peanut.aps.service.ApsProcessPathService;
 import com.olivia.peanut.aps.service.ApsRoomConfigService;
+import com.olivia.peanut.aps.service.ApsRoomService;
 import com.olivia.peanut.portal.model.Factory;
 import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
@@ -54,6 +57,8 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
   FactoryService factoryService;
   @Resource
   ApsRoomConfigService apsRoomConfigService;
+  @Resource
+  ApsRoomService apsRoomService;
 
   public @Override ApsProcessPathQueryListRes queryList(ApsProcessPathQueryListReq req) {
 
@@ -109,7 +114,16 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
         t.setFactoryName(factoryMap.get(t.getFactoryId()));
         t.getPathRoomList().forEach(tr -> {
           List<ApsRoomConfig> roomConfigList = apsRoomConfigService.list(new LambdaQueryWrapper<ApsRoomConfig>().eq(ApsRoomConfig::getRoomId, tr.getRoomId()));
-          tr.setApsRoomConfigList($.copyList(roomConfigList, ApsRoomConfigDto.class));
+
+          if (CollUtil.isNotEmpty(roomConfigList)) {
+            Map<Long, String> idNameMap = this.apsRoomService.listByIds(roomConfigList.stream().map(ApsRoomConfig::getRoomId).toList()).stream()
+                .collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
+            List<ApsRoomConfigDto> apsRoomConfigList = $.copyList(roomConfigList, ApsRoomConfigDto.class);
+            apsRoomConfigList.forEach(ar -> ar.setRoomName(idNameMap.get(ar.getRoomId())));
+            tr.setApsRoomConfigList(apsRoomConfigList);
+          }else {
+            tr.setApsRoomConfigList(List.of());
+          }
         });
       });
     });

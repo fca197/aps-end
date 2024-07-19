@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
  * 排程版本配置表(ApsSchedulingDayConfigItem)查询对象入参
  *
  * @author peanut
- * @since 2024-07-19 15:05:04
+ * @since 2024-07-19 19:19:53
  */
 @Accessors(chain = true)
 @Getter

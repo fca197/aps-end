@@ -21,6 +21,7 @@ public class ApsRoomConfigDto extends BaseEntityDto {
 
   @NotNull(message = "房间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long roomId;
+  private String roomName;
   @NotNull(message = "工段不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long sectionId;
   @NotNull(message = "工位不能为空", groups = {InsertCheck.class, UpdateCheck.class})

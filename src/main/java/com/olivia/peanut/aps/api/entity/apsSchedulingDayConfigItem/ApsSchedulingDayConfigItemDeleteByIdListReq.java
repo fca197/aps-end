@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * 排程版本配置表(ApsSchedulingDayConfigItem)根据ID删除多个入参
  *
  * @author peanut
- * @since 2024-07-19 15:05:03
+ * @since 2024-07-19 19:19:52
  */
 @Accessors(chain = true)
 @Getter

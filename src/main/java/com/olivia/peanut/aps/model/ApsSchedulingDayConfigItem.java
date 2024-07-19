@@ -13,7 +13,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * 排程版本配置表(ApsSchedulingDayConfigItem)表实体类
  *
  * @author peanut
- * @since 2024-07-19 15:05:04
+ * @since 2024-07-19 19:19:52
  */
 @Accessors(chain = true)
 @Getter
@@ -22,7 +22,22 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("aps_scheduling_day_config_item")
 public class ApsSchedulingDayConfigItem extends BaseEntity {
 
+  /***
+   *  排程版本ID
+   */
   private Long schedulingDayId;
+  /***
+   *  工艺路径ID
+   */
+  private Long processId;
+  /***
+   *  车间ID
+   */
+  private Long roomId;
+  /***
+   *  状态ID
+   */
+  private Long statusId;
   /***
    *  配置类型 sale,part,bom ,sleep
    */
@@ -43,10 +58,10 @@ public class ApsSchedulingDayConfigItem extends BaseEntity {
    *  配置业务耗时(秒)
    */
   private Long configBizTime;
-//  /***
-//   *  是否默认 0 否,1 是
-//   */
-//  private Boolean isDefault;
+  /***
+   *  是否默认 0 否,1 是
+   */
+  private Boolean isDefault;
 
 }
 

@@ -13,12 +13,13 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.checkerframework.checker.units.qual.A;
 
 /**
  * 排程版本配置表(ApsSchedulingDayConfigItem)查询对象返回
  *
  * @author peanut
- * @since 2024-07-19 15:05:04
+ * @since 2024-07-19 19:19:53
  */
 //@Accessors(chain=true)
 @Getter
@@ -26,12 +27,30 @@ import jakarta.validation.constraints.NotNull;
 @SuppressWarnings("serial")
 public class ApsSchedulingDayConfigItemDto extends BaseEntityDto {
 
-//  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  /***
+   *  排程版本ID
+   */
+  @NotNull(message = "排程版本ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long schedulingDayId;
+  /***
+   *  工艺路径ID
+   */
+  @NotNull(message = "工艺路径ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long processId;
+  /***
+   *  车间ID
+   */
+  @NotNull(message = "车间ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long roomId;
+  /***
+   *  状态ID
+   */
+  @NotNull(message = "状态ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long statusId;
   /***
    *  配置类型 sale,part,bom ,sleep
    */
-  @NotBlank(message = "配置类型 sale,part,bom ,sleep不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "配置类型 sale,project,bom ,sleep不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String configBizType;
   /***
    *  配置业务ID
@@ -53,11 +72,11 @@ public class ApsSchedulingDayConfigItemDto extends BaseEntityDto {
    */
   @NotNull(message = "配置业务耗时(秒)不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long configBizTime;
-//  /***
-//   *  是否默认 0 否,1 是
-//   */
-//  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-//  private Boolean isDefault;
+  /***
+   *  是否默认 0 否,1 是
+   */
+  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Boolean isDefault;
 
 }
 

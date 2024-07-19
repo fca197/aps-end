@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 排程版本(ApsSchedulingDayConfigVersion)查询对象返回
  *
  * @author peanut
- * @since 2024-07-19 15:05:07
+ * @since 2024-07-19 19:19:56
  */
 //@Accessors(chain=true)
 @Getter
@@ -31,10 +31,11 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
    */
   @NotNull(message = "工厂ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
-  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  /***
+   *  排程版本号
+   */
+  @NotBlank(message = "排程版本号不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String schedulingDayVersionNo;
-  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private String schedulingDayVersionName;
   /***
    *  排程日期
    */

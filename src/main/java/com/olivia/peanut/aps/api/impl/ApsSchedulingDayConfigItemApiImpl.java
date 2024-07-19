@@ -1,25 +1,35 @@
 package com.olivia.peanut.aps.api.impl;
 
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import com.olivia.peanut.aps.api.ApsSchedulingDayConfigItemApi;
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
-import com.olivia.peanut.aps.api.impl.listener.ApsSchedulingDayConfigItemImportListener;
+import java.time.LocalDateTime;
+
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigItem;
-import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
+import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
+import com.olivia.peanut.aps.model.*;
+import com.baomidou.mybatisplus.core.conditions.query.*;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import org.springframework.web.bind.annotation.*;
+import com.olivia.peanut.aps.api.ApsSchedulingDayConfigItemApi;
+
+import com.olivia.peanut.aps.api.impl.listener.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 排程版本配置表(ApsSchedulingDayConfigItem)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:03
+ * @since 2024-07-19 19:19:51
  */
 @RestController
 public class ApsSchedulingDayConfigItemApiImpl implements ApsSchedulingDayConfigItemApi {
@@ -31,8 +41,8 @@ public class ApsSchedulingDayConfigItemApiImpl implements ApsSchedulingDayConfig
    *
    */
   public @Override ApsSchedulingDayConfigItemInsertRes insert(ApsSchedulingDayConfigItemInsertReq req) {
-    return this.apsSchedulingDayConfigItemService.save(req);
-//    return new ApsSchedulingDayConfigItemInsertRes().setCount(1);
+    this.apsSchedulingDayConfigItemService.save($.copy(req, ApsSchedulingDayConfigItem.class));
+    return new ApsSchedulingDayConfigItemInsertRes().setCount(1);
   }
 
   /****

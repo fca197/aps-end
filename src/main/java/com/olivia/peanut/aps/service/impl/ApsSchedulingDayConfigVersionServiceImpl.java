@@ -29,7 +29,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
  * 排程版本(ApsSchedulingDayConfigVersion)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:07
+ * @since 2024-07-19 19:19:55
  */
 @Service("apsSchedulingDayConfigVersionService")
 @Transactional
@@ -94,7 +94,6 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       q
           .eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingDayConfigVersion::getFactoryId, obj.getFactoryId())
           .eq(StringUtils.isNoneBlank(obj.getSchedulingDayVersionNo()), ApsSchedulingDayConfigVersion::getSchedulingDayVersionNo, obj.getSchedulingDayVersionNo())
-          .eq(StringUtils.isNoneBlank(obj.getSchedulingDayVersionName()), ApsSchedulingDayConfigVersion::getSchedulingDayVersionName, obj.getSchedulingDayVersionName())
           .eq(Objects.nonNull(obj.getSchedulingDay()), ApsSchedulingDayConfigVersion::getSchedulingDay, obj.getSchedulingDay())
           .eq(Objects.nonNull(obj.getIsDefault()), ApsSchedulingDayConfigVersion::getIsDefault, obj.getIsDefault())
 

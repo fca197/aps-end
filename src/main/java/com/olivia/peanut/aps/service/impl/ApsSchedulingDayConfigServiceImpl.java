@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -14,8 +15,6 @@ import com.olivia.peanut.aps.model.ApsSchedulingDayConfigItem;
 import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
 import com.olivia.peanut.aps.service.ApsSchedulingDayConfigService;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -33,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 排程版本表(ApsSchedulingDayConfig)表服务实现类
  *
  * @author peanut
- * @since 2024-07-19 15:05:00
+ * @since 2024-07-19 19:19:49
  */
 @Service("apsSchedulingDayConfigService")
 @Transactional
@@ -43,8 +42,6 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
 
   @Resource
   BaseTableHeaderService tableHeaderService;
-  @Resource
-  SetNameService setNameService;
 
   @Resource
   ApsSchedulingDayConfigItemService apsSchedulingDayConfigItemService;
@@ -54,20 +51,25 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
   public ApsSchedulingDayConfigInsertRes save(ApsSchedulingDayConfigInsertReq req) {
     ApsSchedulingDayConfig config = $.copy(req, ApsSchedulingDayConfig.class);
     config.setId(IdWorker.getId());
-    req.getSchedulingDayConfigItemDtoList().forEach(t -> t.setSchedulingDayId(config.getId()));
-    apsSchedulingDayConfigItemService.saveBatch($.copyList(req.getSchedulingDayConfigItemDtoList(), ApsSchedulingDayConfigItem.class));
+    req.getSchedulingDayConfigItemDtoList().forEach(t -> {
+      t.setSchedulingDayId(config.getId());
+      t.setProcessId(req.getProcessId());
+    });
     this.save(config);
+    this.apsSchedulingDayConfigItemService.saveBatch($.copyList(req.getSchedulingDayConfigItemDtoList(), ApsSchedulingDayConfigItem.class));
     return new ApsSchedulingDayConfigInsertRes().setId(config.getId());
   }
 
   @Override
   public ApsSchedulingDayConfigUpdateByIdRes updateById(ApsSchedulingDayConfigUpdateByIdReq req) {
     ApsSchedulingDayConfig config = $.copy(req, ApsSchedulingDayConfig.class);
-    config.setId(IdWorker.getId());
-    req.getSchedulingDayConfigItemDtoList().forEach(t -> t.setSchedulingDayId(config.getId()));
+    req.getSchedulingDayConfigItemDtoList().forEach(t -> {
+      t.setSchedulingDayId(config.getId());
+      t.setProcessId(req.getProcessId());
+    });
+    this.save(config);
     this.apsSchedulingDayConfigItemService.remove(new LambdaQueryWrapper<ApsSchedulingDayConfigItem>().eq(ApsSchedulingDayConfigItem::getSchedulingDayId, req.getId()));
-    apsSchedulingDayConfigItemService.saveBatch($.copyList(req.getSchedulingDayConfigItemDtoList(), ApsSchedulingDayConfigItem.class));
-    this.updateById(config);
+    this.apsSchedulingDayConfigItemService.saveBatch($.copyList(req.getSchedulingDayConfigItemDtoList(), ApsSchedulingDayConfigItem.class));
     return new ApsSchedulingDayConfigUpdateByIdRes();
   }
 
@@ -81,7 +83,6 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
     return new ApsSchedulingDayConfigQueryListRes().setDataList(dataList);
   }
 
-  // 以下为私有对象封装
 
   public @Override DynamicsPage<ApsSchedulingDayConfigExportQueryPageListInfoRes> queryPageList(ApsSchedulingDayConfigExportQueryPageListReq req) {
 
@@ -106,9 +107,12 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  // 以下为私有对象封装
+
   public @Override void setName(List<? extends ApsSchedulingDayConfigDto> apsSchedulingDayConfigDtoList) {
 
-    setNameService.setName(apsSchedulingDayConfigDtoList, SetNamePojoUtils.FACTORY);
+    if (CollUtil.isEmpty(apsSchedulingDayConfigDtoList)) {
+    }
 
 
   }
@@ -118,8 +122,8 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
     MPJLambdaWrapper<ApsSchedulingDayConfig> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingDayConfig::getFactoryId, obj.getFactoryId())
+      q.eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingDayConfig::getFactoryId, obj.getFactoryId())
+          .eq(Objects.nonNull(obj.getProcessId()), ApsSchedulingDayConfig::getProcessId, obj.getProcessId())
           .eq(StringUtils.isNoneBlank(obj.getSchedulingDayNo()), ApsSchedulingDayConfig::getSchedulingDayNo, obj.getSchedulingDayNo())
           .eq(StringUtils.isNoneBlank(obj.getSchedulingDayName()), ApsSchedulingDayConfig::getSchedulingDayName, obj.getSchedulingDayName())
           .eq(Objects.nonNull(obj.getIsDefault()), ApsSchedulingDayConfig::getIsDefault, obj.getIsDefault())
