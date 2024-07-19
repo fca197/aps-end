@@ -1,20 +1,15 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig;
 
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.ApsSchedulingDayConfigItemDto;
-import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import java.util.List;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 排程版本表(ApsSchedulingDayConfig)查询对象返回
@@ -39,6 +34,7 @@ public class ApsSchedulingDayConfigDto extends BaseEntityDto {
    */
   @NotNull(message = "工艺路径ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long processId;
+  private String processName;
   /***
    *  排程版本号
    */
