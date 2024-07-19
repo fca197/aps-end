@@ -74,8 +74,9 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
     req.getSchedulingDayConfigItemDtoList().forEach(t -> {
       t.setSchedulingDayId(config.getId());
       t.setProcessId(req.getProcessId());
+      t.setId(IdWorker.getId());
     });
-    this.save(config);
+    this.updateById(config);
     this.apsSchedulingDayConfigItemService.remove(new LambdaQueryWrapper<ApsSchedulingDayConfigItem>().eq(ApsSchedulingDayConfigItem::getSchedulingDayId, req.getId()));
     this.apsSchedulingDayConfigItemService.saveBatch($.copyList(req.getSchedulingDayConfigItemDtoList(), ApsSchedulingDayConfigItem.class));
     return new ApsSchedulingDayConfigUpdateByIdRes();
