@@ -1,29 +1,29 @@
 package com.olivia.peanut.aps.service.impl;
 
-import org.springframework.aop.framework.AopContext;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
+import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
+import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersion;
+import com.olivia.peanut.aps.service.ApsSchedulingDayConfigVersionService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
-import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersion;
-import com.olivia.peanut.aps.service.ApsSchedulingDayConfigVersionService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
 
 /**
  * 排程版本(ApsSchedulingDayConfigVersion)表服务实现类
@@ -40,7 +40,8 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
   @Resource
   BaseTableHeaderService tableHeaderService;
-
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsSchedulingDayConfigVersionQueryListRes queryList(ApsSchedulingDayConfigVersionQueryListReq req) {
 
@@ -51,7 +52,6 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     ((ApsSchedulingDayConfigVersionService) AopContext.currentProxy()).setName(dataList);
     return new ApsSchedulingDayConfigVersionQueryListRes().setDataList(dataList);
   }
-
 
   public @Override DynamicsPage<ApsSchedulingDayConfigVersionExportQueryPageListInfoRes> queryPageList(ApsSchedulingDayConfigVersionExportQueryPageListReq req) {
 
@@ -80,9 +80,8 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
   public @Override void setName(List<? extends ApsSchedulingDayConfigVersionDto> apsSchedulingDayConfigVersionDtoList) {
 
-    if (CollUtil.isEmpty(apsSchedulingDayConfigVersionDtoList)) {
-    }
-
+    setNameService.setName(apsSchedulingDayConfigVersionDtoList,
+        SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
   }
 
@@ -95,7 +94,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
           .eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingDayConfigVersion::getFactoryId, obj.getFactoryId())
           .eq(StringUtils.isNoneBlank(obj.getSchedulingDayVersionNo()), ApsSchedulingDayConfigVersion::getSchedulingDayVersionNo, obj.getSchedulingDayVersionNo())
           .eq(Objects.nonNull(obj.getSchedulingDay()), ApsSchedulingDayConfigVersion::getSchedulingDay, obj.getSchedulingDay())
-          .eq(Objects.nonNull(obj.getIsDefault()), ApsSchedulingDayConfigVersion::getIsDefault, obj.getIsDefault())
+          .eq(Objects.nonNull(obj.getIsIssuedThird()), ApsSchedulingDayConfigVersion::getIsIssuedThird, obj.getIsIssuedThird())
 
       ;
     }

@@ -1,18 +1,14 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 
-import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import java.util.List;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 排程版本(ApsSchedulingDayConfigVersion)查询对象返回
@@ -31,6 +27,7 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
    */
   @NotNull(message = "工厂ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
+  private String factoryName;
   /***
    *  排程版本号
    */
@@ -40,13 +37,16 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
    *  排程日期
    */
   @NotNull(message = "排程日期不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private LocalDateTime schedulingDay;
+  private LocalDate schedulingDay;
   /***
    *  是否默认 0 否,1 是
    */
-  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Boolean isDefault;
+  @NotNull(message = "是否下发 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Boolean isIssuedThird;
 
+  public String getIsIssuedThirdStr() {
+    return Boolean.TRUE.equals(isIssuedThird) ? "是" : "否";
+  }
 }
 
 

@@ -33,11 +33,11 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
   /***
    *  排程日期
    */
-  private LocalDateTime schedulingDay;
+  private LocalDate schedulingDay;
   /***
-   *  是否默认 0 否,1 是
+   *  是否下发第三方 0 否,1 是
    */
-  private Boolean isDefault;
+  private Boolean isIssuedThird;
 
 }
 
