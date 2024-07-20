@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.api.impl;
 
+import com.olivia.sdk.utils.RunUtils;
 import java.time.LocalDateTime;
 
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersion;
@@ -68,6 +69,7 @@ public class ApsSchedulingDayConfigVersionApiImpl implements ApsSchedulingDayCon
    *
    */
   public @Override ApsSchedulingDayConfigVersionUpdateByIdRes updateById(ApsSchedulingDayConfigVersionUpdateByIdReq req) {
+    RunUtils.noImpl();
     apsSchedulingDayConfigVersionService.updateById($.copy(req, ApsSchedulingDayConfigVersion.class));
     return new ApsSchedulingDayConfigVersionUpdateByIdRes();
 

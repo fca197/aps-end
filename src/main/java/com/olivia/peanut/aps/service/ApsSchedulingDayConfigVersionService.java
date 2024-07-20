@@ -16,6 +16,8 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
  */
 public interface ApsSchedulingDayConfigVersionService extends MPJBaseService<ApsSchedulingDayConfigVersion> {
 
+  ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req);
+
   ApsSchedulingDayConfigVersionQueryListRes queryList(ApsSchedulingDayConfigVersionQueryListReq req);
 
   DynamicsPage<ApsSchedulingDayConfigVersionExportQueryPageListInfoRes> queryPageList(ApsSchedulingDayConfigVersionExportQueryPageListReq req);
@@ -23,6 +25,6 @@ public interface ApsSchedulingDayConfigVersionService extends MPJBaseService<Aps
 
   void setName(List<? extends ApsSchedulingDayConfigVersionDto> apsSchedulingDayConfigVersionDtoList);
 
-  ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req);
+
 }
 

@@ -6,7 +6,6 @@ import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,12 +21,18 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
 
+  @NotNull(message = "排程配置不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long schedulingDayConfigId;
   /***
    *  工厂ID
    */
   @NotNull(message = "工厂ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
   private String factoryName;
+
+  @NotNull(message = "工序ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long processId;
+  private String processName;
   /***
    *  排程版本号
    */

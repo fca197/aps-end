@@ -26,6 +26,8 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
    *  工厂ID
    */
   private Long factoryId;
+
+  private Long processId;
   /***
    *  排程版本号
    */
