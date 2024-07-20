@@ -41,8 +41,9 @@ public class ApsSchedulingDayConfigVersionApiImpl implements ApsSchedulingDayCon
    *
    */
   public @Override ApsSchedulingDayConfigVersionInsertRes insert(ApsSchedulingDayConfigVersionInsertReq req) {
-    this.apsSchedulingDayConfigVersionService.save($.copy(req, ApsSchedulingDayConfigVersion.class));
-    return new ApsSchedulingDayConfigVersionInsertRes().setCount(1);
+//    this.apsSchedulingDayConfigVersionService.save($.copy(req, ApsSchedulingDayConfigVersion.class));
+    return this.apsSchedulingDayConfigVersionService.save(req);
+//    return new ApsSchedulingDayConfigVersionInsertRes().setCount(1);
   }
 
   /****

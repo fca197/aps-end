@@ -22,5 +22,7 @@ public interface ApsSchedulingDayConfigVersionService extends MPJBaseService<Aps
 
 
   void setName(List<? extends ApsSchedulingDayConfigVersionDto> apsSchedulingDayConfigVersionDtoList);
+
+  ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req);
 }
 
