@@ -48,21 +48,18 @@ public class ApsSchedulingIssueItemServiceImpl extends MPJBaseServiceImpl<ApsSch
   ApsSchedulingVersionCapacityService apsSchedulingVersionCapacityService;
 
   @Override
+  @Transactional
   public ApsSchedulingIssueItemInsertRes save(ApsSchedulingIssueItemInsertReq req) {
-//    ApsSchedulingIssueItem issueItem = $.copy(req, ApsSchedulingIssueItem.class);
-    this.remove(new LambdaUpdateWrapper<ApsSchedulingIssueItem>().in(ApsSchedulingIssueItem::getCurrentDay, req.getScheduledDayList()));
-
     List<ApsSchedulingVersionCapacity> capacityList = this.apsSchedulingVersionCapacityService.list(new LambdaQueryWrapper<ApsSchedulingVersionCapacity>()
         .eq(ApsSchedulingVersionCapacity::getSchedulingVersionId, req.getSchedulingVersionId())
         .in(ApsSchedulingVersionCapacity::getCurrentDay, req.getScheduledDayList()));
     $.requireNonNullCanIgnoreException(capacityList, "排产数据为空");
-
-//    List<ApsSchedulingIssueItem> apsSchedulingIssueItems=new ArrayList<>(capacityList.size());
     List<ApsSchedulingIssueItem> issueItemList = capacityList.stream().map(
         t -> new ApsSchedulingIssueItem().setSchedulingVersionId(req.getSchedulingVersionId())
             .setOrderId(t.getOrderId()).setCurrentDay(t.getCurrentDay()).setGoodsId(t.getGoodsId())
             .setNumberIndex(t.getNumberIndex()).setFactoryId(t.getFactoryId())
     ).toList();
+    this.remove(new LambdaUpdateWrapper<ApsSchedulingIssueItem>().in(ApsSchedulingIssueItem::getCurrentDay, req.getScheduledDayList()));
     this.saveBatch(issueItemList);
 
     return new ApsSchedulingIssueItemInsertRes().setCount(issueItemList.size());
