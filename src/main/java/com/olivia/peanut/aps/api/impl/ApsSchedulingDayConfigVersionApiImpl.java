@@ -105,4 +105,9 @@ public class ApsSchedulingDayConfigVersionApiImpl implements ApsSchedulingDayCon
     this.apsSchedulingDayConfigVersionService.setName(dataList);
     return new ApsSchedulingDayConfigVersionQueryByIdListRes().setDataList(dataList);
   }
+
+  @Override
+  public DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
+    return this.apsSchedulingDayConfigVersionService.detailList(req);
+  }
 }

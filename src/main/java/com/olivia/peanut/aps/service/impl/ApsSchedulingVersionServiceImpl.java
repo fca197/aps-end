@@ -477,7 +477,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
           .setHasEnough(info.getLimitList().stream().noneMatch(t -> t.getCurrentCount() < t.getMin())));
       mapList.forEach(map -> {
         ApsSchedulingVersionCapacity apsSchedulingVersionCapacity = new ApsSchedulingVersionCapacity();
-        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate());
+        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate()).setOrderNo((String) map.get("orderNo"));
         apsSchedulingVersionCapacity.setId(IdWorker.getId());
         apsSchedulingVersionCapacity.setGoodsId((Long) map.get("goodsId")).setOrderId((Long) map.get("orderId")).setFactoryId((Long) map.get("factoryId"))
             .setGoodsStatusId((Long) map.get("goodsStatusId"));

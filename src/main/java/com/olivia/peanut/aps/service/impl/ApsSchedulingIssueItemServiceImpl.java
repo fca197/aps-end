@@ -57,6 +57,7 @@ public class ApsSchedulingIssueItemServiceImpl extends MPJBaseServiceImpl<ApsSch
     List<ApsSchedulingIssueItem> issueItemList = capacityList.stream().map(
         t -> new ApsSchedulingIssueItem().setSchedulingVersionId(req.getSchedulingVersionId())
             .setOrderId(t.getOrderId()).setCurrentDay(t.getCurrentDay()).setGoodsId(t.getGoodsId())
+            .setOrderNo(t.getOrderNo())
             .setNumberIndex(t.getNumberIndex()).setFactoryId(t.getFactoryId())
     ).toList();
     this.remove(new LambdaUpdateWrapper<ApsSchedulingIssueItem>().in(ApsSchedulingIssueItem::getCurrentDay, req.getScheduledDayList()));

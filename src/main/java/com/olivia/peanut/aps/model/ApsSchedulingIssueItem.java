@@ -1,13 +1,13 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * 排产下发详情(ApsSchedulingIssueItem)表实体类
@@ -23,7 +23,6 @@ import com.baomidou.mybatisplus.annotation.TableName;
 public class ApsSchedulingIssueItem extends BaseEntity {
 
 
-
   private Long schedulingVersionId;
   /***
    *  当前日期
@@ -33,6 +32,7 @@ public class ApsSchedulingIssueItem extends BaseEntity {
    *  订单ID
    */
   private Long orderId;
+  private String orderNo;
   /***
    *  商品ID
    */
@@ -47,5 +47,11 @@ public class ApsSchedulingIssueItem extends BaseEntity {
   private Long factoryId;
 
 
+  @TableField(exist = false)
+  private List<Long> projectConfigIdList;
+  @TableField(exist = false)
+  private List<Long> saleConfigIdList;
+  @TableField(exist = false)
+  private List<Long> bomIdList;
 }
 

@@ -23,6 +23,7 @@ public class ApsSchedulingVersionCapacity extends BaseEntity {
   private Long schedulingVersionId;
   private String currentDay;
   private Long orderId;
+  private String orderNo;
   private Long factoryId;
   private Long goodsId;
   private Long goodsStatusId;

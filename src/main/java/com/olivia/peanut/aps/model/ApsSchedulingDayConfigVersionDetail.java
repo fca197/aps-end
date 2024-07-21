@@ -42,6 +42,7 @@ public class ApsSchedulingDayConfigVersionDetail extends BaseEntity {
 
   private Long roomId;
   private Long statusId;
+  private Integer sortIndex;
   /***
    *  订单ID
    */
