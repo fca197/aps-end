@@ -28,6 +28,7 @@ public class ApsSchedulingIssueItemDto extends BaseEntityDto {
    */
 //  @NotBlank(message = "当前日期不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String currentDay;
+
   /***
    *  订单ID
    */

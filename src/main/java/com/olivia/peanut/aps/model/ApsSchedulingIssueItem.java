@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("aps_scheduling_issue_item")
 public class ApsSchedulingIssueItem extends BaseEntity {
 
+
+
   private Long schedulingVersionId;
   /***
    *  当前日期
@@ -43,6 +45,7 @@ public class ApsSchedulingIssueItem extends BaseEntity {
    *  工厂id
    */
   private Long factoryId;
+
 
 }
 

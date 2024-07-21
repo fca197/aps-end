@@ -39,6 +39,9 @@ public class ApsSchedulingDayConfigVersionDetail extends BaseEntity {
    *  配置业务数量
    */
   private Long configBizNum;
+
+  private Long roomId;
+  private Long statusId;
   /***
    *  订单ID
    */

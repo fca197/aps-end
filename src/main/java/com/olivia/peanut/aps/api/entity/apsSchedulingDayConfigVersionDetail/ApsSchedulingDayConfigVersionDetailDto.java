@@ -74,6 +74,8 @@ public class ApsSchedulingDayConfigVersionDetailDto extends BaseEntityDto {
   @NotNull(message = "是否满足 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean loopEnough;
 
+  private Long roomId;
+  private Long statusId;
 }
 
 

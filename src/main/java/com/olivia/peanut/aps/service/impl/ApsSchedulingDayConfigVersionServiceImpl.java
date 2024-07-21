@@ -80,11 +80,11 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     ApsSchedulingDayConfigVersion dayConfigVersion = $.copy(req, ApsSchedulingDayConfigVersion.class);
     dayConfigVersion.setId(IdWorker.getId());
     ApsSchedulingDayOrderRoomRes orderRoomRes = ApsSchedulingDayUtils.orderRoomStatus(
-        new ApsSchedulingDayOrderRoomReq().setOrderItemList(issueItemList).setSchedulingDayId(dayConfigVersion.getId()).setSchedulingDayConfigDto(apsSchedulingDayConfigDto));
+        new ApsSchedulingDayOrderRoomReq().setIssueItemList(issueItemList).setSchedulingDayId(dayConfigVersion.getId()).setSchedulingDayConfigDto(apsSchedulingDayConfigDto));
 //    apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList()
 
-    this.save(dayConfigVersion);
-    this.apsSchedulingDayConfigVersionDetailService.saveBatch(orderRoomRes.getApsSchedulingDayConfigVersionDetailList());
+//    this.save(dayConfigVersion);
+//    this.apsSchedulingDayConfigVersionDetailService.saveBatch(orderRoomRes.getApsSchedulingDayConfigVersionDetailList());
     return new ApsSchedulingDayConfigVersionInsertRes().setId(dayConfigVersion.getId()).setCount(orderRoomRes.getApsSchedulingDayConfigVersionDetailList().size());
   }
 

@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingDayOrderRoomReq {
 
   private Long schedulingDayId;
-  private List<ApsSchedulingIssueItem> orderItemList;
+  private List<ApsSchedulingIssueItem> issueItemList;
 
   private ApsSchedulingDayConfigDto schedulingDayConfigDto;
 }
