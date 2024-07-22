@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -53,5 +54,17 @@ public class ApsSchedulingIssueItem extends BaseEntity {
   private List<Long> saleConfigIdList;
   @TableField(exist = false)
   private List<Long> bomIdList;
+
+  public List<Long> getBomIdList() {
+    return Objects.nonNull(bomIdList) ? bomIdList : List.of();
+  }
+
+  public List<Long> getSaleConfigIdList() {
+    return Objects.nonNull(saleConfigIdList) ? saleConfigIdList : List.of();
+  }
+
+  public List<Long> getProjectConfigIdList() {
+    return Objects.nonNull(projectConfigIdList) ? projectConfigIdList : List.of();
+  }
 }
 
