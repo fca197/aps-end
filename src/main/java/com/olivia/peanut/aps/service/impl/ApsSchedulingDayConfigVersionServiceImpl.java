@@ -2,7 +2,6 @@ package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -10,6 +9,8 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListReq;
@@ -130,13 +131,14 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
   }
 
   @Override
-  public DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
+  public ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
     ApsSchedulingDayConfigVersion configVersion = this.getById(req.getId());
     $.requireNonNullCanIgnoreException(configVersion, "排程版本不能为空");
     List<ApsSchedulingDayConfigVersionDetail> dayConfigVersionDetailList = this.apsSchedulingDayConfigVersionDetailService.list(
         new LambdaQueryWrapper<ApsSchedulingDayConfigVersionDetail>().eq(ApsSchedulingDayConfigVersionDetail::getSchedulingDayId, req.getId()));
+    ApsSchedulingDayConfigVersionDetailListRes res = new ApsSchedulingDayConfigVersionDetailListRes();
     if (CollUtil.isEmpty(dayConfigVersionDetailList)) {
-      return new DynamicsPage<>();
+      return res;
     }
 
     DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> dynamicsPage = new DynamicsPage<>();
@@ -147,12 +149,10 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
         })));
 
     String headerListStr = configVersion.getHeaderList();
+    res.setVersionDetailMap(versionDetailMap);
     List<Header> headerList = new ArrayList<>();
-    List<ApsSchedulingDayConfigVersionDetailListRes> resList = new ArrayList<>();
-    resList.add(new ApsSchedulingDayConfigVersionDetailListRes().setVersionDetailMap(versionDetailMap));
-    dynamicsPage.setDataList(resList);
     if (StringUtils.isNoneBlank(headerListStr)) {
-      List<List<Long>> hl = JSON.parseArray(headerListStr, new TypeReference<List<List<Long>>>() {
+      List<List<Long>> hl = new Gson().fromJson(headerListStr, new TypeToken<List<List<Long>>>() {
       }.getType());
 
       Map<Long, String> rmNameMap = this.apsRoomService.listByIds(hl.stream().map(t -> t.get(0)).collect(Collectors.toSet())).stream()
@@ -160,14 +160,15 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       Map<Long, String> smNameMap = this.apsStatusService.listByIds(hl.stream().map(t -> t.get(1)).collect(Collectors.toSet())).stream()
           .collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
       hl.forEach(h -> {
-        headerList.add(new Header().setFieldName(h.get(0) + "_" + h.get(1)).setFieldName(rmNameMap.get(h.get(0)) + "/" + smNameMap.get(h.get(1))));
+        headerList.add(new Header().setFieldName(h.get(0) + "-" + h.get(1)).setShowName(rmNameMap.get(h.get(0)) + "/" + smNameMap.get(h.get(1))));
       });
-      dynamicsPage.setHeaderList(headerList);
+      res.setHeaderList(headerList);
 
 
     }
+    res.setScheduledDate(configVersion.getSchedulingDay());
 
-    return dynamicsPage;
+    return res;
   }
 
   // 以下为私有对象封装

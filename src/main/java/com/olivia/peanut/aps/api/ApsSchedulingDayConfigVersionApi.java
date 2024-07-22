@@ -74,6 +74,6 @@ public interface ApsSchedulingDayConfigVersionApi {
    * detailList
    */
   @PostMapping("/apsSchedulingDayConfigVersion/detailList")
-  DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> detailList(@RequestBody @Valid ApsSchedulingDayConfigVersionDetailListReq req);
+  ApsSchedulingDayConfigVersionDetailListRes  detailList(@RequestBody @Valid ApsSchedulingDayConfigVersionDetailListReq req);
 
 }

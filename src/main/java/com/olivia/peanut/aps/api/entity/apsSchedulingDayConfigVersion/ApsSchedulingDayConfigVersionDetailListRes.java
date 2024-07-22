@@ -1,7 +1,8 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetail;
+import com.olivia.sdk.utils.DynamicsPage.Header;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import lombok.Getter;
@@ -14,9 +15,11 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class ApsSchedulingDayConfigVersionDetailListRes   extends JSONObject {
+public class ApsSchedulingDayConfigVersionDetailListRes {
 
-  private Integer sortIndex;
+  private LocalDate scheduledDate;
 
-  Map<String, List<ApsSchedulingDayConfigVersionDetail>> versionDetailMap;
+  private List<Header> headerList;
+
+  private Map<String, List<ApsSchedulingDayConfigVersionDetail>> versionDetailMap;
 }

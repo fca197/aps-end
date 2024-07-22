@@ -107,7 +107,7 @@ public class ApsSchedulingDayConfigVersionApiImpl implements ApsSchedulingDayCon
   }
 
   @Override
-  public DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
+  public ApsSchedulingDayConfigVersionDetailListRes  detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
     return this.apsSchedulingDayConfigVersionService.detailList(req);
   }
 }
