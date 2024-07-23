@@ -92,7 +92,7 @@ spring:
     password: admin!@#q123
     port: 6379
     redisson:
-      file: classpath:redission.yml
+      file: classpath:redisson.yml
 
   h2:
     console:
