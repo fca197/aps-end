@@ -3,6 +3,7 @@ package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -50,7 +51,9 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
   private Boolean isIssuedThird;
 
   public String getIsIssuedThirdStr() {
-    return Boolean.TRUE.equals(isIssuedThird) ? "是" : "否";
+
+    return Str.booleanToStr(isIssuedThird);
+//    return Boolean.TRUE.equals(isIssuedThird) ? "是" : "否";
   }
 }
 

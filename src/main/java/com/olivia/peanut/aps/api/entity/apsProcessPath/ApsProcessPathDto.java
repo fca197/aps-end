@@ -4,6 +4,7 @@ import com.olivia.peanut.aps.api.entity.apsProcessPathRoom.ApsProcessPathRoomDto
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
@@ -39,7 +40,8 @@ public class ApsProcessPathDto extends BaseEntityDto {
   private List<ApsProcessPathRoomDto> pathRoomList;
 
   public String getIsDefaultStr() {
-    return Boolean.TRUE.equals(isDefault) ? "是" : "否";
+    return Str.booleanToStr(isDefault);
+//    return Boolean.TRUE.equals(isDefault) ? "是" : "否";
   }
 
 }

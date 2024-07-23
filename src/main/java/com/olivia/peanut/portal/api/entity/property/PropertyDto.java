@@ -3,6 +3,7 @@ package com.olivia.peanut.portal.api.entity.property;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.sdk.utils.Str;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,7 +60,8 @@ public class PropertyDto extends BaseEntityDto {
 
 
   public String getInUseStr() {
-    return Boolean.TRUE.equals(this.inUse) ? "是" : "否";
+
+    return Str.booleanToStr(inUse);
   }
 }
 

@@ -3,6 +3,7 @@ package com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlanItem;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -65,7 +66,7 @@ public class ApsGoodsBomBuyPlanItemDto extends BaseEntityDto {
   private BigDecimal bomBuyCount;
 
   public String getFollowStr() {
-    return Boolean.TRUE.equals(isFollow) ? "是" : "否";
+    return Str.booleanToStr(isFollow);
   }
 }
 

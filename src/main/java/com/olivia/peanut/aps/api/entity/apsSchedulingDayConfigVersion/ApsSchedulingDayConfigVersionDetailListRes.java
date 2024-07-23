@@ -1,6 +1,5 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 
-import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetail;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import java.time.LocalDate;
 import java.util.List;
@@ -21,5 +20,5 @@ public class ApsSchedulingDayConfigVersionDetailListRes {
 
   private List<Header> headerList;
 
-  private Map<String, List<ApsSchedulingDayConfigVersionDetail>> versionDetailMap;
+  private Map<String, List<Map<String, Object>>> versionDetailMap;
 }

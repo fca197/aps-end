@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,6 +16,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayC
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListReq;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
+import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigItemConfigBizTypeEnum;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
@@ -28,6 +30,7 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.DynamicsPage.Header;
+import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -141,7 +144,6 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       return res;
     }
 
-    DynamicsPage<ApsSchedulingDayConfigVersionDetailListRes> dynamicsPage = new DynamicsPage<>();
     Map<String, List<ApsSchedulingDayConfigVersionDetail>> versionDetailMap = dayConfigVersionDetailList.stream()
         .collect(Collectors.groupingBy(t -> t.getRoomId() + "-" + t.getStatusId(), Collectors.collectingAndThen(Collectors.<ApsSchedulingDayConfigVersionDetail>toList(), t -> {
           t.sort(Comparator.comparing(ApsSchedulingDayConfigVersionDetail::getSchedulingDayId));
@@ -149,7 +151,18 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
         })));
 
     String headerListStr = configVersion.getHeaderList();
-    res.setVersionDetailMap(versionDetailMap);
+    Map<String, List<Map<String, Object>>> retMap = new HashMap<>();
+    versionDetailMap.forEach((k, v) -> {
+      List<Map<String, Object>> mapList = v.stream().map(t -> {
+        Map<String, Object> tt = BeanUtil.beanToMap(t, false, true);
+        tt.put("isMatch", Str.booleanToStr(t.getIsMatch()));
+        tt.put("loopEnough", Str.booleanToStr(t.getLoopEnough()));
+        tt.put("configBizType", ApsSchedulingDayConfigItemConfigBizTypeEnum.valueOf(t.getConfigBizType()).getDesc());
+        return tt;
+      }).toList();
+      retMap.put(k, mapList);
+    });
+    res.setVersionDetailMap(retMap);
     List<Header> headerList = new ArrayList<>();
     if (StringUtils.isNoneBlank(headerListStr)) {
       List<List<Long>> hl = new Gson().fromJson(headerListStr, new TypeToken<List<List<Long>>>() {

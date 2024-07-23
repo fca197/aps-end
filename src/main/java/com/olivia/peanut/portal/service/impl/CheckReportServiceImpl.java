@@ -17,6 +17,7 @@ import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
+import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +59,7 @@ public class CheckReportServiceImpl extends MPJBaseServiceImpl<CheckReportMapper
         checkReportDtoList.forEach(t -> t.setFactoryName(m.get(t.getFactoryId())));
       });
       runnableList.add(() ->
-          checkReportDtoList.forEach(t -> t.setIsOverStr(TRUE.equals(t.getIsOver()) ? "是" : "否"))
+          checkReportDtoList.forEach(t -> t.setIsOverStr(Str.booleanToStr(t.getIsOver())))
       );
       RunUtils.run("设置名称", 1, runnableList);
     }
