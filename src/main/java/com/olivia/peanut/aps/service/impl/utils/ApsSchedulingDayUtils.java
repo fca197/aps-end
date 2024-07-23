@@ -51,18 +51,16 @@ public class ApsSchedulingDayUtils {
 
         boolean isBreak = false;
         int loopIndex = 0;
-        AtomicInteger sortIndex=new AtomicInteger(0);
+        AtomicInteger sortIndex = new AtomicInteger(1);
         do {
           for (ApsSchedulingDayConfigItemDto apsSchedulingDayConfigItemDto : itemDtoList) {
-
-            List<ApsSchedulingIssueItem> failList = matchOrderItem(roomId, statusId, loopIndex,sortIndex, orderItemList, apsSchedulingDayConfigItemDto, retDetailList);
+            List<ApsSchedulingIssueItem> failList = matchOrderItem(roomId, statusId, loopIndex, sortIndex, orderItemList, apsSchedulingDayConfigItemDto, retDetailList);
             if (CollUtil.isEmpty(failList)) {
               isBreak = true;
               break;
             }
             orderItemList.clear();
             orderItemList.addAll(failList);
-
           }
           loopIndex++;
         } while (!isBreak);
@@ -76,7 +74,7 @@ public class ApsSchedulingDayUtils {
     return new ApsSchedulingDayOrderRoomRes().setApsSchedulingDayConfigVersionDetailList(retDetailList);
   }
 
-  private static List<ApsSchedulingIssueItem> matchOrderItem(Long roomId, Long statusId, Integer loopIndex,  AtomicInteger sortIndex, List<ApsSchedulingIssueItem> orderItemList,
+  private static List<ApsSchedulingIssueItem> matchOrderItem(Long roomId, Long statusId, Integer loopIndex, AtomicInteger sortIndex, List<ApsSchedulingIssueItem> orderItemList,
       ApsSchedulingDayConfigItemDto configItemDto, List<ApsSchedulingDayConfigVersionDetail> retDetailList) {
     List<ApsSchedulingIssueItem> failList = new ArrayList<>();
     List<ApsSchedulingIssueItem> successList = new ArrayList<>();
