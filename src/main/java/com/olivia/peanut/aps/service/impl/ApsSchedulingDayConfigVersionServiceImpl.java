@@ -184,6 +184,18 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     return res;
   }
 
+  @Override
+  public ApsSchedulingDayConfigVersionUpdateOrderSortIndexRes updateOrderSortIndex(ApsSchedulingDayConfigVersionUpdateOrderSortIndexReq req) {
+
+    List<ApsSchedulingDayConfigVersionDetail> detailList = req.getOrderList().stream().map(t -> {
+      ApsSchedulingDayConfigVersionDetail baseEntity = new ApsSchedulingDayConfigVersionDetail();
+      baseEntity.setId(t.getId());
+      baseEntity.setSortIndex(t.getSortIndex());
+      return baseEntity;
+    }).toList();
+    boolean b = this.apsSchedulingDayConfigVersionDetailService.updateBatchById(detailList);
+    return new ApsSchedulingDayConfigVersionUpdateOrderSortIndexRes().setSc(b);
+  }
   // 以下为私有对象封装
 
   public @Override void setName(List<? extends ApsSchedulingDayConfigVersionDto> apsSchedulingDayConfigVersionDtoList) {
