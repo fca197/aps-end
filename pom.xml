@@ -7,20 +7,6 @@
     <plugins>
       <plugin>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <configuration>
-              <mainClass>com.qfedu.proguard.ProguardApplication</mainClass>
-            </configuration>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-        <groupId>org.springframework.boot</groupId>
-      </plugin>
-      <plugin>
-        <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
           <includeSystemScope>true</includeSystemScope>
         </configuration>
@@ -42,259 +28,26 @@
         </configuration>
         <version>3.2.0</version>
       </plugin>
-      <!-- Allatori 混淆配置文件输出到target -->
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <configuration>
-              <outputDirectory>${basedir}/target</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${basedir}/lib</directory>
-                  <filtering>true</filtering>
-                  <includes>
-                    <include>allatori.xml</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <id>copy-and-filter-allatori-config</id>
-            <phase>package</phase>
-          </execution>
-        </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>2.6</version>
-      </plugin>
 
-      <!-- Allatori 插件 -->
-      <plugin>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <arguments>
-            <argument>-Xms128m</argument>
-            <argument>-Xmx512m</argument>
-            <argument>-jar</argument>
-            <argument>${basedir}/lib/allatori.jar</argument>
-            <argument>${basedir}/target/classes/allatori.xml</argument>
-          </arguments>
-          <executable>java</executable>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <id>run-allatori</id>
-            <phase>package</phase>
-          </execution>
-        </executions>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>1.2.1</version>
-      </plugin>
-      <!-- Allatori plugin -->
     </plugins>
   </build>
   <dependencies>
-    <dependency>
-      <artifactId>mybatis-plus-boot-starter</artifactId>
-      <groupId>com.baomidou</groupId>
-      <version>3.5.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.mysql</groupId>
-      <artifactId>mysql-connector-j</artifactId>
-      <version>9.0.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>sqlite-jdbc</artifactId>
-      <groupId>org.xerial</groupId>
-      <version>3.45.1.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>ortools-java</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>ortools-darwin-x86-64</artifactId>
-          <groupId>com.google.ortools</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>ortools-win32-x86-64</artifactId>
-          <groupId>com.google.ortools</groupId>
-        </exclusion>
-      </exclusions>
-      <groupId>com.google.ortools</groupId>
-      <version>9.9.3963</version>
-    </dependency>
-    <dependency>
-      <artifactId>protobuf-java</artifactId>
-      <groupId>com.google.protobuf</groupId>
-      <version>3.24.0</version>
-    </dependency>
-    <!--h3地图网格,如果和区域相关，建议使用此版本-->
-    <dependency>
-      <artifactId>h3</artifactId>
-      <groupId>com.uber</groupId>
-      <version>4.1.1</version>
-    </dependency>
+
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <groupId>org.springframework.boot</groupId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <artifactId>easyexcel</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>poi</artifactId>
-          <groupId>org.apache.poi</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xmlbeans</artifactId>
-          <groupId>org.apache.xmlbeans</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>poi-ooxml-schemas</artifactId>
-          <groupId>org.apache.poi</groupId>
-        </exclusion>
-      </exclusions>
-      <groupId>com.alibaba</groupId>
-      <version>3.3.4</version>
-    </dependency>
-    <dependency>
-      <artifactId>mybatis-plus-join-boot-starter</artifactId>
-      <groupId>com.github.yulichang</groupId>
-      <version>1.4.8.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>mybatis-spring-boot-starter</artifactId>
-      <groupId>org.mybatis.spring.boot</groupId>
-      <version>3.0.3</version>
-    </dependency>
-    <dependency>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <groupId>org.springframework.boot</groupId>
-      <version>${spring.boot.version}</version>
-    </dependency>
-    <dependency>
-      <artifactId>aspectjweaver</artifactId>
-      <groupId>org.aspectj</groupId>
-      <version>1.9.22.1</version>
-    </dependency>
-    <!--    <dependency>-->
-    <!--      <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
-    <!--      <groupId>com.baomidou</groupId>-->
-    <!--      <version>3.6.1</version>-->
-    <!--    </dependency>-->
-<!--    <dependency>-->
-<!--      <artifactId>drools-compiler</artifactId>-->
-<!--      <groupId>org.drools</groupId>-->
-<!--      <version>7.74.1.Final</version>-->
-<!--    </dependency>-->
-    <dependency>
-      <artifactId>kie-spring</artifactId>
-      <groupId>org.kie</groupId>
-      <version>7.74.1.Final</version>
-    </dependency>
-    <dependency>
-      <artifactId>guava</artifactId>
-      <groupId>com.google.guava</groupId>
-      <version>31.1-jre</version>
-    </dependency>
-    <dependency>
-      <artifactId>hutool-all</artifactId>
-      <groupId>cn.hutool</groupId>
-      <version>5.8.23</version>
-    </dependency>
-    <dependency>
-      <artifactId>spring-boot-starter-data-redis</artifactId>
-      <groupId>org.springframework.boot</groupId>
-      <version>${spring.boot.version}</version>
-    </dependency>
-    <dependency>
-      <artifactId>lombok</artifactId>
-      <groupId>org.projectlombok</groupId>
-      <version>1.18.24</version>
-    </dependency>
-    <dependency>
-      <artifactId>gson</artifactId>
-      <groupId>com.google.code.gson</groupId>
-      <version>2.10.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>spring-boot-starter-validation</artifactId>
-      <groupId>org.springframework.boot</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>commons-codec</artifactId>
-      <groupId>commons-codec</groupId>
-    </dependency>
-    <dependency>
-      <artifactId>redisson-spring-boot-starter</artifactId>
-      <groupId>org.redisson</groupId>
-      <version>3.25.2</version>
-    </dependency>
-    <dependency>
-      <artifactId>fastjson2-extension-spring6</artifactId>
-      <groupId>com.alibaba.fastjson2</groupId>
-      <version>2.0.46</version>
-    </dependency>
-    <!--    <dependency>-->
-    <!--      <artifactId>h2</artifactId>-->
-    <!--      <groupId>com.h2database</groupId>-->
-    <!--      <version>2.2.224</version>-->
-    <!--    </dependency>-->
-    <dependency>
-      <artifactId>xmlbeans</artifactId>
-      <groupId>org.apache.xmlbeans</groupId>
-      <version>5.2.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>poi</artifactId>
-      <groupId>org.apache.poi</groupId>
-      <version>5.2.5</version>
-    </dependency>
-    <dependency>
-      <artifactId>poi-ooxml</artifactId>
-      <groupId>org.apache.poi</groupId>
-      <version>5.2.5</version>
-    </dependency>
-    <dependency>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <groupId>org.apache.poi</groupId>
-      <version>4.1.2</version>
-    </dependency>
-    <dependency>
-      <artifactId>aviator</artifactId>
-      <groupId>com.googlecode.aviator</groupId>
-      <version>5.4.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>dingtalk</artifactId>
-      <groupId>com.aliyun</groupId>
-      <version>2.1.14</version>
-    </dependency>
-    <dependency>
-      <artifactId>netty-resolver-dns-native-macos</artifactId>
-      <groupId>io.netty</groupId>
-      <scope>runtime</scope>
-      <version>4.1.111.Final</version>
-    </dependency>
-
-    <dependency>
       <artifactId>peanut-sdk</artifactId>
       <groupId>com.olivia</groupId>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/peanut-sdk.jar</systemPath>
-      <version>1.0.0</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
+    <!-- peanut-sdk依赖mysql-j 9.0.0  但是 本项目maven依赖显示8.1.0, 因此主动增加依赖  -->
     <dependency>
-      <groupId>com.dingtalk.open</groupId>
-      <artifactId>app-stream-client</artifactId>
-      <version>1.3.5</version>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <version>9.0.0</version>
     </dependency>
   </dependencies>
   <groupId>com.peanut</groupId>
