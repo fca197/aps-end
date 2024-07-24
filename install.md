@@ -146,7 +146,7 @@
 
 2. 打包后文件
 
-> 打包后在[target](target) 生成两个jar文件 , app.jar 为非加密程序, app-encrypted.jar 为加密程序, 部署任何一个都可以,按需部署
+> 打包后在[target](target) 生成两个jar文件 , app.jar  即部署jar文件
    
 3. 执行时数据库缺少字段
 
@@ -159,9 +159,9 @@
 
 5. SpringBoot启动报错:java.nio.charset.MalformedInputException: Input length = 1解决方案
 
-> https://blog.51cto.com/u_2870645/5295690
+> 问题原因: 文件编码问题, 请使用 utf-8编码,修改方法: https://blog.51cto.com/u_2870645/5295690
 > 修改后,重新获取源码,重新编译,重新打包
 
-6. CLASS NOT FOUND: com/olivia/sdk/*****
+6. com.olivia:peanut-sdk:1.0.0-SNAPSHOT 下载失败
 
->  peanut-sdk.jar  包存在于 lib/下,请确认是否存在
+> maven 下载失败, 请修改setting.xml,增加仓库配置
