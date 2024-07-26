@@ -26,6 +26,7 @@ public class ApsSchedulingVersionItem extends BaseEntity {
   private Long factoryId;
   private Integer resultType;
   private Long numberIndex;
+  private String orderNo;
   private String field0;
   private String field1;
   private String field2;

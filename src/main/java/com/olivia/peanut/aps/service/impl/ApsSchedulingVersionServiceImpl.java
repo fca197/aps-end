@@ -233,6 +233,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
                 new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderList.stream().map(BaseEntity::getId).toList())).stream()
             .collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
       }
+
+      Map<Long, String> orderIdNoMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, ApsOrder::getOrderNo));
+
       List<ApsOrderGoods> goodsList = this.apsOrderGoodsService.list(
           new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, orderList.stream().map(BaseEntity::getId).toList()));
       Map<Long, ApsOrder> oMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
@@ -242,6 +245,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         map.putAll(BeanUtil.beanToMap(t));
         map.putAll(BeanUtil.beanToMap(oMap.get(t.getOrderId())));
         map.put("factoryId", t.getFactoryId());
+        map.put("orderNo", orderIdNoMap.get(t.getOrderId()));
         saleMap.getOrDefault(t.getOrderId(), List.of()).forEach(s -> {
           ApsSaleConfig apsSaleConfig = saleConfigMap.get(s.getConfigId());
           map.put("sale_" + apsSaleConfig.getParentId(), apsSaleConfig.getId());
@@ -267,6 +271,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         item.setId(IdWorker.getId());
         item.setFactoryId((Long) m.get("factoryId"));
         item.setGoodsId((Long) m.get("goodsId"));
+        item.setOrderNo((String) m.get("orderNo"));
         item.setNumberIndex((Long) m.get("numberIndex"));
         item.setOrderId((Long) m.get("id"));
         IntStream.range(0, Math.min(result.getHeaderList().size(), 20)).forEach(i -> {
@@ -656,7 +661,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       });
     }
     updateApsOrderGoodsStatusDate(orderGoodsSet, apsOrderGoodsStatusDateList);
-    new LambdaUpdateWrapper<ApsSchedulingVersion>().eq(BaseEntity::getId, req.getId()).set(ApsSchedulingVersion::getVersionStep, 100);
+    this.update(new LambdaUpdateWrapper<ApsSchedulingVersion>().eq(BaseEntity::getId, req.getId()).set(ApsSchedulingVersion::getVersionStep, 100));
     return new ApsSchedulingVersionFinishRes();
   }
 
