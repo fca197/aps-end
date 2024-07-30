@@ -20,9 +20,11 @@ import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigItemConfigBizTypeEnum;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
-import com.olivia.peanut.aps.service.impl.po.ApsSchedulingDayOrderRoomReq;
-import com.olivia.peanut.aps.service.impl.po.ApsSchedulingDayOrderRoomRes;
-import com.olivia.peanut.aps.service.impl.utils.ApsSchedulingDayUtils;
+import com.olivia.peanut.aps.utils.scheduling.ApsSchedulingDayUtils;
+import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigVersionDetailDto;
+import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomReq;
+import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomRes;
+import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingIssueItemDto;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.service.SetNameService;
@@ -94,31 +96,32 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
     List<Long> orderIdList = issueItemList.stream().map(ApsSchedulingIssueItem::getOrderId).toList();
     Map<Long, List<ApsOrderGoodsSaleConfig>> orderSaleMap = apsOrderGoodsSaleConfigService.list(
-            new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList))
-        .stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId));
+            new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId));
     Map<Long, List<ApsOrderGoodsProjectConfig>> orderProjectMap = this.apsOrderGoodsProjectConfigService.list(
-            new LambdaQueryWrapper<ApsOrderGoodsProjectConfig>().in(ApsOrderGoodsProjectConfig::getOrderId, orderSaleMap))
-        .stream().collect(Collectors.groupingBy(ApsOrderGoodsProjectConfig::getOrderId));
+            new LambdaQueryWrapper<ApsOrderGoodsProjectConfig>().in(ApsOrderGoodsProjectConfig::getOrderId, orderSaleMap)).stream()
+        .collect(Collectors.groupingBy(ApsOrderGoodsProjectConfig::getOrderId));
     Map<Long, List<ApsOrderGoodsBom>> orderBomMap = this.apsOrderGoodsBomService.list(new LambdaQueryWrapper<ApsOrderGoodsBom>().in(ApsOrderGoodsBom::getOrderId, orderIdList))
         .stream().collect(Collectors.groupingBy(ApsOrderGoodsBom::getOrderId));
     issueItemList.forEach(order -> {
       order.setSaleConfigIdList(orderSaleMap.getOrDefault(order.getOrderId(), List.of()).stream().map(ApsOrderGoodsSaleConfig::getConfigId).toList());
       order.setProjectConfigIdList(orderProjectMap.getOrDefault(order.getOrderId(), List.of()).stream().map(ApsOrderGoodsProjectConfig::getConfigId).toList());
-      order.setBomIdList(orderBomMap.getOrDefault(order.getOrderId(),List.of()).stream().map(ApsOrderGoodsBom::getBomId).toList());
+      order.setBomIdList(orderBomMap.getOrDefault(order.getOrderId(), List.of()).stream().map(ApsOrderGoodsBom::getBomId).toList());
     });
 
     ApsSchedulingDayConfigVersion dayConfigVersion = $.copy(req, ApsSchedulingDayConfigVersion.class);
     dayConfigVersion.setId(IdWorker.getId());
     ApsSchedulingDayOrderRoomRes orderRoomRes = ApsSchedulingDayUtils.orderRoomStatus(
-        new ApsSchedulingDayOrderRoomReq().setIssueItemList(issueItemList).setSchedulingDayId(dayConfigVersion.getId()).setSchedulingDayConfigDto(apsSchedulingDayConfigDto));
+        new ApsSchedulingDayOrderRoomReq().setIssueItemList($.copyList(issueItemList, ApsSchedulingIssueItemDto.class)).setSchedulingDayId(dayConfigVersion.getId())
+            .setSchedulingDayConfigDto($.copy(apsSchedulingDayConfigDto, com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigDto.class)));
 //    apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList()
 
     List<List<Long>> headerIdList = apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList().stream().map(t -> List.of(t.getRoomId(), t.getStatusId())).toList();
     dayConfigVersion.setHeaderList(JSON.toJSONString(headerIdList));
     this.save(dayConfigVersion);
-    List<ApsSchedulingDayConfigVersionDetail> versionDetails = orderRoomRes.getApsSchedulingDayConfigVersionDetailList();
+    List<ApsSchedulingDayConfigVersionDetailDto> versionDetails = orderRoomRes.getApsSchedulingDayConfigVersionDetailDtoList();
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
-    this.apsSchedulingDayConfigVersionDetailService.saveBatch(versionDetails);
+    this.apsSchedulingDayConfigVersionDetailService.saveBatch($.copyList(versionDetails, ApsSchedulingDayConfigVersionDetail.class));
     return new ApsSchedulingDayConfigVersionInsertRes().setId(dayConfigVersion.getId()).setCount(versionDetails.size());
   }
 
