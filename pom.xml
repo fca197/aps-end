@@ -5,30 +5,53 @@
   <build>
     <finalName>app</finalName>
     <plugins>
+
       <plugin>
+        <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <configuration>
-          <includeSystemScope>true</includeSystemScope>
+          <classifier>lib</classifier>
         </configuration>
-        <groupId>org.springframework.boot</groupId>
       </plugin>
+
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-lib</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>target/lib</outputDirectory>
+              <excludeTransitive>false</excludeTransitive>
+              <stripVersion>false</stripVersion>
+              <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <classpathPrefix>lib/</classpathPrefix>
+              <addClasspath>true</addClasspath>
+              <mainClass>com.olivia.BootstrapApplication</mainClass>
             </manifest>
             <manifestEntries>
-              <build-time>2024-03-24 12:00:00</build-time>
+              <build-time>${maven.build.timestamp}</build-time>
               <build-version>1.0.2</build-version>
             </manifestEntries>
           </archive>
         </configuration>
-        <version>3.2.0</version>
       </plugin>
-
     </plugins>
   </build>
   <dependencies>
@@ -66,7 +89,7 @@
   </dependencies>
   <groupId>com.peanut</groupId>
   <modelVersion>4.0.0</modelVersion>
-  <name>Archetype - peanut-portal</name>
+  <name>peanut-portal</name>
   <parent>
     <artifactId>spring-boot-starter-parent</artifactId>
     <groupId>org.springframework.boot</groupId>
