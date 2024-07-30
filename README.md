@@ -2,6 +2,8 @@
 
 [用户安装手册](install.md)
 
+[二开手册](second-develop.md)
+
 # 用户配置
 
 | 用户名         | 密码    | 说明   |
