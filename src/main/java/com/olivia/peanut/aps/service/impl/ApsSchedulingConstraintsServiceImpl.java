@@ -102,7 +102,7 @@ public class ApsSchedulingConstraintsServiceImpl extends MPJBaseServiceImpl<ApsS
     FieldConfig updateTimeField = new FieldConfig().setShowName("订单-修改时间").setFieldName("updateTime").setValueType(ValueType.DATE).setOperator(operator);
     FieldConfig orderTotalPrice = new FieldConfig().setShowName("订单-总价").setFieldName("orderTotalPrice").setValueType(ValueType.TEXT).setOperator(operator);
     List<FieldConfig> values = List.of(createTimeField, deliveryDateField, finishPayedDatetime, updateTimeField, orderTotalPrice);
-    List<ApsSaleConfigExportQueryPageListInfoRes> saleConfigList = apsSaleConfigService.queryPageList(new ApsSaleConfigExportQueryPageListReq().setPageSize(99999).setPageNum(1))
+    List<ApsSaleConfigExportQueryPageListInfoRes> saleConfigList = apsSaleConfigService.queryPageList(new ApsSaleConfigExportQueryPageListReq().setQueryPage(false))
         .getDataList();
 
     List<FieldConfig> retList = new ArrayList<>(values);

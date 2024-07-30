@@ -108,3 +108,13 @@ logging:
 #    com.olivia.peanut.aps.utils.forecast: error
 #    com.olivia.peanut.portal.model: error
 #    com.zaxxer.hikari: trace
+
+
+camunda:
+  bpm:
+    admin-user:
+      id: demo
+      password: demo
+      firstName: Demo
+    filter:
+      create: All tasks

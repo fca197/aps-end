@@ -19,6 +19,9 @@ import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoods
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
+import com.olivia.peanut.aps.api.entity.apsProjectConfig.ApsProjectConfigDto;
+import com.olivia.peanut.aps.api.entity.apsProjectConfig.ApsProjectConfigExportQueryPageListInfoRes;
+import com.olivia.peanut.aps.api.entity.apsProjectConfig.ApsProjectConfigExportQueryPageListReq;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSaleConfig.ApsSaleConfigExportQueryPageListReq;
@@ -79,6 +82,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   ApsGoodsSaleItemService apsGoodsSaleItemService;
   @Resource
   ApsSaleConfigService apsSaleConfigService;
+  @Resource
+  ApsProjectConfigService apsProjectConfigService;
   @Resource
   ApsGoodsService apsGoodsService;
   @Resource
@@ -151,12 +156,13 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   }
 
   @Override
+  @Transactional
   public ApsOrderBatchInsertRes saveBatch(ApsOrderBatchInsertReq req) {
 
     List<Long> idList = new ArrayList<>();
     List<String> orderNoList = new ArrayList<>();
     List<ApsGoods> goodsList = this.apsGoodsService.list();
-    List<ApsSaleConfigExportQueryPageListInfoRes> saleConfigList = apsSaleConfigService.queryPageList(new ApsSaleConfigExportQueryPageListReq().setPageNum(1).setPageSize(99999))
+    List<ApsSaleConfigExportQueryPageListInfoRes> saleConfigList = apsSaleConfigService.queryPageList(new ApsSaleConfigExportQueryPageListReq().setQueryPage(false))
         .getDataList();
     List<ApsOrderGoodsSaleConfig> insertSaleConfigList = new ArrayList<>();
     List<ApsOrderGoods> apsOrderGoodList = new ArrayList<>();
@@ -165,7 +171,12 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, Boolean.TRUE));
     Long statusId = Objects.nonNull(apsStatus) ? apsStatus.getId() : null;
 //           .stream().collect(Collectors.toMap(ApsGoodsSaleItemDto::getSaleConfigId))
-    IntStream.range(0, req.getCreateCount()).forEach(i -> {
+    List<ApsProjectConfigExportQueryPageListInfoRes> projectConfigList = this.apsProjectConfigService.queryPageList(
+            new ApsProjectConfigExportQueryPageListReq().setQueryPage(false))
+        .getDataList();
+    ArrayList<ApsOrderGoodsProjectConfig> projectConfigArrayList = new ArrayList<>();
+
+    IntStream.range(1, req.getCreateCount() + 1).forEach(i -> {
       long totalPrice = i;
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
@@ -192,19 +203,32 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
         }
         ApsSaleConfigDto goodsSaleItemDto = saleItemDtoList.get(RandomUtil.randomInt(0, saleItemDtoList.size()));
         insertSaleConfigList.add(
-            new ApsOrderGoodsSaleConfig().setOrderId(apsOrder.getId()).setConfigId(goodsSaleItemDto.getId()).setFactoryId(goods.getId()).setGoodsId(goods.getId()));
+            new ApsOrderGoodsSaleConfig().setOrderId(apsOrder.getId()).setConfigId(goodsSaleItemDto.getId()).setFactoryId(goods.getFactoryId()).setGoodsId(goods.getId()));
       });
+
       UserInfo randomUser = RandomUserUtil.getRandomUser();
-      ApsOrderUser orderUser = new ApsOrderUser().setOrderId(apsOrder.getId()).setUserName(randomUser.getName()).setUserAddress(randomUser.getAddress())
+      ApsOrderUser orderUser = new ApsOrderUser().setOrderId(apsOrder.getId()).setUserName("用户-" + i).setUserAddress(randomUser.getAddress())
           .setUserPhone(randomUser.getPhone()).setUserSex(randomUser.getSex());
       apsOrderUserList.add(orderUser);
       orderNoList.add(apsOrder.getOrderNo());
       idList.add(apsOrder.getId());
+
+      projectConfigList.forEach(t -> {
+        List<? extends ApsProjectConfigDto> children = t.getChildren();
+        if (CollUtil.isEmpty(children)) {
+          return;
+        }
+        ApsProjectConfigDto apsProjectConfigDto = children.get(RandomUtil.randomInt(0, children.size()));
+        projectConfigArrayList.add(
+            new ApsOrderGoodsProjectConfig().setOrderId(apsOrder.getId()).setGoodsId(goods.getId()).setFactoryId(goods.getFactoryId()).setConfigId(apsProjectConfigDto.getId()));
+      });
+
     });
     this.saveBatch(apsOrderList);
     this.apsOrderGoodsService.saveBatch(apsOrderGoodList);
     this.apsOrderGoodsSaleConfigService.saveBatch(insertSaleConfigList);
     this.apsOrderUserService.saveBatch(apsOrderUserList);
+    this.apsOrderGoodsProjectConfigService.saveBatch(projectConfigArrayList);
 
     return new ApsOrderBatchInsertRes().setOrderNoList(orderNoList).setIdList(idList);
   }

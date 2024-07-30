@@ -69,8 +69,15 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
   ApsRoomService apsRoomService;
   @Resource
   ApsStatusService apsStatusService;
+  @Resource
+  ApsOrderGoodsSaleConfigService apsOrderGoodsSaleConfigService;
+  @Resource
+  ApsOrderGoodsProjectConfigService apsOrderGoodsProjectConfigService;
+  @Resource
+  ApsOrderGoodsBomService apsOrderGoodsBomService;
 
   @Override
+  @Transactional
   public ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req) {
 
     ApsSchedulingDayConfigDto dayConfigDto = new ApsSchedulingDayConfigDto();
@@ -83,7 +90,22 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     List<ApsSchedulingIssueItem> issueItemList = apsSchedulingIssueItemService.list(
         new LambdaQueryWrapper<ApsSchedulingIssueItem>().eq(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay())
             .eq(ApsSchedulingIssueItem::getFactoryId, req.getFactoryId()));
-    $.requireNonNullCanIgnoreException(issueItemList, "排产订单不能为空");
+    $.requireNonNullCanIgnoreException(issueItemList, "当天排产订单不能为空");
+
+    List<Long> orderIdList = issueItemList.stream().map(ApsSchedulingIssueItem::getOrderId).toList();
+    Map<Long, List<ApsOrderGoodsSaleConfig>> orderSaleMap = apsOrderGoodsSaleConfigService.list(
+            new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList))
+        .stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId));
+    Map<Long, List<ApsOrderGoodsProjectConfig>> orderProjectMap = this.apsOrderGoodsProjectConfigService.list(
+            new LambdaQueryWrapper<ApsOrderGoodsProjectConfig>().in(ApsOrderGoodsProjectConfig::getOrderId, orderSaleMap))
+        .stream().collect(Collectors.groupingBy(ApsOrderGoodsProjectConfig::getOrderId));
+    Map<Long, List<ApsOrderGoodsBom>> orderBomMap = this.apsOrderGoodsBomService.list(new LambdaQueryWrapper<ApsOrderGoodsBom>().in(ApsOrderGoodsBom::getOrderId, orderIdList))
+        .stream().collect(Collectors.groupingBy(ApsOrderGoodsBom::getOrderId));
+    issueItemList.forEach(order -> {
+      order.setSaleConfigIdList(orderSaleMap.getOrDefault(order.getOrderId(), List.of()).stream().map(ApsOrderGoodsSaleConfig::getConfigId).toList());
+      order.setProjectConfigIdList(orderProjectMap.getOrDefault(order.getOrderId(), List.of()).stream().map(ApsOrderGoodsProjectConfig::getConfigId).toList());
+      order.setBomIdList(orderBomMap.getOrDefault(order.getOrderId(),List.of()).stream().map(ApsOrderGoodsBom::getBomId).toList());
+    });
 
     ApsSchedulingDayConfigVersion dayConfigVersion = $.copy(req, ApsSchedulingDayConfigVersion.class);
     dayConfigVersion.setId(IdWorker.getId());
