@@ -10,7 +10,11 @@ import com.olivia.peanut.aps.service.impl.po.ApsSchedulingDayOrderRoomReq;
 import com.olivia.peanut.aps.service.impl.po.ApsSchedulingDayOrderRoomRes;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.RunUtils;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -39,32 +43,7 @@ public class ApsSchedulingDayUtils {
 
     configItemMap.forEach((k, itemDtoList) -> {
       runnableList.add(() -> {
-        if (CollUtil.isEmpty(itemDtoList) || CollUtil.isEmpty(req.getIssueItemList())) {
-          return;
-        }
-
-        Long statusId = itemDtoList.get(0).getStatusId();
-
-        String[] ks = k.split("-");
-        Long roomId = Long.valueOf(ks[0]);
-        List<ApsSchedulingIssueItem> orderItemList = new ArrayList<>(req.getIssueItemList());
-
-        boolean isBreak = false;
-        int loopIndex = 0;
-        AtomicInteger sortIndex = new AtomicInteger(1);
-        do {
-          for (ApsSchedulingDayConfigItemDto apsSchedulingDayConfigItemDto : itemDtoList) {
-            List<ApsSchedulingIssueItem> failList = matchOrderItem(roomId, statusId, loopIndex, sortIndex, orderItemList, apsSchedulingDayConfigItemDto, retDetailList);
-            if (CollUtil.isEmpty(failList)) {
-              isBreak = true;
-              break;
-            }
-            orderItemList.clear();
-            orderItemList.addAll(failList);
-          }
-          loopIndex++;
-        } while (!isBreak);
-
+        matchOrderItem(req.getIssueItemList(), itemDtoList, retDetailList);
       });
     });
 
@@ -74,71 +53,80 @@ public class ApsSchedulingDayUtils {
     return new ApsSchedulingDayOrderRoomRes().setApsSchedulingDayConfigVersionDetailList(retDetailList);
   }
 
-  private static List<ApsSchedulingIssueItem> matchOrderItem(Long roomId, Long statusId, Integer loopIndex, AtomicInteger sortIndex, List<ApsSchedulingIssueItem> orderItemList,
-      ApsSchedulingDayConfigItemDto configItemDto, List<ApsSchedulingDayConfigVersionDetail> retDetailList) {
+  private static void matchOrderItem(List<ApsSchedulingIssueItem> orderItemList, List<ApsSchedulingDayConfigItemDto> itemDtoList,
+      List<ApsSchedulingDayConfigVersionDetail> retDetailList) {
+
+    AtomicInteger loopIndex = new AtomicInteger(0);
+    AtomicInteger sortIndex = new AtomicInteger(1);
     List<ApsSchedulingIssueItem> failList = new ArrayList<>();
-    List<ApsSchedulingIssueItem> successList = new ArrayList<>();
-    ApsSchedulingDayConfigItemConfigBizTypeEnum configBizTypeEnum = ApsSchedulingDayConfigItemConfigBizTypeEnum.valueOf(configItemDto.getConfigBizType());
 
-    Long bizId = configItemDto.getConfigBizId();
-    long number = configItemDto.getConfigBizNum();
-    if (Objects.equals(configBizTypeEnum, ApsSchedulingDayConfigItemConfigBizTypeEnum.sale)) {
-      // 销售
-      while (CollUtil.isNotEmpty(orderItemList) && successList.size() < number) {
-        ApsSchedulingIssueItem issueItem = orderItemList.remove(0);
-        if (issueItem.getSaleConfigIdList().contains(bizId)) {
-          successList.add(issueItem);
+    AtomicBoolean isBreak = new AtomicBoolean(false);
+    ArrayList<ApsSchedulingIssueItem> orderList = new ArrayList<>(orderItemList);
+
+    do {
+      loopIndex.incrementAndGet();
+      isBreak.set(false);
+      List<ApsSchedulingDayConfigVersionDetail> loopList = new ArrayList<>();
+      List<ApsSchedulingIssueItem> successList = new ArrayList<>();
+      for (ApsSchedulingDayConfigItemDto configItemDto : itemDtoList) {
+        ApsSchedulingDayConfigItemConfigBizTypeEnum configBizTypeEnum = ApsSchedulingDayConfigItemConfigBizTypeEnum.valueOf(configItemDto.getConfigBizType());
+        Long bizId = configItemDto.getConfigBizId();
+        long number = configItemDto.getConfigBizNum();
+        orderList.addAll(failList);
+        failList.clear();
+        while (CollUtil.isNotEmpty(orderList) && successList.size() < number) {
+          ApsSchedulingIssueItem orderInfo = orderList.remove(0);
+          if (configBizTypeEnum == ApsSchedulingDayConfigItemConfigBizTypeEnum.sale) {
+            if (orderInfo.getSaleConfigIdList().contains(bizId)) {
+              successList.add(orderInfo);
+            } else {
+              failList.add(orderInfo);
+            }
+          } else if (configBizTypeEnum == ApsSchedulingDayConfigItemConfigBizTypeEnum.project) {
+            if (orderInfo.getProjectConfigIdList().contains(bizId)) {
+              successList.add(orderInfo);
+            } else {
+              failList.add(orderInfo);
+            }
+          } else if (configBizTypeEnum == ApsSchedulingDayConfigItemConfigBizTypeEnum.bom) {
+            if (orderInfo.getBomIdList().contains(bizId)) {
+              successList.add(orderInfo);
+            } else {
+              failList.add(orderInfo);
+            }
+          }
+        }
+        log.info("bizId : {} successList  {} {}", bizId, successList.size(), failList.size());
+        successList.forEach(orderItem -> {
+          isBreak.set(true);
+          ApsSchedulingDayConfigVersionDetail detail = new ApsSchedulingDayConfigVersionDetail();
+          detail.setRoomId(configItemDto.getRoomId()).setStatusId(configItemDto.getStatusId()).setLoopIndex(loopIndex.get()).setIsMatch(true).setOrderId(orderItem.getOrderId())
+              .setOrderNo(orderItem.getOrderNo())
+              .setConfigBizId(configItemDto.getConfigBizId()).setConfigBizType(configItemDto.getConfigBizType()).setConfigBizName(configItemDto.getConfigBizName());
+          detail.setLoopEnough(true).setSortIndex(sortIndex.getAndIncrement());
+          retDetailList.add(detail);
+          loopList.add(detail);
+        });
+        successList.clear();
+        if (loopList.size() == itemDtoList.stream().mapToLong(ApsSchedulingDayConfigItemDto::getConfigBizNum).sum()) {
+          loopList.forEach(t -> t.setLoopEnough(true));
         } else {
-          failList.add(issueItem);
+          loopList.forEach(t -> t.setLoopEnough(false));
         }
       }
 
-    } else if (Objects.equals(configBizTypeEnum, ApsSchedulingDayConfigItemConfigBizTypeEnum.project)) {
-      // 项目
-      while (CollUtil.isNotEmpty(orderItemList) && successList.size() < number) {
-        ApsSchedulingIssueItem issueItem = orderItemList.remove(0);
-        if (issueItem.getProjectConfigIdList().contains(bizId)) {
-          successList.add(issueItem);
-        } else {
-          failList.add(issueItem);
-        }
-      }
-    } else if (Objects.equals(configBizTypeEnum, ApsSchedulingDayConfigItemConfigBizTypeEnum.bom)) {
-
-      while (CollUtil.isNotEmpty(orderItemList) && successList.size() < number) {
-        ApsSchedulingIssueItem issueItem = orderItemList.remove(0);
-        if (issueItem.getBomIdList().contains(bizId)) {
-          successList.add(issueItem);
-        } else {
-          failList.add(issueItem);
-        }
-      }
-
-    } else if (Objects.equals(configBizTypeEnum, ApsSchedulingDayConfigItemConfigBizTypeEnum.sleep)) {
-      // 休息
-    }
-
-    if (CollUtil.isNotEmpty(successList)) {
-      Boolean loopEnough = successList.size() == number;
-      successList.forEach(orderItem -> {
-        ApsSchedulingDayConfigVersionDetail detail = new ApsSchedulingDayConfigVersionDetail();
-        detail.setRoomId(roomId).setStatusId(statusId).setLoopIndex(loopIndex).setIsMatch(true).setOrderId(orderItem.getOrderId()).setOrderNo(orderItem.getOrderNo())
-            .setConfigBizId(configItemDto.getConfigBizId()).setConfigBizType(configItemDto.getConfigBizType()).setConfigBizName(configItemDto.getConfigBizName());
-        detail.setLoopEnough(loopEnough).setSortIndex(sortIndex.getAndIncrement());
-        retDetailList.add(detail);
-      });
-    } else {
-      failList.forEach(orderItem -> {
-        ApsSchedulingDayConfigVersionDetail detail = new ApsSchedulingDayConfigVersionDetail();
-        detail.setRoomId(roomId).setStatusId(statusId).setLoopIndex(loopIndex).setIsMatch(false).setOrderId(orderItem.getOrderId()).setOrderNo(orderItem.getOrderNo())
-            .setConfigBizId(configItemDto.getConfigBizId()).setConfigBizType(configItemDto.getConfigBizType()).setConfigBizName(configItemDto.getConfigBizName());
-        detail.setLoopEnough(false).setSortIndex(sortIndex.getAndIncrement());
-        retDetailList.add(detail);
-      });
-      failList.clear();
-    }
-
-    return failList;
+    } while (isBreak.get());
+    ApsSchedulingDayConfigItemDto configItemDto = itemDtoList.get(0);
+    orderList.addAll(failList);
+    orderList.forEach(orderItem -> {
+      ApsSchedulingDayConfigVersionDetail detail = new ApsSchedulingDayConfigVersionDetail();
+      detail.setRoomId(configItemDto.getRoomId()).setStatusId(configItemDto.getStatusId()).setLoopIndex(loopIndex.get()).setIsMatch(false).setOrderId(orderItem.getOrderId())
+          .setOrderNo(orderItem.getOrderNo())
+          .setConfigBizId(configItemDto.getConfigBizId()).setConfigBizType(configItemDto.getConfigBizType()).setConfigBizName(configItemDto.getConfigBizName());
+      detail.setLoopEnough(false).setSortIndex(sortIndex.getAndIncrement());
+      retDetailList.add(detail);
+    });
   }
-
 }
+
+
