@@ -1,4 +1,4 @@
-INSERT INTO peanut_prod.t_district_code (id, code, name, parent_code, path, level, is_delete, create_time, create_by, update_time, update_by, trace_id, version_num, tenant_id) VALUES 
+INSERT INTO t_district_code (id, code, name, parent_code, path, level, is_delete, create_time, create_by, update_time, update_by, trace_id, version_num, tenant_id) VALUES
 (110000, '110000', '北京市', '0', '0/110000', 1, 0, '2024-07-17 21:32:40', null, '2024-07-17 23:14:08', null, '1813593026497372161', 0, null),
 (110101, '110101', '东城区', '110100', null, 3, 0, '2024-07-17 21:32:40', null, '2024-07-17 23:14:08', null, '1813593026497372161', 0, null),
 (110102, '110102', '西城区', '110100', null, 3, 0, '2024-07-17 21:32:40', null, '2024-07-17 23:14:08', null, '1813593026497372161', 0, null),
