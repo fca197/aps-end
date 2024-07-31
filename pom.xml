@@ -47,6 +47,7 @@
             </manifest>
             <manifestEntries>
               <build-time>${maven.build.timestamp}</build-time>
+              <build-user>${user.name}</build-user>
               <build-version>1.0.2</build-version>
             </manifestEntries>
           </archive>
