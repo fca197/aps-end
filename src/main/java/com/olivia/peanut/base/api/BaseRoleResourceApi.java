@@ -1,0 +1,76 @@
+package com.olivia.peanut.base.api;
+
+import org.springframework.validation.annotation.Validated;
+import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+import com.olivia.peanut.base.api.entity.baseRoleResource.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import org.springframework.web.multipart.MultipartFile;
+import com.olivia.sdk.ann.InsertCheck;
+import com.olivia.sdk.ann.UpdateCheck;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+
+/**
+ * 角色资源表(BaseRoleResource)对外API
+ *
+ * @author peanut
+ * @since 2024-07-31 14:34:06
+ */
+// @FeignClient(value = "",contextId = "baseRoleResource-api",url = "${ portal..center.endpoint:}")
+public interface BaseRoleResourceApi {
+
+  /**
+   * 保存 角色资源表
+   */
+  @PostMapping("/baseRoleResource/insert")
+  BaseRoleResourceInsertRes insert(@RequestBody @Validated(InsertCheck.class) BaseRoleResourceInsertReq req);
+
+  /**
+   * 根据ID 删除 角色资源表
+   */
+  @PostMapping("/baseRoleResource/deleteByIdList")
+  BaseRoleResourceDeleteByIdListRes deleteByIdList(@RequestBody @Valid BaseRoleResourceDeleteByIdListReq req);
+
+  /**
+   * 查询 角色资源表
+   */
+  @PostMapping("/baseRoleResource/queryList")
+  BaseRoleResourceQueryListRes queryList(@RequestBody @Valid BaseRoleResourceQueryListReq req);
+
+  /**
+   * 根据ID 更新 角色资源表
+   */
+  @PostMapping("/baseRoleResource/updateById")
+  BaseRoleResourceUpdateByIdRes updateById(@RequestBody @Validated(UpdateCheck.class) BaseRoleResourceUpdateByIdReq req);
+
+  /**
+   * 分页查询 角色资源表
+   */
+  @PostMapping("/baseRoleResource/queryPageList")
+  DynamicsPage<BaseRoleResourceExportQueryPageListInfoRes> queryPageList(@RequestBody @Valid BaseRoleResourceExportQueryPageListReq req);
+
+  /**
+   * 导出 角色资源表
+   */
+  @PostMapping("/baseRoleResource/exportQueryPageList")
+  void queryPageListExport(@RequestBody @Valid BaseRoleResourceExportQueryPageListReq req);
+
+  /**
+   * 导入
+   */
+  @PostMapping("/baseRoleResource/importData")
+  BaseRoleResourceImportRes importData(@RequestParam("file") MultipartFile file);
+
+
+  /**
+   * 根据ID 批量查询
+   */
+  @PostMapping("/baseRoleResource/queryByIdList")
+  BaseRoleResourceQueryByIdListRes queryByIdListRes(@RequestBody @Valid BaseRoleResourceQueryByIdListReq req);
+
+
+}

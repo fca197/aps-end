@@ -18,4 +18,10 @@ public class LoginAccount extends BaseEntity {
   private String userName;
   private String loginPhone;
   private String userPwd;
+
+  private Boolean isAdmin;
+
+  public boolean isAdmin() {
+    return Boolean.TRUE.equals(isAdmin);
+  }
 }
