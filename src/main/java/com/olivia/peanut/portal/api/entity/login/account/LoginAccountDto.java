@@ -23,4 +23,8 @@ public class LoginAccountDto extends BaseEntityDto {
 
   private String baseRoleGroupName;
   private List<Long> baseRoleIds;
+  private String deptName;
+
+  private List<Long> deptIds;
+  ;
 }

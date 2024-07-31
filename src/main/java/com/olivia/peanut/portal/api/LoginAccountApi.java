@@ -32,4 +32,7 @@ public interface LoginAccountApi {
 
   @PostMapping("/loginAccount/updateRole")
   UpdateRoleRes updateRole(@RequestBody UpdateRoleReq req);
+  // updateDept
+  @PostMapping("/loginAccount/updateDept")
+  UpdateDeptRes updateDept(@RequestBody UpdateDeptReq req);
 }

@@ -11,14 +11,8 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.olivia.peanut.base.model.BaseRole;
-import com.olivia.peanut.base.model.BaseRoleGroup;
-import com.olivia.peanut.base.model.BaseUserRole;
-import com.olivia.peanut.base.model.BaseUserRoleGroup;
-import com.olivia.peanut.base.service.BaseRoleGroupService;
-import com.olivia.peanut.base.service.BaseRoleService;
-import com.olivia.peanut.base.service.BaseUserRoleGroupService;
-import com.olivia.peanut.base.service.BaseUserRoleService;
+import com.olivia.peanut.base.model.*;
+import com.olivia.peanut.base.service.*;
 import com.olivia.peanut.portal.api.LoginAccountApi;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.login.account.*;
@@ -63,6 +57,10 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   BaseRoleService baseRoleService;
   @Resource
   BaseRoleGroupService baseRoleGroupService;
+  @Resource
+  BaseUserDeptService baseUserDeptService;
+  @Resource
+  BaseDeptService deptService;
   @Resource
   private LoginAccountService loginAccountService;
   @Resource
@@ -118,23 +116,34 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     if (CollUtil.isNotEmpty(result)) {
       Map<Long, String> gnMap = this.baseRoleGroupService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseRoleGroup::getRoleGroupName));
       Map<Long, String> rnMap = this.baseRoleService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseRole::getRoleName));
-
+      Map<Long, String> dnMap = deptService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseDept::getDeptName));
       List<Long> userIdList = result.stream().map(BaseEntityDto::getId).toList();
+      Map<Long, List<Long>> userDeptMap = this.baseUserDeptService.list(new LambdaQueryWrapper<BaseUserDept>().in(BaseUserDept::getUserId, userIdList)).stream().collect(
+          Collectors.groupingBy(BaseUserDept::getUserId,
+              Collectors.collectingAndThen(Collectors.<BaseUserDept>toList(),
+                  list -> list.stream().map(BaseUserDept::getDeptId).toList())
+          )
+      );
+
       List<BaseUserRoleGroup> userRoleGroupList = baseUserRoleGroupService.list(new LambdaQueryWrapper<BaseUserRoleGroup>().in(BaseUserRoleGroup::getUserId, userIdList));
       Map<Long, List<Long>> userRoleGroupIdMap = userRoleGroupList.stream().collect(Collectors.groupingBy(BaseUserRoleGroup::getUserId,
           Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(), list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
 
-      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList)).stream().collect(
+      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList))
+          .stream().collect(
           Collectors.groupingBy(BaseUserRole::getUserId,
-              Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(), list -> list.stream().map(BaseUserRole::getRoleId).toList())));
+              Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
+                  list -> list.stream().map(BaseUserRole::getRoleId).toList())));
 
       result.forEach(t -> {
         List<Long> userGroupIdList = userRoleGroupIdMap.getOrDefault(t.getId(), List.of());
         t.setBaseRoleGroupName(userGroupIdList.stream().map(gnMap::get).distinct().sorted().collect(Collectors.joining(",")));
         t.setBaseRoleGroupIds(userGroupIdList);
         List<Long> userRoleIdList = userRoleMap.getOrDefault(t.getId(), List.of());
-        t.setBaseRoleName(userRoleIdList.stream().map(rnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+        t.setBaseRoleName(userRoleIdList.stream().map(rnMap::get).filter(StringUtils::isNotBlank).distinct().sorted().collect(Collectors.joining(",")));
         t.setBaseRoleIds(userRoleIdList);
+        List<Long> deptIds = userDeptMap.getOrDefault(t.getId(), List.of());
+        t.setDeptIds(deptIds).setDeptName(deptIds.stream().map(dnMap::get).filter(StringUtils::isNotBlank).distinct().sorted().collect(Collectors.joining(",")));
       });
     }
     DynamicsPage<LoginAccountDto> ret = new DynamicsPage<>();
@@ -176,5 +185,14 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     }
 
     return new UpdateRoleRes();
+  }
+
+  @Override
+  public UpdateDeptRes updateDept(UpdateDeptReq req) {
+    this.baseUserDeptService.remove(new LambdaQueryWrapper<BaseUserDept>().eq(BaseUserDept::getUserId, req.getUserId()));
+    if (CollUtil.isNotEmpty(req.getDeptList())) {
+      this.baseUserDeptService.saveBatch(req.getDeptList().stream().map(t -> new BaseUserDept().setUserId(req.getUserId()).setDeptId(t)).toList());
+    }
+    return new UpdateDeptRes();
   }
 }
