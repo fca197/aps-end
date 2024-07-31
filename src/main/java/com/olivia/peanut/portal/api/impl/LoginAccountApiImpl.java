@@ -2,6 +2,7 @@ package com.olivia.peanut.portal.api.impl;
 
 import static java.lang.Boolean.TRUE;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.alibaba.fastjson2.JSON;
@@ -10,7 +11,16 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.olivia.peanut.base.model.BaseRole;
+import com.olivia.peanut.base.model.BaseRoleGroup;
+import com.olivia.peanut.base.model.BaseUserRole;
+import com.olivia.peanut.base.model.BaseUserRoleGroup;
+import com.olivia.peanut.base.service.BaseRoleGroupService;
+import com.olivia.peanut.base.service.BaseRoleService;
+import com.olivia.peanut.base.service.BaseUserRoleGroupService;
+import com.olivia.peanut.base.service.BaseUserRoleService;
 import com.olivia.peanut.portal.api.LoginAccountApi;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.login.account.*;
 import com.olivia.peanut.portal.model.LoginAccount;
 import com.olivia.peanut.portal.service.LoginAccountService;
@@ -21,8 +31,11 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -41,6 +54,14 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
   @Resource
   StringRedisTemplate stringRedisTemplate;
+  @Resource
+  BaseUserRoleService baseUserRoleService;
+  @Resource
+  BaseUserRoleGroupService baseUserRoleGroupService;
+  @Resource
+  BaseRoleService baseRoleService;
+  @Resource
+  BaseRoleGroupService baseRoleGroupService;
   @Resource
   private LoginAccountService loginAccountService;
   @Resource
@@ -80,7 +101,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   }
 
   @Override
-  public DynamicsPage<LoginAccount> queryPageList(QueryPageListReq req) {
+  public DynamicsPage<LoginAccountDto> queryPageList(QueryPageListReq req) {
 
     LoginUserContext.ignoreTenantId();
     LambdaQueryWrapper<LoginAccount> query = Wrappers.lambdaQuery();
@@ -91,7 +112,30 @@ public class LoginAccountApiImpl implements LoginAccountApi {
       query.likeRight(StringUtils.isNotBlank(data.getUserName()), LoginAccount::getUserName, data.getUserName());
     }
     Page<LoginAccount> page = this.loginAccountService.page(new Page<>(req.getPageNum(), req.getPageSize()), query.orderByDesc(BaseEntity::getId));
-    return DynamicsPage.init(page);
+
+    List<LoginAccountDto> result = $.copyList(page.getRecords(), LoginAccountDto.class);
+    if (CollUtil.isNotEmpty(result)) {
+      Map<Long, String> gnMap = this.baseRoleGroupService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseRoleGroup::getRoleGroupName));
+      Map<Long, String> rnMap = this.baseRoleService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseRole::getRoleName));
+
+      List<Long> userIdList = result.stream().map(BaseEntityDto::getId).toList();
+      List<BaseUserRoleGroup> userRoleGroupList = baseUserRoleGroupService.list(new LambdaQueryWrapper<BaseUserRoleGroup>().in(BaseUserRoleGroup::getUserId, userIdList));
+      Map<Long, List<Long>> userRoleGroupIdMap = userRoleGroupList.stream().collect(Collectors.groupingBy(BaseUserRoleGroup::getUserId,
+          Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(),
+              list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
+
+      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList))
+          .stream().collect(Collectors.groupingBy(BaseUserRole::getUserId, Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
+              list -> list.stream().map(BaseUserRole::getRoleId).toList())));
+
+      result.forEach(t -> {
+        t.setBaseRoleGroupName(userRoleGroupIdMap.getOrDefault(t.getId(), List.of()).stream().map(gnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+        t.setBaseRoleName(userRoleMap.getOrDefault(t.getId(), List.of()).stream().map(rnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+      });
+    }
+    DynamicsPage<LoginAccountDto> ret = new DynamicsPage<>();
+    ret.setTotal(page.getTotal()).setRecords(result);
+    return ret;
   }
 
   @Override

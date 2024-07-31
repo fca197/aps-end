@@ -10,10 +10,6 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class GetUserInfoRes {
+public class GetUserInfoRes  extends LoginAccountDto {
 
-  private Long id;
-  private String userName;
-  private Long tenantId = 1001L;
-  private String loginPhone;
 }

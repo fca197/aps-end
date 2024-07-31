@@ -22,7 +22,7 @@ public interface LoginAccountApi {
   GetUserInfoRes getUserInfo(@RequestBody GetUserInfoReq req, @RequestHeader("j-token") String token);
 
   @RequestMapping("/loginAccount/queryPageList")
-  DynamicsPage<LoginAccount> queryPageList(@RequestBody QueryPageListReq req);
+  DynamicsPage<LoginAccountDto> queryPageList(@RequestBody QueryPageListReq req);
 
   @PostMapping("/loginAccount/resetPwd")
   ResetPwdRes resetPwd(@RequestBody ResetPwdReq req);
