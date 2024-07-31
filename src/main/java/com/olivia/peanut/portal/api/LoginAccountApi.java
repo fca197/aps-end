@@ -29,4 +29,7 @@ public interface LoginAccountApi {
 
   @PostMapping("/loginAccount/insert")
   InsertRes insert(@RequestBody InsertReq req);
+
+  @PostMapping("/loginAccount/updateRole")
+  UpdateRoleRes updateRole(@RequestBody UpdateRoleReq req);
 }

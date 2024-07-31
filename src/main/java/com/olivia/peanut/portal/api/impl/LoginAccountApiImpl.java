@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 /***
@@ -75,8 +76,8 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     RLock lock = redissonClient.getLock(peanutProperties.getRedisKey().getLoginLock() + req.getLoginPhone());
 
     lock.lock(3, TimeUnit.SECONDS);
-    LoginAccount loginAccount = this.loginAccountService.getOne(new LambdaQueryWrapper<LoginAccount>()
-        .eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
+    LoginAccount loginAccount = this.loginAccountService.getOne(
+        new LambdaQueryWrapper<LoginAccount>().eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
     $.requireNonNullCanIgnoreException(loginAccount, "用户名密码错误");
     loginAccount.setUserPwd(null);
     String token = String.join("_", IdWorker.get32UUID().toUpperCase());
@@ -121,16 +122,19 @@ public class LoginAccountApiImpl implements LoginAccountApi {
       List<Long> userIdList = result.stream().map(BaseEntityDto::getId).toList();
       List<BaseUserRoleGroup> userRoleGroupList = baseUserRoleGroupService.list(new LambdaQueryWrapper<BaseUserRoleGroup>().in(BaseUserRoleGroup::getUserId, userIdList));
       Map<Long, List<Long>> userRoleGroupIdMap = userRoleGroupList.stream().collect(Collectors.groupingBy(BaseUserRoleGroup::getUserId,
-          Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(),
-              list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
+          Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(), list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
 
-      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList))
-          .stream().collect(Collectors.groupingBy(BaseUserRole::getUserId, Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
-              list -> list.stream().map(BaseUserRole::getRoleId).toList())));
+      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList)).stream().collect(
+          Collectors.groupingBy(BaseUserRole::getUserId,
+              Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(), list -> list.stream().map(BaseUserRole::getRoleId).toList())));
 
       result.forEach(t -> {
-        t.setBaseRoleGroupName(userRoleGroupIdMap.getOrDefault(t.getId(), List.of()).stream().map(gnMap::get).distinct().sorted().collect(Collectors.joining(",")));
-        t.setBaseRoleName(userRoleMap.getOrDefault(t.getId(), List.of()).stream().map(rnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+        List<Long> userGroupIdList = userRoleGroupIdMap.getOrDefault(t.getId(), List.of());
+        t.setBaseRoleGroupName(userGroupIdList.stream().map(gnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+        t.setBaseRoleGroupIds(userGroupIdList);
+        List<Long> userRoleIdList = userRoleMap.getOrDefault(t.getId(), List.of());
+        t.setBaseRoleName(userRoleIdList.stream().map(rnMap::get).distinct().sorted().collect(Collectors.joining(",")));
+        t.setBaseRoleIds(userRoleIdList);
       });
     }
     DynamicsPage<LoginAccountDto> ret = new DynamicsPage<>();
@@ -157,5 +161,20 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     copy.setId(IdWorker.getId());
     this.loginAccountService.save(copy);
     return new InsertRes().setId(copy.getId());
+  }
+
+  @Override
+  @Transactional
+  public UpdateRoleRes updateRole(UpdateRoleReq req) {
+    this.baseUserRoleService.remove(new LambdaQueryWrapper<BaseUserRole>().eq(BaseUserRole::getUserId, req.getUserId()));
+    this.baseUserRoleGroupService.remove(new LambdaQueryWrapper<BaseUserRoleGroup>().eq(BaseUserRoleGroup::getUserId, req.getUserId()));
+    if (CollUtil.isNotEmpty(req.getRoleGroupIds())) {
+      this.baseUserRoleGroupService.saveBatch(req.getRoleGroupIds().stream().map(t -> new BaseUserRoleGroup().setUserId(req.getUserId()).setRoleGroupId(t)).toList());
+    }
+    if (CollUtil.isNotEmpty(req.getRoleIds())) {
+      this.baseUserRoleService.saveBatch(req.getRoleIds().stream().map(t -> new BaseUserRole().setUserId(req.getUserId()).setRoleId(t)).toList());
+    }
+
+    return new UpdateRoleRes();
   }
 }
