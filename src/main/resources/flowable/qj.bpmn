@@ -10,8 +10,8 @@
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_07pba5u</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_07pba5u" sourceRef="StartEvent_1" targetRef="user_create_level_task"/>
-    <bpmn:userTask id="user_create_level_task" name="用户创建请假工单"   camunda:priority="1">
+    <bpmn:sequenceFlow id="begin" sourceRef="StartEvent_1" targetRef="user_create_level_task"/>
+    <bpmn:userTask id="user_create_level_task" name="用户创建请假工单" camunda:priority="1">
       <bpmn:extensionElements>
         <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateBeginTaskListener" event="create">
         </camunda:taskListener>
@@ -19,7 +19,18 @@
       <bpmn:incoming>Flow_07pba5u</bpmn:incoming>
       <bpmn:outgoing>Flow_1krlhc6</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_0fl246o" name="部门领导审批" camunda:assignee="dept-manager">
+    <bpmn:userTask id="Activity_0fl246o" name="部门领导审批">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateTaskListener" event="create">
+        </camunda:taskListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="userAssignee">
+            <camunda:map>
+              <camunda:entry key="role">zongjian</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1krlhc6</bpmn:incoming>
       <bpmn:outgoing>Flow_1d9ohsf</bpmn:outgoing>
       <bpmn:outgoing>Flow_0s19z2m</bpmn:outgoing>
@@ -76,7 +87,7 @@
           <dc:Bounds x="1170" y="315" width="22" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_07pba5u_di" bpmnElement="Flow_07pba5u">
+      <bpmndi:BPMNEdge id="Flow_07pba5u_di" bpmnElement="begin">
         <di:waypoint x="148" y="290"/>
         <di:waypoint x="270" y="290"/>
       </bpmndi:BPMNEdge>

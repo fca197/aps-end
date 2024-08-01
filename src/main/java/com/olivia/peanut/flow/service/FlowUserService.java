@@ -1,7 +1,8 @@
-package com.olivia.peanut.flow.api;
+package com.olivia.peanut.flow.service;
 
 import com.olivia.peanut.flow.api.entity.FlowUserAssignee;
 import java.util.List;
+import java.util.Map;
 
 public interface FlowUserService {
 
@@ -12,4 +13,6 @@ public interface FlowUserService {
    */
   List<String> getUserIdList(String assignee);
   List<String> getUserIdList(FlowUserAssignee  assignee);
+
+  List<String> getUserIdList(Map<String, String> userAssigneeMap);
 }
