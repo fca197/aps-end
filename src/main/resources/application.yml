@@ -26,6 +26,8 @@ peanut:
     - /actuator
     - /apsGoodsSaleProjectConfig/sale2project
     - /districtCode
+    - /test/flow
+    - /camunda
   #    - /uber/h3/geoToH3Address
   redis-key:
     user-token: ut_
@@ -94,10 +96,6 @@ spring:
     redisson:
       file: classpath:redisson.yml
 
-  h2:
-    console:
-      path: /h2-console  #h2嵌入式数据库控制台，可以通过浏览器访问
-      enabled: true
 
 
 logging:
@@ -105,6 +103,7 @@ logging:
     root: info
     #    org.springframework: trace
     "org.springframework.jdbc.core": debug
+    "org.camunda": debug
 #    com.olivia.peanut.aps.utils.forecast: error
 #    com.olivia.peanut.portal.model: error
 #    com.zaxxer.hikari: trace
@@ -112,9 +111,11 @@ logging:
 
 camunda:
   bpm:
+    auto-deployment-enabled: true
     admin-user:
       id: demo
       password: demo
       firstName: Demo
-    filter:
-      create: All tasks
+    webapp:
+      enabled: true
+      index-redirect-enabled: true
