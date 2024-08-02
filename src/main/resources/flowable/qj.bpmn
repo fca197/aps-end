@@ -35,13 +35,25 @@
       <bpmn:outgoing>Flow_1d9ohsf</bpmn:outgoing>
       <bpmn:outgoing>Flow_0s19z2m</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_0pm0ch8" name="总监审批" camunda:assignee="role-zongjian">
+    <bpmn:userTask id="Activity_0pm0ch8" name="总监审批" >
+
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateTaskListener" event="create">
+        </camunda:taskListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="userAssignee">
+            <camunda:map>
+              <camunda:entry key="role">zongjian</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1d9ohsf</bpmn:incoming>
       <bpmn:outgoing>Flow_1blnqvt</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1ik6yvd" name="通知" camunda:class="com.example.demo.service.NotifyService">
+    <bpmn:serviceTask id="Activity_1ik6yvd" name="通知" camunda:class="com.olivia.peanut.flow.core.delegate.NoticeTaskDelegate">
       <!--      <bpmn:extensionElements>-->
-      <!--        <camunda:executionListener class="aa" event="start" />-->
+      <!--        <camunda:executionListener class="com.olivia.peanut.flow.core.listener.task.NoticeTaskListener" event="start"/>-->
       <!--      </bpmn:extensionElements>-->
       <bpmn:incoming>Flow_0s19z2m</bpmn:incoming>
       <bpmn:incoming>Flow_1blnqvt</bpmn:incoming>
@@ -53,10 +65,10 @@
     <bpmn:sequenceFlow id="Flow_1dmxa1c" sourceRef="Activity_1ik6yvd" targetRef="Event_1xc0oaq"/>
     <bpmn:sequenceFlow id="Flow_1krlhc6" sourceRef="user_create_level_task" targetRef="Activity_0fl246o"/>
     <bpmn:sequenceFlow id="Flow_1d9ohsf" sourceRef="Activity_0fl246o" targetRef="Activity_0pm0ch8">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d&gt;3</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${d >= 3}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0s19z2m" sourceRef="Activity_0fl246o" targetRef="Activity_1ik6yvd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">d&lt;=3</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${d &lt;=3 }</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1blnqvt" sourceRef="Activity_0pm0ch8" targetRef="Activity_1ik6yvd"/>
   </bpmn:process>

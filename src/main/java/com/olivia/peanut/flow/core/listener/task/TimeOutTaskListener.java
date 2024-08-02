@@ -1,15 +1,13 @@
 package com.olivia.peanut.flow.core.listener.task;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import com.olivia.peanut.flow.core.FlowBaseService;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 
 /***
  *
  */
-public class TimeOutTaskListener implements TaskListener {
+public class TimeOutTaskListener  extends FlowBaseService implements TaskListener {
 
   @Override
   public void notify(DelegateTask delegateTask) {

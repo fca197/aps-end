@@ -14,24 +14,17 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.*;
-import org.camunda.bpm.engine.history.HistoricActivityInstance;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.runtime.ActivityInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
-import org.camunda.bpm.model.bpmn.BpmnModelInstance;
-import org.camunda.bpm.model.bpmn.instance.FlowNode;
-import org.camunda.bpm.model.bpmn.instance.SequenceFlow;
-import org.camunda.bpm.model.bpmn.instance.UserTask;
-import org.camunda.bpm.model.xml.instance.ModelElementInstance;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -84,9 +77,18 @@ public class FlowApiImpl implements FlowApi {
   @Override
   public DynamicsPage<TaskUndoneRes> taskUndone(TaskUndoneReq req) {
 
-    TaskQuery active = taskService.createTaskQuery().processDefinitionKey(req.getFlowKey()).taskAssignee(LoginUserContext.getLoginUser().getId().toString()).active();
+    String userId = LoginUserContext.getLoginUser().getId().toString();
+    TaskQuery active = taskService.createTaskQuery().
+        processDefinitionKey(req.getFlowKey())
+//        .taskCandidateUser(userId)
+//        .taskAssignee(userId)
+        .taskOwner(userId)
+        .orderByTaskCreateTime().desc()
+        .active();
     long count = active.count();
-    List<Task> taskList = active.list();
+    int pageSize = req.getPageSize();
+    int bg = (req.getPageNum() - 1) * pageSize;
+    List<Task> taskList = active.listPage(bg, pageSize);
     DynamicsPage<TaskUndoneRes> page = new DynamicsPage<>();
     page.setTotal(count);
     ServiceComment.header(page, "FlowRepositoryServiceImpl#queryTaskPageList");
@@ -122,7 +124,9 @@ public class FlowApiImpl implements FlowApi {
   public CompleteRes complete(CompleteReq req) {
     List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
     $.requireNonNullCanIgnoreException(taskList, "任务不存在");
-    taskService.createComment(req.getTaskId(), taskList.get(0).getProcessInstanceId(), req.getMessage());
+    String processInstanceId = taskList.get(0).getProcessInstanceId();
+    runtimeService.setVariable(processInstanceId, "d", 2);
+    taskService.createComment(req.getTaskId(), processInstanceId, req.getMessage());
     taskService.complete(req.getTaskId());
     return null;
   }

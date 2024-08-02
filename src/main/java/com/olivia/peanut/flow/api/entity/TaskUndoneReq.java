@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TaskUndoneReq {
 
+  private Integer pageNum;
+  private Integer pageSize;
   @NotBlank(message = "流程key不能为空")
   private String flowKey;
 }
