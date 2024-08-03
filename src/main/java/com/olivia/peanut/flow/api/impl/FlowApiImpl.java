@@ -1,5 +1,7 @@
 package com.olivia.peanut.flow.api.impl;
 
+import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_FORM_ID;
+
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -7,6 +9,7 @@ import com.olivia.peanut.flow.api.FlowApi;
 import com.olivia.peanut.flow.api.entity.*;
 import com.olivia.peanut.flow.model.FlowDefinition;
 import com.olivia.peanut.flow.service.FlowDefinitionService;
+import com.olivia.peanut.flow.service.FlowFormUserValueService;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.filter.LoginUser;
 import com.olivia.sdk.filter.LoginUserContext;
@@ -65,26 +68,31 @@ public class FlowApiImpl implements FlowApi {
 
   @Override
   public StartRes start(StartReq req) {
-
     FlowDefinition flowDefinition = flowDefinitionService.getOne(new LambdaQueryWrapper<FlowDefinition>().eq(FlowDefinition::getFlowKey, req.getFlowKey()));
     $.requireNonNullCanIgnoreException(flowDefinition, "流程不存在");
-    Map<String, Object> map = Map.of(FlowStr.TABLE_NAME, "qj");
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(req.getFlowKey(), IdWorker.getIdStr(), map);
+    Map<String, Object> map = Map.of(FLOW_FORM_ID, flowDefinition.getFlowFormId());
+    String businessKey = IdWorker.getIdStr();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(req.getFlowKey(), businessKey, map);
+    String processInstanceId = processInstance.getProcessInstanceId();
+    return new StartRes().setProcessInstanceId(processInstanceId).setFlowKey(req.getFlowKey()).setFlowFormId(flowDefinition.getFlowFormId()).setBusinessKey(businessKey);
+  }
 
-    return null;
+  @Override
+  public TaskUndoneByProcessInstanceIdRes taskUndoneByProcessInstanceId(TaskUndoneByProcessInstanceIdReq req) {
+    String userId = LoginUserContext.getLoginUser().getId().toString();
+    Task task = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId())
+       .taskOwner(userId).orderByTaskCreateTime().desc().active().singleResult();
+    return new TaskUndoneByProcessInstanceIdRes().setTaskId(task.getId());
   }
 
   @Override
   public DynamicsPage<TaskUndoneRes> taskUndone(TaskUndoneReq req) {
 
     String userId = LoginUserContext.getLoginUser().getId().toString();
-    TaskQuery active = taskService.createTaskQuery().
-        processDefinitionKey(req.getFlowKey())
+    TaskQuery active = taskService.createTaskQuery().processDefinitionKey(req.getFlowKey())
 //        .taskCandidateUser(userId)
 //        .taskAssignee(userId)
-        .taskOwner(userId)
-        .orderByTaskCreateTime().desc()
-        .active();
+        .taskOwner(userId).orderByTaskCreateTime().desc().active();
     long count = active.count();
     int pageSize = req.getPageSize();
     int bg = (req.getPageNum() - 1) * pageSize;
@@ -114,8 +122,7 @@ public class FlowApiImpl implements FlowApi {
         //设置备注
         .setAnnotation(req.getMessage())
         //让流程实例从目标活动重新开始
-        .startBeforeActivity("begin")
-        .execute();
+        .startBeforeActivity("begin").execute();
     return null;
 
   }

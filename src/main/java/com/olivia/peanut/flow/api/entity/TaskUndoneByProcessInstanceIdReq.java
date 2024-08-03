@@ -1,5 +1,6 @@
 package com.olivia.peanut.flow.api.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -10,10 +11,9 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class StartRes {
+public class TaskUndoneByProcessInstanceIdReq {
 
-  private String flowKey;
+  @NotBlank(message = "流程实例ID不能为空")
   private String processInstanceId;
-  private Long flowFormId;
-  private String businessKey;
+  private String taskId;
 }

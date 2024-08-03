@@ -34,6 +34,9 @@ public class FlowDefinitionDto extends BaseEntityDto {
 
   @NotNull(message = "流程key不能为空")
   private String flowKey;
+
+  @NotNull(message = "工作流组表单不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long flowFormId;
 }
 
 

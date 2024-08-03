@@ -5,6 +5,6 @@ package com.olivia.peanut.flow.api.entity;
  */
 public interface FlowStr {
 
-  String TABLE_NAME = "table_name";
+  String FLOW_FORM_ID = "FLOW_FORM_ID";
   String SERVICE_NAME = "service_name";
 }

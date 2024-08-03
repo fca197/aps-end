@@ -12,10 +12,16 @@ public interface FlowApi {
 
   @PostMapping("/deployment/create")
   DeploymentCreateRes deploymentCreate(DeploymentCreateReq req);
+
   // start
   @PostMapping("/repository/start")
   StartRes start(@RequestBody @Valid StartReq req);
+
   // task - undone
+  // processInstanceId
+  @PostMapping("/task/undone/processInstanceId")
+  TaskUndoneByProcessInstanceIdRes taskUndoneByProcessInstanceId(@RequestBody @Valid TaskUndoneByProcessInstanceIdReq req);
+
   @PostMapping("/task/undone")
   DynamicsPage<TaskUndoneRes> taskUndone(@RequestBody @Valid TaskUndoneReq req);
 

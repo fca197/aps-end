@@ -32,6 +32,6 @@ public class FlowDefinition extends BaseEntity {
    *  工作流组ID
    */
   private Long flowGroupId;
-
+  private Long flowFormId;
 }
 
