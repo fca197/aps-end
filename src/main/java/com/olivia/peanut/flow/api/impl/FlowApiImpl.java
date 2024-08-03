@@ -9,7 +9,6 @@ import com.olivia.peanut.flow.api.FlowApi;
 import com.olivia.peanut.flow.api.entity.*;
 import com.olivia.peanut.flow.model.FlowDefinition;
 import com.olivia.peanut.flow.service.FlowDefinitionService;
-import com.olivia.peanut.flow.service.FlowFormUserValueService;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.filter.LoginUser;
 import com.olivia.sdk.filter.LoginUserContext;
@@ -80,8 +79,7 @@ public class FlowApiImpl implements FlowApi {
   @Override
   public TaskUndoneByProcessInstanceIdRes taskUndoneByProcessInstanceId(TaskUndoneByProcessInstanceIdReq req) {
     String userId = LoginUserContext.getLoginUser().getId().toString();
-    Task task = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId())
-       .taskOwner(userId).orderByTaskCreateTime().desc().active().singleResult();
+    Task task = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId()).taskOwner(userId).orderByTaskCreateTime().desc().active().singleResult();
     return new TaskUndoneByProcessInstanceIdRes().setTaskId(task.getId());
   }
 
@@ -90,8 +88,6 @@ public class FlowApiImpl implements FlowApi {
 
     String userId = LoginUserContext.getLoginUser().getId().toString();
     TaskQuery active = taskService.createTaskQuery().processDefinitionKey(req.getFlowKey())
-//        .taskCandidateUser(userId)
-//        .taskAssignee(userId)
         .taskOwner(userId).orderByTaskCreateTime().desc().active();
     long count = active.count();
     int pageSize = req.getPageSize();
@@ -101,6 +97,21 @@ public class FlowApiImpl implements FlowApi {
     page.setTotal(count);
     ServiceComment.header(page, "FlowRepositoryServiceImpl#queryTaskPageList");
 
+    page.setDataList($.copyList(taskList, TaskUndoneRes.class));
+    return page;
+  }
+
+  @Override
+  public DynamicsPage<TaskUndoneRes> taskUndoneHome(TaskUndoneReq req) {
+    String userId = LoginUserContext.getLoginUser().getId().toString();
+    TaskQuery active = taskService.createTaskQuery().taskOwner(userId).orderByTaskCreateTime().desc().active();
+    long count = active.count();
+    int pageSize = req.getPageSize();
+    int bg = (req.getPageNum() - 1) * pageSize;
+    List<Task> taskList = active.listPage(bg, pageSize);
+    DynamicsPage<TaskUndoneRes> page = new DynamicsPage<>();
+    page.setTotal(count);
+    ServiceComment.header(page, "FlowRepositoryServiceImpl#queryTaskPageList");
     page.setDataList($.copyList(taskList, TaskUndoneRes.class));
     return page;
   }
