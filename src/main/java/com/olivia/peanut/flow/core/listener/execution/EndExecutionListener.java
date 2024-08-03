@@ -10,6 +10,6 @@ public class EndExecutionListener implements ExecutionListener {
 
   @Override
   public void notify(DelegateExecution execution) throws Exception {
-
+//    execution.getEventName()
   }
 }

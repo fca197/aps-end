@@ -146,7 +146,7 @@
 
 2. 打包后文件
 
-> 打包后在[target](target) 生成两个jar文件 , app.jar  即部署jar文件
+> 打包后在[target](../target) 生成两个jar文件 , app.jar  即部署jar文件
    
 3. 执行时数据库缺少字段
 

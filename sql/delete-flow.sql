@@ -96,3 +96,6 @@ drop table act_re_procdef;
 
 drop table act_ru_jobdef;
 
+
+truncate  table  flow_form_user_value;
+

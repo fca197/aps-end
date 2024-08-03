@@ -1,8 +1,10 @@
 # 安装文档
 
-[用户安装手册](install.md)
+[用户安装手册](doc/install.md)
 
 [二开手册](second-develop.md)
+
+[工作流相关](doc/workflow.md)
 
 # 用户配置
 
