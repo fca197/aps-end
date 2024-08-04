@@ -4,10 +4,9 @@
 
 ## 工作流配置约定
 
+0. 工作流版本 camunda-7版本, 使用bpmn结构
 1. 工作流开始第一个节点id必须为: begin ,流程被驳回时需要定位到第一个节点
-2. 工作流多人处理时, condition 配置为: ${userIdList} , completion-condition 配置为: ${nrOfCompletedInstances == 1},1人通过即通过
-3. 工作流单个任务分派 assignee 配置为: ${userId} ,
-4. 超时配置 :  timeOut 配置为: 4D :4天后超时
+2. 用户选择查看 [task inputs 添加默认数据](#task-inputs-添加默认数据)
 
 ## 工作流 listener
 
@@ -33,8 +32,19 @@
 |--------------|--------|---------------------------------------|---------------|--------------------|------------------------|
 | userAssignee | map    | key: role , value: roleCode (可变)      | 指定角色处理        | CreateTaskListener | {"role":"CEO"}         |
 | userAssignee | map    | key: user ,  value: login   (定值)      | 当前登录用户处理      | CreateTaskListener | {"user":"login"}       | 
-| userAssignee | map    | key: deptRole ,  value: roleCode (可变) | 用户所在部门角色下人员处理 | CreateTaskListener | {"deptRole":"manager"} | 
+| userAssignee | map    | key: deptRole ,  value: roleCode (可变) | 用户所在部门角色下人员处理 | CreateTaskListener | {"deptRole":"manager"} |
+| copyAssignee | map    | key: role , value: roleCode (可变)      | 抄送            | CreateTaskListener | {"role":"CEO"}         |
+| copyAssignee | map    | key: user ,  value: login   (定值)      | 抄送            | CreateTaskListener | {"user":"login"}       |
+| copyAssignee | map    | key: deptRole ,  value: roleCode (可变) | 抄送            | CreateTaskListener | {"deptRole":"manager"} | 
 | timeOut      | String | 时长-[H (小时),D (天),W(周)                 | 任务超时时间        | CreateTaskListener | 3D  ,3天后超时             |
+
+## task inputs 添加默认数据
+
+| 配置名称           | 说明     | inputs 来源    | 值                           |
+|----------------|--------|--------------|-----------------------------|
+| copyUserIdList | 抄送用户列表 | copyAssignee | ["userId1","userId2"]       |
+| userIdList     | 抄送用户列表 | userAssignee | ["userId1","userId2"]       |
+| userId         | 抄送用户列表 | userAssignee | userId: userIdList列表第一个用户ID |
 
 ## 多人处理
 
@@ -49,3 +59,11 @@
 
 > $ {nrOfInstances == nrOfCompletedInstances} 表示所有人员审批完成后会签结束。
 > ${ nrOfCompletedInstances == 1} 表示一个人完成审批。
+
+## 问题
+
+1. 流程TTL应该配置
+
+> 流程配置 history cleanup 中:  time to live 必填,单位 天
+
+2. 2

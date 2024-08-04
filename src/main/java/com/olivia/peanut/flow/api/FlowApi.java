@@ -3,6 +3,7 @@ package com.olivia.peanut.flow.api;
 import com.olivia.peanut.flow.api.entity.*;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public interface FlowApi {
 
   @PostMapping("/task/undone")
   DynamicsPage<TaskUndoneRes> taskUndone(@RequestBody @Valid TaskUndoneReq req);
+
   @PostMapping("/task/undone/home")
   DynamicsPage<TaskUndoneRes> taskUndoneHome(@RequestBody @Valid TaskUndoneReq req);
 
@@ -34,4 +36,12 @@ public interface FlowApi {
 
   @PostMapping("/task/complete")
   CompleteRes complete(@RequestBody @Valid CompleteReq req);
+
+  //copy
+  @PostMapping("/task/copy")
+  DynamicsPage<SelectTaskCopyRes> selectTaskCopy(@RequestBody @Valid SelectTaskCopyReq req);
+
+  //  taskHistoryList
+  @PostMapping("/task/historyList")
+  List<TaskHistoryListRes> taskHistoryList(@RequestBody @Valid TaskHistoryListReq req);
 }

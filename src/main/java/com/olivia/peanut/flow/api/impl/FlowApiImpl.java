@@ -21,14 +21,17 @@ import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.runtime.ActivityInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.task.Comment;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +56,7 @@ public class FlowApiImpl implements FlowApi {
   HistoryService historyService;
   @Resource
   FlowFormUserValueService flowFormUserValueService;
+
   @Resource
   private RuntimeService runtimeService;
 
@@ -170,12 +174,43 @@ public class FlowApiImpl implements FlowApi {
     $.requireNonNullCanIgnoreException(taskList, "任务不存在");
     String processInstanceId = taskList.get(0).getProcessInstanceId();
     Map<String, Object> flowValueMap = this.flowFormUserValueService.list(
-            new LambdaQueryWrapper<FlowFormUserValue>().eq(FlowFormUserValue::getProcessInstanceId, processInstanceId).eq(FlowFormUserValue::getIsAddFlowValue, true))
-        .stream().collect(Collectors.toMap(FlowFormUserValue::getFormItemFiled, FlowFormUserValue::getUserValue));
+            new LambdaQueryWrapper<FlowFormUserValue>().eq(FlowFormUserValue::getProcessInstanceId, processInstanceId).eq(FlowFormUserValue::getIsAddFlowValue, true)).stream()
+        .collect(Collectors.toMap(FlowFormUserValue::getFormItemFiled, FlowFormUserValue::getUserValue));
     flowValueMap.put(IS_FIRST_TASK, IS_FIRST_TASK_NO);
     runtimeService.setVariables(processInstanceId, flowValueMap);
     taskService.createComment(req.getTaskId(), processInstanceId, req.getMessage());
     taskService.complete(req.getTaskId());
     return null;
+  }
+
+  @Override
+  public DynamicsPage<SelectTaskCopyRes> selectTaskCopy(SelectTaskCopyReq req) {
+    String userId = LoginUserContext.getLoginUser().getIdStr();
+    TaskQuery active = taskService.createTaskQuery().taskCandidateUser(userId).processDefinitionKey(req.getFlowKey()).orderByTaskCreateTime().desc().active();
+    DynamicsPage<TaskUndoneRes> undoneResDynamicsPage = getTaskUndoneResDynamicsPage(active, $.copy(req, TaskUndoneReq.class));
+    DynamicsPage<SelectTaskCopyRes> page = new DynamicsPage<>();
+    page.setTotal(undoneResDynamicsPage.getTotal());
+    page.setDataList($.copyList(undoneResDynamicsPage.getDataList(), SelectTaskCopyRes.class));
+    return page;
+
+  }
+
+
+  @Override
+  public List<TaskHistoryListRes> taskHistoryList(TaskHistoryListReq req) {
+    List<HistoricTaskInstance> taskInstanceList = historyService.createHistoricTaskInstanceQuery().processInstanceId(req.getProcessInstanceId()).list();
+    taskInstanceList.sort(Comparator.comparing(HistoricTaskInstance::getStartTime));
+
+    List<Task> taskList = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId()).list();
+    if (CollUtil.isEmpty(taskList)) {
+      return List.of();
+    }
+    Map<String, Comment> taskCommentMap = taskService.getProcessInstanceComments(req.getProcessInstanceId()).stream()
+        .collect(Collectors.toMap(Comment::getTaskId, Function.identity(), (o, o2) -> o2));
+    List<TaskHistoryListRes> resList = $.copyList(taskList, TaskHistoryListRes.class);
+    resList.forEach(taskInstance -> {
+      taskInstance.setMessageComment(taskCommentMap.get(taskInstance.getTaskId()));
+    });
+    return resList;
   }
 }
