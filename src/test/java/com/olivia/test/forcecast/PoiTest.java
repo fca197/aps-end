@@ -1,6 +1,9 @@
 package com.olivia.test.forcecast;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
@@ -48,5 +51,11 @@ public class PoiTest {
     log.info("ret:{}", ret);
 
 
+  }
+
+  @Test
+  public void day(){
+    Duration duration = Duration.of(1, ChronoUnit.valueOf("DAYS"));
+    log.info("duration:{}",duration.getSeconds());
   }
 }

@@ -1,8 +1,11 @@
 package com.olivia.peanut.flow.core;
 
 import cn.hutool.extra.spring.SpringUtil;
-import com.olivia.peanut.flow.service.FlowUserService;
+import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
+import com.olivia.peanut.flow.service.FlowConfigService;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
 
 /***
  *
@@ -10,8 +13,8 @@ import org.camunda.bpm.engine.*;
 public class FlowBaseService {
 
 
-  public FlowUserService getFlowUserService() {
-    return SpringUtil.getBean(FlowUserService.class);
+  public FlowConfigService getFlowConfigService() {
+    return SpringUtil.getBean(FlowConfigService.class);
   }
 
 
@@ -123,5 +126,23 @@ public class FlowBaseService {
    */
   public DecisionService getDecisionService() {
     return SpringUtil.getBean(DecisionService.class);
+  }
+
+  public DelegateTaskInfo delegateTaskInfo(DelegateTask delegateTask) {
+    String processDefinitionId = delegateTask.getProcessDefinitionId();
+    String processInstanceId = delegateTask.getProcessInstanceId();
+
+    ProcessDefinition processDefinition = getRepositoryService().getProcessDefinition(processDefinitionId);
+//   RuntimeService runtimeService = getRuntimeService();
+
+//   ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId);
+//   HistoryService historyService = getHistoryService();
+//   HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstanceId).singleResult();
+//   ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+
+    String name = processDefinition.getName();
+
+    return new DelegateTaskInfo().setProcessDefinitionName(name).setTaskId(delegateTask.getId()).setTaskName(delegateTask.getName())//
+        .setProcessInstanceId(processInstanceId).setProcessDefinitionId(processDefinitionId);
   }
 }

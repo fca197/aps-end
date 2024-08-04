@@ -1,9 +1,6 @@
 package com.olivia.peanut.flow.api.impl;
 
-import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_FORM_ID;
-import static com.olivia.peanut.flow.api.entity.FlowStr.IS_FIRST_TASK;
-import static com.olivia.peanut.flow.api.entity.FlowStr.IS_FIRST_TASK_NO;
-import static com.olivia.peanut.flow.api.entity.FlowStr.IS_FIRST_TASK_YES;
+import static com.olivia.peanut.flow.api.entity.FlowStr.*;
 
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
@@ -79,7 +76,9 @@ public class FlowApiImpl implements FlowApi {
   public StartRes start(StartReq req) {
     FlowDefinition flowDefinition = flowDefinitionService.getOne(new LambdaQueryWrapper<FlowDefinition>().eq(FlowDefinition::getFlowKey, req.getFlowKey()));
     $.requireNonNullCanIgnoreException(flowDefinition, "流程不存在");
-    Map<String, Object> map = Map.of(FLOW_FORM_ID, flowDefinition.getFlowFormId()+"", IS_FIRST_TASK, "1");
+    Map<String, Object> map = new HashMap<>(Map.of(FLOW_FORM_ID, flowDefinition.getFlowFormId() + "", IS_FIRST_TASK, "1"));
+    map.put(FLOW_CREATE_USER_ID, LoginUserContext.getLoginUser().getIdStr());
+    map.put(FLOW_FORM_NAME, flowDefinition.getFlowName());
     String businessKey = IdWorker.getIdStr();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(req.getFlowKey(), businessKey, map);
     String processInstanceId = processInstance.getProcessInstanceId();
@@ -88,23 +87,23 @@ public class FlowApiImpl implements FlowApi {
 
   @Override
   public TaskUndoneByProcessInstanceIdRes taskUndoneByProcessInstanceId(TaskUndoneByProcessInstanceIdReq req) {
-    String userId = LoginUserContext.getLoginUser().getId().toString();
-    Task task = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId()).taskOwner(userId).orderByTaskCreateTime().desc().active().singleResult();
+    String userId = LoginUserContext.getLoginUser().getIdStr();
+    Task task = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId()).taskAssignee(userId).orderByTaskCreateTime().desc().active().singleResult();
     return new TaskUndoneByProcessInstanceIdRes().setTaskId(task.getId());
   }
 
   @Override
   public DynamicsPage<TaskUndoneRes> taskUndone(TaskUndoneReq req) {
 
-    String userId = LoginUserContext.getLoginUser().getId().toString();
-    TaskQuery active = taskService.createTaskQuery().processDefinitionKey(req.getFlowKey()).taskOwner(userId).orderByTaskCreateTime().desc().active();
+    String userId = LoginUserContext.getLoginUser().getIdStr();
+    TaskQuery active = taskService.createTaskQuery().processDefinitionKey(req.getFlowKey()).taskAssignee(userId).orderByTaskCreateTime().desc().active();
     return getTaskUndoneResDynamicsPage(active, req);
   }
 
   @Override
   public DynamicsPage<TaskUndoneRes> taskUndoneHome(TaskUndoneReq req) {
-    String userId = LoginUserContext.getLoginUser().getId().toString();
-    TaskQuery active = taskService.createTaskQuery().taskOwner(userId).orderByTaskCreateTime().desc().active();
+    String userId = LoginUserContext.getLoginUser().getIdStr();
+    TaskQuery active = taskService.createTaskQuery().taskAssignee(userId).orderByTaskCreateTime().desc().active();
 
     return getTaskUndoneResDynamicsPage(active, req);
 

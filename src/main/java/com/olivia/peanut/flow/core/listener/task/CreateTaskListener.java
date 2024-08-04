@@ -1,8 +1,7 @@
 package com.olivia.peanut.flow.core.listener.task;
 
 import com.olivia.peanut.flow.core.FlowBaseService;
-import com.olivia.peanut.flow.service.FlowUserService;
-import java.util.List;
+import com.olivia.peanut.flow.service.FlowConfigService;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
@@ -21,12 +20,11 @@ public class CreateTaskListener extends FlowBaseService implements TaskListener 
   public void notify(DelegateTask delegateTask) {
 
     RuntimeService runtimeService = getRuntimeService();
-    FlowUserService flowUserService = getFlowUserService();
+    FlowConfigService flowConfigService = getFlowConfigService();
     Map<String, Object> map = runtimeService.getVariables(delegateTask.getExecutionId());
-    Map<String, String> userAssigneeMap = (Map<String, String>) map.get("userAssignee");
-    List<String> userIdList = flowUserService.getUserIdList(userAssigneeMap);
-    delegateTask.setOwner(userIdList.get(0));
-    log.info("setAssignee:{}", userIdList.get(0));
+    flowConfigService.setInputConfig(map, true, delegateTask);
+//    delegateTask.setAssignee(userIdList.get(0));
+//    log.info("setAssignee:{}", userIdList.get(0));
 
   }
 }
