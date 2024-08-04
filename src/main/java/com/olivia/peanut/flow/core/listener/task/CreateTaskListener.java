@@ -22,7 +22,7 @@ public class CreateTaskListener extends FlowBaseService implements TaskListener 
     RuntimeService runtimeService = getRuntimeService();
     FlowConfigService flowConfigService = getFlowConfigService();
     Map<String, Object> map = runtimeService.getVariables(delegateTask.getExecutionId());
-    flowConfigService.setInputConfig(map, true, delegateTask);
+    flowConfigService.setInputConfig(map, true, getDelegateTaskInfo(delegateTask));
 //    delegateTask.setAssignee(userIdList.get(0));
 //    log.info("setAssignee:{}", userIdList.get(0));
 

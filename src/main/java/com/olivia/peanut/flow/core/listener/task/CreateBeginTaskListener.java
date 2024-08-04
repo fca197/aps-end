@@ -25,7 +25,7 @@ public class CreateBeginTaskListener extends FlowBaseService implements TaskList
 //      variables.put("userAssignee", Map.of("user", "login"));
       delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
     }
-    flowsUserService.setInputConfig(variables, true, delegateTask);
+    flowsUserService.setInputConfig(variables, true, getDelegateTaskInfo(delegateTask));
 //    delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
     log.info("us : {}", delegateTask.getAssignee());
   }

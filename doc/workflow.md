@@ -1,5 +1,5 @@
-
 ## 工作流相关下载
+
 [camunda-modeler](https://github.com/camunda/camunda-modeler/releases)
 
 ## 工作流配置约定
@@ -7,7 +7,7 @@
 1. 工作流开始第一个节点id必须为: begin ,流程被驳回时需要定位到第一个节点
 2. 工作流多人处理时, condition 配置为: ${userIdList} , completion-condition 配置为: ${nrOfCompletedInstances == 1},1人通过即通过
 3. 工作流单个任务分派 assignee 配置为: ${userId} ,
-4. 超时配置 :  timeOut 配置为: 4D
+4. 超时配置 :  timeOut 配置为: 4D :4天后超时
 
 ## 工作流 listener
 
@@ -29,11 +29,12 @@
 
 ## 工作流配置 inputs
 
-| 配置名称         | 类型     | 值                     | 描述     | 使用类                | 示例                          |
-|--------------|--------|-----------------------|--------|--------------------|-----------------------------|
-| userAssignee | map    | key: role , roleCode  | 任务分配给谁 | CreateTaskListener | {"role":"CEO"}    ,角色CEO 处理 |
-| userAssignee | map    | key: user , login     | 任务分配给谁 | CreateTaskListener | {"user":"login"} ,登录用户  处理  | 
-| timeOut      | String | 时长-[H (小时),D (天),W(周) | 任务超时时间 | CreateTaskListener | 3D  ,3天后超时                  |
+| 配置名称         | 类型     | 值                                     | 描述            | 使用类                | 示例                     |
+|--------------|--------|---------------------------------------|---------------|--------------------|------------------------|
+| userAssignee | map    | key: role , value: roleCode (可变)      | 指定角色处理        | CreateTaskListener | {"role":"CEO"}         |
+| userAssignee | map    | key: user ,  value: login   (定值)      | 当前登录用户处理      | CreateTaskListener | {"user":"login"}       | 
+| userAssignee | map    | key: deptRole ,  value: roleCode (可变) | 用户所在部门角色下人员处理 | CreateTaskListener | {"deptRole":"manager"} | 
+| timeOut      | String | 时长-[H (小时),D (天),W(周)                 | 任务超时时间        | CreateTaskListener | 3D  ,3天后超时             |
 
 ## 多人处理
 

@@ -1,131 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0"
-  id="Definitions_08z09kd" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Platform"
-  modeler:executionPlatformVersion="7.22.0">
-  <bpmn:process id="flow-qj" name="请假" isExecutable="true" camunda:jobPriority="2"
-    camunda:versionTag="1.0.3" camunda:historyTimeToLive="1">
-    <bpmn:extensionElements/>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0e2lg0h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:process id="flow-qj" name="请假" isExecutable="true" camunda:isStartableInTasklist="false">
+    <bpmn:extensionElements>
+      <camunda:executionListener class="asdasd" event="end" />
+    </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1">
-      <bpmn:outgoing>Flow_07pba5u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0v965sg</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="begin" sourceRef="StartEvent_1" targetRef="user_create_level_task"/>
-    <bpmn:userTask id="user_create_level_task" name="用户创建请假工单" camunda:priority="1">
+    <bpmn:sequenceFlow id="Flow_0v965sg" sourceRef="StartEvent_1" targetRef="begin" />
+    <bpmn:sequenceFlow id="Flow_0xvlmra" sourceRef="begin" targetRef="shenpi" />
+    <bpmn:userTask id="begin" name="填写请假单" camunda:dueDate="xasads">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateBeginTaskListener" event="create">
-        </camunda:taskListener>
+        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateBeginTaskListener" event="create" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_07pba5u</bpmn:incoming>
-      <bpmn:outgoing>Flow_1krlhc6</bpmn:outgoing>
+      <bpmn:incoming>Flow_0v965sg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xvlmra</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_0fl246o" name="部门领导审批">
+    <bpmn:manualTask id="shenpi" name="审批">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateTaskListener" event="create">
-        </camunda:taskListener>
+        <camunda:executionListener class="333" event="start" />
         <camunda:inputOutput>
           <camunda:inputParameter name="userAssignee">
             <camunda:map>
               <camunda:entry key="role">zongjian</camunda:entry>
             </camunda:map>
           </camunda:inputParameter>
+          <camunda:inputParameter name="timeOut">1H</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1krlhc6</bpmn:incoming>
-      <bpmn:outgoing>Flow_1d9ohsf</bpmn:outgoing>
-      <bpmn:outgoing>Flow_0s19z2m</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:userTask id="Activity_0pm0ch8" name="总监审批" >
-
-      <bpmn:extensionElements>
-        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateTaskListener" event="create">
-        </camunda:taskListener>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="userAssignee">
-            <camunda:map>
-              <camunda:entry key="role">zongjian</camunda:entry>
-            </camunda:map>
-          </camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1d9ohsf</bpmn:incoming>
-      <bpmn:outgoing>Flow_1blnqvt</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_1ik6yvd" name="通知" camunda:class="com.olivia.peanut.flow.core.delegate.NoticeTaskDelegate">
-      <!--      <bpmn:extensionElements>-->
-      <!--        <camunda:executionListener class="com.olivia.peanut.flow.core.listener.task.NoticeTaskListener" event="start"/>-->
-      <!--      </bpmn:extensionElements>-->
-      <bpmn:incoming>Flow_0s19z2m</bpmn:incoming>
-      <bpmn:incoming>Flow_1blnqvt</bpmn:incoming>
-      <bpmn:outgoing>Flow_1dmxa1c</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="Event_1xc0oaq" name="请假">
-      <bpmn:incoming>Flow_1dmxa1c</bpmn:incoming>
+      <bpmn:incoming>Flow_0xvlmra</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m7r8de</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${userIdList}" />
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="Flow_0m7r8de" sourceRef="shenpi" targetRef="Event_1t0nlb9" />
+    <bpmn:endEvent id="Event_1t0nlb9">
+      <bpmn:incoming>Flow_0m7r8de</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1dmxa1c" sourceRef="Activity_1ik6yvd" targetRef="Event_1xc0oaq"/>
-    <bpmn:sequenceFlow id="Flow_1krlhc6" sourceRef="user_create_level_task" targetRef="Activity_0fl246o"/>
-    <bpmn:sequenceFlow id="Flow_1d9ohsf" sourceRef="Activity_0fl246o" targetRef="Activity_0pm0ch8">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${d >= 3}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_0s19z2m" sourceRef="Activity_0fl246o" targetRef="Activity_1ik6yvd">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${d &lt;=3 }</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_1blnqvt" sourceRef="Activity_0pm0ch8" targetRef="Activity_1ik6yvd"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_06h1ubm">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="flow-qj">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="112" y="272" width="36" height="36"/>
+        <dc:Bounds x="179" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0p48lgf_di" bpmnElement="user_create_level_task">
-        <dc:Bounds x="270" y="250" width="100" height="80"/>
-        <bpmndi:BPMNLabel/>
+      <bpmndi:BPMNShape id="Activity_1a31n2z_di" bpmnElement="begin">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0uc2dex_di" bpmnElement="Activity_0fl246o">
-        <dc:Bounds x="540" y="250" width="100" height="80"/>
-        <bpmndi:BPMNLabel/>
+      <bpmndi:BPMNShape id="Activity_0aea3yz_di" bpmnElement="shenpi">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0s90994_di" bpmnElement="Activity_0pm0ch8">
-        <dc:Bounds x="770" y="360" width="100" height="80"/>
-        <bpmndi:BPMNLabel/>
+      <bpmndi:BPMNShape id="Event_1t0nlb9_di" bpmnElement="Event_1t0nlb9">
+        <dc:Bounds x="692" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02o5wj0_di" bpmnElement="Activity_1ik6yvd">
-        <dc:Bounds x="930" y="250" width="100" height="80"/>
-        <bpmndi:BPMNLabel/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1xc0oaq_di" bpmnElement="Event_1xc0oaq">
-        <dc:Bounds x="1162" y="272" width="36" height="36"/>
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1170" y="315" width="22" height="14"/>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_07pba5u_di" bpmnElement="begin">
-        <di:waypoint x="148" y="290"/>
-        <di:waypoint x="270" y="290"/>
+      <bpmndi:BPMNEdge id="Flow_0v965sg_di" bpmnElement="Flow_0v965sg">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1dmxa1c_di" bpmnElement="Flow_1dmxa1c">
-        <di:waypoint x="1030" y="290"/>
-        <di:waypoint x="1162" y="290"/>
+      <bpmndi:BPMNEdge id="Flow_0xvlmra_di" bpmnElement="Flow_0xvlmra">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1krlhc6_di" bpmnElement="Flow_1krlhc6">
-        <di:waypoint x="370" y="290"/>
-        <di:waypoint x="540" y="290"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1d9ohsf_di" bpmnElement="Flow_1d9ohsf">
-        <di:waypoint x="640" y="290"/>
-        <di:waypoint x="700" y="290"/>
-        <di:waypoint x="700" y="400"/>
-        <di:waypoint x="770" y="400"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0s19z2m_di" bpmnElement="Flow_0s19z2m">
-        <di:waypoint x="639" y="257"/>
-        <di:waypoint x="840" y="120"/>
-        <di:waypoint x="947" y="250"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1blnqvt_di" bpmnElement="Flow_1blnqvt">
-        <di:waypoint x="870" y="400"/>
-        <di:waypoint x="940" y="400"/>
-        <di:waypoint x="940" y="330"/>
+      <bpmndi:BPMNEdge id="Flow_0m7r8de_di" bpmnElement="Flow_0m7r8de">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="692" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

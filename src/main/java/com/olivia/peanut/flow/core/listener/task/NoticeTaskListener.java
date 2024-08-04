@@ -1,6 +1,5 @@
 package com.olivia.peanut.flow.core.listener.task;
 
-import com.alibaba.fastjson2.JSON;
 import com.olivia.peanut.flow.core.FlowBaseService;
 import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +16,6 @@ public class NoticeTaskListener extends FlowBaseService implements TaskListener 
   @Override
   public void notify(DelegateTask delegateTask) {
     delegateTask.complete();
-    DelegateTaskInfo delegateTaskInfo = delegateTaskInfo(delegateTask);
-    log.info("delegateTaskInfo {}", JSON.toJSONString(delegateTaskInfo));
-
+    DelegateTaskInfo delegateTaskInfo = getDelegateTaskInfo(delegateTask);
   }
 }

@@ -7,20 +7,19 @@ import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.olivia.peanut.base.model.BaseRole;
+import com.olivia.peanut.base.model.BaseUserDept;
 import com.olivia.peanut.base.model.BaseUserRole;
 import com.olivia.peanut.base.service.BaseRoleService;
+import com.olivia.peanut.base.service.BaseUserDeptService;
 import com.olivia.peanut.base.service.BaseUserRoleService;
-import com.olivia.peanut.flow.api.entity.FlowUserAssignee;
+import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import com.olivia.peanut.flow.service.FlowConfigService;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import java.time.Duration;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RuntimeService;
@@ -41,11 +40,13 @@ public class FlowConfigServiceImpl implements FlowConfigService {
   @Resource
   RuntimeService runtimeService;
 
-
+  @Resource
+  BaseUserDeptService baseUserDeptService;
 
   @Override
   @SuppressWarnings("unchecked")
-  public void setInputConfig(Map<String, Object> variableMap, Boolean addVariableMap, DelegateTask delegateTask) {
+  public void setInputConfig(Map<String, Object> variableMap, Boolean addVariableMap, DelegateTaskInfo delegateTaskInfo) {
+    DelegateTask delegateTask = delegateTaskInfo.getDelegateTask();
     Map<String, String> userAssigneeMap = (Map<String, String>) variableMap.get("userAssignee");
     List<String> list = null;
     if (CollUtil.isNotEmpty(userAssigneeMap)) {
@@ -57,31 +58,42 @@ public class FlowConfigServiceImpl implements FlowConfigService {
             .map(BaseUserRole::getUserId).distinct().map(Object::toString).toList();
         log.info("角色: {} addVariableMap:{} 用户: {}", role, addVariableMap, list);
         $.requireNonNullCanIgnoreException(list, "角色: " + role + " 没有用户");
-        if (Boolean.TRUE.equals(addVariableMap)) {
-          runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID, list.get(0));
-          runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID_LIST, list);
-        }
-
       }
       String user = userAssigneeMap.get("user");
       if (StringUtils.isNotBlank(user)) {
         user = user.replaceAll(" ", "");
         if ("login".equalsIgnoreCase(user)) {
           list = List.of(LoginUserContext.getLoginUser().getIdStr());
-          if (Boolean.TRUE.equals(addVariableMap)) {
-            runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID, list.get(0));
-            runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID_LIST, list);
-          }
-
         }
       }
+      String deptRole = userAssigneeMap.get("deptRole");
+      if (StringUtils.isNotBlank(deptRole)) {
+        Set<Long> userIdSet = this.baseUserDeptService.list(new LambdaQueryWrapper<BaseUserDept>().eq(BaseUserDept::getUserId, delegateTaskInfo.getCreateByUserId()))
+            .stream().map(BaseUserDept::getUserId).collect(Collectors.toSet());
+        list = userRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdSet)
+                .eq(BaseUserRole::getRoleId, roleService.getOne(new LambdaQueryWrapper<BaseRole>().eq(BaseRole::getRoleCode, deptRole)).getId())).stream()
+            .map(BaseUserRole::getUserId).distinct().map(Object::toString).toList();
+        log.info("用户所在部门中的角色: {} addVariableMap:{} 用户: {}", deptRole, addVariableMap, list);
+        $.requireNonNullCanIgnoreException(list, "用户所在部门中的角色: " + deptRole + " 没有用户");
+      }
+
+    }
+    if (Boolean.TRUE.equals(addVariableMap) && CollUtil.isNotEmpty(list)) {
+      runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID, list.get(0));
+      runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID_LIST, list);
     }
     Object timeOutObj = variableMap.get("timeOut");
     if (Objects.nonNull(timeOutObj)) {
       Duration duration = $.getDuration((String) timeOutObj);
       delegateTask.setDueDate(new Date(new Date().getTime() + duration.toMillis()));
     }
-
+    if (StringUtils.isBlank(delegateTask.getAssignee())) {
+      if (CollUtil.isNotEmpty(list)) {
+        delegateTask.setAssignee(list.get(0));
+      } else {
+        delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
+      }
+    }
     log.info("variableMap: {} addVariableMap:{} 用户: {}", JSON.toJSONString(variableMap), addVariableMap, list);
   }
 }

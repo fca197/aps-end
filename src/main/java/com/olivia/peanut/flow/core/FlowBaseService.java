@@ -1,8 +1,11 @@
 package com.olivia.peanut.flow.core;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.alibaba.fastjson2.JSON;
+import com.olivia.peanut.flow.api.entity.FlowStr;
 import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import com.olivia.peanut.flow.service.FlowConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
@@ -10,6 +13,7 @@ import org.camunda.bpm.engine.repository.ProcessDefinition;
 /***
  *
  */
+@Slf4j
 public class FlowBaseService {
 
 
@@ -128,7 +132,7 @@ public class FlowBaseService {
     return SpringUtil.getBean(DecisionService.class);
   }
 
-  public DelegateTaskInfo delegateTaskInfo(DelegateTask delegateTask) {
+  public DelegateTaskInfo getDelegateTaskInfo(DelegateTask delegateTask) {
     String processDefinitionId = delegateTask.getProcessDefinitionId();
     String processInstanceId = delegateTask.getProcessInstanceId();
 
@@ -142,7 +146,10 @@ public class FlowBaseService {
 
     String name = processDefinition.getName();
 
-    return new DelegateTaskInfo().setProcessDefinitionName(name).setTaskId(delegateTask.getId()).setTaskName(delegateTask.getName())//
-        .setProcessInstanceId(processInstanceId).setProcessDefinitionId(processDefinitionId);
+    String userId = (String) getRuntimeService().getVariable(processInstanceId, FlowStr.FLOW_USER_ID);
+    DelegateTaskInfo taskInfo = new DelegateTaskInfo().setProcessDefinitionName(name).setTaskId(delegateTask.getId()).setTaskName(delegateTask.getName())//
+        .setProcessInstanceId(processInstanceId).setProcessDefinitionId(processDefinitionId).setCreateByUserId(userId);
+    log.info("taskInfo:{}", JSON.toJSONString(taskInfo));
+    return taskInfo;
   }
 }
