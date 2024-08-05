@@ -1,0 +1,837 @@
+[
+  {
+    "path": "/baseConfig/",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+
+    "children": [
+      {
+        "path": "/views/tenant/index",
+        "name": "租户管理",
+        "meta": {
+          "title": "租户管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/views/factory/index",
+        "name": "工厂",
+        "meta": {
+          "title": "工厂管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/views/brand/index",
+        "name": "品牌管理",
+        "meta": {
+          "title": "品牌管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/spec/index",
+        "name": "日历管理",
+        "meta": {
+          "title": "日历管理",
+          "icon": "calendar",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/shift/index",
+        "name": "班次管理",
+        "meta": {
+          "title": "班次管理",
+          "icon": "calendar",
+          "affix": false
+        }
+      },
+      {
+        "path": "/file/upload/index",
+        "name": "文件管理",
+        "meta": {
+          "title": "文件管理",
+          "icon": "calendar",
+          "affix": false
+        }
+      },
+      {
+        "path": "/base/baseTableHeader/index",
+        "name": "表格头管理",
+        "meta": {
+          "title": "表格头管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/base/role/group/index",
+        "name": "角色组管理",
+        "meta": {
+          "title": "角色组管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/base/role/index",
+        "name": "角色管理",
+        "meta": {
+          "title": "角色管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/base/app/index",
+        "name": "系统管理",
+        "meta": {
+          "title": "系统管理",
+          "icon": "",
+          "affix": false
+        }
+      },
+      {
+        "path": "/base/app/resource/index",
+        "name": "系统菜单管理",
+        "meta": {
+          "title": "系统菜单管理",
+          "icon": "",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/aps/base-data/",
+    "component": "src/layout/index.vue",
+    "meta": {
+      "title": "Aps系统",
+      "icon": "android-system",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/aps/basic/config/index",
+        "name": "基础配置",
+
+          "__file": "src/components/ParentView/index.vue"
+        },
+        "meta": {
+          "title": "基础配置",
+          "icon": "setting",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/sale/index",
+            "name": "销售配置管理",
+            "meta": {
+              "title": "销售配置管理",
+              "icon": "group",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/project/index",
+            "name": "工程配置管理",
+            "meta": {
+              "title": "工程配置管理",
+              "icon": "group",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/status/index",
+            "name": "状态",
+            "meta": {
+              "title": "状态管理",
+              "icon": "status",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/section/index",
+            "name": "工段管理",
+            "meta": {
+              "title": "工段管理",
+              "icon": "section",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/station/index",
+            "name": "工位管理",
+            "meta": {
+              "title": "工位管理",
+              "icon": "workstation",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/room/index",
+            "name": "车间管理",
+            "meta": {
+              "title": "车间",
+              "icon": "room",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/process/path/index",
+            "name": "工艺路径",
+            "meta": {
+              "title": "工艺路径管理",
+              "icon": "process-setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/apsLogistics/path/index",
+            "name": "物流路径",
+            "meta": {
+              "title": "物流路径",
+              "icon": "process-setting",
+              "affix": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/aps/goods/main/index",
+        "name": "APS商品管理",
+
+        "meta": {
+          "title": "商品管理",
+          "icon": "order-1",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/bomGroup/index",
+            "name": "零件组配置",
+            "meta": {
+              "title": "零件组配置",
+              "icon": "setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/bom/index",
+            "name": "零件配置",
+            "meta": {
+              "title": "零件配置",
+              "icon": "setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goodsBom/index",
+            "name": "商品零件配置",
+            "meta": {
+              "title": "商品零件配置",
+              "icon": "setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/bomBuyPlan/index",
+            "name": "零件购买计划",
+            "meta": {
+              "title": "零件购买计划",
+              "icon": "setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/index",
+            "name": "商品管理",
+            "meta": {
+              "title": "商品管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/sale/index",
+            "name": "商品销售特征绑定",
+            "meta": {
+              "title": "商品销售特征绑定",
+              "icon": "setting",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/sale/project/index",
+            "name": "商品销售特转规划",
+            "meta": {
+              "title": "商品销售特转规划",
+              "icon": "setting",
+              "affix": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/aps/goods/forecast/index",
+        "name": "预测管理",
+        "component": {
+          "staticRenderFns": [
+
+          ],
+          "_compiled": true,
+          "beforeCreate": [
+            null
+          ],
+          "beforeDestroy": [
+            null
+          ],
+          "__file": "src/components/ParentView/index.vue"
+        },
+        "meta": {
+          "title": "预测管理",
+          "icon": "eye-open",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/goods/forecast/index",
+            "name": "商品预测",
+            "meta": {
+              "title": "商品预测",
+              "icon": "eye-open",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/forecast/main/index",
+            "name": "预测主版本",
+            "meta": {
+              "title": "预测主版本",
+              "icon": "main",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/forecast/make/week/index",
+            "name": "(预)生产数据",
+            "meta": {
+              "title": "(预)周生产管理",
+              "icon": "eye-open",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/goods/forecast/make/weekMain/index",
+            "name": "(预)生产数据主版本",
+            "meta": {
+              "title": "(预)生产数据主版本",
+              "icon": "eye-open",
+              "affix": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/aps/order/main/index",
+        "name": "订单管理",
+        "component": {
+          "staticRenderFns": [
+
+          ],
+          "_compiled": true,
+          "beforeCreate": [
+            null
+          ],
+          "beforeDestroy": [
+            null
+          ],
+          "__file": "src/components/ParentView/index.vue"
+        },
+        "meta": {
+          "title": "订单管理",
+          "icon": "order-1",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/order/index",
+            "name": "订单管理",
+            "meta": {
+              "title": "订单管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/order/timeline/index",
+            "name": "订单进度",
+            "meta": {
+              "title": "订单进度",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/order/roll/factory/index",
+            "name": "工厂滚动预测产能",
+            "meta": {
+              "title": "工厂滚动预测产能",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/order/roll/index",
+            "name": "滚动预测",
+            "meta": {
+              "title": "滚动预测",
+              "icon": "order-1",
+              "affix": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/aps/make/q/index",
+        "name": "APS工厂产能管理",
+        "component": {
+          "staticRenderFns": [
+
+          ],
+          "_compiled": true,
+          "beforeCreate": [
+            null
+          ],
+          "beforeDestroy": [
+            null
+          ],
+          "__file": "src/components/ParentView/index.vue"
+        },
+        "meta": {
+          "title": "产能管理",
+          "icon": "order-1",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/make_capacity_factory/index",
+            "name": "工厂产能管理",
+            "meta": {
+              "title": "工厂产能管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/make/make_capacity_sale_config/index",
+            "name": "销售特征产能管理",
+            "meta": {
+              "title": "销售特征产能管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/make/make_capacity_goods/index",
+            "name": "商品产能",
+            "meta": {
+              "title": "商品产能",
+              "icon": "order-1",
+              "affix": false
+            }
+          }
+        ]
+      },
+      {
+        "path": "/aps/scheduling/main/index",
+        "name": "排产排程",
+        "component": {
+          "staticRenderFns": [
+
+          ],
+          "_compiled": true,
+          "beforeCreate": [
+            null
+          ],
+          "beforeDestroy": [
+            null
+          ],
+          "__file": "src/components/ParentView/index.vue"
+        },
+        "meta": {
+          "title": "排产排程",
+          "icon": "order-1",
+          "affix": false
+        },
+        "children": [
+          {
+            "path": "/aps/make/constraint/index",
+            "name": "排产约束",
+            "meta": {
+              "title": "排产约束",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/scheduling/index",
+            "name": "排产版本管理",
+            "meta": {
+              "title": "排产管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/scheduling/bom/index",
+            "name": "排产零件",
+            "hidden": true,
+            "meta": {
+              "title": "排产零件",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/scheduling/day/index",
+            "name": "排程配置",
+            "hidden": false,
+            "meta": {
+              "title": "排程配置",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/aps/scheduling/day/config/index",
+            "name": "排程管理",
+            "hidden": false,
+            "meta": {
+              "title": "排程管理",
+              "icon": "order-1",
+              "affix": false
+            }
+          },
+          {
+            "path": "/apsSchedulingDayConfigVersion/detailList",
+            "name": "排程结果",
+            "hidden": true,
+            "meta": {
+              "title": "排程结果",
+              "icon": "order-1",
+              "affix": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/base/index",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "账户管理",
+      "icon": "user",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/login/account/index",
+        "name": "账户管理",
+        "hidden": false,
+        "meta": {
+          "title": "账户管理",
+          "icon": "peoples",
+          "affix": false
+        }
+      },
+      {
+        "path": "/supplier/index",
+        "name": "供应管理",
+        "meta": {
+          "title": "供应管理",
+          "icon": "pastebin",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/store",
+    "hidden": true,
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "门店管理",
+      "icon": "shop",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/store/manage/index",
+        "name": "门店管理",
+        "meta": {
+          "title": "门店管理",
+          "icon": "",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/food/index",
+    "component": "src/layout/index.vue",
+    "hidden": true,
+    "redirect": "index",
+    "meta": {
+      "title": "菜品管理",
+      "icon": "skill",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "index",
+        "name": "",
+        "meta": {
+          "title": "菜品管理",
+          "icon": "redis",
+          "affix": false
+        }
+      },
+      {
+        "path": "1index",
+        "meta": {
+          "title": "售卖趋势",
+          "icon": "redis",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/map/",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "地图",
+      "icon": "international",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/map/store/index",
+        "name": "高德门店地图",
+        "meta": {
+          "title": "高德门店地图",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/map/store/fence",
+        "name": "高德电子围栏",
+        "meta": {
+          "title": "高德电子围栏",
+          "icon": "lock",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/property/",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "资产管理",
+      "icon": "tools",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/prop/storey/index",
+        "name": "楼层管理",
+        "meta": {
+          "title": "楼层管理",
+          "icon": "storey",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/room/index",
+        "name": "房间管理",
+        "meta": {
+          "title": "房间管理",
+          "icon": "room",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/property/index",
+        "name": "资产管理",
+        "meta": {
+          "title": "资产管理",
+          "icon": "construction",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/property/propertyScanQr",
+        "name": "扫码盘点",
+        "meta": {
+          "title": "扫码盘点",
+          "icon": "scan-qr-code",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/property/propertyScanQrTest",
+        "name": "扫码盘点(测试)",
+        "meta": {
+          "title": "扫码盘点(测试)",
+          "icon": "scan-qr-code",
+          "affix": false
+        }
+      },
+      {
+        "path": "/prop/property/checkList",
+        "name": "盘点管理",
+        "meta": {
+          "title": "盘点管理",
+          "icon": "check-list",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/jxc/",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "进存销",
+      "icon": "international",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/jcx/goods/index",
+        "name": "进存销-商品管理",
+        "meta": {
+          "title": "商品管理",
+          "icon": "order-1",
+          "affix": false
+        }
+      },
+      {
+        "path": "/order/index",
+        "name": "进存销-订单管理",
+        "meta": {
+          "title": "进存销-订单管理",
+          "icon": "order-1",
+          "affix": false
+        }
+      },
+      {
+        "path": "/goods/waring/index",
+        "name": "预警管理",
+        "meta": {
+          "title": "预警管理",
+          "icon": "warning",
+          "affix": false
+        }
+      },
+      {
+        "path": "/buy/plan/index",
+        "name": "购买计划",
+        "meta": {
+          "title": "购买计划",
+          "icon": "buy-car",
+          "affix": false
+        }
+      },
+      {
+        "path": "/buy/order/index",
+        "name": "采购订单",
+        "meta": {
+          "title": "采购订单",
+          "icon": "order-2",
+          "affix": false
+        }
+      }
+    ]
+  },
+  {
+    "path": "/flow/",
+    "component": "src/layout/index.vue",
+    "redirect": "index",
+    "meta": {
+      "title": "工作流",
+      "icon": "international",
+      "affix": false
+    },
+    "children": [
+      {
+        "path": "/flow/form",
+        "name": "流程表单",
+        "meta": {
+          "title": "流程表单",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/flow/form/detail",
+        "name": "流程表预览",
+        "hidden": true,
+        "meta": {
+          "title": "流程表预览",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/flow/start",
+        "name": "流程发起",
+        "meta": {
+          "title": "流程发起",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/flow/todo",
+        "name": "流程待办",
+        "meta": {
+          "title": "流程待办",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/flow/done",
+        "name": "流程已办",
+        "meta": {
+          "title": "流程已办",
+          "icon": "international",
+          "affix": false
+        }
+      },
+      {
+        "path": "/flow/todo-flow-qj",
+        "name": "请假流程待办",
+        "meta": {
+          "title": "请假流程待办",
+          "icon": "international",
+          "affix": false
+        }
+      }
+    ]
+  }
+]

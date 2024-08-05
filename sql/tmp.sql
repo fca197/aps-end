@@ -1,49 +1,52 @@
 
 
-create table if not exists flow_form
+create table if not exists  base_app
 (
-  id  bigint auto_increment comment 'ID 自增' primary key,
- form_name  varchar(64)  null comment '表单名称',
- form_code  varchar(64)  null comment '表单编码',
-  tenant_id  bigint null comment '租户ID',
-  is_delete tinyint(1) default 0 null comment '是否删除 0 否,1 是',
-  create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
-  create_by bigint null comment '创建人',
-  update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-  update_by bigint null comment '修改人',
-  trace_id  varchar(64)  null comment '调用链路',
-  version_num int  default 0 null comment '版本号',
-  key idx_form_code(form_code)
+    id  bigint auto_increment comment 'ID 自增' primary key,
+    app_code  varchar(64)  null comment 'app编码',
+    app_name  varchar(64)  null comment 'app名称',
+    tenant_id  bigint null comment '租户ID',
+    is_delete tinyint(1) default 0 null comment '是否删除 0 否,1 是',
+    create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by bigint null comment '创建人',
+    update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by bigint null comment '修改人',
+    trace_id  varchar(64)  null comment '调用链路',
+    version_num int  default 0 null comment '版本号',
+    key idx_app_code(app_code)
 
-) comment '工作流表单表';
-
-
+) comment '应用表';
 
 
 
-create table if not exists flow_form_item
+
+
+create table if not exists base_app_resource
 (
-  id  bigint auto_increment comment 'ID 自增' primary key,
-  form_id bigint null comment '表单ID',
-  form_item_name  varchar(64)  null comment '表单项名称',
-  form_item_filed  varchar(64)  null comment '表单项字段',
-  form_item_value  varchar(512)  null comment '表单项类型',
-  form_item_default_value  varchar(512)  null comment '表单项默认值',
-  form_item_value_type  varchar(64) null comment '表单值类型  text , date , dateTime ,array',
-  is_add_flow_value  tinyint(1) default 0 null comment '是否添加流程变量 0 否,1 是',
-  -- 必填
-  is_required tinyint(1) default 0 null comment '是否必填 0 否,1 是',
-  sort_index int  default 0 null comment '排序',
-  -- 失去焦点事件
-  lose_focus_event  varchar(512) null comment '失去焦点事件',
-  tenant_id  bigint null comment '租户ID',
-  is_delete tinyint(1) default 0 null comment '是否删除 0 否,1 是',
-  create_time datetime default CURRENT_TIMESTAMP null comment '创建时间',
-  create_by bigint null comment '创建人',
-  update_time datetime default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-  update_by bigint null comment '修改人',
-  trace_id  varchar(64)  null comment '调用链路',
-  version_num int  default 0 null comment '版本号',
-  key idx_form_id(form_id)
+    id            bigint auto_increment comment 'ID 自增'        primary key,
+    app_id        bigint                               null comment '应用ID',
+    app_code      varchar(64)                          null comment '应用编码',
+    resource_code varchar(64)                          null comment '菜单编码',
+    resource_name varchar(64)                          null comment '菜单名称',
+    resource_url  varchar(512)                         null comment '菜单URL',
+    resource_icon varchar(64)                          null comment '菜单图标',
+    resource_type varchar(64)                          null comment '菜单类型',
+    is_button     tinyint(1) default 0                 null comment '是否按钮 0 否,1 是',
+    parent_id     bigint                               null comment '父菜单ID',
+    path          varchar(512)                         null comment '菜单路径',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    tenant_id     bigint                               null comment '租户ID',
+    key idx_app_code(app_code),
+    key idx_app_id(app_id)
+)
+    comment '资源';
 
-) comment '工作流表单项表';
+
+
+

@@ -11,7 +11,7 @@ server:
       min-spare: 1
       max: 300
 peanut:
-  dbInit: false
+  default-use-app-name: aps
   mock:
     enable: false
   match:
