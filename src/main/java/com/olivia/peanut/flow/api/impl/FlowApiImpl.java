@@ -169,13 +169,14 @@ public class FlowApiImpl implements FlowApi {
   }
 
   @Override
+  @Transactional
   public CompleteRes complete(CompleteReq req) {
     List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
     $.requireNonNullCanIgnoreException(taskList, "任务不存在");
     String processInstanceId = taskList.get(0).getProcessInstanceId();
     Map<String, Object> flowValueMap = this.flowFormUserValueService.list(
             new LambdaQueryWrapper<FlowFormUserValue>().eq(FlowFormUserValue::getProcessInstanceId, processInstanceId).eq(FlowFormUserValue::getIsAddFlowValue, true)).stream()
-        .collect(Collectors.toMap(FlowFormUserValue::getFormItemFiled, FlowFormUserValue::getUserValue));
+        .collect(Collectors.toMap(FlowFormUserValue::getFormItemFiled, FlowFormUserValue::getUserValue, (a, b) -> b));
     flowValueMap.put(IS_FIRST_TASK, IS_FIRST_TASK_NO);
     runtimeService.setVariables(processInstanceId, flowValueMap);
     taskService.createComment(req.getTaskId(), processInstanceId, req.getMessage());

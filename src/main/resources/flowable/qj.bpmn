@@ -3,22 +3,31 @@
   <bpmn:process id="flow-qj" name="请假" isExecutable="true" camunda:historyTimeToLive="30" camunda:isStartableInTasklist="false">
     <bpmn:extensionElements>
       <camunda:executionListener class="com.olivia.peanut.flow.core.listener.execution.DingNoticeTaskEndListener" event="end" />
+      <camunda:executionListener class="com.olivia.peanut.flow.core.listener.execution.StartExecutionListener" event="start" />
     </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_0v965sg</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0v965sg" sourceRef="StartEvent_1" targetRef="begin" />
     <bpmn:sequenceFlow id="Flow_0xvlmra" sourceRef="begin" targetRef="shenpi" />
-    <bpmn:userTask id="begin" name="填写请假单" camunda:assignee="${userId}" camunda:dueDate="xasads">
+    <bpmn:userTask id="begin" name="填写请假单" camunda:assignee="${userId}">
       <bpmn:extensionElements>
-        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateBeginTaskListener" event="create" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="userAssignee">
+            <camunda:map>
+              <camunda:entry key="user">login</camunda:entry>
+            </camunda:map>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="timeOut">1H</camunda:inputParameter>
+        </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0v965sg</bpmn:incoming>
       <bpmn:outgoing>Flow_0xvlmra</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="shenpi" name="审批" camunda:assignee="${userId}">
+    <bpmn:userTask id="shenpi" name="审批"   camunda:assignee="${userId}" >
+
       <bpmn:extensionElements>
-        <camunda:executionListener class="333" event="start" />
+        <camunda:taskListener class="com.olivia.peanut.flow.core.listener.task.CreateTaskListener" event="create" />
         <camunda:inputOutput>
           <camunda:inputParameter name="userAssignee">
             <camunda:map>
@@ -53,7 +62,9 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="userAssignee">
-            <camunda:map />
+            <camunda:map>
+              <camunda:entry key="role">CEO</camunda:entry>
+            </camunda:map>
           </camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>

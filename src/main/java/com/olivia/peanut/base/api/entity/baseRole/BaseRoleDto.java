@@ -33,7 +33,7 @@ public class BaseRoleDto extends BaseEntityDto {
   /***
    *  角色组
    */
-  @NotNull(message = "角色组不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotNull(message = "角色组不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long roleGroupId;
 
   private String roleGroupName;

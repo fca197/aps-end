@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Service;
 
@@ -47,29 +48,35 @@ public class FlowConfigServiceImpl implements FlowConfigService {
   @SuppressWarnings("unchecked")
   public void setInputConfig(Map<String, Object> variableMap, Boolean addVariableMap, DelegateTaskInfo delegateTaskInfo) {
     DelegateTask delegateTask = delegateTaskInfo.getDelegateTask();
+    DelegateExecution delegateExecution = delegateTaskInfo.getDelegateExecution();
     Map<String, String> userAssigneeMap = (Map<String, String>) variableMap.get("userAssignee");
     List<String> list = getUserIdList(addVariableMap, delegateTaskInfo, userAssigneeMap);
     if (Boolean.TRUE.equals(addVariableMap) && CollUtil.isNotEmpty(list)) {
-      runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID, list.get(0));
-      runtimeService.setVariable(delegateTask.getExecutionId(), FLOW_USER_ID_LIST, list);
+      runtimeService.setVariable(delegateTaskInfo.getProcessInstanceId(), FLOW_USER_ID, list.get(0));
+      runtimeService.setVariable(delegateTaskInfo.getProcessInstanceId(), FLOW_USER_ID_LIST, list);
     }
     Map<String, String> copyAssigneeMap = (Map<String, String>) variableMap.get("copyAssignee");
     List<String> copyUserIdList = getUserIdList(addVariableMap, delegateTaskInfo, copyAssigneeMap);
-    if (CollUtil.isNotEmpty(copyUserIdList)) {
-      delegateTask.addCandidateUsers(copyUserIdList);
-    }
-    Object timeOutObj = variableMap.get("timeOut");
-    if (Objects.nonNull(timeOutObj)) {
-      Duration duration = $.getDuration((String) timeOutObj);
-      delegateTask.setDueDate(new Date(new Date().getTime() + duration.toMillis()));
-    }
-    if (StringUtils.isBlank(delegateTask.getAssignee())) {
-      if (CollUtil.isNotEmpty(list)) {
-        delegateTask.setAssignee(list.get(0));
-      } else {
-        delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
+    if (Objects.nonNull(delegateTask)){
+      if (CollUtil.isNotEmpty(copyUserIdList)) {
+        delegateTask.addCandidateUsers(copyUserIdList);
+      }
+      Object timeOutObj = variableMap.get("timeOut");
+      if (Objects.nonNull(timeOutObj)) {
+        Duration duration = $.getDuration((String) timeOutObj);
+        delegateTask.setDueDate(new Date(new Date().getTime() + duration.toMillis()));
+      }
+      if (StringUtils.isBlank(delegateTask.getAssignee())) {
+        if (CollUtil.isNotEmpty(list)) {
+          delegateTask.setAssignee(list.get(0));
+        } else {
+          delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
+        }
       }
     }
+//    if (Objects.nonNull(delegateExecution)){
+//
+//    }
     log.info("variableMap: {} addVariableMap:{} 用户: {}", JSON.toJSONString(variableMap), addVariableMap, list);
   }
 
@@ -90,6 +97,7 @@ public class FlowConfigServiceImpl implements FlowConfigService {
         user = user.replaceAll(" ", "");
         if ("login".equalsIgnoreCase(user)) {
           list = List.of(LoginUserContext.getLoginUser().getIdStr());
+//          delegateTaskInfo.getDelegateTask().setAssignee(list.get(0));
         }
       }
       String deptRole = userAssigneeMap.get("deptRole");

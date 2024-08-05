@@ -3,6 +3,7 @@ package com.olivia.peanut.flow.core.listener;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 
 /***
@@ -19,6 +20,7 @@ public class DelegateTaskInfo {
   private String processDefinitionId;
   private String processInstanceId;
   private DelegateTask delegateTask;
+  private DelegateExecution delegateExecution;
   private String createByUserId;
 
 }

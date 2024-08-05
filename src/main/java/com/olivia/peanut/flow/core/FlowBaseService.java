@@ -7,6 +7,7 @@ import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import com.olivia.peanut.flow.service.FlowConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 
@@ -132,6 +133,20 @@ public class FlowBaseService {
     return SpringUtil.getBean(DecisionService.class);
   }
 
+  public DelegateTaskInfo getDelegateTaskInfo(DelegateExecution delegateTask) {
+    String processDefinitionId = delegateTask.getProcessDefinitionId();
+    String processInstanceId = delegateTask.getProcessInstanceId();
+
+    ProcessDefinition processDefinition = getRepositoryService().getProcessDefinition(processDefinitionId);
+    String name = processDefinition.getName();
+
+    String userId = (String) getRuntimeService().getVariable(processInstanceId, FlowStr.FLOW_USER_ID);
+    DelegateTaskInfo taskInfo = new DelegateTaskInfo().setProcessDefinitionName(name).setTaskId(delegateTask.getId()).setTaskName(delegateTask.getCurrentActivityName())//
+        .setProcessInstanceId(processInstanceId).setProcessDefinitionId(processDefinitionId).setCreateByUserId(userId);
+    log.info("taskInfo:{}", JSON.toJSONString(taskInfo));
+    return taskInfo.setDelegateExecution(delegateTask);
+  }
+
   public DelegateTaskInfo getDelegateTaskInfo(DelegateTask delegateTask) {
     String processDefinitionId = delegateTask.getProcessDefinitionId();
     String processInstanceId = delegateTask.getProcessInstanceId();
@@ -150,6 +165,6 @@ public class FlowBaseService {
     DelegateTaskInfo taskInfo = new DelegateTaskInfo().setProcessDefinitionName(name).setTaskId(delegateTask.getId()).setTaskName(delegateTask.getName())//
         .setProcessInstanceId(processInstanceId).setProcessDefinitionId(processDefinitionId).setCreateByUserId(userId);
     log.info("taskInfo:{}", JSON.toJSONString(taskInfo));
-    return taskInfo;
+    return taskInfo.setDelegateTask(delegateTask);
   }
 }
