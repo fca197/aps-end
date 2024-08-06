@@ -57,14 +57,14 @@ public class FlowFormItemDto extends BaseEntityDto {
   @NotBlank(message = "表单值类型  text , date , dateTime ,array不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String formItemValueType;
   /***
-   *  是否添加流程变量 0 否,1 是
+   *  是否添加流程变量
    */
-  @NotNull(message = "是否添加流程变量 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否添加流程变量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isAddFlowValue;
   /***
-   *  是否必填 0 否,1 是
+   *  是否必填
    */
-  @NotNull(message = "是否必填 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否必填不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isRequired;
   /***
    *  排序

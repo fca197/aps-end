@@ -1,18 +1,13 @@
 package com.olivia.peanut.base.api.entity.baseAppResource;
 
-import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import java.util.List;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 资源(BaseAppResource)查询对象返回
@@ -31,6 +26,8 @@ public class BaseAppResourceDto extends BaseEntityDto {
    */
   @NotNull(message = "应用ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long appId;
+
+  private String appName;
   /***
    *  应用编码
    */
@@ -54,32 +51,35 @@ public class BaseAppResourceDto extends BaseEntityDto {
   /***
    *  菜单图标
    */
-  @NotBlank(message = "菜单图标不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotBlank(message = "菜单图标不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String resourceIcon;
   /***
    *  菜单类型
    */
-  @NotBlank(message = "菜单类型不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotBlank(message = "菜单类型不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String resourceType;
   /***
-   *  是否按钮 0 否,1 是
+   *  是否按钮
    */
-  @NotNull(message = "是否按钮 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否按钮不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isButton;
   /***
    *  父菜单ID
    */
   @NotNull(message = "父菜单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long parentId;
-  /***
-   *  菜单路径
-   */
-  @NotBlank(message = "菜单路径不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private String path;
 
   private Boolean isHidden;
 
   private String filePath;
+
+  public String getIsHiddenStr() {
+    return Str.booleanToStr(isHidden);
+  }
+
+  public String getIsButtonStr() {
+    return Str.booleanToStr(isButton);
+  }
 }
 
 

@@ -47,7 +47,7 @@ public class ApsLogisticsPathItem extends BaseEntity {
    */
   private Integer transportDay;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
   private Integer isDefault;
   /***

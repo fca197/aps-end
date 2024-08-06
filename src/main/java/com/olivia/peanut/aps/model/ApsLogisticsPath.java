@@ -35,7 +35,7 @@ public class ApsLogisticsPath extends BaseEntity {
    */
   private String logisticsPathRemark;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
   private Integer isDefault;
   /***

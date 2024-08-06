@@ -45,9 +45,9 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
   @NotNull(message = "排程日期不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private LocalDate schedulingDay;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
-  @NotNull(message = "是否下发 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否下发不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isIssuedThird;
 
   public String getIsIssuedThirdStr() {

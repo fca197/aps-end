@@ -47,11 +47,11 @@ public class FlowFormItem extends BaseEntity {
    */
   private String formItemValueType;
   /***
-   *  是否添加流程变量 0 否,1 是
+   *  是否添加流程变量
    */
   private Boolean isAddFlowValue;
   /***
-   *  是否必填 0 否,1 是
+   *  是否必填
    */
   private Boolean isRequired;
   /***

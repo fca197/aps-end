@@ -73,9 +73,9 @@ public class ApsSchedulingDayConfigItemDto extends BaseEntityDto {
   @NotNull(message = "配置业务耗时(秒)不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long configBizTime;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
-  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isDefault;
 
 }

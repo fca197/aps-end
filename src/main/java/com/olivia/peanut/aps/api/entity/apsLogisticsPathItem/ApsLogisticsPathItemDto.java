@@ -51,9 +51,9 @@ public class ApsLogisticsPathItemDto extends BaseEntityDto {
   @NotNull(message = "运输天数不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer transportDay;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
-  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer isDefault;
   /***
    *  工厂ID

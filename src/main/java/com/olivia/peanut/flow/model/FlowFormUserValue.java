@@ -55,11 +55,11 @@ public class FlowFormUserValue extends BaseEntity {
    */
   private String formItemValueType;
   /***
-   *  是否添加流程表单值 0 否,1 是
+   *  是否添加流程表单值
    */
   private Boolean isAddFlowValue;
   /***
-   *  是否必填 0 否,1 是
+   *  是否必填
    */
   private Boolean isRequired;
   /***

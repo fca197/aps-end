@@ -59,7 +59,7 @@ public class ApsSchedulingDayConfigItem extends BaseEntity {
    */
   private Long configBizTime;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
   private Boolean isDefault;
 

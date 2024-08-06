@@ -39,7 +39,7 @@ public class ApsSchedulingDayConfig extends BaseEntity {
    */
   private String schedulingDayName;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
   private Boolean isDefault;
 

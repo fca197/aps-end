@@ -52,7 +52,7 @@ public class ApsSchedulingDayConfigVersionDetail extends BaseEntity {
    */
   private String orderNo;
   /***
-   *  是否匹配 0 否,1 是
+   *  是否匹配
    */
   private Boolean isMatch;
   /***
@@ -60,7 +60,7 @@ public class ApsSchedulingDayConfigVersionDetail extends BaseEntity {
    */
   private Integer loopIndex;
   /***
-   *  是否满足 0 否,1 是
+   *  是否满足
    */
   private Boolean loopEnough;
 

@@ -59,9 +59,9 @@ public class ApsSchedulingDayConfigVersionDetailDto extends BaseEntityDto {
   @NotBlank(message = "订单编号不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String orderNo;
   /***
-   *  是否匹配 0 否,1 是
+   *  是否匹配
    */
-  @NotNull(message = "是否匹配 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否匹配不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isMatch;
   /***
    *  循环次数
@@ -69,9 +69,9 @@ public class ApsSchedulingDayConfigVersionDetailDto extends BaseEntityDto {
   @NotNull(message = "循环次数不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer loopIndex;
   /***
-   *  是否满足 0 否,1 是
+   *  是否满足
    */
-  @NotNull(message = "是否满足 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否满足不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean loopEnough;
 
   private Long roomId;

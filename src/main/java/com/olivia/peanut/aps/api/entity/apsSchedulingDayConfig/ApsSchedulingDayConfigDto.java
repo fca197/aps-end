@@ -46,9 +46,9 @@ public class ApsSchedulingDayConfigDto extends BaseEntityDto {
   @NotBlank(message = "排程版本名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String schedulingDayName;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
-  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isDefault;
 
   @NotNull(message = "排程版本明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})

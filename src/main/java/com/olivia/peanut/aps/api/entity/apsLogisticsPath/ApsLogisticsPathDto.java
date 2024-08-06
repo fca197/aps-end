@@ -39,9 +39,9 @@ public class ApsLogisticsPathDto extends BaseEntityDto {
   @NotBlank(message = "备注不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String logisticsPathRemark;
   /***
-   *  是否默认 0 否,1 是
+   *  是否默认
    */
-  @NotNull(message = "是否默认 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer isDefault;
   /***
    *  工厂ID

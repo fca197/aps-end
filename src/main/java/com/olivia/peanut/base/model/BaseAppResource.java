@@ -51,7 +51,7 @@ public class BaseAppResource extends BaseEntity {
    */
   private String resourceType;
   /***
-   *  是否按钮 0 否,1 是
+   *  是否按钮
    */
   private Boolean isButton;
 

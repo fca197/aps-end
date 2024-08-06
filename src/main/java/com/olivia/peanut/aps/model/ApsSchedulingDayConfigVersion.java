@@ -38,7 +38,7 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
    */
   private LocalDate schedulingDay;
   /***
-   *  是否下发第三方 0 否,1 是
+   *  是否下发第三方
    */
   private Boolean isIssuedThird;
 

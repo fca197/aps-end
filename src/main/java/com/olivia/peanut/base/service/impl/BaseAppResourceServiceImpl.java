@@ -9,7 +9,9 @@ import com.olivia.peanut.base.api.entity.baseAppResource.*;
 import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
 import com.olivia.peanut.base.model.BaseAppResource;
 import com.olivia.peanut.base.service.BaseAppResourceService;
+import com.olivia.peanut.base.service.BaseAppService;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
@@ -83,6 +85,8 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
 
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
+    setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseAppService.class, "appName", "appId", "appName"));
+
   }
 
 
@@ -102,7 +106,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
           .eq(StringUtils.isNoneBlank(obj.getResourceType()), BaseAppResource::getResourceType, obj.getResourceType())
           .eq(Objects.nonNull(obj.getIsButton()), BaseAppResource::getIsButton, obj.getIsButton())
           .eq(Objects.nonNull(obj.getParentId()), BaseAppResource::getParentId, obj.getParentId())
-          .eq(StringUtils.isNoneBlank(obj.getPath()), BaseAppResource::getPath, obj.getPath())
       ;
     } else {
       q.eq(BaseAppResource::getAppCode, useAppKey);
