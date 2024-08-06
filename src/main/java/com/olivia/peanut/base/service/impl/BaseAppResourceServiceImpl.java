@@ -103,7 +103,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
           .eq(Objects.nonNull(obj.getIsButton()), BaseAppResource::getIsButton, obj.getIsButton())
           .eq(Objects.nonNull(obj.getParentId()), BaseAppResource::getParentId, obj.getParentId())
           .eq(StringUtils.isNoneBlank(obj.getPath()), BaseAppResource::getPath, obj.getPath())
-
       ;
     } else {
       q.eq(BaseAppResource::getAppCode, useAppKey);
