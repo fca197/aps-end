@@ -12,7 +12,7 @@ import com.olivia.peanut.base.api.entity.baseAppResource.*;
  * 资源(BaseAppResource)表服务接口
  *
  * @author peanut
- * @since 2024-08-05 11:19:00
+ * @since 2024-08-06 17:30:28
  */
 public interface BaseAppResourceService extends MPJBaseService<BaseAppResource> {
 

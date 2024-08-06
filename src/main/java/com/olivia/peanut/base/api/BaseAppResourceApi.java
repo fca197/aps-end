@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 资源(BaseAppResource)对外API
  *
  * @author peanut
- * @since 2024-08-05 11:18:59
+ * @since 2024-08-06 17:30:27
  */
 // @FeignClient(value = "",contextId = "baseAppResource-api",url = "${ portal..center.endpoint:}")
 public interface BaseAppResourceApi {

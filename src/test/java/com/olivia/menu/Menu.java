@@ -39,7 +39,7 @@ public class Menu {
     setMenuId(menus, 0L);
     log.info("{}", JSON.toJSONString(menus));
 
-    System.out.println("insert into base_app_resource (id,app_id,resource_code,resource_name,resource_url,parent_id ,is_hidden,tenant_id ) values ");
+    System.out.println("insert into base_resource (id,resource_code,resource_name,resource_url,parent_id ,is_hidden,tenant_id ) values ");
 
     print(menus);
   }
@@ -50,7 +50,7 @@ public class Menu {
       return;
     }
     menus.forEach(t -> {
-      System.out.println("('" + String.join("','", t.id + "", "4", IdWorker.getIdStr(), t.name, t.path, t.parentId + "", Boolean.FALSE.equals(t.hidden) ? "0" : "1", "1001'),"));
+      System.out.println("('" + String.join("','", t.id + "",   IdWorker.getIdStr(), t.name, t.path, t.parentId + "", Boolean.FALSE.equals(t.hidden) ? "0" : "1", "1001'),"));
       print(t.children);
     });
   }

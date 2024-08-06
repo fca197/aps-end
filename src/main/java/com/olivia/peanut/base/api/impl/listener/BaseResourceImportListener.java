@@ -1,10 +1,10 @@
 package com.olivia.peanut.base.api.impl.listener;
 
 
-import com.olivia.peanut.base.model.BaseAppResource;
+import com.olivia.peanut.base.model.BaseResource;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.olivia.peanut.base.api.entity.baseAppResource.*;
+import com.olivia.peanut.base.api.entity.baseResource.*;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import java.util.ArrayList;
@@ -15,15 +15,15 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 资源(BaseAppResource)文件导入监听
+ * 资源(BaseResource)文件导入监听
  *
  * @author peanut
- * @since 2024-08-06 17:30:28
+ * @since 2024-08-06 17:29:01
  */
-public class BaseAppResourceImportListener extends AnalysisEventListener<BaseAppResourceImportReq> {
+public class BaseResourceImportListener extends AnalysisEventListener<BaseResourceImportReq> {
 
   @Override
-  public void invoke(BaseAppResourceImportReq data, AnalysisContext analysisContext) {
+  public void invoke(BaseResourceImportReq data, AnalysisContext analysisContext) {
     //  文件校验
   }
 

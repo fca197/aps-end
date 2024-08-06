@@ -1,37 +1,37 @@
 package com.olivia.peanut.base.service.impl;
 
+import org.springframework.aop.framework.AopContext;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.olivia.peanut.base.api.entity.baseAppResource.*;
-import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
-import com.olivia.peanut.base.model.BaseAppResource;
-import com.olivia.peanut.base.service.BaseAppResourceService;
-import com.olivia.peanut.base.service.BaseAppService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.filter.LoginUserContext;
-import com.olivia.sdk.service.SetNameService;
+import jakarta.annotation.Resource;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
+import com.olivia.peanut.base.model.BaseAppResource;
+import com.olivia.peanut.base.service.BaseAppResourceService;
+import cn.hutool.core.collection.CollUtil;
+//import com.olivia.peanut.base.service.BaseTableHeaderService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.api.entity.baseAppResource.*;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
 
 /**
  * 资源(BaseAppResource)表服务实现类
  *
  * @author peanut
- * @since 2024-08-05 11:19:00
+ * @since 2024-08-06 17:30:28
  */
 @Service("baseAppResourceService")
 @Transactional
@@ -85,32 +85,25 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
 
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
-    setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseAppService.class, "appName", "appId", "appName"));
-
   }
 
 
   private MPJLambdaWrapper<BaseAppResource> getWrapper(BaseAppResourceDto obj) {
     MPJLambdaWrapper<BaseAppResource> q = new MPJLambdaWrapper<>();
 
-    String useAppKey = LoginUserContext.getLoginUser().getUseAppKey();
     if (Objects.nonNull(obj)) {
-      obj.setAppCode(useAppKey);
       q
           .eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
-          .eq(StringUtils.isNoneBlank(obj.getAppCode()), BaseAppResource::getAppCode, obj.getAppCode())
-          .eq(StringUtils.isNoneBlank(obj.getResourceCode()), BaseAppResource::getResourceCode, obj.getResourceCode())
-          .eq(StringUtils.isNoneBlank(obj.getResourceName()), BaseAppResource::getResourceName, obj.getResourceName())
-          .eq(StringUtils.isNoneBlank(obj.getResourceUrl()), BaseAppResource::getResourceUrl, obj.getResourceUrl())
-          .eq(StringUtils.isNoneBlank(obj.getResourceIcon()), BaseAppResource::getResourceIcon, obj.getResourceIcon())
-          .eq(StringUtils.isNoneBlank(obj.getResourceType()), BaseAppResource::getResourceType, obj.getResourceType())
+          .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId())
           .eq(Objects.nonNull(obj.getIsButton()), BaseAppResource::getIsButton, obj.getIsButton())
+          .eq(Objects.nonNull(obj.getIsHidden()), BaseAppResource::getIsHidden, obj.getIsHidden())
+          .eq(StringUtils.isNoneBlank(obj.getFilePath()), BaseAppResource::getFilePath, obj.getFilePath())
           .eq(Objects.nonNull(obj.getParentId()), BaseAppResource::getParentId, obj.getParentId())
+          .eq(StringUtils.isNoneBlank(obj.getPath()), BaseAppResource::getPath, obj.getPath())
+
       ;
-    } else {
-      q.eq(BaseAppResource::getAppCode, useAppKey);
     }
-//    q.orderByDesc(BaseAppResource::getId);
+    q.orderByDesc(BaseAppResource::getId);
     return q;
 
   }

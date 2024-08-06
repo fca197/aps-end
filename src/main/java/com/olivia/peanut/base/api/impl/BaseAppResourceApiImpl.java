@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 资源(BaseAppResource)表服务实现类
  *
  * @author peanut
- * @since 2024-08-05 11:18:59
+ * @since 2024-08-06 17:30:28
  */
 @RestController
 public class BaseAppResourceApiImpl implements BaseAppResourceApi {

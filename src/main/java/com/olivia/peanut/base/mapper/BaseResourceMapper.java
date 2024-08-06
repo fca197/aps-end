@@ -2,17 +2,17 @@ package com.olivia.peanut.base.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.olivia.peanut.base.model.BaseAppResource;
+import com.olivia.peanut.base.model.BaseResource;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * 资源(BaseAppResource)表数据库访问层
+ * 资源(BaseResource)表数据库访问层
  *
  * @author peanut
- * @since 2024-08-06 17:30:28
+ * @since 2024-08-06 17:29:01
  */
 @Mapper
-public interface BaseAppResourceMapper extends MPJBaseMapper<BaseAppResource> {
+public interface BaseResourceMapper extends MPJBaseMapper<BaseResource> {
 
 }
 
