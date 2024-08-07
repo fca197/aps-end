@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.*;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
+import org.camunda.bpm.engine.history.HistoricTaskInstanceQuery;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.runtime.ActivityInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -105,6 +106,37 @@ public class FlowApiImpl implements FlowApi {
   }
 
   @Override
+  public DynamicsPage<TaskDoneRes> taskDone(TaskDoneReq req) {
+    HistoricTaskInstanceQuery historicTaskInstanceQuery = historyService.createHistoricTaskInstanceQuery().processDefinitionKey(req.getFlowKey())
+        .taskAssignee(LoginUserContext.getLoginUser().getIdStr()).orderByHistoricActivityInstanceStartTime().desc();
+    List<HistoricTaskInstance> taskInstanceList = historicTaskInstanceQuery.listPage((req.getPageNum() - 1) * req.getPageNum(), req.getPageSize());
+
+    List<TaskDoneRes> taskDoneRes = new ArrayList<>();
+    if (CollUtil.isNotEmpty(taskInstanceList)) {
+//      Set<String>  processInstanceIdArr = taskInstanceList.stream().map(HistoricTaskInstance::getProcessInstanceId).collect(Collectors.toSet())();
+
+      List<Runnable> runnableList = new ArrayList<>();
+      taskInstanceList.forEach(t -> {
+
+        TaskDoneRes doneRes = $.copy(t, TaskDoneRes.class);
+        taskDoneRes.add(doneRes);
+        runnableList.add(() -> {
+          String processInstanceId = t.getProcessInstanceId();
+          String formId = (String) runtimeService.getVariable(processInstanceId, FLOW_FORM_ID);
+          doneRes.setFlowFormId(formId);
+        });
+      });
+      RunUtils.run("Task done get formId", runnableList);
+//     taskDoneRes.add($.copy(taskIdList, (Function<String, TaskDoneRes>) taskId -> {))
+    }
+    DynamicsPage<TaskDoneRes> page = new DynamicsPage<>();
+    page.setTotal(historicTaskInstanceQuery.count());
+    page.setDataList(taskDoneRes);
+
+    return page;
+  }
+
+  @Override
   public DynamicsPage<TaskUndoneRes> taskUndoneHome(TaskUndoneReq req) {
     String userId = LoginUserContext.getLoginUser().getIdStr();
     TaskQuery active = taskService.createTaskQuery().taskAssignee(userId).orderByTaskCreateTime().desc().active();
@@ -149,7 +181,7 @@ public class FlowApiImpl implements FlowApi {
   @Override
   public RejectRes reject(RejectReq req) {
     List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
-    $.requireNonNullCanIgnoreException(taskList, "任务不存在");
+    $.requireNonNullCanIgnoreException(taskList, "任务不存在,或已结束");
     Task task = taskList.get(0);
     String processInstanceId = task.getProcessInstanceId();
     taskService.createComment(req.getTaskId(), processInstanceId, req.getMessage());
@@ -172,7 +204,7 @@ public class FlowApiImpl implements FlowApi {
   @Transactional
   public CompleteRes complete(CompleteReq req) {
     List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
-    $.requireNonNullCanIgnoreException(taskList, "任务不存在");
+    $.requireNonNullCanIgnoreException(taskList, "任务不存在,或已结束");
     String processInstanceId = taskList.get(0).getProcessInstanceId();
     Map<String, Object> flowValueMap = this.flowFormUserValueService.list(
             new LambdaQueryWrapper<FlowFormUserValue>().eq(FlowFormUserValue::getProcessInstanceId, processInstanceId).eq(FlowFormUserValue::getIsAddFlowValue, true)).stream()

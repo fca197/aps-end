@@ -31,11 +31,14 @@ public class BaseAppResourceDto extends BaseEntityDto {
    */
   @NotNull(message = "应用ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long appId;
+
+  private String appCode;
   /***
    *  资源ID
    */
   @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long resourceId;
+  private String resourceUrl;
 
 
 }

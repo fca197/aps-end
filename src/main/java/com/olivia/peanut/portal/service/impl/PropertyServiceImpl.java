@@ -76,7 +76,7 @@ public class PropertyServiceImpl extends MPJBaseServiceImpl<PropertyMapper, Prop
         Map<Long, String> objMap = (this.roomService.listByIds(idSet).stream().collect(Collectors.toMap(Room::getId, Room::getRoomName)));
         list.forEach(t -> t.setRoomName(objMap.get(t.getRoomId())));
       });
-      RunUtils.run("setAllName", runnableList.size(), runnableList);
+      RunUtils.run("setAllName",   runnableList);
     }
   }
 

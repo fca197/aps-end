@@ -1,31 +1,33 @@
 package com.olivia.peanut.base.service.impl;
 
-import org.springframework.aop.framework.AopContext;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.base.api.entity.baseAppResource.*;
+import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
+import com.olivia.peanut.base.model.BaseApp;
+import com.olivia.peanut.base.model.BaseAppResource;
+import com.olivia.peanut.base.service.BaseAppResourceService;
+import com.olivia.peanut.base.service.BaseAppService;
+import com.olivia.peanut.base.service.BaseResourceService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
-import com.olivia.peanut.base.model.BaseAppResource;
-import com.olivia.peanut.base.service.BaseAppResourceService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.base.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.base.api.entity.baseAppResource.*;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 
 /**
  * 资源(BaseAppResource)表服务实现类
@@ -43,7 +45,8 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
   BaseTableHeaderService tableHeaderService;
   @Resource
   SetNameService setNameService;
-
+  @Resource
+  BaseAppService baseAppService;
 
   public @Override BaseAppResourceQueryListRes queryList(BaseAppResourceQueryListReq req) {
 
@@ -55,6 +58,7 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
     return new BaseAppResourceQueryListRes().setDataList(dataList);
   }
 
+  // 以下为私有对象封装
 
   public @Override DynamicsPage<BaseAppResourceExportQueryPageListInfoRes> queryPageList(BaseAppResourceExportQueryPageListReq req) {
 
@@ -79,21 +83,26 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  // 以下为私有对象封装
-
   public @Override void setName(List<? extends BaseAppResourceDto> list) {
 
-    //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
+       setNameService.setName(list, SetNamePojoUtils
+           .getSetNamePojo(BaseResourceService.class,"resourceUrl","resourceId","resourceUrl"));
 
   }
-
 
   private MPJLambdaWrapper<BaseAppResource> getWrapper(BaseAppResourceDto obj) {
     MPJLambdaWrapper<BaseAppResource> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
+      if (Objects.isNull(obj.getAppId()) && StringUtils.isNotBlank(obj.getAppCode())) {
+        BaseApp one = baseAppService.getOne(new LambdaQueryWrapper<BaseApp>().eq(BaseApp::getAppCode, obj.getAppCode()));
+        if (Objects.nonNull(one)) {
+          obj.setAppId(one.getId());
+        }
+      }
       q
           .eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
+
           .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId())
       ;
     }

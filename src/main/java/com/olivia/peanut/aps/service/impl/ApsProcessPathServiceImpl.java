@@ -105,6 +105,8 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
         .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
 
     List<Runnable> runnableList = new ArrayList<>();
+    List<Runnable> runnableSubList = new ArrayList<>();
+
 
     apsProcessPathDtoList.forEach(t -> {
       runnableList.add(() -> {
@@ -113,21 +115,23 @@ public class ApsProcessPathServiceImpl extends MPJBaseServiceImpl<ApsProcessPath
         t.setPathRoomList($.copyList(pathRoomList, ApsProcessPathRoomDto.class));
         t.setFactoryName(factoryMap.get(t.getFactoryId()));
         t.getPathRoomList().forEach(tr -> {
-          List<ApsRoomConfig> roomConfigList = apsRoomConfigService.list(new LambdaQueryWrapper<ApsRoomConfig>().eq(ApsRoomConfig::getRoomId, tr.getRoomId()));
-
-          if (CollUtil.isNotEmpty(roomConfigList)) {
-            Map<Long, String> idNameMap = this.apsRoomService.listByIds(roomConfigList.stream().map(ApsRoomConfig::getRoomId).toList()).stream()
-                .collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
-            List<ApsRoomConfigDto> apsRoomConfigList = $.copyList(roomConfigList, ApsRoomConfigDto.class);
-            apsRoomConfigList.forEach(ar -> ar.setRoomName(idNameMap.get(ar.getRoomId())));
-            tr.setApsRoomConfigList(apsRoomConfigList);
-          }else {
-            tr.setApsRoomConfigList(List.of());
-          }
+          runnableSubList.add(() -> {
+            List<ApsRoomConfig> roomConfigList = apsRoomConfigService.list(new LambdaQueryWrapper<ApsRoomConfig>().eq(ApsRoomConfig::getRoomId, tr.getRoomId()));
+            if (CollUtil.isNotEmpty(roomConfigList)) {
+              Map<Long, String> idNameMap = this.apsRoomService.listByIds(roomConfigList.stream().map(ApsRoomConfig::getRoomId).toList()).stream()
+                  .collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
+              List<ApsRoomConfigDto> apsRoomConfigList = $.copyList(roomConfigList, ApsRoomConfigDto.class);
+              apsRoomConfigList.forEach(ar -> ar.setRoomName(idNameMap.get(ar.getRoomId())));
+              tr.setApsRoomConfigList(apsRoomConfigList);
+            } else {
+              tr.setApsRoomConfigList(List.of());
+            }
+          });
         });
       });
     });
     RunUtils.run("apsProcessPathService ", runnableList);
+    RunUtils.run("apsProcessPathService SUB", runnableSubList);
   }
 
   @Override

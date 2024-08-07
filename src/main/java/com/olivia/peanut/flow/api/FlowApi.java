@@ -25,6 +25,8 @@ public interface FlowApi {
 
   @PostMapping("/task/undone")
   DynamicsPage<TaskUndoneRes> taskUndone(@RequestBody @Valid TaskUndoneReq req);
+  @PostMapping("/task/done")
+  DynamicsPage<TaskDoneRes> taskDone(@RequestBody @Valid TaskDoneReq req);
 
   @PostMapping("/task/undone/home")
   DynamicsPage<TaskUndoneRes> taskUndoneHome(@RequestBody @Valid TaskUndoneReq req);
