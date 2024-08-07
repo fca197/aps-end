@@ -3516,6 +3516,141 @@ create table if not exists aps_workshop_station
 create index idx_aps_workshop_station_tenant_id
     on aps_workshop_station (tenant_id);
 
+create table if not exists base_app
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    app_code    varchar(64)                          null comment 'app编码',
+    app_name    varchar(64)                          null comment 'app名称',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号'
+)
+    comment '应用表';
+
+create index idx_app_code
+    on base_app (app_code);
+
+create table if not exists base_app_resource
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    app_id      bigint                               null comment '应用ID',
+    resource_id bigint                               null comment '资源ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    tenant_id   bigint                               null comment '租户ID'
+)
+    comment '资源';
+
+create index idx_app_id
+    on base_app_resource (app_id);
+
+create table if not exists base_dept
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    dept_code   varchar(64)                          null comment '部门编码',
+    dept_name   varchar(64)                          null comment '部门名称',
+    parent_id   bigint                               null comment '父部门ID',
+    path        varchar(512)                         null comment '部门路径',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    tenant_id   bigint                               null comment '租户ID'
+)
+    comment '部门表';
+
+create table if not exists base_resource
+(
+    id            bigint auto_increment comment 'ID 自增'
+        primary key,
+    resource_code varchar(64)                          null comment '菜单编码',
+    resource_name varchar(64)                          null comment '菜单名称',
+    resource_url  varchar(512)                         null comment '菜单URL',
+    resource_icon varchar(64)                          null comment '菜单图标',
+    resource_type varchar(64)                          null comment '菜单类型',
+    is_button     tinyint(1) default 0                 null comment '是否按钮 0 否,1 是',
+    is_hidden     tinyint                              null comment '是否因此 0否,1是',
+    parent_id     bigint                               null comment '父菜单ID',
+    path          varchar(512)                         null comment '菜单路径',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    tenant_id     bigint                               null comment '租户ID'
+)
+    comment '资源';
+
+create table if not exists base_role
+(
+    id            bigint auto_increment comment 'ID 自增'
+        primary key,
+    role_code     varchar(64)                          null comment '角色编码',
+    role_name     varchar(64)                          null comment '角色名称',
+    role_group_id bigint                               null comment '角色组',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    tenant_id     bigint                               null comment '租户ID'
+)
+    comment '角色表';
+
+create table if not exists base_role_group
+(
+    id              bigint auto_increment comment 'ID 自增'
+        primary key,
+    role_group_code varchar(64)                          null comment '角色组编码',
+    role_group_name varchar(64)                          null comment '角色组名称',
+    is_delete       tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time     datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by       bigint                               null comment '创建人',
+    update_time     datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by       bigint                               null comment '修改人',
+    trace_id        varchar(64)                          null comment '调用链路',
+    version_num     int        default 0                 null comment '版本号',
+    tenant_id       bigint                               null comment '租户ID'
+)
+    comment '角色组表';
+
+create table if not exists base_role_resource
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    role_id     bigint                               null comment '角色ID',
+    resource_id bigint                               null comment '菜单ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    tenant_id   bigint                               null comment '租户ID'
+)
+    comment '角色资源表';
+
 create table if not exists base_supplier
 (
     id              bigint auto_increment comment 'ID 自增'
@@ -3568,6 +3703,187 @@ create index idx_base_table_header_tenant_id
 
 create index idx_biz_key
     on base_table_header (biz_key);
+
+create table if not exists base_user_dept
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    user_id     bigint                               null comment '用户ID',
+    dept_id     bigint                               null comment '部门ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    tenant_id   bigint                               null comment '租户ID'
+)
+    comment '用户部门表';
+
+create index idx_user_id_dept_id
+    on base_user_dept (user_id, dept_id);
+
+create table if not exists base_user_role
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    user_id     bigint                               null comment '用户ID',
+    role_id     bigint                               null comment '角色ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号',
+    tenant_id   bigint                               null comment '租户ID'
+)
+    comment '用户角色表';
+
+create index idx_user_id
+    on base_user_role (user_id);
+
+create table if not exists base_user_role_group
+(
+    id            bigint auto_increment comment 'ID 自增'
+        primary key,
+    user_id       bigint                               null comment '用户ID',
+    role_group_id bigint                               null comment '角色组ID',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    tenant_id     bigint                               null comment '租户ID'
+)
+    comment '用户角色组表';
+
+create index idx_user_id
+    on base_user_role_group (user_id);
+
+create table if not exists flow_definition
+(
+    id            bigint auto_increment comment 'ID 自增'
+        primary key,
+    flow_name     varchar(64)                          null comment '工作流名称',
+    flow_group_id bigint                               null comment '工作流组ID',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    flow_key      varchar(64)                          null comment '流程key',
+    tenant_id     bigint                               null comment '租户ID',
+    flow_form_id  bigint                               null comment '流程表单id'
+)
+    comment '工作定义表';
+
+create table if not exists flow_form
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    form_name   varchar(64)                          null comment '表单名称',
+    form_code   varchar(64)                          null comment '表单编码',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号'
+)
+    comment '工作流表单表';
+
+create index idx_flow_form_code
+    on flow_form (form_code);
+
+create index idx_form_code
+    on flow_form (form_code);
+
+create table if not exists flow_form_item
+(
+    id                      bigint auto_increment comment 'ID 自增'
+        primary key,
+    form_id                 bigint                               null comment '表单ID',
+    form_item_name          varchar(64)                          null comment '表单项名称',
+    form_item_filed         varchar(64)                          null comment '表单项字段',
+    form_item_value         varchar(512)                         null comment '表单项类型',
+    form_item_default_value varchar(512)                         null comment '表单项默认值',
+    form_item_value_type    varchar(64)                          null comment '表单值类型  text , date , dateTime ,array',
+    is_add_flow_value       tinyint(1) default 0                 null comment '是否添加流程变量 0 否,1 是',
+    is_required             tinyint(1) default 0                 null comment '是否必填 0 否,1 是',
+    sort_index              int        default 0                 null comment '排序',
+    lose_focus_event        varchar(512)                         null comment '失去焦点事件',
+    tenant_id               bigint                               null comment '租户ID',
+    is_delete               tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time             datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by               bigint                               null comment '创建人',
+    update_time             datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by               bigint                               null comment '修改人',
+    trace_id                varchar(64)                          null comment '调用链路',
+    version_num             int        default 0                 null comment '版本号'
+)
+    comment '工作流表单项表';
+
+create index idx_form_id
+    on flow_form_item (form_id);
+
+create table if not exists flow_form_user_value
+(
+    id                      bigint auto_increment comment 'ID 自增'
+        primary key,
+    process_instance_id     varchar(255)                         null comment '流程实例ID',
+    business_key            varchar(64)                          null comment '业务主键',
+    form_id                 bigint                               null comment '表单ID',
+    form_item_default_value varchar(255)                         null comment '表单默认值',
+    form_item_filed         varchar(255)                         null comment '表单字段',
+    form_item_name          varchar(255)                         null comment '表单名称',
+    form_item_value         varchar(255)                         null comment '表单值',
+    form_item_value_type    varchar(255)                         null comment '表单值类型',
+    is_add_flow_value       tinyint(1) default 0                 null comment '是否添加流程表单值 0 否,1 是',
+    is_required             tinyint(1) default 0                 null comment '是否必填 0 否,1 是',
+    lose_focus_event        varchar(255)                         null comment '失去焦点事件',
+    sort_index              int                                  null comment '排序',
+    user_value              varchar(255)                         null comment '用户值',
+    tenant_id               bigint                               null comment '租户ID',
+    is_delete               tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time             datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by               bigint                               null comment '创建人',
+    update_time             datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by               bigint                               null comment '修改人',
+    trace_id                varchar(64)                          null comment '调用链路',
+    version_num             int        default 0                 null comment '版本号'
+)
+    comment '工作流表单用户数据表';
+
+create index idx_business_key
+    on flow_form_user_value (business_key);
+
+create index idx_process_instance_id
+    on flow_form_user_value (process_instance_id);
+
+create table if not exists flow_group
+(
+    id              bigint auto_increment comment 'ID 自增'
+        primary key,
+    flow_group_code varchar(64)                          null comment '工作流组编码',
+    flow_group_name varchar(64)                          null comment '工作流组名称',
+    is_delete       tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time     datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by       bigint                               null comment '创建人',
+    update_time     datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by       bigint                               null comment '修改人',
+    trace_id        varchar(64)                          null comment '调用链路',
+    version_num     int        default 0                 null comment '版本号',
+    tenant_id       bigint                               null comment '租户ID'
+)
+    comment '工作流组表';
 
 create table if not exists jcx_buy_order
 (
@@ -4149,7 +4465,8 @@ create table if not exists t_login_account
     trace_id    varchar(64)                          null comment '调用链路',
     tenant_id   bigint                               null comment '租户ID',
     version_num int        default 0                 null comment '版本号',
-    user_pwd    varchar(255)                         null
+    user_pwd    varchar(255)                         null,
+    is_admin    tinyint(1) default 0                 null comment '是否是管理员'
 )
     comment '登录账号表';
 
