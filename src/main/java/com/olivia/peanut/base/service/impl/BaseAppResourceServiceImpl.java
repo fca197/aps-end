@@ -95,12 +95,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
       q
           .eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
           .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId())
-          .eq(Objects.nonNull(obj.getIsButton()), BaseAppResource::getIsButton, obj.getIsButton())
-          .eq(Objects.nonNull(obj.getIsHidden()), BaseAppResource::getIsHidden, obj.getIsHidden())
-          .eq(StringUtils.isNoneBlank(obj.getFilePath()), BaseAppResource::getFilePath, obj.getFilePath())
-          .eq(Objects.nonNull(obj.getParentId()), BaseAppResource::getParentId, obj.getParentId())
-          .eq(StringUtils.isNoneBlank(obj.getPath()), BaseAppResource::getPath, obj.getPath())
-
       ;
     }
     q.orderByDesc(BaseAppResource::getId);

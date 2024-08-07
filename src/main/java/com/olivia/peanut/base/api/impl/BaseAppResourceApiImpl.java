@@ -1,28 +1,20 @@
 package com.olivia.peanut.base.api.impl;
 
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.olivia.peanut.base.api.BaseAppResourceApi;
+import com.olivia.peanut.base.api.entity.baseAppResource.*;
+import com.olivia.peanut.base.api.impl.listener.BaseAppResourceImportListener;
 import com.olivia.peanut.base.model.BaseAppResource;
+import com.olivia.peanut.base.service.BaseAppResourceService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-import java.util.stream.Collectors;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.olivia.peanut.base.api.entity.baseAppResource.*;
-import com.olivia.peanut.base.service.BaseAppResourceService;
-import com.olivia.peanut.base.model.*;
-import com.baomidou.mybatisplus.core.conditions.query.*;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import org.springframework.web.bind.annotation.*;
-import com.olivia.peanut.base.api.BaseAppResourceApi;
-
-import com.olivia.peanut.base.api.impl.listener.*;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -43,6 +35,15 @@ public class BaseAppResourceApiImpl implements BaseAppResourceApi {
   public @Override BaseAppResourceInsertRes insert(BaseAppResourceInsertReq req) {
     this.baseAppResourceService.save($.copy(req, BaseAppResource.class));
     return new BaseAppResourceInsertRes().setCount(1);
+  }
+
+  @Override
+  @Transactional
+  public BaseAppResourceInsertListRes insertList(BaseAppResourceInsertListReq req) {
+    this.baseAppResourceService.remove(new LambdaQueryWrapper<BaseAppResource>().eq(BaseAppResource::getAppId, req.getAppId()));
+    baseAppResourceService.saveBatch(
+        req.getAppResourceIdList().stream().map(appResourceId -> new BaseAppResource().setAppId(req.getAppId()).setResourceId(appResourceId)).toList());
+    return new BaseAppResourceInsertListRes().setSize(req.getAppResourceIdList().size());
   }
 
   /****

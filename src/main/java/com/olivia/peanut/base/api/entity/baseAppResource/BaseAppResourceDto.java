@@ -36,31 +36,7 @@ public class BaseAppResourceDto extends BaseEntityDto {
    */
   @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long resourceId;
-  /***
-   *  是否按钮 0 否,1 是
-   */
-  @NotNull(message = "是否按钮 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Boolean isButton;
-  /***
-   *  是否隐藏 0 否,1 是
-   */
-  @NotNull(message = "是否隐藏 0 否,1 是不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Boolean isHidden;
-  /***
-   *  文件路径
-   */
-  @NotBlank(message = "文件路径不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private String filePath;
-  /***
-   *  父菜单ID
-   */
-  @NotNull(message = "父菜单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Long parentId;
-  /***
-   *  菜单路径
-   */
-  @NotBlank(message = "菜单路径不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private String path;
+
 
 }
 

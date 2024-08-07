@@ -30,26 +30,6 @@ public class BaseAppResource extends BaseEntity {
    *  资源ID
    */
   private Long resourceId;
-  /***
-   *  是否按钮 0 否,1 是
-   */
-  private Boolean isButton;
-  /***
-   *  是否隐藏 0 否,1 是
-   */
-  private Boolean isHidden;
-  /***
-   *  文件路径
-   */
-  private String filePath;
-  /***
-   *  父菜单ID
-   */
-  private Long parentId;
-  /***
-   *  菜单路径
-   */
-  private String path;
 
 }
 

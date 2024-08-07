@@ -28,6 +28,8 @@ public interface BaseAppResourceApi {
    */
   @PostMapping("/baseAppResource/insert")
   BaseAppResourceInsertRes insert(@RequestBody @Validated(InsertCheck.class) BaseAppResourceInsertReq req);
+  @PostMapping("/baseAppResource/insertList")
+  BaseAppResourceInsertListRes insertList(@RequestBody @Validated(InsertCheck.class) BaseAppResourceInsertListReq req);
 
   /**
    * 根据ID 删除 资源
