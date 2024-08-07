@@ -111,9 +111,12 @@ logging:
 
 camunda:
   bpm:
+    # 是否开启
+    enabled: false
     auto-deployment-enabled: true
     admin-user:
       id: demo
+      # admin 账户必须修改
       password: demo
       firstName: Demo
     webapp:

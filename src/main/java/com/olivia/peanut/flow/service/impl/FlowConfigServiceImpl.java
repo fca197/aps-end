@@ -16,7 +16,6 @@ import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import com.olivia.peanut.flow.service.FlowConfigService;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.$;
-import jakarta.annotation.Resource;
 import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /***
@@ -34,14 +34,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class FlowConfigServiceImpl implements FlowConfigService {
 
-  @Resource
+  @Autowired(required = false)
   BaseUserRoleService userRoleService;
-  @Resource
+  @Autowired(required = false)
   BaseRoleService roleService;
-  @Resource
+  @Autowired(required = false)
   RuntimeService runtimeService;
 
-  @Resource
+  @Autowired(required = false)
   BaseUserDeptService baseUserDeptService;
 
   @Override
@@ -57,7 +57,7 @@ public class FlowConfigServiceImpl implements FlowConfigService {
     }
     Map<String, String> copyAssigneeMap = (Map<String, String>) variableMap.get("copyAssignee");
     List<String> copyUserIdList = getUserIdList(addVariableMap, delegateTaskInfo, copyAssigneeMap);
-    if (Objects.nonNull(delegateTask)){
+    if (Objects.nonNull(delegateTask)) {
       if (CollUtil.isNotEmpty(copyUserIdList)) {
         delegateTask.addCandidateUsers(copyUserIdList);
       }

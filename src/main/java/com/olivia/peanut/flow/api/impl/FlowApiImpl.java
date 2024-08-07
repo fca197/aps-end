@@ -18,7 +18,6 @@ import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
-import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
@@ -36,6 +35,7 @@ import org.camunda.bpm.engine.task.Comment;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.task.TaskQuery;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,18 +47,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class FlowApiImpl implements FlowApi {
 
 
-  @Resource
+  @Autowired(required = false)
   FlowDefinitionService flowDefinitionService;
-  @Resource
+  @Autowired(required = false)
   TaskService taskService;
-  @Resource
+  @Autowired(required = false)
   RepositoryService repositoryService;
-  @Resource
+  @Autowired(required = false)
   HistoryService historyService;
-  @Resource
+  @Autowired(required = false)
   FlowFormUserValueService flowFormUserValueService;
 
-  @Resource
+  @Autowired(required = false)
   private RuntimeService runtimeService;
 
   @SneakyThrows
