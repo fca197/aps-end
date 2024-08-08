@@ -23,7 +23,6 @@ import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -91,12 +90,15 @@ public class FlowApiImpl implements FlowApi {
     map.put(FLOW_CREATE_USER_ID, LoginUserContext.getLoginUser().getIdStr());
     map.put(FLOW_NAME, flowDefinition.getFlowName());
     String businessKey = IdWorker.getIdStr();
-    List<FlowFormUserValue> flowFormUserValueList = flowFormItemService.list(new LambdaQueryWrapper<FlowFormItem>().eq(FlowFormItem::getFormId, flowDefinition.getFlowFormId()))
-        .stream().map(t -> $.copy(t, FlowFormUserValue.class).setBusinessKey(businessKey)).toList();
-    this.flowFormUserValueService.saveBatch(flowFormUserValueList);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(req.getFlowKey(), businessKey, map);
     String processInstanceId = processInstance.getProcessInstanceId();
-    return new StartRes().setProcessInstanceId(processInstanceId).setFlowKey(req.getFlowKey()).setFlowFormId(flowDefinition.getFlowFormId()).setBusinessKey(businessKey);
+    List<FlowFormUserValue> flowFormUserValueList = flowFormItemService.list(new LambdaQueryWrapper<FlowFormItem>().eq(FlowFormItem::getFormId, flowDefinition.getFlowFormId()))
+        .stream().map(t -> $.copy(t, FlowFormUserValue.class).setBusinessKey(businessKey).setProcessInstanceId(processInstanceId)).toList();
+    flowFormUserValueList.forEach(t -> t.setId(null));
+    this.flowFormUserValueService.saveBatch(flowFormUserValueList);
+    Task task = this.taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    return new StartRes().setProcessInstanceId(processInstanceId).setTaskId(task.getId()).setFlowKey(req.getFlowKey()).setFlowFormId(flowDefinition.getFlowFormId())
+        .setBusinessKey(businessKey);
   }
 
   @Override
@@ -128,6 +130,7 @@ public class FlowApiImpl implements FlowApi {
       taskInstanceList.forEach(t -> {
 
         TaskDoneRes doneRes = $.copy(t, TaskDoneRes.class);
+        doneRes.setProcessInstanceId(t.getProcessInstanceId());
         taskDoneRes.add(doneRes);
         runnableList.add(() -> {
           String processInstanceId = t.getProcessInstanceId();
@@ -246,16 +249,19 @@ public class FlowApiImpl implements FlowApi {
     List<HistoricTaskInstance> taskInstanceList = historyService.createHistoricTaskInstanceQuery().processInstanceId(req.getProcessInstanceId()).list();
     taskInstanceList.sort(Comparator.comparing(HistoricTaskInstance::getStartTime));
 
-    List<Task> taskList = taskService.createTaskQuery().processInstanceId(req.getProcessInstanceId()).list();
-    if (CollUtil.isEmpty(taskList)) {
-      return List.of();
-    }
-    Map<String, Comment> taskCommentMap = taskService.getProcessInstanceComments(req.getProcessInstanceId()).stream()
-        .collect(Collectors.toMap(Comment::getTaskId, Function.identity(), (o, o2) -> o2));
-    List<TaskHistoryListRes> resList = $.copyList(taskList, TaskHistoryListRes.class);
+
+
+    List<TaskHistoryListRes> resList = $.copyList(taskInstanceList, TaskHistoryListRes.class);
+    List<Runnable> runnableList = new ArrayList<>();
     resList.forEach(taskInstance -> {
-      taskInstance.setMessageComment(taskCommentMap.get(taskInstance.getTaskId()));
+      runnableList.add(() -> {
+        List<Comment> taskComments = taskService.getTaskComments(taskInstance.getId());
+        if (Objects.nonNull(taskComments)) {
+          taskInstance.setMessage(taskComments.stream().map(Comment::getFullMessage).collect(Collectors.joining(",")));
+        }
+      });
     });
+    RunUtils.run("taskHistoryList", runnableList);
     return resList;
   }
 }

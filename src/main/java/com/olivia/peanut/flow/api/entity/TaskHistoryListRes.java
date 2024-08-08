@@ -4,7 +4,6 @@ import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.camunda.bpm.engine.task.Comment;
 
 /***
  *
@@ -14,18 +13,21 @@ import org.camunda.bpm.engine.task.Comment;
 @Accessors(chain = true)
 public class TaskHistoryListRes {
 
-  protected String taskId;
-  protected String assignee;
-  protected String owner;
-  protected String name;
-  protected String description;
-  protected Date dueDate;
-  protected Date followUpDate;
-  protected int priority;
-  protected String parentTaskId;
-  protected String deleteReason;
-  protected String taskDefinitionKey;
-  protected String activityInstanceId;
+  private String id;
+  private String taskId;
+  private String assignee;
+  private String owner;
+  private String name;
+  private String description;
+  private Date dueDate;
+  private Date followUpDate;
+  private int priority;
+  private String parentTaskId;
+  private String deleteReason;
+  private String taskDefinitionKey;
+  private String activityInstanceId;
 
-  private Comment messageComment;
+  //  private Comment messageComment;
+  private String message;
+
 }

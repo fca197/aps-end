@@ -39,9 +39,14 @@ public class FlowFormUserValueApiImpl implements FlowFormUserValueApi {
   @Override
   public FlowFormUserValueInsertRes insertBadBatch(List<FlowFormUserValueInsertReq> req) {
     $.requireNonNullCanIgnoreException(req, "用户值不能为空");
-    req.forEach(t->t.setId(IdWorker.getId()));
-    this.flowFormUserValueService.saveBatch($.copyList(req, FlowFormUserValue.class));
+    if (req.get(0).getId() == null) {
+      req.forEach(t -> t.setId(IdWorker.getId()));
+      this.flowFormUserValueService.saveBatch($.copyList(req, FlowFormUserValue.class));
+    } else {
+      this.flowFormUserValueService.updateBatchById($.copyList(req, FlowFormUserValue.class));
+    }
     return new FlowFormUserValueInsertRes().setCount(req.size());
+
   }
 
   /****

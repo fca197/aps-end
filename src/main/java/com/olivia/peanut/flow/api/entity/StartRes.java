@@ -16,4 +16,5 @@ public class StartRes {
   private String processInstanceId;
   private Long flowFormId;
   private String businessKey;
+  private String taskId;
 }
