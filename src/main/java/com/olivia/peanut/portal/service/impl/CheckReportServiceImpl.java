@@ -61,7 +61,7 @@ public class CheckReportServiceImpl extends MPJBaseServiceImpl<CheckReportMapper
       runnableList.add(() ->
           checkReportDtoList.forEach(t -> t.setIsOverStr(Str.booleanToStr(t.getIsOver())))
       );
-      RunUtils.run("设置名称", 1, runnableList);
+      RunUtils.run("设置名称",   runnableList);
     }
   }
 

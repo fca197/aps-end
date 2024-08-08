@@ -249,7 +249,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     operationSet.add(")");
     operationSet.add("&&");
     operationSet.add("||");
-    boolean bool = RunUtils.run("销售转规划 " + req.getId(), peanutProperties.getSale2ProjectThreadSize(), runnableList);
+    boolean bool = RunUtils.run("销售转规划 " + req.getId(), runnableList);
     $.assertTrueCanIgnoreException(bool, "销售转规划失败");
     runnableList.clear();
     Map<String, ApsGoodsForecastMakeProjectData> projectDataMap = new HashMap<>();

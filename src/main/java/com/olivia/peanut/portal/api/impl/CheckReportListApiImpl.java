@@ -168,7 +168,7 @@ public class CheckReportListApiImpl implements CheckReportListApi {
       }
     }));
 
-    RunUtils.run("查询报表", runnableList.size() / 3, runnableList);
+    RunUtils.run("查询报表" ,runnableList);
     dataList.sort(Comparator.comparingInt(Info::getStoreySort).thenComparingInt(Info::getRoomSort));
     return new CheckReportListFactoryDataRes().setDataList(dataList);
   }

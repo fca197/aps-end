@@ -9,8 +9,10 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.olivia.peanut.flow.api.FlowApi;
 import com.olivia.peanut.flow.api.entity.*;
 import com.olivia.peanut.flow.model.FlowDefinition;
+import com.olivia.peanut.flow.model.FlowFormItem;
 import com.olivia.peanut.flow.model.FlowFormUserValue;
 import com.olivia.peanut.flow.service.FlowDefinitionService;
+import com.olivia.peanut.flow.service.FlowFormItemService;
 import com.olivia.peanut.flow.service.FlowFormUserValueService;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.filter.LoginUser;
@@ -18,6 +20,7 @@ import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
+import jakarta.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
@@ -26,6 +29,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.camunda.bpm.engine.*;
+import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstance;
 import org.camunda.bpm.engine.history.HistoricTaskInstanceQuery;
 import org.camunda.bpm.engine.repository.Deployment;
@@ -57,7 +61,8 @@ public class FlowApiImpl implements FlowApi {
   HistoryService historyService;
   @Autowired(required = false)
   FlowFormUserValueService flowFormUserValueService;
-
+  @Resource
+  FlowFormItemService flowFormItemService;
   @Autowired(required = false)
   private RuntimeService runtimeService;
 
@@ -78,13 +83,17 @@ public class FlowApiImpl implements FlowApi {
   }
 
   @Override
+  @Transactional
   public StartRes start(StartReq req) {
     FlowDefinition flowDefinition = flowDefinitionService.getOne(new LambdaQueryWrapper<FlowDefinition>().eq(FlowDefinition::getFlowKey, req.getFlowKey()));
     $.requireNonNullCanIgnoreException(flowDefinition, "流程不存在");
     Map<String, Object> map = new HashMap<>(Map.of(FLOW_FORM_ID, flowDefinition.getFlowFormId() + "", IS_FIRST_TASK, "1"));
     map.put(FLOW_CREATE_USER_ID, LoginUserContext.getLoginUser().getIdStr());
-    map.put(FLOW_FORM_NAME, flowDefinition.getFlowName());
+    map.put(FLOW_NAME, flowDefinition.getFlowName());
     String businessKey = IdWorker.getIdStr();
+    List<FlowFormUserValue> flowFormUserValueList = flowFormItemService.list(new LambdaQueryWrapper<FlowFormItem>().eq(FlowFormItem::getFormId, flowDefinition.getFlowFormId()))
+        .stream().map(t -> $.copy(t, FlowFormUserValue.class).setBusinessKey(businessKey)).toList();
+    this.flowFormUserValueService.saveBatch(flowFormUserValueList);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(req.getFlowKey(), businessKey, map);
     String processInstanceId = processInstance.getProcessInstanceId();
     return new StartRes().setProcessInstanceId(processInstanceId).setFlowKey(req.getFlowKey()).setFlowFormId(flowDefinition.getFlowFormId()).setBusinessKey(businessKey);
@@ -122,8 +131,11 @@ public class FlowApiImpl implements FlowApi {
         taskDoneRes.add(doneRes);
         runnableList.add(() -> {
           String processInstanceId = t.getProcessInstanceId();
+          HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+          String businessKey = processInstance.getBusinessKey();
           String formId = (String) runtimeService.getVariable(processInstanceId, FLOW_FORM_ID);
           doneRes.setFlowFormId(formId);
+          doneRes.setBusinessKey(businessKey);
         });
       });
       RunUtils.run("Task done get formId", runnableList);

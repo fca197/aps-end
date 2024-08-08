@@ -173,7 +173,7 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
         }
       });
     });
-    RunUtils.run("status forecast " + forecastId, 10, runnableList);
+    RunUtils.run("status forecast " + forecastId,   runnableList);
     ApsRollingForecastOrder forecastOrder = $.copy(req, ApsRollingForecastOrder.class);
     forecastOrder.setId(forecastId);
     this.save(forecastOrder);

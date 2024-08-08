@@ -46,24 +46,36 @@
 | userIdList     | 抄送用户列表 | userAssignee | ["userId1","userId2"]       |
 | userId         | 抄送用户列表 | userAssignee | userId: userIdList列表第一个用户ID |
 
+## 流程变量流转
+
+| 变量名称                | 流程环节    | 描述                        |
+|---------------------|---------|---------------------------|
+| businessKey         | 流程创建    | flow_form_user_value  中ID |
+| FLOW_FORM_ID        | 流程创建    | 流程引用表单ID                  |
+| FLOW_NAME           | 流程创建    | 流程名称                      |
+| FLOW_CREATE_USER_ID | 流程创建    | 流程实例创建人                   |
+| IS_FIRST_TASK       | 流程创建    | 是否第一个任务                   |
+| userId              | 流程任务开始前 | 用户在inputs放入的用户配置第一个人      |
+| userIdList          | 流程任务开始前 | 用户在inputs放入的用户配置的所有人      |
+
 ## 多人处理
 
 先了解到，对于“多实例任务”， task 会自动生成以下几个流程变量：
 
-> nrOfActiviteInstances：当前活动的实例数量，即还没有完成的实例数量
-> loopCounter ：循环计数器，办理人在列表中的索引
-> nrOfInstances：会签中总共的实例数
-> nrOfCompletedInstances：已经完成的实例数量
+> nrOfActiviteInstances：当前活动的实例数量，即还没有完成的实例数量  
+> loopCounter ：循环计数器，办理人在列表中的索引  
+> nrOfInstances：会签中总共的实例数  
+> nrOfCompletedInstances：已经完成的实例数量  
 
 那么，在 Completion condition 中 可以这么填写：
 
-> $ {nrOfInstances == nrOfCompletedInstances} 表示所有人员审批完成后会签结束。
-> ${ nrOfCompletedInstances == 1} 表示一个人完成审批。
+> $ {nrOfInstances == nrOfCompletedInstances} 表示所有人员审批完成后会签结束。  
+> ${ nrOfCompletedInstances == 1} 表示一个人完成审批。  
 
 ## 问题
 
 1. 流程TTL应该配置
 
-> 流程配置 history cleanup 中:  time to live 必填,单位 天
+> 流程配置 history cleanup 中:  time to live 必填,单位 天  
 
 2. 2

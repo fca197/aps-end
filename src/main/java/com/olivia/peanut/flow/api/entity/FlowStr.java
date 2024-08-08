@@ -6,7 +6,7 @@ package com.olivia.peanut.flow.api.entity;
 public interface FlowStr {
 
   String FLOW_FORM_ID = "FLOW_FORM_ID";
-  String FLOW_FORM_NAME = "FLOW_FORM_NAME";
+  String FLOW_NAME = "FLOW_NAME";
   String FLOW_CREATE_USER_ID = "FLOW_CREATE_USER_ID";
   String IS_FIRST_TASK = "FIRST_TASK";
   String FLOW_USER_ID = "userId";

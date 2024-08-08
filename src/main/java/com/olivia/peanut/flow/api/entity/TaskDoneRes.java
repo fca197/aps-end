@@ -26,5 +26,6 @@ public class TaskDoneRes {
   String taskDefinitionKey;
   String activityInstanceId;
   String tenantId;
+  String businessKey;
   String flowFormId;
 }

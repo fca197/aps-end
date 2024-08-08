@@ -515,7 +515,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<Runnable> runnableList = getBomRunList(schedulingVersion, apsSchedulingVersionCapacityList, goodsMap, apsProcessPathDtoMap, factoryWeekListMap, dayWorkSecondMap,
           goodsBomMap, apsSchedulingGoodsBomList, apsOrderGoodsStatusDateList);
 
-      Boolean schedulingBom = RunUtils.run("scheduling bom " + req.getId(), 5, runnableList);
+      Boolean schedulingBom = RunUtils.run("scheduling bom " + req.getId(),  runnableList);
       $.assertTrueCanIgnoreException(schedulingBom, "零件计算失败");
     }
 

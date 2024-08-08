@@ -152,7 +152,7 @@ public class JcxOrderServiceImpl extends MPJBaseServiceImpl<JcxOrderMapper, JcxO
 
       });
     });
-    RunUtils.run("jcxOrder-setName", runnableList.size() / 3, runnableList);
+    RunUtils.run("jcxOrder-setName" , runnableList);
   }
 
   // 以下为私有对象封装

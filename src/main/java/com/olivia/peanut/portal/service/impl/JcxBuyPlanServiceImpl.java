@@ -101,7 +101,7 @@ public class JcxBuyPlanServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanMapper, 
       t.getJcxBuyPlanItemDtoList().forEach(g -> g.setGoodsName(idNameMap.get(g.getGoodsId())));
       t.setPlanStatusName(JcxBuyPlanStatusEnum.codeMsg.get(t.getPlanStatus()));
     });
-    RunUtils.run("JcxBuyPlanServiceImpl#setName", jcxBuyPlanDtoList.size() / 5, runnableList);
+    RunUtils.run("JcxBuyPlanServiceImpl#setName", runnableList);
   }
 
   private MPJLambdaWrapper<JcxBuyPlan> getWrapper(JcxBuyPlanDto obj) {
