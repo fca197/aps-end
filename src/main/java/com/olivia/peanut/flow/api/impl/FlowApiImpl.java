@@ -153,7 +153,12 @@ public class FlowApiImpl implements FlowApi {
 
   @Override
   public DynamicsPage<TaskUndoneRes> taskUndoneHome(TaskUndoneReq req) {
+    if (Objects.isNull(taskService)) {
+      log.error("taskService is null, 工作流没有开启");
+      return new DynamicsPage<>();
+    }
     String userId = LoginUserContext.getLoginUser().getIdStr();
+
     TaskQuery active = taskService.createTaskQuery().taskAssignee(userId).orderByTaskCreateTime().desc().active();
 
     return getTaskUndoneResDynamicsPage(active, req);
@@ -248,8 +253,6 @@ public class FlowApiImpl implements FlowApi {
   public List<TaskHistoryListRes> taskHistoryList(TaskHistoryListReq req) {
     List<HistoricTaskInstance> taskInstanceList = historyService.createHistoricTaskInstanceQuery().processInstanceId(req.getProcessInstanceId()).list();
     taskInstanceList.sort(Comparator.comparing(HistoricTaskInstance::getStartTime));
-
-
 
     List<TaskHistoryListRes> resList = $.copyList(taskInstanceList, TaskHistoryListRes.class);
     List<Runnable> runnableList = new ArrayList<>();

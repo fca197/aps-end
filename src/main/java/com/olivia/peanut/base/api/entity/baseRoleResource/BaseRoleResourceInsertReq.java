@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * 角色资源表(BaseRoleResource)保存入参
  *
  * @author peanut
- * @since 2024-07-31 14:34:06
+ * @since 2024-08-09 15:42:36
  */
 @Accessors(chain = true)
 @Getter

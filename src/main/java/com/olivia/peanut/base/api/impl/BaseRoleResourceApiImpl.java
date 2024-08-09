@@ -1,35 +1,28 @@
 package com.olivia.peanut.base.api.impl;
 
-import java.time.LocalDateTime;
-
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.olivia.peanut.base.api.BaseRoleResourceApi;
+import com.olivia.peanut.base.api.entity.baseRoleResource.*;
+import com.olivia.peanut.base.api.impl.listener.BaseRoleResourceImportListener;
 import com.olivia.peanut.base.model.BaseRoleResource;
+import com.olivia.peanut.base.service.BaseRoleResourceService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-import java.util.stream.Collectors;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.olivia.peanut.base.api.entity.baseRoleResource.*;
-import com.olivia.peanut.base.service.BaseRoleResourceService;
-import com.olivia.peanut.base.model.*;
-import com.baomidou.mybatisplus.core.conditions.query.*;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import org.springframework.web.bind.annotation.*;
-import com.olivia.peanut.base.api.BaseRoleResourceApi;
-
-import com.olivia.peanut.base.api.impl.listener.*;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 角色资源表(BaseRoleResource)表服务实现类
  *
  * @author peanut
- * @since 2024-07-31 14:34:06
+ * @since 2024-08-09 15:42:36
  */
 @RestController
 public class BaseRoleResourceApiImpl implements BaseRoleResourceApi {
@@ -40,8 +33,16 @@ public class BaseRoleResourceApiImpl implements BaseRoleResourceApi {
    * insert
    *
    */
+  @Transactional
   public @Override BaseRoleResourceInsertRes insert(BaseRoleResourceInsertReq req) {
-    this.baseRoleResourceService.save($.copy(req, BaseRoleResource.class));
+    this.baseRoleResourceService.remove(new LambdaQueryWrapper<BaseRoleResource>().eq(BaseRoleResource::getRoleId, req.getRoleId()));
+//    this.baseRoleResourceService.save($.copy(req, BaseRoleResource.class));
+    if (CollUtil.isNotEmpty(req.getResourceIdList())) {
+      this.baseRoleResourceService.saveBatch(req.getResourceIdList().stream()
+          .map(t -> new BaseRoleResource().setResourceId(t).setRoleId(req.getRoleId())).toList());
+      return new BaseRoleResourceInsertRes().setCount(req.getResourceIdList().size()+1);
+    }
+
     return new BaseRoleResourceInsertRes().setCount(1);
   }
 

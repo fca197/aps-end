@@ -31,7 +31,7 @@ import com.olivia.sdk.service.SetNameService;
  * 角色资源表(BaseRoleResource)表服务实现类
  *
  * @author peanut
- * @since 2024-07-31 14:35:10
+ * @since 2024-08-09 15:42:36
  */
 @Service("baseRoleResourceService")
 @Transactional
