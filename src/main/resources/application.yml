@@ -103,7 +103,7 @@ logging:
     root: info
     #    org.springframework: trace
     "org.springframework.jdbc.core": debug
-    "org.camunda": debug
+    "org.apache.ibatis.logging.jdbc": debug
 #    com.olivia.peanut.aps.utils.forecast: error
 #    com.olivia.peanut.portal.model: error
 #    com.zaxxer.hikari: trace
