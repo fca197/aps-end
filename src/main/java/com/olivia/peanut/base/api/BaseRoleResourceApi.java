@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 角色资源表(BaseRoleResource)对外API
  *
  * @author peanut
- * @since 2024-07-31 14:34:06
+ * @since 2024-08-09 15:42:36
  */
 // @FeignClient(value = "",contextId = "baseRoleResource-api",url = "${ portal..center.endpoint:}")
 public interface BaseRoleResourceApi {
@@ -26,7 +26,7 @@ public interface BaseRoleResourceApi {
   /**
    * 保存 角色资源表
    */
-  @PostMapping("/baseRoleResource/insert")
+  @PostMapping("/baseRoleResource/insertList")
   BaseRoleResourceInsertRes insert(@RequestBody @Validated(InsertCheck.class) BaseRoleResourceInsertReq req);
 
   /**

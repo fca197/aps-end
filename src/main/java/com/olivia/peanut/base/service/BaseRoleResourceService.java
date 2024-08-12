@@ -12,7 +12,7 @@ import com.olivia.peanut.base.api.entity.baseRoleResource.*;
  * 角色资源表(BaseRoleResource)表服务接口
  *
  * @author peanut
- * @since 2024-07-31 14:35:10
+ * @since 2024-08-09 15:42:36
  */
 public interface BaseRoleResourceService extends MPJBaseService<BaseRoleResource> {
 

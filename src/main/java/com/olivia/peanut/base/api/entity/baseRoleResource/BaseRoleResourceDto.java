@@ -18,7 +18,7 @@ import jakarta.validation.constraints.NotNull;
  * 角色资源表(BaseRoleResource)查询对象返回
  *
  * @author peanut
- * @since 2024-07-31 14:35:12
+ * @since 2024-08-09 15:42:37
  */
 //@Accessors(chain=true)
 @Getter
@@ -34,9 +34,14 @@ public class BaseRoleResourceDto extends BaseEntityDto {
   /***
    *  菜单ID
    */
-  @NotNull(message = "菜单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotNull(message = "菜单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long resourceId;
 
+  private String resourceName;
+
+
+  @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private List<Long> resourceIdList;
 }
 
 

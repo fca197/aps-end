@@ -1,5 +1,6 @@
 package com.olivia.peanut.base.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
@@ -8,23 +9,21 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.base.api.entity.baseAppResource.*;
 import com.olivia.peanut.base.mapper.BaseAppResourceMapper;
-import com.olivia.peanut.base.model.BaseApp;
-import com.olivia.peanut.base.model.BaseAppResource;
-import com.olivia.peanut.base.service.BaseAppResourceService;
-import com.olivia.peanut.base.service.BaseAppService;
-import com.olivia.peanut.base.service.BaseResourceService;
+import com.olivia.peanut.base.model.*;
+import com.olivia.peanut.base.service.*;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +46,16 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
   SetNameService setNameService;
   @Resource
   BaseAppService baseAppService;
+  @Resource
+  BaseRoleResourceService baseRoleResourceService;
+
+  // 以下为私有对象封装
+  @Resource
+  BaseRoleGroupResourceService baseRoleGroupResourceService;
+  @Resource
+  BaseUserRoleService baseUserRoleService;
+  @Resource
+  BaseUserRoleGroupService baseUserRoleGroupService;
 
   public @Override BaseAppResourceQueryListRes queryList(BaseAppResourceQueryListReq req) {
 
@@ -57,8 +66,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
     ((BaseAppResourceService) AopContext.currentProxy()).setName(dataList);
     return new BaseAppResourceQueryListRes().setDataList(dataList);
   }
-
-  // 以下为私有对象封装
 
   public @Override DynamicsPage<BaseAppResourceExportQueryPageListInfoRes> queryPageList(BaseAppResourceExportQueryPageListReq req) {
 
@@ -78,15 +85,27 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
     // 类型转换，  更换枚举 等操作
 
     List<BaseAppResourceExportQueryPageListInfoRes> listInfoRes = $.copyList(records, BaseAppResourceExportQueryPageListInfoRes.class);
-    ((BaseAppResourceService) AopContext.currentProxy()).setName(listInfoRes);
+    ((BaseAppResourceService) AopContext.currentProxy()).setName(new ArrayList<>(listInfoRes));
 
     return DynamicsPage.init(page, listInfoRes);
   }
 
   public @Override void setName(List<? extends BaseAppResourceDto> list) {
 
-       setNameService.setName(list, SetNamePojoUtils
-           .getSetNamePojo(BaseResourceService.class,"resourceUrl","resourceId","resourceUrl"));
+    if (!Boolean.TRUE.equals(LoginUserContext.getLoginUser().isAdmin())) {
+
+      Long id = LoginUserContext.getLoginUser().getId();
+      Set<Long> resourceIdSet = Collections.synchronizedSet(new HashSet<>());
+
+      List<Runnable> runnableList = getRunnableList(id, resourceIdSet);
+
+      RunUtils.run("获取用户角色角色组菜单 " + id, runnableList);
+
+      list.removeIf(t -> !resourceIdSet.contains(t.getResourceId()));
+
+    } else {
+      setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "resourceUrl", "resourceId", "resourceUrl"));
+    }
 
   }
 
@@ -100,15 +119,41 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
           obj.setAppId(one.getId());
         }
       }
-      q
-          .eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
 
-          .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId())
-      ;
+      q.eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
+          .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId());
     }
     q.orderByDesc(BaseAppResource::getId);
     return q;
 
+  }
+
+  @NotNull
+  private List<Runnable> getRunnableList(Long id, Set<Long> resourceIdSet) {
+    List<Runnable> runnableList = new ArrayList<>();
+    runnableList.add(() -> {
+      Set<Long> userRoleGroupIdSet = baseUserRoleGroupService.list(
+              new LambdaQueryWrapper<BaseUserRoleGroup>().select(BaseUserRoleGroup::getRoleGroupId).eq(BaseUserRoleGroup::getUserId, id)).stream()
+          .map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toSet());
+      if (CollUtil.isNotEmpty(userRoleGroupIdSet)) {
+        resourceIdSet.addAll(baseRoleGroupResourceService.list(
+                new LambdaQueryWrapper<BaseRoleGroupResource>().in(BaseRoleGroupResource::getRoleGroupId, userRoleGroupIdSet).
+                    select(BaseRoleGroupResource::getResourceId)).stream()
+            .map(BaseRoleGroupResource::getResourceId).toList());
+      }
+    });
+    runnableList.add(() -> {
+
+      Set<Long> userRoleIdSet = baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().select(BaseUserRole::getRoleId).eq(BaseUserRole::getUserId, id)).stream()
+          .map(BaseUserRole::getRoleId).collect(Collectors.toSet());
+      if (CollUtil.isNotEmpty(userRoleIdSet)) {
+        resourceIdSet.addAll(
+            baseRoleResourceService.list(new LambdaQueryWrapper<BaseRoleResource>()
+                    .in(BaseRoleResource::getRoleId, userRoleIdSet).select(BaseRoleResource::getResourceId))
+                .stream().map(BaseRoleResource::getResourceId).toList());
+      }
+    });
+    return runnableList;
   }
 
   private void setQueryListHeader(DynamicsPage<BaseAppResource> page) {
