@@ -6,6 +6,8 @@
 
 [工作流相关](doc/workflow.md)
 
+[版本变更记录](doc/version-change.md)
+
 # 用户配置
 
 | 用户名         | 密码    | 说明   |
