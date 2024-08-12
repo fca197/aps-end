@@ -26,7 +26,7 @@ public interface BaseRoleGroupResourceApi {
   /**
    * 保存 角色组资源表
    */
-  @PostMapping("/baseRoleGroupResource/insert")
+  @PostMapping("/baseRoleGroupResource/insertList")
   BaseRoleGroupResourceInsertRes insert(@RequestBody @Validated(InsertCheck.class) BaseRoleGroupResourceInsertReq req);
 
   /**
