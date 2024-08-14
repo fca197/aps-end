@@ -101,9 +101,12 @@ public class ApsFactoryServiceImpl implements ApsFactoryService {
     if (TRUE.equals(req.getGetPath())) {
       runnableList.add(() -> {
         try {
-          Map<Long, ApsProcessPathDto> pathDtoMap = factoryPathCache.get(req.getFactoryId().toString(),
-              () -> apsProcessPathService.queryList(new ApsProcessPathQueryListReq().setData(new ApsProcessPathDto().setFactoryId(factoryId).setIsDefault(req.getGetPathDefault())))
-                  .getDataList().stream().collect(Collectors.toMap(BaseEntityDto::getId, Function.identity())));
+          Map<Long, ApsProcessPathDto> pathDtoMap = factoryPathCache.get(req.getFactoryId().toString(), () -> {
+            ApsProcessPathDto data = new ApsProcessPathDto().setFactoryId(factoryId).setIsDefault(req.getGetPathDefault());
+            data.setId(req.getGetPathId());
+            return apsProcessPathService.queryList(new ApsProcessPathQueryListReq().setData(data)).getDataList().stream()
+                .collect(Collectors.toMap(BaseEntityDto::getId, Function.identity()));
+          });
           res.setPathDtoMap(pathDtoMap);
           res.setDefaultApsProcessPathDto(
               pathDtoMap.values().stream().filter(t -> TRUE.equals(t.getIsDefault())).findAny().orElseThrow(() -> new RunException("没有默认工单路径")));
