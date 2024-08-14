@@ -20,10 +20,11 @@ import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigItemConfigBizTypeEnum;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
 import com.olivia.peanut.aps.utils.scheduling.ApsSchedulingDayUtils;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigVersionDetailDto;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomReq;
-import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomRes;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingIssueItemDto;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
@@ -78,10 +79,14 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
   @Resource
   ApsOrderGoodsBomService apsOrderGoodsBomService;
 
+  @Resource
+  ApsFactoryService apsFactoryService;
+
   @Override
   @Transactional
   public ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req) {
 
+    ApsSchedulingDayConfig apsSchedulingDayConfig = this.apsSchedulingDayConfigService.getById(req.getSchedulingDayConfigId());
     ApsSchedulingDayConfigDto dayConfigDto = new ApsSchedulingDayConfigDto();
     dayConfigDto.setId(req.getSchedulingDayConfigId());
     DynamicsPage<ApsSchedulingDayConfigExportQueryPageListInfoRes> apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage = apsSchedulingDayConfigService.queryPageList(
@@ -111,7 +116,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
     ApsSchedulingDayConfigVersion dayConfigVersion = $.copy(req, ApsSchedulingDayConfigVersion.class);
     dayConfigVersion.setId(IdWorker.getId());
-    ApsSchedulingDayOrderRoomRes orderRoomRes = ApsSchedulingDayUtils.orderRoomStatus(
+    Map<String, List<ApsSchedulingDayConfigVersionDetailDto>> orderRoomResMap = ApsSchedulingDayUtils.orderRoomStatusMap(
         new ApsSchedulingDayOrderRoomReq().setIssueItemList($.copyList(issueItemList, ApsSchedulingIssueItemDto.class)).setSchedulingDayId(dayConfigVersion.getId())
             .setSchedulingDayConfigDto($.copy(apsSchedulingDayConfigDto, com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigDto.class)));
 //    apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList()
@@ -119,7 +124,28 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     List<List<Long>> headerIdList = apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList().stream().map(t -> List.of(t.getRoomId(), t.getStatusId())).toList();
     dayConfigVersion.setHeaderList(JSON.toJSONString(headerIdList));
     this.save(dayConfigVersion);
-    List<ApsSchedulingDayConfigVersionDetailDto> versionDetails = orderRoomRes.getApsSchedulingDayConfigVersionDetailDtoList();
+    List<ApsSchedulingDayConfigVersionDetailDto> versionDetails = new ArrayList<>();
+
+    List<ApsSchedulingDayConfigVersionDetailDto> tmpList = new ArrayList<>();
+
+    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
+        new FactoryConfigReq().setFactoryId(req.getFactoryId()).setFactoryName(req.getFactoryName()).setGetPath(Boolean.TRUE).setGetPathId(apsSchedulingDayConfig.getProcessId()));
+
+    factoryConfig.getDefaultApsProcessPathDto().getPathRoomList().forEach(room -> {
+      room.getApsRoomConfigList().forEach(roomStatus -> {
+        String key = roomStatus.getRoomId() + "-" + roomStatus.getStatusId();
+        List<ApsSchedulingDayConfigVersionDetailDto> detailDtoList = orderRoomResMap.get(key);
+        if (CollUtil.isNotEmpty(detailDtoList)) {
+          tmpList.clear();
+          tmpList.addAll(detailDtoList);
+        }
+
+        tmpList.forEach(t -> t.setRoomId(roomStatus.getRoomId()).setStatusId(roomStatus.getStatusId()));
+        versionDetails.addAll(tmpList);
+      });
+    });
+    tmpList.clear();
+
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
     this.apsSchedulingDayConfigVersionDetailService.saveBatch($.copyList(versionDetails, ApsSchedulingDayConfigVersionDetail.class));
     return new ApsSchedulingDayConfigVersionInsertRes().setId(dayConfigVersion.getId()).setCount(versionDetails.size());

@@ -22,6 +22,7 @@ public class FactoryConfigReq {
   private LocalDate weekEndDate;
   private Boolean getShift;
   private Boolean getPath;
+  private Long getPathId;
   private Boolean getPathDefault;
 
   private LocalDateTime nowDateTime;
