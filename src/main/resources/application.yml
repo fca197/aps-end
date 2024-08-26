@@ -39,7 +39,22 @@ peanut:
     forecast-main-prefix: MAIN-
     forecast-main-suffix: 预测数据
   orderStatusUpdateNeedDayCount: 60
-
+  ding-config-list:
+    - ding-code: msgNotice
+      ding-name: 消息通知
+      app-id: 3126584161
+      client-id: dingAppClientId
+      robot-code: dingAppKey
+      client-secret: dingAppSecret
+      agent-id: dingAppId
+      use-stream: true
+  server-notice-user-id-map:
+    common:
+      - 1
+    start:
+      - 1
+    end:
+      - 1
 spring:
   boot:
     custom:
