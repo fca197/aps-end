@@ -140,8 +140,10 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
           tmpList.addAll(detailDtoList);
         }
 
-        tmpList.forEach(t -> t.setRoomId(roomStatus.getRoomId()).setStatusId(roomStatus.getStatusId()));
-        versionDetails.addAll(tmpList);
+        tmpList.forEach(t -> {
+          t.setRoomId(roomStatus.getRoomId()).setStatusId(roomStatus.getStatusId());
+          versionDetails.add($.copy(t,ApsSchedulingDayConfigVersionDetailDto.class));
+        });
       });
     });
     tmpList.clear();
