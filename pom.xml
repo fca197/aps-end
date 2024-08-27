@@ -56,7 +56,10 @@
     </plugins>
   </build>
   <dependencies>
-
+<!--    <dependency>-->
+<!--      <groupId>org.springframework.boot</groupId>-->
+<!--      <artifactId>spring-boot-starter-websocket</artifactId>-->
+<!--    </dependency>-->
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
       <groupId>org.springframework.boot</groupId>
@@ -65,7 +68,7 @@
     <dependency>
       <artifactId>peanut-sdk</artifactId>
       <groupId>com.olivia</groupId>
-      <version>1.2.0-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.mysql</groupId>

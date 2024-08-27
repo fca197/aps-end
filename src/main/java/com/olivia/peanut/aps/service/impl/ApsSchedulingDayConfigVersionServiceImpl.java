@@ -3,14 +3,15 @@ package com.olivia.peanut.aps.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
@@ -20,10 +21,11 @@ import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigItemConfigBizTypeEnum;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigReq;
+import com.olivia.peanut.aps.service.pojo.FactoryConfigRes;
 import com.olivia.peanut.aps.utils.scheduling.ApsSchedulingDayUtils;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigVersionDetailDto;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomReq;
-import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayOrderRoomRes;
 import com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingIssueItemDto;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
@@ -78,10 +80,14 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
   @Resource
   ApsOrderGoodsBomService apsOrderGoodsBomService;
 
+  @Resource
+  ApsFactoryService apsFactoryService;
+
   @Override
   @Transactional
   public ApsSchedulingDayConfigVersionInsertRes save(ApsSchedulingDayConfigVersionInsertReq req) {
 
+    ApsSchedulingDayConfig apsSchedulingDayConfig = this.apsSchedulingDayConfigService.getById(req.getSchedulingDayConfigId());
     ApsSchedulingDayConfigDto dayConfigDto = new ApsSchedulingDayConfigDto();
     dayConfigDto.setId(req.getSchedulingDayConfigId());
     DynamicsPage<ApsSchedulingDayConfigExportQueryPageListInfoRes> apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage = apsSchedulingDayConfigService.queryPageList(
@@ -111,7 +117,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
     ApsSchedulingDayConfigVersion dayConfigVersion = $.copy(req, ApsSchedulingDayConfigVersion.class);
     dayConfigVersion.setId(IdWorker.getId());
-    ApsSchedulingDayOrderRoomRes orderRoomRes = ApsSchedulingDayUtils.orderRoomStatus(
+    Map<String, List<ApsSchedulingDayConfigVersionDetailDto>> orderRoomResMap = ApsSchedulingDayUtils.orderRoomStatusMap(
         new ApsSchedulingDayOrderRoomReq().setIssueItemList($.copyList(issueItemList, ApsSchedulingIssueItemDto.class)).setSchedulingDayId(dayConfigVersion.getId())
             .setSchedulingDayConfigDto($.copy(apsSchedulingDayConfigDto, com.olivia.peanut.aps.utils.scheduling.model.ApsSchedulingDayConfigDto.class)));
 //    apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList()
@@ -119,9 +125,35 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     List<List<Long>> headerIdList = apsSchedulingDayConfigDto.getSchedulingDayConfigItemDtoList().stream().map(t -> List.of(t.getRoomId(), t.getStatusId())).toList();
     dayConfigVersion.setHeaderList(JSON.toJSONString(headerIdList));
     this.save(dayConfigVersion);
-    List<ApsSchedulingDayConfigVersionDetailDto> versionDetails = orderRoomRes.getApsSchedulingDayConfigVersionDetailDtoList();
+    List<ApsSchedulingDayConfigVersionDetailDto> versionDetails = new ArrayList<>();
+
+    List<ApsSchedulingDayConfigVersionDetailDto> tmpList = new ArrayList<>();
+
+    FactoryConfigRes factoryConfig = apsFactoryService.getFactoryConfig(
+        new FactoryConfigReq().setFactoryId(req.getFactoryId()).setFactoryName(req.getFactoryName()).setGetPath(Boolean.TRUE).setGetPathId(apsSchedulingDayConfig.getProcessId()));
+    List<List<Long>> headerList = new ArrayList<>();
+
+    factoryConfig.getDefaultApsProcessPathDto().getPathRoomList().forEach(room -> {
+      room.getApsRoomConfigList().forEach(roomStatus -> {
+        headerList.add(List.of(roomStatus.getRoomId(), roomStatus.getStatusId()));
+        String key = roomStatus.getRoomId() + "-" + roomStatus.getStatusId();
+        List<ApsSchedulingDayConfigVersionDetailDto> detailDtoList = orderRoomResMap.get(key);
+        if (CollUtil.isNotEmpty(detailDtoList)) {
+          tmpList.clear();
+          tmpList.addAll(detailDtoList);
+        }
+        tmpList.forEach(t -> {
+          t.setRoomId(roomStatus.getRoomId()).setStatusId(roomStatus.getStatusId());
+          versionDetails.add($.copy(t, ApsSchedulingDayConfigVersionDetailDto.class));
+        });
+      });
+    });
+    tmpList.clear();
+
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
     this.apsSchedulingDayConfigVersionDetailService.saveBatch($.copyList(versionDetails, ApsSchedulingDayConfigVersionDetail.class));
+    this.update(new LambdaUpdateWrapper<ApsSchedulingDayConfigVersion>().eq(BaseEntity::getId, dayConfigVersion.getId())
+        .set(ApsSchedulingDayConfigVersion::getHeaderList, JSON.toJSONString(headerList)));
     return new ApsSchedulingDayConfigVersionInsertRes().setId(dayConfigVersion.getId()).setCount(versionDetails.size());
   }
 
@@ -158,6 +190,9 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @Resource
+  Gson gson;
+
   @Override
   public ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
     ApsSchedulingDayConfigVersion configVersion = this.getById(req.getId());
@@ -190,19 +225,20 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     res.setVersionDetailMap(retMap);
     List<Header> headerList = new ArrayList<>();
     if (StringUtils.isNoneBlank(headerListStr)) {
-      List<List<Long>> hl = new Gson().fromJson(headerListStr, new TypeToken<List<List<Long>>>() {
+
+      List<List<Long>> roomDtoList =  gson.fromJson(headerListStr, new TypeReference<List<List<Long>>>() {
       }.getType());
 
-      Map<Long, String> rmNameMap = this.apsRoomService.listByIds(hl.stream().map(t -> t.get(0)).collect(Collectors.toSet())).stream()
-          .collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
-      Map<Long, String> smNameMap = this.apsStatusService.listByIds(hl.stream().map(t -> t.get(1)).collect(Collectors.toSet())).stream()
-          .collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
-      hl.forEach(h -> {
-        headerList.add(new Header().setFieldName(h.get(0) + "-" + h.get(1)).setShowName(rmNameMap.get(h.get(0)) + "/" + smNameMap.get(h.get(1))));
+      Map<Long, String> statusNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
+      Map<Long, String> roomNameMap = this.apsRoomService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
+      roomDtoList.forEach(rl -> {
+        Header header = new Header().setFieldName(rl.get(0) + "-" + rl.get(1))
+            .setShowName(roomNameMap.get(rl.get(0)) + "/" + statusNameMap.get(rl.get(1)))
+            .setWidth(400).setSortValue("");
+        headerList.add(header);
       });
+
       res.setHeaderList(headerList);
-
-
     }
     res.setScheduledDate(configVersion.getSchedulingDay());
 

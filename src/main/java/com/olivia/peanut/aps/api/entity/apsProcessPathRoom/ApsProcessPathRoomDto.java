@@ -30,6 +30,8 @@ public class ApsProcessPathRoomDto extends BaseEntityDto {
   @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
 
+  private String roomName;
+
   @NotNull(message = "房间配置不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private List<ApsRoomConfigDto> apsRoomConfigList;
 

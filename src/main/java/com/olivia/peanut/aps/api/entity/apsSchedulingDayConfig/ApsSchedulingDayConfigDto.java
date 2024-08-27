@@ -1,9 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig;
 
+import cn.hutool.core.util.StrUtil;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.ApsSchedulingDayConfigItemDto;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -54,6 +56,10 @@ public class ApsSchedulingDayConfigDto extends BaseEntityDto {
   @NotNull(message = "排程版本明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   @Size(min = 1, message = "排程版本明细不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private List<ApsSchedulingDayConfigItemDto> schedulingDayConfigItemDtoList;
+
+  public String getIsDefaultStr() {
+    return Str.booleanToStr(isDefault);
+  }
 }
 
 
