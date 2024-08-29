@@ -181,6 +181,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
       ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId())
+          .setOrderNoParent("p_"+IdWorker.getId())
           .setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now()).setMakeFinishDate(dateTime.toLocalDate())
           .setOrderTotalPrice(new BigDecimal(totalPrice)).setOrderStatus(1L);
       apsOrder.setFinishPayedAmount(new BigDecimal(0)).setFinishPayedDatetime(dateTime.plusDays(RandomUtil.randomInt(3, 30)));

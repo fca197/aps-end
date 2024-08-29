@@ -24,6 +24,7 @@ import lombok.experimental.Accessors;
 public class ApsOrder extends BaseEntity {
 
   private String orderNo;
+  private String orderNoParent;
   private String orderRemark;
   private Long orderStatus;
   private BigDecimal orderTotalPrice;

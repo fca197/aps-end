@@ -27,6 +27,7 @@ public class ApsOrderDto extends BaseEntityDto {
 
   //  @MaskValue(value = DesensitizedType.FIRST_MASK)
   private String orderNo;
+  private String orderNoParent;
   private String orderRemark;
   private Long orderStatus;
   private BigDecimal orderTotalPrice;
