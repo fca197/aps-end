@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import jodd.util.MathUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -177,7 +178,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     ArrayList<ApsOrderGoodsProjectConfig> projectConfigArrayList = new ArrayList<>();
 
     IntStream.range(1, req.getCreateCount() + 1).forEach(i -> {
-      long totalPrice = i;
+      long totalPrice = i* MathUtil.randomLong(1000, 2000);
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
       ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId())
