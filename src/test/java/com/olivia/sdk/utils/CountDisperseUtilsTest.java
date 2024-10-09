@@ -18,7 +18,7 @@ class CountDisperseUtilsTest {
   @Test
   void unidimensional2() {
     for (int i = 0; i < 1000; i++) {
-      List<Long> longList = CountDisperseUtils.unidimensional(9L, 18);
+      List<Long> longList = CountDisperseUtils.unidimensional((long) i, 18);
       log.info("longList:{} {}", longList, longList.stream().mapToDouble(o -> o).sum());
     }
   }
