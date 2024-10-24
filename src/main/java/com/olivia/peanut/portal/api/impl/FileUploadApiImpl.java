@@ -17,6 +17,7 @@ import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -142,8 +144,8 @@ public class FileUploadApiImpl implements FileUploadApi {
     FileUpload fileUpload = this.fileUploadService.getById(req.getId());
     $.requireNonNullCanIgnoreException(fileUpload, "文件不存在");
     try (InputStream inputStream = new FileInputStream(peanutProperties.getLocalFileUploadPath() + fileUpload.getLocalFilePath());
-        //
-        ServletOutputStream outputStream = response.getOutputStream();) {
+         //
+         ServletOutputStream outputStream = response.getOutputStream();) {
       response.reset();
       response.setContentType("application/octet-stream");
       String filename = fileUpload.getFileName();

@@ -25,11 +25,13 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -131,9 +133,9 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
       Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList))
           .stream().collect(
-          Collectors.groupingBy(BaseUserRole::getUserId,
-              Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
-                  list -> list.stream().map(BaseUserRole::getRoleId).toList())));
+              Collectors.groupingBy(BaseUserRole::getUserId,
+                  Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
+                      list -> list.stream().map(BaseUserRole::getRoleId).toList())));
 
       result.forEach(t -> {
         List<Long> userGroupIdList = userRoleGroupIdMap.getOrDefault(t.getId(), List.of());

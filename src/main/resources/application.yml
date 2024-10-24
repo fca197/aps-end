@@ -104,13 +104,14 @@ spring:
     password: 123456
 
   redis:
-    database: 3
-    host: redis.com
-    password: admin!@#q123
-    port: 6379
     redisson:
       file: classpath:redisson.yml
-
+  data:
+    redis:
+      database: 3
+      host: redis.com
+      password: admin!@#q123
+      port: 6379
 
 
 logging:

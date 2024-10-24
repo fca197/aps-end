@@ -25,12 +25,14 @@ import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;
 import org.springframework.aop.framework.AopContext;
@@ -149,7 +151,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
       retObj.put("bomLackCount", bomInventory - usageCount.get());
       retObj.put("bomContrast", usageCount.get() + "/" + bomInventory);
       retObj.put("enough", isEnough ? 1 : 0);
-      retObj.put("isFollowStr", Str.booleanToStr(apsGoodsBom.getIsFollow()) ); 
+      retObj.put("isFollowStr", Str.booleanToStr(apsGoodsBom.getIsFollow()));
       retObj.put("isNotFollow", Boolean.TRUE.equals(apsGoodsBom.getIsFollow()) ? "1" : "0");
       retObj.put("enoughStr", isEnough ? "满足" : "缺少");
 //      retObj.put("bomTotalEndDate", bomTotalEndDate);

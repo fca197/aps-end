@@ -3,8 +3,10 @@ package com.olivia.peanut.aps.utils.constrained;
 import com.alibaba.fastjson2.JSON;
 import com.olivia.peanut.aps.utils.constrained.model.ConstrainedResult;
 import com.olivia.peanut.aps.utils.constrained.model.sub.*;
+
 import java.util.*;
 import java.util.stream.IntStream;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

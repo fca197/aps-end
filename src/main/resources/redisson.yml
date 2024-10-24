@@ -1,4 +1,3 @@
-
 threads: 2
 # Netty线程池数量
 nettyThreads: 2

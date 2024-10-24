@@ -1,8 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -20,11 +20,13 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,8 @@ public class ApsLogisticsPathServiceImpl extends MPJBaseServiceImpl<ApsLogistics
   BaseTableHeaderService tableHeaderService;
   @Resource
   ApsLogisticsPathItemService apsLogisticsPathItemService;
+  @Resource
+  SetNameService setNameService;
 
   @Override
   @Transactional
@@ -83,6 +87,7 @@ public class ApsLogisticsPathServiceImpl extends MPJBaseServiceImpl<ApsLogistics
     return new ApsLogisticsPathQueryListRes().setDataList(dataList);
   }
 
+  // 以下为私有对象封装
 
   public @Override DynamicsPage<ApsLogisticsPathExportQueryPageListInfoRes> queryPageList(ApsLogisticsPathExportQueryPageListReq req) {
 
@@ -107,10 +112,6 @@ public class ApsLogisticsPathServiceImpl extends MPJBaseServiceImpl<ApsLogistics
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  // 以下为私有对象封装
-
-  @Resource
-  SetNameService setNameService;
   public @Override void setName(List<? extends ApsLogisticsPathDto> apsLogisticsPathDtoList) {
     setNameService.setName(apsLogisticsPathDtoList, SetNamePojoUtils.FACTORY);
   }

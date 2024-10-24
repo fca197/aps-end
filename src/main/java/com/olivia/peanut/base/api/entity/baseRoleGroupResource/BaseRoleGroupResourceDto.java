@@ -4,7 +4,9 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,7 +34,7 @@ public class BaseRoleGroupResourceDto extends BaseEntityDto {
   private Long resourceId;
 
   private String resourceName;
-//  @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private List<Long> resourceIdList;
 }
 

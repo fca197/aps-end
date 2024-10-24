@@ -9,6 +9,7 @@ import com.olivia.peanut.portal.service.LoginAccountService;
 import com.olivia.sdk.service.pojo.NameConfig;
 import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.Str;
+
 import java.util.List;
 
 public class SetNamePojoUtils {

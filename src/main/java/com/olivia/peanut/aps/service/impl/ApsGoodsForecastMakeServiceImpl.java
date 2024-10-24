@@ -49,6 +49,7 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -58,6 +59,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -240,7 +242,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
 
   @SneakyThrows
   private void makeSale2Project2BomData(ApsGoodsForecastMakeInsertReq req, List<Runnable> runnableList, List<ApsGoodsSaleProjectConfigSale2ProjectRes> sale2ProjectResList,
-      ApsGoodsForecastMake apsGoodsForecastMake, ApsGoodsForecastMain forecastMain, Map<LocalDate, ApsProcessPathInfo> apsProcessPathInfoMap) {
+                                        ApsGoodsForecastMake apsGoodsForecastMake, ApsGoodsForecastMain forecastMain, Map<LocalDate, ApsProcessPathInfo> apsProcessPathInfoMap) {
 
     AtomicReference<LocalDate> bomMinDate = new AtomicReference<>();
     AtomicReference<LocalDate> bomMaxDate = new AtomicReference<>(LocalDate.now());

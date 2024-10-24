@@ -20,10 +20,12 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetData;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetHeader;
 import jakarta.annotation.Resource;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -145,7 +147,7 @@ public class CheckReportApiImpl implements CheckReportApi {
       });
     });
 
-    RunUtils.run("downLoad" ,runnableList);
+    RunUtils.run("downLoad", runnableList);
     PoiExcelUtil.exportMultipleData(exportMultipleData.setSheetDataList(sheetDataList).setFileName(report.getReportName() + "盘点报表"));
   }
 }

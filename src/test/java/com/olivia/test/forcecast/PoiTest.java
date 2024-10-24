@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -54,8 +55,8 @@ public class PoiTest {
   }
 
   @Test
-  public void day(){
+  public void day() {
     Duration duration = Duration.of(1, ChronoUnit.valueOf("DAYS"));
-    log.info("duration:{}",duration.getSeconds());
+    log.info("duration:{}", duration.getSeconds());
   }
 }

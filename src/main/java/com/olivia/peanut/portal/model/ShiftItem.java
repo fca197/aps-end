@@ -3,7 +3,9 @@ package com.olivia.peanut.portal.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
+
 import java.time.LocalTime;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

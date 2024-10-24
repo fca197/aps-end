@@ -86,7 +86,8 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
   @Resource
   ApsFactoryService apsFactoryService;
-
+  @Resource
+  Gson gson;
 
   @Override
   @Transactional
@@ -111,8 +112,8 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     List<ApsSchedulingIssueItem> issueItemList = apsSchedulingIssueItemService.list(new LambdaQueryWrapper<ApsSchedulingIssueItem>().eq(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay()).eq(ApsSchedulingIssueItem::getFactoryId, req.getFactoryId()));
     log.info("eq {} issueItemList :{}", req.getSchedulingDay(), issueItemList.size());
 
-    if (CollUtil.isNotEmpty(itemList)){
-      issueItemList.addAll(0,itemList);
+    if (CollUtil.isNotEmpty(itemList)) {
+      issueItemList.addAll(0, itemList);
     }
     $.requireNonNullCanIgnoreException(issueItemList, "当天排产订单不能为空");
 
@@ -196,9 +197,6 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
     return DynamicsPage.init(page, listInfoRes);
   }
-
-  @Resource
-  Gson gson;
 
   @Override
   public ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req) {

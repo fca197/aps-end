@@ -33,9 +33,11 @@ import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
+
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -173,7 +175,7 @@ public class ApsRollingForecastOrderServiceImpl extends MPJBaseServiceImpl<ApsRo
         }
       });
     });
-    RunUtils.run("status forecast " + forecastId,   runnableList);
+    RunUtils.run("status forecast " + forecastId, runnableList);
     ApsRollingForecastOrder forecastOrder = $.copy(req, ApsRollingForecastOrder.class);
     forecastOrder.setId(forecastId);
     this.save(forecastOrder);

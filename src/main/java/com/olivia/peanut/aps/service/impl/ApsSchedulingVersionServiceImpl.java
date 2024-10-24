@@ -52,6 +52,7 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -61,6 +62,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -137,8 +139,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   SetNameService setNameService;
 
   private static List<Runnable> getBomRunList(ApsSchedulingVersion schedulingVersion, List<ApsSchedulingVersionCapacity> apsSchedulingVersionCapacityList,
-      Map<Long, ApsGoods> goodsMap, Map<Long, ApsProcessPathDto> apsProcessPathDtoMap, Map<Long, List<WeekInfo>> factoryWeekListMap, Map<Long, Long> dayWorkSecondMap,
-      Map<Long, Map<Long, List<ApsGoodsBom>>> goodsBomMap, List<ApsSchedulingGoodsBom> apsSchedulingGoodsBomList, List<ApsSchedulingGoodsStatusDate> apsOrderGoodsStatusDateList) {
+                                              Map<Long, ApsGoods> goodsMap, Map<Long, ApsProcessPathDto> apsProcessPathDtoMap, Map<Long, List<WeekInfo>> factoryWeekListMap, Map<Long, Long> dayWorkSecondMap,
+                                              Map<Long, Map<Long, List<ApsGoodsBom>>> goodsBomMap, List<ApsSchedulingGoodsBom> apsSchedulingGoodsBomList, List<ApsSchedulingGoodsStatusDate> apsOrderGoodsStatusDateList) {
     List<Runnable> runnableList = new ArrayList<>();
     apsSchedulingVersionCapacityList.forEach(order -> {
       runnableList.add(() -> {
@@ -382,7 +384,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         .collect(Collectors.toMap(Factory::getId, Factory::getFactoryName));
     Map<Long, String> gnMap = CollUtil.isEmpty(makeCapacityGoodsList) ? Map.of()
         : this.apsGoodsService.listByIds(makeCapacityGoodsList.stream().map(ApsMakeCapacityGoods::getGoodsId).collect(Collectors.toSet())).stream()
-            .collect(Collectors.toMap(ApsGoods::getId, ApsGoods::getGoodsName));
+        .collect(Collectors.toMap(ApsGoods::getId, ApsGoods::getGoodsName));
     Map<Long, List<ApsOrderGoodsSaleConfig>> orderSaleListMap = new HashMap<>();
     Map<Long, ApsSaleConfig> apsSaleConfigMap = new HashMap<>();
     if (CollUtil.isNotEmpty(makeCapacitySaleConfigMap)) {
@@ -515,7 +517,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<Runnable> runnableList = getBomRunList(schedulingVersion, apsSchedulingVersionCapacityList, goodsMap, apsProcessPathDtoMap, factoryWeekListMap, dayWorkSecondMap,
           goodsBomMap, apsSchedulingGoodsBomList, apsOrderGoodsStatusDateList);
 
-      Boolean schedulingBom = RunUtils.run("scheduling bom " + req.getId(),  runnableList);
+      Boolean schedulingBom = RunUtils.run("scheduling bom " + req.getId(), runnableList);
       $.assertTrueCanIgnoreException(schedulingBom, "零件计算失败");
     }
 

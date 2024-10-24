@@ -23,12 +23,14 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -125,7 +127,7 @@ public class ApsSchedulingDayConfigServiceImpl extends MPJBaseServiceImpl<ApsSch
                   apsSchedulingDayConfigDtoList.stream().map(BaseEntityDto::getId).toList()))
           .stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigItem::getSchedulingDayId, LinkedHashMap::new, Collectors.toList()));
 
-      apsSchedulingDayConfigDtoList.forEach(t->t.setSchedulingDayConfigItemDtoList($.copyList(itemMap.get(t.getId()), ApsSchedulingDayConfigItemDto.class)));
+      apsSchedulingDayConfigDtoList.forEach(t -> t.setSchedulingDayConfigItemDtoList($.copyList(itemMap.get(t.getId()), ApsSchedulingDayConfigItemDto.class)));
 
       setNameService.setName(apsSchedulingDayConfigDtoList, SetNamePojoUtils.FACTORY,
           SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processId", "processName")

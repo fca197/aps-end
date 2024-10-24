@@ -10,11 +10,13 @@ import com.google.common.cache.CacheBuilder;
 import jakarta.annotation.Resource;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,8 +86,8 @@ public class BaseRoleServiceImpl extends MPJBaseServiceImpl<BaseRoleMapper, Base
 
   public @Override void setName(List<? extends BaseRoleDto> list) {
 
-       setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseRoleGroupService.class,
-           "roleGroupName","roleGroupId","roleGroupName"));
+    setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseRoleGroupService.class,
+        "roleGroupName", "roleGroupId", "roleGroupName"));
 
 
   }

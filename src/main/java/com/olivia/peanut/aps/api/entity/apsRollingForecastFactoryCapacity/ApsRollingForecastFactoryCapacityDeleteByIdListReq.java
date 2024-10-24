@@ -1,7 +1,9 @@
 package com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity;
 
 import jakarta.validation.constraints.NotEmpty;
+
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -11,7 +11,9 @@ import com.olivia.peanut.base.service.BaseRoleResourceService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +42,7 @@ public class BaseRoleResourceApiImpl implements BaseRoleResourceApi {
     if (CollUtil.isNotEmpty(req.getResourceIdList())) {
       this.baseRoleResourceService.saveBatch(req.getResourceIdList().stream()
           .map(t -> new BaseRoleResource().setResourceId(t).setRoleId(req.getRoleId())).toList());
-      return new BaseRoleResourceInsertRes().setCount(req.getResourceIdList().size()+1);
+      return new BaseRoleResourceInsertRes().setCount(req.getResourceIdList().size() + 1);
     }
 
     return new BaseRoleResourceInsertRes().setCount(1);

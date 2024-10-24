@@ -3,8 +3,10 @@ package com.olivia.menu;
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -50,7 +52,7 @@ public class Menu {
       return;
     }
     menus.forEach(t -> {
-      System.out.println("('" + String.join("','", t.id + "",   IdWorker.getIdStr(), t.name, t.path, t.parentId + "", Boolean.FALSE.equals(t.hidden) ? "0" : "1", "1001'),"));
+      System.out.println("('" + String.join("','", t.id + "", IdWorker.getIdStr(), t.name, t.path, t.parentId + "", Boolean.FALSE.equals(t.hidden) ? "0" : "1", "1001'),"));
       print(t.children);
     });
   }

@@ -8,7 +8,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
  *
  */
 
-public class CompleteTaskListener  extends FlowBaseService implements TaskListener {
+public class CompleteTaskListener extends FlowBaseService implements TaskListener {
 
   @Override
   public void notify(DelegateTask delegateTask) {

@@ -41,6 +41,7 @@ import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.UserInfo;
 import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -50,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import jodd.util.MathUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -178,11 +180,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     ArrayList<ApsOrderGoodsProjectConfig> projectConfigArrayList = new ArrayList<>();
 
     IntStream.range(1, req.getCreateCount() + 1).forEach(i -> {
-      long totalPrice = i* MathUtil.randomLong(1000, 2000);
+      long totalPrice = i * MathUtil.randomLong(1000, 2000);
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
       ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId())
-          .setOrderNoParent("p_"+IdWorker.getId())
+          .setOrderNoParent("p_" + IdWorker.getId())
           .setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now()).setMakeFinishDate(dateTime.toLocalDate())
           .setOrderTotalPrice(new BigDecimal(totalPrice)).setOrderStatus(1L);
       apsOrder.setFinishPayedAmount(new BigDecimal(0)).setFinishPayedDatetime(dateTime.plusDays(RandomUtil.randomInt(3, 30)));
