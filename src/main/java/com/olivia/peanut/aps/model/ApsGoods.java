@@ -25,6 +25,7 @@ public class ApsGoods extends BaseEntity {
   private String goodsRemark;
 
   private Long processPathId;
+  private Long produceProcessId;
 
 }
 
