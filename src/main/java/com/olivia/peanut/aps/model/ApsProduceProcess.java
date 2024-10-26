@@ -31,5 +31,7 @@ public class ApsProduceProcess extends BaseEntity {
    */
   private String produceProcessName;
 
+  private Boolean isDefault;
+
 }
 

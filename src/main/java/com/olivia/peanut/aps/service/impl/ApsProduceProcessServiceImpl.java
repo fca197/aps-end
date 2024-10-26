@@ -1,33 +1,36 @@
 package com.olivia.peanut.aps.service.impl;
 
-import org.springframework.aop.framework.AopContext;
+import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.aps.api.entity.apsProduceProcess.*;
+import com.olivia.peanut.aps.api.entity.apsProduceProcessItem.ApsProduceProcessItemDto;
+import com.olivia.peanut.aps.mapper.ApsProduceProcessMapper;
+import com.olivia.peanut.aps.model.ApsProduceProcess;
+import com.olivia.peanut.aps.model.ApsProduceProcessItem;
+import com.olivia.peanut.aps.service.ApsProduceProcessItemService;
+import com.olivia.peanut.aps.service.ApsProduceProcessService;
+import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsProduceProcessMapper;
-import com.olivia.peanut.aps.model.ApsProduceProcess;
-import com.olivia.peanut.aps.service.ApsProduceProcessService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsProduceProcess.*;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 
 /**
  * aps 生产路径(ApsProduceProcess)表服务实现类
@@ -45,7 +48,18 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
   BaseTableHeaderService tableHeaderService;
   @Resource
   SetNameService setNameService;
+  @Resource
+  ApsProduceProcessItemService apsProduceProcessItemService;
 
+  @Override
+  @Transactional
+  public void save(ApsProduceProcessInsertReq req) {
+    ApsProduceProcess produceProcess = $.copy(req, ApsProduceProcess.class);
+    produceProcess.setId(IdWorker.getId());
+    List<ApsProduceProcessItem> processItemList = req.getProduceProcessItemDtoList().stream().map(t -> $.copy(t, ApsProduceProcessItem.class)).toList();
+    processItemList.forEach(t -> t.setProduceProcessId(produceProcess.getId()));
+    this.apsProduceProcessItemService.saveBatch(processItemList);
+  }
 
   public @Override ApsProduceProcessQueryListRes queryList(ApsProduceProcessQueryListReq req) {
 
@@ -86,7 +100,11 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
   public @Override void setName(List<? extends ApsProduceProcessDto> list) {
 
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
-
+    if (CollUtil.isEmpty(list)) {
+      return;
+    }
+    Map<Long, List<ApsProduceProcessItem>> listMap = this.apsProduceProcessItemService.list(new LambdaQueryWrapper<ApsProduceProcessItem>().in(ApsProduceProcessItem::getProduceProcessId, list.stream().map(BaseEntityDto::getId).collect(Collectors.toSet()))).stream().collect(Collectors.groupingBy(ApsProduceProcessItem::getProduceProcessId));
+    list.forEach(t -> t.setProduceProcessItemDtoList($.copyList(listMap.get(t.getId()), ApsProduceProcessItemDto.class)));
   }
 
 
@@ -95,9 +113,7 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
 
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getProduceProcessNo()), ApsProduceProcess::getProduceProcessNo, obj.getProduceProcessNo())
-          .eq(StringUtils.isNoneBlank(obj.getProduceProcessName()), ApsProduceProcess::getProduceProcessName, obj.getProduceProcessName())
+      q.eq(StringUtils.isNoneBlank(obj.getProduceProcessNo()), ApsProduceProcess::getProduceProcessNo, obj.getProduceProcessNo()).eq(StringUtils.isNoneBlank(obj.getProduceProcessName()), ApsProduceProcess::getProduceProcessName, obj.getProduceProcessName())
 
       ;
     }

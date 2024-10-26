@@ -1,33 +1,30 @@
 package com.olivia.peanut.aps.service.impl;
 
-import org.springframework.aop.framework.AopContext;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.aps.api.entity.apsMachine.*;
+import com.olivia.peanut.aps.mapper.ApsMachineMapper;
+import com.olivia.peanut.aps.model.ApsMachine;
+import com.olivia.peanut.aps.service.ApsMachineService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.ann.SetUserName;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsMachineMapper;
-import com.olivia.peanut.aps.model.ApsMachine;
-import com.olivia.peanut.aps.service.ApsMachineService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsMachine.*;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 
 /**
  * aps 生产机器(ApsMachine)表服务实现类
@@ -83,6 +80,7 @@ public class ApsMachineServiceImpl extends MPJBaseServiceImpl<ApsMachineMapper, 
 
   // 以下为私有对象封装
 
+  @SetUserName
   public @Override void setName(List<? extends ApsMachineDto> list) {
 
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);

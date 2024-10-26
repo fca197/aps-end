@@ -4,8 +4,8 @@
     <appender class="ch.qos.logback.core.ConsoleAppender" name="console">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <!--输出格式化-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId},%X{spanId}] %-5level %logger{15}:%F.%L -
-                %msg%n
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId},%X{spanId}] %-5level %logger{15}:%F.%L - %msg%n
             </pattern>
         </encoder>
     </appender>

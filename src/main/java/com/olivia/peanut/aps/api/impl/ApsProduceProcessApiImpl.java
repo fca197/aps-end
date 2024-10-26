@@ -45,7 +45,7 @@ public class ApsProduceProcessApiImpl implements ApsProduceProcessApi {
    *
    */
   public @Override ApsProduceProcessInsertRes insert(ApsProduceProcessInsertReq req) {
-    this.apsProduceProcessService.save($.copy(req, ApsProduceProcess.class));
+    this.apsProduceProcessService.save(req);
     return new ApsProduceProcessInsertRes().setCount(1);
   }
 

@@ -30,6 +30,12 @@ public class ApsProduceProcessItem extends BaseEntity {
    *  机器ID
    */
   private Long machineId;
+
+  /***
+   * 状态
+   */
+  private Long statusId;
+
   /***
    *  耗时（秒）
    */
