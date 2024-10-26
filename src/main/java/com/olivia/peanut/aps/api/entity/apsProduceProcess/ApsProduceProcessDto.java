@@ -34,7 +34,7 @@ public class ApsProduceProcessDto extends BaseEntityDto {
    */
   @NotBlank(message = "生产路径名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String produceProcessName;
-  @NotBlank(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotNull(message = "是否默认不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isDefault;
 
   @NotNull(message = "流程配置不能为空", groups = {InsertCheck.class, UpdateCheck.class})

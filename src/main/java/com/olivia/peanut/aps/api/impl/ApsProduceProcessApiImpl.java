@@ -71,7 +71,7 @@ public class ApsProduceProcessApiImpl implements ApsProduceProcessApi {
    *
    */
   public @Override ApsProduceProcessUpdateByIdRes updateById(ApsProduceProcessUpdateByIdReq req) {
-    apsProduceProcessService.updateById($.copy(req, ApsProduceProcess.class));
+    apsProduceProcessService.updateById(req);
     return new ApsProduceProcessUpdateByIdRes();
 
   }

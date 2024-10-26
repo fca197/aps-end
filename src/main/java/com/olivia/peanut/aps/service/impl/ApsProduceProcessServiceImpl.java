@@ -59,6 +59,18 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
     List<ApsProduceProcessItem> processItemList = req.getProduceProcessItemDtoList().stream().map(t -> $.copy(t, ApsProduceProcessItem.class)).toList();
     processItemList.forEach(t -> t.setProduceProcessId(produceProcess.getId()));
     this.apsProduceProcessItemService.saveBatch(processItemList);
+    this.save(produceProcess);
+  }
+
+  @Override
+  @Transactional
+  public void updateById(ApsProduceProcessUpdateByIdReq req) {
+    ApsProduceProcess produceProcess = $.copy(req, ApsProduceProcess.class);
+    this.apsProduceProcessItemService.remove(new LambdaQueryWrapper<ApsProduceProcessItem>().eq(ApsProduceProcessItem::getProduceProcessId,req.getId()));
+    List<ApsProduceProcessItem> processItemList = req.getProduceProcessItemDtoList().stream().map(t -> $.copy(t, ApsProduceProcessItem.class)).toList();
+    processItemList.forEach(t -> t.setProduceProcessId(produceProcess.getId()));
+    this.apsProduceProcessItemService.saveBatch(processItemList);
+    this.updateById(produceProcess);
   }
 
   public @Override ApsProduceProcessQueryListRes queryList(ApsProduceProcessQueryListReq req) {

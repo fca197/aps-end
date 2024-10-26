@@ -25,5 +25,7 @@ public interface ApsProduceProcessService extends MPJBaseService<ApsProduceProce
   void setName(List<? extends ApsProduceProcessDto> apsProduceProcessDtoList);
 
   void save(ApsProduceProcessInsertReq req);
+
+  void updateById(ApsProduceProcessUpdateByIdReq req);
 }
 
