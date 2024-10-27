@@ -218,7 +218,7 @@ public class ApsMakeCapacityFactoryServiceImpl extends MPJBaseServiceImpl<ApsMak
 
       ;
     }
-    q.orderByDesc(ApsMakeCapacityFactory::getId);
+    q.orderByDesc(ApsMakeCapacityFactory::getYear,ApsMakeCapacityFactory::getMonth);
     return q;
 
   }
