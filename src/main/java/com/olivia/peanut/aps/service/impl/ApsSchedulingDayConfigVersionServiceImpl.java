@@ -175,13 +175,12 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     });
     tmpList.clear();
 
-    // TODO: 带校验
 
-    List<ApsProduceProcess> apsProduceProcesses = apsProduceProcessService.listByIds(apsGoodsList.stream().map(ApsGoods::getProcessPathId).collect(Collectors.toSet()));
+    List<ApsProduceProcess> apsProduceProcesses = apsProduceProcessService.listByIds(apsGoodsList.stream().map(ApsGoods::getProduceProcessId).collect(Collectors.toSet()));
     Map<Long, List<ApsProduceProcessItem>> apsProduceProcessItemMap = apsProduceProcessItemService.list(new LambdaQueryWrapper<ApsProduceProcessItem>().in(ApsProduceProcessItem::getProduceProcessId, apsProduceProcesses.stream().map(BaseEntity::getId).collect(Collectors.toSet()))).stream().collect(Collectors.groupingBy(ApsProduceProcessItem::getProduceProcessId));
     Map<Long, ApsGoods> apsGoodsMap = apsGoodsList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
     List<ProduceOrder> produceOrderList = itemList.stream().map(t -> {
-      List<ApsProduceProcessItem> apsProduceProcessItems = apsProduceProcessItemMap.get(apsGoodsMap.get(t.getGoodsId()).getProcessPathId());
+      List<ApsProduceProcessItem> apsProduceProcessItems = apsProduceProcessItemMap.get(apsGoodsMap.get(t.getGoodsId()).getProduceProcessId());
       return new ProduceOrder().setOrderId(t.getOrderId()).setOrderMachineList(apsProduceProcessItems.stream().map(t2 -> new ProduceOrderMachine().setMachineId(t2.getMachineId()).setUseTime(t2.getMachineUseTimeSecond())).toList());
     }).toList();
 
@@ -191,9 +190,8 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
     List<ApsSchedulingDayConfigVersionDetailMachine> detailMachineList = processComputeOrderRes.stream().map(t -> new ApsSchedulingDayConfigVersionDetailMachine().setSchedulingDayId(dayConfigVersion.getId()).setOrderId(t.getOrderId())
         .setBeginDateTime(t.getBeginLocalDateTime()).setEndDateTime(t.getEndLocalDateTime()).setMachineId(t.getMachineId())).toList();
-
+    detailMachineList.forEach(t->t.setSchedulingDayId(dayConfigVersion.getId()));
     this.save(dayConfigVersion);
-
     apsSchedulingDayConfigVersionDetailMachineService.saveBatch(detailMachineList);
 
 
