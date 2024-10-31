@@ -3634,6 +3634,26 @@ create table if not exists base_role_group
     )
     comment '角色组表';
 
+create table if not exists base_role_group_resource
+(
+    id            bigint auto_increment comment 'ID 自增'
+        primary key,
+    role_group_id bigint                               null comment '角色ID',
+    resource_id   bigint                               null comment '资源ID',
+    tenant_id     bigint                               null comment '租户ID',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号'
+)
+    comment '角色组资源表';
+
+create index idx_role_group_id
+    on base_role_group_resource (role_group_id);
+
 create table if not exists base_role_resource
 (
     id          bigint auto_increment comment 'ID 自增'
@@ -3723,6 +3743,26 @@ create table if not exists base_user_dept
 
 create index idx_user_id_dept_id
     on base_user_dept (user_id, dept_id);
+
+create table if not exists base_user_resource
+(
+    id          bigint auto_increment comment 'ID 自增'
+        primary key,
+    user_id     bigint                               null comment '角色ID',
+    resource_id bigint                               null comment '资源ID',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号'
+)
+    comment '用户角色资源表';
+
+create index idx_user_id
+    on base_user_resource (user_id);
 
 create table if not exists base_user_role
 (

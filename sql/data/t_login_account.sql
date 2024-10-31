@@ -1,5 +1,3 @@
-INSERT INTO t_login_account (id, user_name, login_phone, pwd, is_delete, create_time, create_by, update_time, update_by,
-                             trace_id, tenant_id, version_num, user_pwd)
-VALUES (2, 'admin', 18600000000, null, 0, '2024-05-31 19:23:34', null, '2024-06-03 16:41:05', null, null, 1001, 0,
-        '21232F297A57A5A743894A0E4A801FC3');
-
+INSERT INTO t_login_account (id, user_name, login_phone, pwd, is_delete, create_time, create_by, update_time, update_by, trace_id, tenant_id, version_num, user_pwd, is_admin) VALUES (2, '张三', 18600000000, null, 0, '2024-05-31 19:23:34', null, '2024-08-12 13:11:02', null, null, 1001, 0, '21232F297A57A5A743894A0E4A801FC3', 1);
+INSERT INTO t_login_account (id, user_name, login_phone, pwd, is_delete, create_time, create_by, update_time, update_by, trace_id, tenant_id, version_num, user_pwd, is_admin) VALUES (3, '王五', 18616771546, null, 0, '2024-05-31 19:23:34', null, '2024-08-12 12:32:42', null, null, 1001, 0, '21232F297A57A5A743894A0E4A801FC3', 1);
+INSERT INTO t_login_account (id, user_name, login_phone, pwd, is_delete, create_time, create_by, update_time, update_by, trace_id, tenant_id, version_num, user_pwd, is_admin) VALUES (1820271870147096578, '首席执行官', 18600000001, null, 0, '2024-08-05 09:33:28', 2, '2024-08-12 13:11:02', '2', '1820271869824135169', null, 0, null, 1);
