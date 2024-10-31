@@ -365,3 +365,7 @@ INSERT INTO peanut_prod.base_resource (id, resource_code, resource_name, resourc
                                        update_time, update_by, trace_id, version_num, tenant_id)
 VALUES (1820757199220150401, '1820757199220150401', 'app管理', '/setting/baseApp/index', null, null, 0, null,
         1820757199220150399, null, 0, '2024-08-07 14:24:12', null, '2024-08-07 14:34:12', null, null, 0, 1001);
+
+
+INSERT INTO base_resource (id, resource_code, resource_name, resource_url, resource_icon, resource_type, is_button, is_hidden, parent_id, path, is_delete, create_time, create_by, update_time, update_by, trace_id, version_num, tenant_id) VALUES (1820757199220150403, '1820757199220150403', '机器管理', '/aps/machine/index', null, null, 0, null, 1820757199220150274, null, 0, '2024-10-25 23:29:19', null, '2024-10-25 23:29:59', null, null, 0, 1001);
+INSERT INTO base_resource (id, resource_code, resource_name, resource_url, resource_icon, resource_type, is_button, is_hidden, parent_id, path, is_delete, create_time, create_by, update_time, update_by, trace_id, version_num, tenant_id) VALUES (1820757199220150404, '1820757199220150404', '制造路径', '/aps/produceProcess/path/index', null, null, 0, null, 1820757199220150274, null, 0, '2024-10-25 23:29:19', null, '2024-10-25 23:29:59', null, null, 0, 1001);
