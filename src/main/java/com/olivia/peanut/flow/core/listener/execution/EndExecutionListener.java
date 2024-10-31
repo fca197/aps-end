@@ -12,6 +12,6 @@ public class EndExecutionListener implements ExecutionListener {
   public void notify(DelegateExecution execution) throws Exception {
 //    execution.getEventName()
 
-    execution.setVariable("","");
+    execution.setVariable("", "");
   }
 }

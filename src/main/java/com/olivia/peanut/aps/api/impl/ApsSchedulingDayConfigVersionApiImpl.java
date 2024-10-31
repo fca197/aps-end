@@ -1,18 +1,23 @@
 package com.olivia.peanut.aps.api.impl;
 
 import com.olivia.sdk.utils.RunUtils;
+
 import java.time.LocalDateTime;
 
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersion;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+
 import java.util.stream.Collectors;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
 import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
@@ -107,7 +112,7 @@ public class ApsSchedulingDayConfigVersionApiImpl implements ApsSchedulingDayCon
   }
 
   @Override
-  public ApsSchedulingDayConfigVersionDetailListRes  detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
+  public ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
     return this.apsSchedulingDayConfigVersionService.detailList(req);
   }
 

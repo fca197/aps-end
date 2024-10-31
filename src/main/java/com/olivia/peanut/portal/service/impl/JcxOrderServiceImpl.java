@@ -25,6 +25,7 @@ import com.olivia.peanut.portal.service.JcxOrderService;
 import com.olivia.sdk.exception.CanIgnoreException;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -152,7 +154,7 @@ public class JcxOrderServiceImpl extends MPJBaseServiceImpl<JcxOrderMapper, JcxO
 
       });
     });
-    RunUtils.run("jcxOrder-setName" , runnableList);
+    RunUtils.run("jcxOrder-setName", runnableList);
   }
 
   // 以下为私有对象封装

@@ -3,7 +3,9 @@ package com.olivia.peanut.aps.service;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersion;
+
 import java.util.List;
+
 import com.github.yulichang.base.MPJBaseService;
 
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion.*;
@@ -25,7 +27,7 @@ public interface ApsSchedulingDayConfigVersionService extends MPJBaseService<Aps
 
   void setName(List<? extends ApsSchedulingDayConfigVersionDto> apsSchedulingDayConfigVersionDtoList);
 
-  ApsSchedulingDayConfigVersionDetailListRes  detailList(ApsSchedulingDayConfigVersionDetailListReq req);
+  ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req);
 
   ApsSchedulingDayConfigVersionUpdateOrderSortIndexRes updateOrderSortIndex(ApsSchedulingDayConfigVersionUpdateOrderSortIndexReq req);
 

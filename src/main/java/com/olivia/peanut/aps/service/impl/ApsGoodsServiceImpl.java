@@ -10,21 +10,23 @@ import com.olivia.peanut.aps.mapper.ApsGoodsMapper;
 import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsProcessPathService;
+import com.olivia.peanut.aps.service.ApsProduceProcessService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (ApsGoods)表服务实现类
@@ -81,7 +83,9 @@ public class ApsGoodsServiceImpl extends MPJBaseServiceImpl<ApsGoodsMapper, ApsG
 
     setNameService.setName(apsGoodsDtoList,//
         SetNamePojoUtils.OP_USER_NAME,
-        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName"));
+        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName"),
+        SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName")
+    );
 
 //    if (CollUtil.isEmpty(ApsGoodsDtoList)) {
 //      return;

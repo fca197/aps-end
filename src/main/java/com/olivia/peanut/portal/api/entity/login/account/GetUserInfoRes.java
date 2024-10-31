@@ -10,6 +10,6 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class GetUserInfoRes  extends LoginAccountDto {
+public class GetUserInfoRes extends LoginAccountDto {
 
 }

@@ -18,8 +18,10 @@ import com.olivia.peanut.portal.service.*;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -168,7 +170,7 @@ public class CheckReportListApiImpl implements CheckReportListApi {
       }
     }));
 
-    RunUtils.run("查询报表" ,runnableList);
+    RunUtils.run("查询报表", runnableList);
     dataList.sort(Comparator.comparingInt(Info::getStoreySort).thenComparingInt(Info::getRoomSort));
     return new CheckReportListFactoryDataRes().setDataList(dataList);
   }

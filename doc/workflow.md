@@ -65,17 +65,17 @@
 > nrOfActiviteInstances：当前活动的实例数量，即还没有完成的实例数量  
 > loopCounter ：循环计数器，办理人在列表中的索引  
 > nrOfInstances：会签中总共的实例数  
-> nrOfCompletedInstances：已经完成的实例数量  
+> nrOfCompletedInstances：已经完成的实例数量
 
 那么，在 Completion condition 中 可以这么填写：
 
 > $ {nrOfInstances == nrOfCompletedInstances} 表示所有人员审批完成后会签结束。  
-> ${ nrOfCompletedInstances == 1} 表示一个人完成审批。  
+> ${ nrOfCompletedInstances == 1} 表示一个人完成审批。
 
 ## 问题
 
 1. 流程TTL应该配置
 
-> 流程配置 history cleanup 中:  time to live 必填,单位 天  
+> 流程配置 history cleanup 中:  time to live 必填,单位 天
 
 2. 2

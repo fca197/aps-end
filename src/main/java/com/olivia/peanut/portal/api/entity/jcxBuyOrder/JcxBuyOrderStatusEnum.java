@@ -1,9 +1,11 @@
 package com.olivia.peanut.portal.api.entity.jcxBuyOrder;
 
 import com.olivia.sdk.exception.CanIgnoreException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

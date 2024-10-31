@@ -50,21 +50,22 @@ create index id_tenant_id
 
 create table if not exists aps_goods
 (
-    id              bigint auto_increment comment 'ID 自增'
+    id                 bigint auto_increment comment 'ID 自增'
         primary key,
-    goods_name      varchar(255)                         null comment '商品名称',
-    goods_remark    varchar(255)                         null comment '商品备注',
-    tenant_id       bigint                               null comment '租户ID',
-    is_delete       tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time     datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by       bigint                               null comment '创建人',
-    update_time     datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by       bigint                               null comment '修改人',
-    trace_id        varchar(64)                          null comment '调用链路',
-    supplier_status varchar(255)                         null,
-    version_num     int        default 0                 null comment '版本号',
-    factory_id      bigint                               null comment '工厂ID',
-    process_path_id bigint                               null comment '工艺路线'
+    goods_name         varchar(255)                         null comment '商品名称',
+    goods_remark       varchar(255)                         null comment '商品备注',
+    tenant_id          bigint                               null comment '租户ID',
+    is_delete          tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time        datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by          bigint                               null comment '创建人',
+    update_time        datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by          bigint                               null comment '修改人',
+    trace_id           varchar(64)                          null comment '调用链路',
+    supplier_status    varchar(255)                         null,
+    version_num        int        default 0                 null comment '版本号',
+    factory_id         bigint                               null comment '工厂ID',
+    process_path_id    bigint                               null comment '工艺路线',
+    produce_process_id bigint                               null comment '制造流水线ID produceProcess'
 )
     comment 'aps 商品表';
 
@@ -2202,6 +2203,26 @@ create table if not exists aps_logistics_path_item
 create index idx_logistics_path_id
     on aps_logistics_path_item (logistics_path_id);
 
+create table if not exists aps_machine
+(
+    id           bigint auto_increment comment 'ID 自增'
+        primary key,
+    machine_no   varchar(32)                          not null comment '机器编号',
+    machine_name varchar(32)                          not null comment '机器名称',
+    tenant_id    bigint                               null comment '租户ID',
+    is_delete    tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time  datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by    bigint                               null comment '创建人',
+    update_time  datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by    bigint                               null comment '修改人',
+    trace_id     varchar(64)                          null comment '调用链路',
+    version_num  int        default 0                 null comment '版本号'
+)
+    comment 'aps 生产机器';
+
+create index idx_tenant_id
+    on aps_machine (tenant_id);
+
 create table if not exists aps_make_capacity_factory
 (
     id                     bigint auto_increment comment 'ID 自增'
@@ -2488,12 +2509,16 @@ create table if not exists aps_order
     trace_id              varchar(64)                          null comment '调用链路',
     version_num           int        default 0                 null comment '版本号',
     urgency_level         int        default 0                 null comment '紧急度0最小,越大越紧急',
-    scheduling_date       date                                 null comment '排产时间'
+    scheduling_date       date                                 null comment '排产时间',
+    order_no_parent       varchar(50)                          null comment '父订单号'
 )
     comment '订单表';
 
 create index idx_aps_order_tenant_id
     on aps_order (tenant_id);
+
+create index idx_order_no_parent
+    on aps_order (order_no_parent);
 
 create table if not exists aps_order_goods
 (
@@ -2775,6 +2800,52 @@ create index idx_aps_process_path_room_room_id
 create index idx_aps_process_path_room_tenant_id
     on aps_process_path_room (tenant_id);
 
+create table if not exists aps_produce_process
+(
+    id                   bigint auto_increment comment 'ID 自增'
+        primary key,
+    produce_process_no   varchar(32)                          not null comment '生产路径编码',
+    produce_process_name varchar(32)                          not null comment '生产路径名称',
+    is_default           tinyint    default 0                 null comment '是否默认',
+    tenant_id            bigint                               null comment '租户ID',
+    is_delete            tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time          datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by            bigint                               null comment '创建人',
+    update_time          datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by            bigint                               null comment '修改人',
+    trace_id             varchar(64)                          null comment '调用链路',
+    version_num          int        default 0                 null comment '版本号'
+)
+    comment 'aps 生产路径';
+
+create index idx_tenant_id
+    on aps_produce_process (tenant_id);
+
+create table if not exists aps_produce_process_item
+(
+    id                      bigint auto_increment comment 'ID 自增'
+        primary key,
+    produce_process_id      bigint                               null comment '生产路径 Id aps_produce_process',
+    machine_id              bigint                               null comment '机器ID',
+    status_id               bigint                               null comment '状态ID',
+    machine_use_time_second bigint                               null comment '耗时（秒）',
+    tenant_id               bigint                               null comment '租户ID',
+    is_delete               tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time             datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by               bigint                               null comment '创建人',
+    update_time             datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by               bigint                               null comment '修改人',
+    trace_id                varchar(64)                          null comment '调用链路',
+    version_num             int        default 0                 null comment '版本号'
+)
+    comment 'aps 生产机器';
+
+create index idx_produce_process_id
+    on aps_produce_process_item (produce_process_id);
+
+create index idx_tenant_id
+    on aps_produce_process_item (tenant_id);
+
 create table if not exists aps_project_config
 (
     id              bigint auto_increment comment 'ID 自增'
@@ -3023,7 +3094,8 @@ create table if not exists aps_scheduling_day_config
     update_time         datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
     update_by           bigint                               null comment '修改人',
     trace_id            varchar(64)                          null comment '调用链路',
-    version_num         int        default 0                 null comment '版本号'
+    version_num         int        default 0                 null comment '版本号',
+    room_config         varchar(1024)                        null comment '车间配置'
 )
     comment '排程版本表';
 
@@ -3072,7 +3144,7 @@ create table if not exists aps_scheduling_day_config_version
     trace_id                  varchar(64)                          null comment '调用链路',
     version_num               int        default 0                 null comment '版本号',
     process_id                bigint                               not null comment '工艺路径id',
-    header_list               varchar(1024)                        not null comment '订单号'
+    header_list               varchar(4096)                        null comment '排产日配置版本表头'
 )
     comment '排程版本';
 
@@ -3109,6 +3181,33 @@ create index idx_order_id
 
 create index idx_scheduling_day_id
     on aps_scheduling_day_config_version_detail (scheduling_day_id);
+
+create table if not exists aps_scheduling_day_config_version_detail_machine
+(
+    id                bigint auto_increment comment 'ID 自增'
+        primary key,
+    scheduling_day_id bigint                               null comment '版本ID',
+    order_id          bigint                               null comment '订单ID',
+    machine_id        bigint                               null comment '机器ID',
+    status_id         bigint                               null comment '状态ID',
+    begin_date_time   datetime                             null comment '开始时间',
+    end_date_time     datetime                             null comment '结束时间',
+    start_second      bigint                               null comment '开始秒',
+    end_second        bigint                               null comment '结束秒',
+    use_time          bigint                               null comment '耗时（秒）',
+    tenant_id         bigint                               null comment '租户ID',
+    is_delete         tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time       datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by         bigint                               null comment '创建人',
+    update_time       datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by         bigint                               null comment '修改人',
+    trace_id          varchar(64)                          null comment '调用链路',
+    version_num       int        default 0                 null comment '版本号'
+)
+    comment '排程版本详情_机器';
+
+create index idx_scheduling_day_id
+    on aps_scheduling_day_config_version_detail_machine (scheduling_day_id);
 
 create table if not exists aps_scheduling_goods_bom
 (

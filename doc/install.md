@@ -21,6 +21,7 @@
 ### 安装步骤
 
 0. maven 配置
+
 ```xml
 
 <?xml version="1.0" encoding="UTF-8"?>
@@ -135,11 +136,11 @@
 ```
 
 # 问题
+
 0. 启动报错:  ServiceNotice.* 依赖注入失败
 
 > 检查 mysql是否正确, mysql版本,mysql驱动版本, jdbc连接地址,用户名,密码
 > 检查 redis是否正确, 包含 application.yml中 redis节点和 redisson.yml 配置
-
 
 1. 启动报错:  Resource ortools-win32-x86-64/ was not found in ClassLoader jdk.internal.loader.ClassLoaders答:
 
@@ -147,16 +148,14 @@
 > 方法1: 在类BootstrapApplication 中找到 :  Loader.loadNativeLibraries(); 注释掉该语句
 > 方法2: pom.xml中 ortools-java依赖排除的节点删除,增加项目依赖
 
-
-
 2. 打包后文件
 
-> 打包后在[target](../target) 生成两个jar文件 , app.jar  即部署jar文件
-   
+> 打包后在[target](../target) 生成两个jar文件 , app.jar 即部署jar文件
+
 3. 执行时数据库缺少字段
 
 > 目前项目还在开发中, sql文件未更新,请手动添加字段或微信联系获取最新数据结构
-   
+
 4. 列表展示字段为空,或修改字段显示宽度
 
 > 请修改base_table_header中配置, 或菜单:基础配置=>表格头管理

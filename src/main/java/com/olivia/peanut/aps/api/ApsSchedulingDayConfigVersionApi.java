@@ -74,7 +74,7 @@ public interface ApsSchedulingDayConfigVersionApi {
    * detailList
    */
   @PostMapping("/apsSchedulingDayConfigVersion/detailList")
-  ApsSchedulingDayConfigVersionDetailListRes  detailList(@RequestBody @Valid ApsSchedulingDayConfigVersionDetailListReq req);
+  ApsSchedulingDayConfigVersionDetailListRes detailList(@RequestBody @Valid ApsSchedulingDayConfigVersionDetailListReq req);
 
   // updateOrderSortIndex
   @PostMapping("/apsSchedulingDayConfigVersion/updateOrderSortIndex")

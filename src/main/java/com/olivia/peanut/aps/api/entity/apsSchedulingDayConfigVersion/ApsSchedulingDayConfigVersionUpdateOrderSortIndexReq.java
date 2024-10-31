@@ -3,7 +3,9 @@ package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
 import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

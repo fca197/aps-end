@@ -5,8 +5,10 @@ import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import com.olivia.peanut.base.api.entity.baseAppResource.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import org.springframework.web.multipart.MultipartFile;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
@@ -28,6 +30,7 @@ public interface BaseAppResourceApi {
    */
   @PostMapping("/baseAppResource/insert")
   BaseAppResourceInsertRes insert(@RequestBody @Validated(InsertCheck.class) BaseAppResourceInsertReq req);
+
   @PostMapping("/baseAppResource/insertList")
   BaseAppResourceInsertListRes insertList(@RequestBody @Validated(InsertCheck.class) BaseAppResourceInsertListReq req);
 
