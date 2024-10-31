@@ -1,33 +1,32 @@
 package com.olivia.peanut.aps.service.impl;
 
-import org.springframework.aop.framework.AopContext;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import jakarta.annotation.Resource;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.*;
+import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionDetailMachineMapper;
+import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetailMachine;
+import com.olivia.peanut.aps.service.ApsMachineService;
+import com.olivia.peanut.aps.service.ApsOrderService;
+import com.olivia.peanut.aps.service.ApsOrderUserService;
+import com.olivia.peanut.aps.service.ApsSchedulingDayConfigVersionDetailMachineService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.annotation.Resource;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionDetailMachineMapper;
-import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetailMachine;
-import com.olivia.peanut.aps.service.ApsSchedulingDayConfigVersionDetailMachineService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.*;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 
 /**
  * 排程版本详情_机器(ApsSchedulingDayConfigVersionDetailMachine)表服务实现类
@@ -81,11 +80,19 @@ public class ApsSchedulingDayConfigVersionDetailMachineServiceImpl extends MPJBa
     return DynamicsPage.init(page, listInfoRes);
   }
 
+//  @Resource
+//  ApsOrderService apsOrderService;
+//  @Resource
+//  ApsOrderUserService apsOrderUserService;
   // 以下为私有对象封装
 
   public @Override void setName(List<? extends ApsSchedulingDayConfigVersionDetailMachineDto> list) {
 
-    //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
+    setNameService.setName(list,
+        SetNamePojoUtils.getSetNamePojo(ApsOrderService.class, "orderNo", "orderId", "orderNo"),
+        SetNamePojoUtils.getSetNamePojo(ApsMachineService.class, "machineName", "machineId", "machineName"),
+        SetNamePojoUtils.getSetNamePojo(ApsOrderUserService.class, "userName", "orderId", "orderUserName")
+    );
 
   }
 
@@ -95,13 +102,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineServiceImpl extends MPJBa
 
 
     if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getSchedulingDayId()), ApsSchedulingDayConfigVersionDetailMachine::getSchedulingDayId, obj.getSchedulingDayId())
-          .eq(Objects.nonNull(obj.getOrderId()), ApsSchedulingDayConfigVersionDetailMachine::getOrderId, obj.getOrderId())
-          .eq(Objects.nonNull(obj.getMachineId()), ApsSchedulingDayConfigVersionDetailMachine::getMachineId, obj.getMachineId())
-          .eq(Objects.nonNull(obj.getStatusId()), ApsSchedulingDayConfigVersionDetailMachine::getStatusId, obj.getStatusId())
-          .eq(Objects.nonNull(obj.getBeginDateTime()), ApsSchedulingDayConfigVersionDetailMachine::getBeginDateTime, obj.getBeginDateTime())
-          .eq(Objects.nonNull(obj.getEndDateTime()), ApsSchedulingDayConfigVersionDetailMachine::getEndDateTime, obj.getEndDateTime())
+      q.eq(Objects.nonNull(obj.getSchedulingDayId()), ApsSchedulingDayConfigVersionDetailMachine::getSchedulingDayId, obj.getSchedulingDayId()).eq(Objects.nonNull(obj.getOrderId()), ApsSchedulingDayConfigVersionDetailMachine::getOrderId, obj.getOrderId()).eq(Objects.nonNull(obj.getMachineId()), ApsSchedulingDayConfigVersionDetailMachine::getMachineId, obj.getMachineId()).eq(Objects.nonNull(obj.getStatusId()), ApsSchedulingDayConfigVersionDetailMachine::getStatusId, obj.getStatusId()).eq(Objects.nonNull(obj.getBeginDateTime()), ApsSchedulingDayConfigVersionDetailMachine::getBeginDateTime, obj.getBeginDateTime()).eq(Objects.nonNull(obj.getEndDateTime()), ApsSchedulingDayConfigVersionDetailMachine::getEndDateTime, obj.getEndDateTime())
 
       ;
     }

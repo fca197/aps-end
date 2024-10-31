@@ -47,5 +47,8 @@ public class ApsSchedulingDayConfigVersionDetailMachine extends BaseEntity {
    */
   private LocalDateTime endDateTime;
 
+  private Long startSecond;
+  private Long endSecond;
+  private Long useTime;
 }
 

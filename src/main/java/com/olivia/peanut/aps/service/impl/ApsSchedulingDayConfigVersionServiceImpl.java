@@ -183,18 +183,12 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       List<ApsProduceProcessItem> apsProduceProcessItems = apsProduceProcessItemMap.get(apsGoodsMap.get(t.getGoodsId()).getProduceProcessId());
       return new ProduceOrder().setOrderId(t.getOrderId()).setOrderMachineList(apsProduceProcessItems.stream().map(t2 -> new ProduceOrderMachine().setMachineId(t2.getMachineId()).setUseTime(t2.getMachineUseTimeSecond())).toList());
     }).toList();
-
     ProduceProcessComputeRes computeRes = ProduceProcessUtils.compute(new ProduceProcessComputeReq().setProduceStartTime(LocalDateTime.now()).setProduceOrderList(produceOrderList));
-
     List<ProduceProcessComputeOrderRes> processComputeOrderRes = computeRes.getProcessComputeOrderRes();
-
-    List<ApsSchedulingDayConfigVersionDetailMachine> detailMachineList = processComputeOrderRes.stream().map(t -> new ApsSchedulingDayConfigVersionDetailMachine().setSchedulingDayId(dayConfigVersion.getId()).setOrderId(t.getOrderId())
-        .setBeginDateTime(t.getBeginLocalDateTime()).setEndDateTime(t.getEndLocalDateTime()).setMachineId(t.getMachineId())).toList();
-    detailMachineList.forEach(t->t.setSchedulingDayId(dayConfigVersion.getId()));
+    List<ApsSchedulingDayConfigVersionDetailMachine> detailMachineList = processComputeOrderRes.stream().map(t -> $.copy(t, ApsSchedulingDayConfigVersionDetailMachine.class).setSchedulingDayId(dayConfigVersion.getId()).setBeginDateTime(t.getBeginLocalDateTime()).setEndDateTime(t.getEndLocalDateTime())).toList();
+    detailMachineList.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
     this.save(dayConfigVersion);
     apsSchedulingDayConfigVersionDetailMachineService.saveBatch(detailMachineList);
-
-
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
     this.apsSchedulingDayConfigVersionDetailService.saveBatch($.copyList(versionDetails, ApsSchedulingDayConfigVersionDetail.class));
 

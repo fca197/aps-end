@@ -41,16 +41,20 @@ public class ApsSchedulingDayConfigVersionDetailMachineDto extends BaseEntityDto
    */
   @NotNull(message = "订单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long orderId;
+  private String orderNo;
+  private String orderUserName;
   /***
    *  机器ID
    */
   @NotNull(message = "机器ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long machineId;
+  private String machineName;
   /***
    *  状态ID
    */
   @NotNull(message = "状态ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long statusId;
+
   /***
    *  开始时间
    */
@@ -62,6 +66,10 @@ public class ApsSchedulingDayConfigVersionDetailMachineDto extends BaseEntityDto
   @NotNull(message = "结束时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private LocalDateTime endDateTime;
 
+
+  private Long startSecond;
+  private Long endSecond;
+  private Long useTime;
 }
 
 
