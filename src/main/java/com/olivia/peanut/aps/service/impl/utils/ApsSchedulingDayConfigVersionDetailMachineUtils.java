@@ -105,7 +105,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
           ml.stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes::getCellIndex, Collectors.collectingAndThen(Collectors.toList(), a -> a.stream().sorted(Comparator.comparing(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime)).toList())));
 
 
-      int maxOrderList = machineTimeStemOrderMap.values().stream().mapToInt(Collection::size).max().getAsInt();
+      int maxOrderList = machineTimeStemOrderMap.values().stream().mapToInt(Collection::size).max().orElse(0);
       for (int i = 0; i < maxOrderList; i++) {
         SXSSFRow rt = sheet.createRow(rowIndex.get() + i);
         SXSSFCell cell = rt.createCell(0);
