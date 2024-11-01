@@ -28,6 +28,7 @@ peanut:
     - /districtCode
     - /test/flow
     - /camunda
+    - /apsSchedulingDayConfigVersionDetailMachine/exportQueryPageList
   #    - /uber/h3/geoToH3Address
   redis-key:
     user-token: ut_

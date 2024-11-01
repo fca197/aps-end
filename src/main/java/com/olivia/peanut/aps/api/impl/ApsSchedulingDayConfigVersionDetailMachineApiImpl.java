@@ -3,6 +3,7 @@ package com.olivia.peanut.aps.api.impl;
 import java.time.LocalDateTime;
 
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetailMachine;
+import com.olivia.peanut.aps.service.impl.utils.ApsSchedulingDayConfigVersionDetailMachineUtils;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
@@ -81,11 +82,14 @@ public class ApsSchedulingDayConfigVersionDetailMachineApiImpl implements ApsSch
   }
 
   public @Override void queryPageListExport(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListReq req) {
+    req.setQueryPage(false);
     DynamicsPage<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> page = queryPageList(req);
     List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> list = page.getDataList();
     // 类型转换，  更换枚举 等操作
-    List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> listInfoRes = $.copyList(list, ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class);
-    PoiExcelUtil.export(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class, listInfoRes, "排程版本详情_机器");
+//    List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> listInfoRes = $.copyList(list, ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class);
+
+    ApsSchedulingDayConfigVersionDetailMachineUtils.downLoad(req,list);
+    //    PoiExcelUtil.export(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class, listInfoRes, "排程版本详情_机器");
   }
 
   public @Override ApsSchedulingDayConfigVersionDetailMachineImportRes importData(@RequestParam("file") MultipartFile file) {
