@@ -122,7 +122,7 @@ logging:
     "org.springframework.jdbc.core": debug
     "org.apache.ibatis.logging.jdbc": debug
 #    com.olivia.peanut.aps.utils.forecast: error
-#    com.olivia.peanut.portal.model: error
+    com.olivia.peanut.sdk: debug
 #    com.zaxxer.hikari: trace
 
 

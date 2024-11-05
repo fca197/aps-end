@@ -31,5 +31,7 @@ public class ApsMachine extends BaseEntity {
    */
   private String machineName;
 
+  private Long sortIndex;
+
 }
 

@@ -6,33 +6,32 @@
         <finalName>app</finalName>
         <plugins>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <classifier>lib</classifier>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-lib</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/lib</outputDirectory>
-                            <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>false</stripVersion>
-                            <includeScope>runtime</includeScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <classifier>lib</classifier>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-dependency-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-lib</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-dependencies</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>target/lib</outputDirectory>-->
+<!--                            <excludeTransitive>false</excludeTransitive>-->
+<!--                            <stripVersion>false</stripVersion>-->
+<!--                            <includeScope>runtime</includeScope>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -41,9 +40,9 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>com.olivia.BootstrapApplication</mainClass>
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            <mainClass>com.olivia.BootstrapApplication</mainClass>-->
                         </manifest>
                         <manifestEntries>
                             <build-time>${maven.build.timestamp}</build-time>

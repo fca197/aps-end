@@ -2,9 +2,12 @@ package com.olivia.peanut.aps.service.impl.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.ApsSchedulingDayConfigVersionDetailMachineDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListReq;
+import com.olivia.peanut.aps.model.ApsMachine;
+import com.olivia.peanut.aps.service.ApsMachineService;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import com.olivia.sdk.utils.ReqResUtils;
 import com.olivia.sdk.utils.Str;
@@ -44,6 +47,10 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
       return;
     }
     log.info("排程版本 {} 数据为 {} 条", req.getData().getSchedulingDayId(), list.size());
+
+    List<ApsMachine> machineList = SpringUtil.getBean(ApsMachineService.class).list();
+
+    machineList.sort(Comparator.comparing(ApsMachine::getSortIndex));
 
     List<String> orderNoList = list.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getOrderNo).toList();
     Map<String, CellStyle> orderStyleMap = new HashMap<>();
@@ -98,12 +105,13 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
 
 
     AtomicInteger rowIndex = new AtomicInteger(1);
-    machineMap.forEach((m, ml) -> {
-      String machineName = ml.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getMachineName).distinct().collect(Collectors.joining(","));
-
+    machineList.forEach(machine -> {
+      String machineName = machine.getMachineName();
+      List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> ml = machineMap.getOrDefault(machine.getId(), List.of());
       Map<Long, List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes>> machineTimeStemOrderMap =
-          ml.stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes::getCellIndex, Collectors.collectingAndThen(Collectors.toList(), a -> a.stream().sorted(Comparator.comparing(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime)).toList())));
+          ml.stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes::getCellIndex, Collectors.collectingAndThen(Collectors.toList(), a -> a.stream().sorted(Comparator.comparing(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime)).collect(Collectors.toList()))));
 
+      log.info("write excel {} ml {} {}",machineName,ml.size(),ml.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getOrderNo).toList());
 
       int maxOrderList = machineTimeStemOrderMap.values().stream().mapToInt(Collection::size).max().orElse(0);
       for (int i = 0; i < maxOrderList; i++) {
@@ -124,6 +132,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
         if (CollUtil.isEmpty(stemOrderList)) {
           continue;
         }
+        stemOrderList.sort(Comparator.nullsFirst(Comparator.comparing(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime)));
         for (int j = 0; j < stemOrderList.size(); j++) {
           int rowNum = rowIndex.get() + j;
           SXSSFRow tmpRow = sheet.getRow(rowNum);
@@ -144,12 +153,12 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
   private static void mergedSheet(SXSSFSheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
     try {
       if (lastRow < firstRow || lastCol < firstCol) {
-        log.info("Invalid cell range, having lastRow < firstRow || lastCol < firstCol, had rows {} >= {} or cells {} >= {}", lastRow, firstRow, lastCol, firstCol);
+//        log.info("Invalid cell range, having lastRow < firstRow || lastCol < firstCol, had rows {} >= {} or cells {} >= {}", lastRow, firstRow, lastCol, firstCol);
         return;
       }
       sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
     } catch (Exception e) {
-      log.error("addMergedRegion {}", e.getMessage());
+//      log.error("addMergedRegion {}", e.getMessage());
     }
   }
 
