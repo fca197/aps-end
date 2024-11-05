@@ -20,14 +20,7 @@ import lombok.experimental.Accessors;
 @TableName("aps_workshop_section")
 public class ApsWorkshopSection extends BaseEntity {
 
-  /***
-   *  所属租户id
-   */
-  private Long tenantId;
-  /***
-   *  所属工厂id
-   */
-  private Long factoryId;
+
   /***
    *  工段名称
    */
@@ -36,14 +29,6 @@ public class ApsWorkshopSection extends BaseEntity {
    *  工段编码
    */
   private String sectionCode;
-  /***
-   *  工段类型
-   */
-  private String sectionType;
-  /***
-   *  工段状态
-   */
-  private String sectionStatus;
 
 
 }

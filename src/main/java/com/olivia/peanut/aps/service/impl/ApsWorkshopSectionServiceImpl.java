@@ -76,11 +76,8 @@ public class ApsWorkshopSectionServiceImpl extends MPJBaseServiceImpl<WorkshopSe
       q
           .eq(Objects.nonNull(obj.getId()), ApsWorkshopSection::getId, obj.getId())
           .eq(Objects.nonNull(obj.getTenantId()), ApsWorkshopSection::getTenantId, obj.getTenantId())
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsWorkshopSection::getFactoryId, obj.getFactoryId())
           .eq(StringUtils.isNoneBlank(obj.getSectionName()), ApsWorkshopSection::getSectionName, obj.getSectionName())
           .eq(StringUtils.isNoneBlank(obj.getSectionCode()), ApsWorkshopSection::getSectionCode, obj.getSectionCode())
-          .eq(StringUtils.isNoneBlank(obj.getSectionType()), ApsWorkshopSection::getSectionType, obj.getSectionType())
-          .eq(StringUtils.isNoneBlank(obj.getSectionStatus()), ApsWorkshopSection::getSectionStatus, obj.getSectionStatus())
           .eq(Objects.nonNull(obj.getCreateTime()), ApsWorkshopSection::getCreateTime, obj.getCreateTime())
           .eq(Objects.nonNull(obj.getUpdateTime()), ApsWorkshopSection::getUpdateTime, obj.getUpdateTime())
           .orderByDesc(ApsWorkshopSection::getId)
