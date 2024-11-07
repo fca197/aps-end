@@ -18,6 +18,7 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.login.account.*;
 import com.olivia.peanut.portal.model.LoginAccount;
 import com.olivia.peanut.portal.service.LoginAccountService;
+import com.olivia.sdk.ann.RedissonCacheAnn;
 import com.olivia.sdk.ann.Timed;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.filter.LoginUserContext;
@@ -70,6 +71,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
   @Override
   @Timed
+//  @RedissonCacheAnn(group = "login", key = "#req.loginPhone+':'+#req.pwd",ttl = 60,unit = TimeUnit.SECONDS)
   public LoginPhonePwdRes loginPhonePwd(LoginPhonePwdReq req) {
 
     LoginUserContext.ignoreTenantId(TRUE);
