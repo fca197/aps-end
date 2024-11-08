@@ -6,9 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/basePreview")
 public interface BasePreviewApi {
 
-  @RequestMapping("/info")
+  @RequestMapping("/basePreview/info")
   SystemConfigPreviewRes systemConfigPreview(@RequestBody @Valid SystemConfigPreviewReq req);
 }

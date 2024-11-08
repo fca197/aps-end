@@ -1,6 +1,8 @@
 package com.olivia.peanut.base.api.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.olivia.peanut.aps.mapper.ApsRoomConfigMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.base.api.BasePreviewApi;
@@ -10,16 +12,11 @@ import com.olivia.peanut.base.model.BaseRole;
 import com.olivia.peanut.base.model.BaseRoleGroup;
 import com.olivia.peanut.base.service.BaseRoleGroupService;
 import com.olivia.peanut.base.service.BaseRoleService;
-import com.olivia.peanut.portal.model.Calendar;
-import com.olivia.peanut.portal.model.Factory;
-import com.olivia.peanut.portal.model.Shift;
-import com.olivia.peanut.portal.model.ShiftItem;
-import com.olivia.peanut.portal.service.CalendarService;
-import com.olivia.peanut.portal.service.FactoryService;
-import com.olivia.peanut.portal.service.ShiftItemService;
-import com.olivia.peanut.portal.service.ShiftService;
+import com.olivia.peanut.portal.model.*;
+import com.olivia.peanut.portal.service.*;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RestController
 
@@ -56,10 +54,17 @@ public class BasePreviewApiImpl implements BasePreviewApi {
   ApsProduceProcessService apsProduceProcessService;
 
   @Resource
+  CalendarDayService calendarDayService;
+  @Resource
+  ApsProcessPathRoomService apsProcessPathRoomService;
+
+  @Resource
   ApsProcessPathService apsProcessPathService;
 
   @Resource
   ApsRoomService apsRoomService;
+  @Resource
+  ApsRoomConfigService apsRoomConfigService;
 
   @Resource
   ApsGoodsService apsGoodsService;
@@ -86,6 +91,11 @@ public class BasePreviewApiImpl implements BasePreviewApi {
   ApsGoodsForecastService apsGoodsForecastService;
   @Resource
   ApsGoodsForecastMainService apsGoodsForecastMainService;
+  @Resource
+  ApsProduceProcessItemService apsProduceProcessItemService;
+  @Autowired
+  private ApsRoomConfigMapper apsRoomConfigMapper;
+
 
   @Override
   public SystemConfigPreviewRes systemConfigPreview(SystemConfigPreviewReq req) {
@@ -97,23 +107,26 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     AtomicReference<List<BaseRoleGroup>> roleGroupAtomic = new AtomicReference<>();
     AtomicReference<List<ApsSaleConfig>> apsSaleConfigAtomic = new AtomicReference<>();
     AtomicReference<List<ApsProjectConfig>> apsProjectConfigAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsStatus>> apsStatusAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, ApsStatus>> apsStatusAtomic = new AtomicReference<>();
     AtomicReference<List<ApsProduceProcess>> apsProduceProcessAtomic = new AtomicReference<>();
     AtomicReference<List<ApsProcessPath>> apsProcessPathAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsRoom>> apsRoomAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsGoods>> apsGoodsAtomic = new AtomicReference<>();
-    AtomicReference<List<Calendar>> calendarAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsWorkshopSection>> apsWorkshopSectionAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsWorkshopStation>> apsWorkshopStationAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsLogisticsPath>> apsLogisticsPathAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsMachine>> apsMachineAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsProcessPathRoom>>> apsProcessPathRoomAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, ApsRoom>> apsRoomAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsGoods>>> apsGoodsAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<Calendar>>> calendarAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, ApsWorkshopSection>> apsWorkshopSectionAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, ApsWorkshopStation>> apsWorkshopStationAtomic = new AtomicReference<>();
+//    AtomicReference<List<ApsLogisticsPath>> apsLogisticsPathAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, ApsMachine>> apsMachineAtomic = new AtomicReference<>();
     AtomicReference<List<ApsBomGroup>> apsBomGroupAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, List<ApsBom>>> apsBomMapAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsGoodsBomBuyPlan>> apsGoodsBomBuyPlanAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsGoodsSaleItem>> apsGoodsSaleItemAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsGoodsForecast>> apsGoodsForecastAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsGoodsForecastMain>> apsGoodsForecastAtomicFinal = new AtomicReference<>();
-
+//    AtomicReference<List<ApsGoodsBomBuyPlan>> apsGoodsBomBuyPlanAtomic = new AtomicReference<>();
+//    AtomicReference<List<ApsGoodsSaleItem>> apsGoodsSaleItemAtomic = new AtomicReference<>();
+//    AtomicReference<List<ApsGoodsForecast>> apsGoodsForecastAtomic = new AtomicReference<>();
+//    AtomicReference<List<ApsGoodsForecastMain>> apsGoodsForecastAtomicFinal = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsProduceProcessItem>>> apsProduceProcessItemMapAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsRoomConfig>>> apsRoomConfigMapAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<CalendarDay>>> calendarDayMapAtomic = new AtomicReference<>();
 
     List<Runnable> runnableList = new ArrayList<>();
     runnableList.add(() -> factoryListAtomic.set(factoryService.list()));
@@ -123,39 +136,64 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     runnableList.add(() -> roleGroupAtomic.set(baseRoleGroupService.list()));
     runnableList.add(() -> apsSaleConfigAtomic.set(apsSaleConfigService.list()));
     runnableList.add(() -> apsProjectConfigAtomic.set(apsProjectConfigService.list()));
-    runnableList.add(() -> apsStatusAtomic.set(apsStatusService.list()));
+    runnableList.add(() -> apsStatusAtomic.set(apsStatusService.list().stream().collect(Collectors.toMap(ApsStatus::getId, v -> v))));
     runnableList.add(() -> apsProduceProcessAtomic.set(apsProduceProcessService.list()));
     runnableList.add(() -> apsProcessPathAtomic.set(apsProcessPathService.list()));
-    runnableList.add(() -> apsRoomAtomic.set(apsRoomService.list()));
-    runnableList.add(() -> apsGoodsAtomic.set(apsGoodsService.list()));
-    runnableList.add(() -> calendarAtomic.set(calendarService.list()));
-    runnableList.add(() -> apsWorkshopSectionAtomic.set(apsWorkshopSectionService.list()));
-    runnableList.add(() -> apsWorkshopStationAtomic.set(apsWorkshopStationService.list()));
-    runnableList.add(() -> apsLogisticsPathAtomic.set(apsLogisticsPathService.list()));
-    runnableList.add(() -> apsMachineAtomic.set(apsMachineService.list()));
+    runnableList.add(() -> apsRoomAtomic.set(apsRoomService.list().stream().collect(Collectors.toMap(ApsRoom::getId, v -> v))));
+    runnableList.add(() -> apsGoodsAtomic.set(apsGoodsService.list().stream().collect(Collectors.groupingBy(ApsGoods::getFactoryId))));
+    runnableList.add(() -> calendarAtomic.set(calendarService.list().stream().collect(Collectors.groupingBy(Calendar::getFactoryId))));
+    runnableList.add(() -> apsWorkshopSectionAtomic.set(apsWorkshopSectionService.list().stream().collect(Collectors.toMap(ApsWorkshopSection::getId, v -> v))));
+    runnableList.add(() -> apsWorkshopStationAtomic.set(apsWorkshopStationService.list().stream().collect(Collectors.toMap(ApsWorkshopStation::getId, v -> v))));
+//    runnableList.add(() -> apsLogisticsPathAtomic.set(apsLogisticsPathService.list()));
+    runnableList.add(() -> apsMachineAtomic.set(apsMachineService.list().stream().collect(Collectors.toMap(ApsMachine::getId, f -> f))));
     runnableList.add(() -> apsBomGroupAtomic.set(apsBomGroupService.list()));
-    runnableList.add(() -> apsBomMapAtomic.set(apsBomService.list().stream().collect(Collectors.groupingBy(ApsBom::getGroupId))));
-    runnableList.add(() -> apsGoodsBomBuyPlanAtomic.set(apsGoodsBomBuyPlanService.list()));
-    runnableList.add(() -> apsGoodsSaleItemAtomic.set(apsGoodsSaleItemService.list()));
-    runnableList.add(() -> apsGoodsForecastAtomic.set(apsGoodsForecastService.list()));
-    runnableList.add(() -> apsGoodsForecastAtomicFinal.set(apsGoodsForecastMainService.list()));
+    runnableList.add(() -> apsBomMapAtomic.set(apsBomService.list().stream().collect(Collectors.groupingBy(t -> Objects.isNull(t.getGroupId()) ? 0 : t.getGroupId()))));
+//    runnableList.add(() -> apsGoodsBomBuyPlanAtomic.set(apsGoodsBomBuyPlanService.list()));
+//    runnableList.add(() -> apsGoodsSaleItemAtomic.set(apsGoodsSaleItemService.list()));
+//    runnableList.add(() -> apsGoodsForecastAtomic.set(apsGoodsForecastService.list()));
+//    runnableList.add(() -> apsGoodsForecastAtomicFinal.set(apsGoodsForecastMainService.list()));
+    runnableList.add(() -> apsProduceProcessItemMapAtomic.set(apsProduceProcessItemService.list().stream().collect(Collectors.groupingBy(ApsProduceProcessItem::getProduceProcessId))));
+    runnableList.add(() -> apsProcessPathRoomAtomic.set(apsProcessPathRoomService.list().stream().collect(Collectors.groupingBy(ApsProcessPathRoom::getProcessPathId))));
+    runnableList.add(() -> apsRoomConfigMapAtomic.set(apsRoomConfigService.list().stream().collect(Collectors.groupingBy(t -> Objects.isNull(t.getRoomId()) ? 0 : t.getRoomId()))));
 
+    runnableList.add(() -> calendarDayMapAtomic.set(calendarDayService.list().stream().collect(Collectors.groupingBy(CalendarDay::getCalendarId))));
 
     RunUtils.run("preview", runnableList);
 
-    List<Factory> factoryList = factoryListAtomic.get();
-    Map<Long, List<Shift>> shiftMap = shiftListAtomic.get();
-    Map<Long, List<ShiftItem>> shiftItemMap = shiftItemListAtomic.get();
-    List<SystemConfigPreviewRes.Info> list = new ArrayList<>();
+    List<SystemConfigPreviewRes.Info> produceProcessList = apsProduceProcessAtomic.get().stream().map(mgt -> new SystemConfigPreviewRes.Info().setRefId(mgt.getId()).setName(mgt.getProduceProcessName()).setChildren(apsProduceProcessItemMapAtomic.get().getOrDefault(mgt.getId(), List.of()).stream().map(tt -> new SystemConfigPreviewRes.Info().setName(apsMachineAtomic.get().getOrDefault(tt.getMachineId(), new ApsMachine().setMachineName("机器已删除")).getMachineName() + "耗时：" + tt.getMachineUseTimeSecond() + "（秒）")).toList())).toList();
 
-    factoryList.forEach(f -> {
+
+    // 工厂配置
+    List<SystemConfigPreviewRes.Info> list = new ArrayList<>();
+    factoryListAtomic.get().forEach(f -> {
       ArrayList<SystemConfigPreviewRes.Info> childrenList = new ArrayList<>();
-      SystemConfigPreviewRes.Info info = new SystemConfigPreviewRes.Info().setName(f.getFactoryName()).setChildren(childrenList);
-      Long factoryId = f.getId();
-      List<Shift> shiftList = shiftMap.getOrDefault(factoryId, List.of());
-      childrenList.add(new SystemConfigPreviewRes.Info().setName("班次信息").setChildren(shiftList.stream().map(shift -> new SystemConfigPreviewRes.Info().setName(shift.getShiftName()).setChildren(shiftItemMap.getOrDefault(shift.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setDesc(t.getBeginTime() + "/" + t.getBeginTime()).setChildren(List.of()).setName(t.getBeginTime() + "/" + t.getEndTime())).toList())).toList()));
-      list.add(info.setChildren(childrenList));
+      SystemConfigPreviewRes.Info factoryInfo = new SystemConfigPreviewRes.Info().setRefId(f.getId()).setName(f.getFactoryName()).setChildren(childrenList);
+      list.add(factoryInfo);
+
+      // 班次
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("班次信息").setChildren(shiftListAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(shift -> new SystemConfigPreviewRes.Info().setName(shift.getShiftName()).setChildren(shiftItemListAtomic.get().getOrDefault(shift.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setDesc(t.getBeginTime() + "/" + t.getBeginTime()).setChildren(List.of()).setName(t.getBeginTime() + "/" + t.getEndTime())).toList())).toList()));
+      //工艺路径
+      List<SystemConfigPreviewRes.Info> pathList = apsProcessPathAtomic.get().stream().map(path -> new SystemConfigPreviewRes.Info().setRefId(path.getId()).setName(path.getProcessPathName()).setChildren(apsProcessPathRoomAtomic.get().getOrDefault(path.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(apsRoomAtomic.get().getOrDefault(t.getRoomId(), new ApsRoom()).getRoomName()).setChildren(apsRoomConfigMapAtomic.get().getOrDefault(t.getRoomId(), List.of()).stream().map(ct -> new SystemConfigPreviewRes.Info().setName(String.join("/", //
+          apsRoomAtomic.get().getOrDefault(ct.getRoomId(), new ApsRoom()).getRoomName(), //
+          apsWorkshopSectionAtomic.get().getOrDefault(ct.getSectionId(), new ApsWorkshopSection()).getSectionName(), //
+          apsWorkshopStationAtomic.get().getOrDefault(ct.getStationId(), new ApsWorkshopStation()).getStationName(), //
+          apsStatusAtomic.get().getOrDefault(ct.getStatusId(), new ApsStatus()).getStatusName(), //
+          "耗时：", ct.getExecuteTime().toString()))).toList())).toList())).toList();
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("工艺路径").setChildren(pathList));
+
+      //商品
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("商品").setChildren(apsGoodsAtomic.get().getOrDefault(f.getId(), List.of()).stream().//
+          map(t -> new SystemConfigPreviewRes.Info().setName(t.getGoodsName()).setRefId(t.getId())//
+          .setChildren(List.of(new SystemConfigPreviewRes.Info().setName("工艺路径").setChildren(pathList.stream().filter(gt -> Objects.equals(gt.getRefId(), t.getProcessPathId())).toList()),//
+              new SystemConfigPreviewRes.Info().setName("制造路径").setChildren(produceProcessList.stream().filter(gt -> Objects.equals(gt.getRefId(), t.getProduceProcessId())).toList() //
+              )))).toList()));
+
+      // 日历
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("日历").setChildren(calendarAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getCalendarName()).setChildren(calendarDayMapAtomic.get().getOrDefault(t.getId(), List.of()).stream().map(t2 -> new SystemConfigPreviewRes.Info().setName(t2.getDayYear() + "/" + t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(ReflectUtil.getFieldValue(t2, "day" + t3), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
+
     });
+
+    // 基本配置
     ArrayList<SystemConfigPreviewRes.Info> baseChildrenList = new ArrayList<>();
     SystemConfigPreviewRes.Info baseInfo = new SystemConfigPreviewRes.Info().setName("基本配置").setChildren(baseChildrenList);
     baseChildrenList.add(new SystemConfigPreviewRes.Info().setName("角色").setChildren(roleAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getRoleName())).toList()));
@@ -163,16 +201,19 @@ public class BasePreviewApiImpl implements BasePreviewApi {
 
     list.add(baseInfo);
 
+
+    // 通用配置
     ArrayList<SystemConfigPreviewRes.Info> factoryCommonChildrenList = new ArrayList<>();
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("销售配置").setChildren(apsSaleConfigAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getSaleName()).setDesc(Objects.equals(t.getIsValue(), 1) ? "销售特征值" : "销售特征")).toList()));
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工程特征").setChildren(apsProjectConfigAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getSaleName()).setDesc(Objects.equals(t.getIsValue(), 1) ? "工程特征值" : "工程特征")).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("状态").setChildren(apsStatusAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStatusName())).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工段").setChildren(apsWorkshopSectionAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getSectionName())).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工位").setChildren(apsWorkshopStationAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStationName())).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(apsMachineAtomic.get().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));
+    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("状态").setChildren(apsStatusAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStatusName())).toList()));
+    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工段").setChildren(apsWorkshopSectionAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getSectionName())).toList()));
+    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工位").setChildren(apsWorkshopStationAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStationName())).toList()));
+    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(apsMachineAtomic.get().values().stream().map((t) -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("零件组").setChildren(apsBomGroupAtomic.get().stream().map(mgt -> new SystemConfigPreviewRes.Info().setName(mgt.getGroupName()).setChildren(apsBomMapAtomic.get().getOrDefault(mgt.getId(), List.of()).stream().map(tt -> new SystemConfigPreviewRes.Info().setName(tt.getBomName())).toList())).toList()));
+    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("生产路径").setChildren(produceProcessList));
     list.add(new SystemConfigPreviewRes.Info().setName("工厂通用配置").setChildren(factoryCommonChildrenList));
-
+    list.forEach(t -> t.setValue(200L));
     setChildrenCount(list);
     return new SystemConfigPreviewRes().setDataList(list);
   }
@@ -183,10 +224,14 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     }
     for (SystemConfigPreviewRes.Info info : list) {
       if (CollUtil.isEmpty(info.getChildren())) {
-        info.setValue(1);
+        if (Objects.isNull(info.getValue())) {
+          info.setValue(1L);
+        }
       } else {
         list.forEach(t -> setChildrenCount(t.getChildren()));
-        info.setValue(info.getChildren().stream().mapToInt(SystemConfigPreviewRes.Info::getValue).sum() + info.getChildren().size());
+        if (Objects.isNull(info.getValue())) {
+          info.setValue(info.getChildren().stream().mapToLong(SystemConfigPreviewRes.Info::getValue).sum() + info.getChildren().size());
+        }
       }
 
     }

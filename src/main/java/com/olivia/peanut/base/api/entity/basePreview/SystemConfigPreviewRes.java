@@ -17,8 +17,9 @@ public class SystemConfigPreviewRes {
   @Getter
   @Accessors(chain = true)
   public static class Info {
+    Long refId;
     String name;
-    int value;
+    Long value;
     String desc;
     List<Info> children;
   }
