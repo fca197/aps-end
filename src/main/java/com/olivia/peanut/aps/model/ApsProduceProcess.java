@@ -22,6 +22,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 //@SuppressWarnings("serial")
 @TableName("aps_produce_process")
 public class ApsProduceProcess extends BaseEntity {
+
+  private Long factoryId;
   /***
    *  生产路径编码
    */

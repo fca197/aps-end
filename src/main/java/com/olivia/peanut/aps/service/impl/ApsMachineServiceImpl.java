@@ -10,6 +10,7 @@ import com.olivia.peanut.aps.mapper.ApsMachineMapper;
 import com.olivia.peanut.aps.model.ApsMachine;
 import com.olivia.peanut.aps.service.ApsMachineService;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
@@ -83,6 +84,7 @@ public class ApsMachineServiceImpl extends MPJBaseServiceImpl<ApsMachineMapper, 
   @SetUserName
   public @Override void setName(List<? extends ApsMachineDto> list) {
 
+    setNameService.setName(list, SetNamePojoUtils.FACTORY);
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
   }
@@ -94,6 +96,7 @@ public class ApsMachineServiceImpl extends MPJBaseServiceImpl<ApsMachineMapper, 
 
     if (Objects.nonNull(obj)) {
       q
+          .eq(Objects.nonNull(obj.getFactoryId()), ApsMachine::getFactoryId, obj.getFactoryId())
           .eq(StringUtils.isNoneBlank(obj.getMachineNo()), ApsMachine::getMachineNo, obj.getMachineNo())
           .eq(StringUtils.isNoneBlank(obj.getMachineName()), ApsMachine::getMachineName, obj.getMachineName())
 

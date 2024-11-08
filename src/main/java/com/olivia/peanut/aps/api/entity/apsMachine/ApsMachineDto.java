@@ -20,6 +20,9 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsMachineDto extends BaseEntityDto {
 
+  @NotNull(groups = {UpdateCheck.class, InsertCheck.class}, message = "工厂不能为空")
+  private Long factoryId;
+  private String factoryName;
   /***
    *  机器编号
    */

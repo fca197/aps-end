@@ -22,6 +22,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 //@SuppressWarnings("serial")
 @TableName("aps_machine")
 public class ApsMachine extends BaseEntity {
+
+
+  private Long factoryId;
   /***
    *  机器编号
    */

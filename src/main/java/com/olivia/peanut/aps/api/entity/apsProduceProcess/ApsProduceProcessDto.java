@@ -24,6 +24,10 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class ApsProduceProcessDto extends BaseEntityDto {
 
+
+  @NotNull(groups = {UpdateCheck.class, InsertCheck.class}, message = "工厂不能为空")
+  private Long factoryId;
+  private String factoryName;
   /***
    *  生产路径编码
    */

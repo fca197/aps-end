@@ -14,6 +14,7 @@ import com.olivia.peanut.base.service.BaseRoleGroupService;
 import com.olivia.peanut.base.service.BaseRoleService;
 import com.olivia.peanut.portal.model.*;
 import com.olivia.peanut.portal.service.*;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -108,7 +110,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     AtomicReference<List<ApsSaleConfig>> apsSaleConfigAtomic = new AtomicReference<>();
     AtomicReference<List<ApsProjectConfig>> apsProjectConfigAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, ApsStatus>> apsStatusAtomic = new AtomicReference<>();
-    AtomicReference<List<ApsProduceProcess>> apsProduceProcessAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsProduceProcess>>> apsProduceProcessAtomic = new AtomicReference<>();
     AtomicReference<List<ApsProcessPath>> apsProcessPathAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, List<ApsProcessPathRoom>>> apsProcessPathRoomAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, ApsRoom>> apsRoomAtomic = new AtomicReference<>();
@@ -117,7 +119,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     AtomicReference<Map<Long, ApsWorkshopSection>> apsWorkshopSectionAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, ApsWorkshopStation>> apsWorkshopStationAtomic = new AtomicReference<>();
 //    AtomicReference<List<ApsLogisticsPath>> apsLogisticsPathAtomic = new AtomicReference<>();
-    AtomicReference<Map<Long, ApsMachine>> apsMachineAtomic = new AtomicReference<>();
+    AtomicReference<Map<Long, List<ApsMachine>>> apsMachineAtomic = new AtomicReference<>();
     AtomicReference<List<ApsBomGroup>> apsBomGroupAtomic = new AtomicReference<>();
     AtomicReference<Map<Long, List<ApsBom>>> apsBomMapAtomic = new AtomicReference<>();
 //    AtomicReference<List<ApsGoodsBomBuyPlan>> apsGoodsBomBuyPlanAtomic = new AtomicReference<>();
@@ -137,7 +139,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     runnableList.add(() -> apsSaleConfigAtomic.set(apsSaleConfigService.list()));
     runnableList.add(() -> apsProjectConfigAtomic.set(apsProjectConfigService.list()));
     runnableList.add(() -> apsStatusAtomic.set(apsStatusService.list().stream().collect(Collectors.toMap(ApsStatus::getId, v -> v))));
-    runnableList.add(() -> apsProduceProcessAtomic.set(apsProduceProcessService.list()));
+    runnableList.add(() -> apsProduceProcessAtomic.set(apsProduceProcessService.list().stream().collect(Collectors.groupingBy(ApsProduceProcess::getFactoryId))));
     runnableList.add(() -> apsProcessPathAtomic.set(apsProcessPathService.list()));
     runnableList.add(() -> apsRoomAtomic.set(apsRoomService.list().stream().collect(Collectors.toMap(ApsRoom::getId, v -> v))));
     runnableList.add(() -> apsGoodsAtomic.set(apsGoodsService.list().stream().collect(Collectors.groupingBy(ApsGoods::getFactoryId))));
@@ -145,7 +147,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     runnableList.add(() -> apsWorkshopSectionAtomic.set(apsWorkshopSectionService.list().stream().collect(Collectors.toMap(ApsWorkshopSection::getId, v -> v))));
     runnableList.add(() -> apsWorkshopStationAtomic.set(apsWorkshopStationService.list().stream().collect(Collectors.toMap(ApsWorkshopStation::getId, v -> v))));
 //    runnableList.add(() -> apsLogisticsPathAtomic.set(apsLogisticsPathService.list()));
-    runnableList.add(() -> apsMachineAtomic.set(apsMachineService.list().stream().collect(Collectors.toMap(ApsMachine::getId, f -> f))));
+    runnableList.add(() -> apsMachineAtomic.set(apsMachineService.list().stream().collect(Collectors.groupingBy(ApsMachine::getFactoryId))));
     runnableList.add(() -> apsBomGroupAtomic.set(apsBomGroupService.list()));
     runnableList.add(() -> apsBomMapAtomic.set(apsBomService.list().stream().collect(Collectors.groupingBy(t -> Objects.isNull(t.getGroupId()) ? 0 : t.getGroupId()))));
 //    runnableList.add(() -> apsGoodsBomBuyPlanAtomic.set(apsGoodsBomBuyPlanService.list()));
@@ -159,8 +161,6 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     runnableList.add(() -> calendarDayMapAtomic.set(calendarDayService.list().stream().collect(Collectors.groupingBy(CalendarDay::getCalendarId))));
 
     RunUtils.run("preview", runnableList);
-
-    List<SystemConfigPreviewRes.Info> produceProcessList = apsProduceProcessAtomic.get().stream().map(mgt -> new SystemConfigPreviewRes.Info().setRefId(mgt.getId()).setName(mgt.getProduceProcessName()).setChildren(apsProduceProcessItemMapAtomic.get().getOrDefault(mgt.getId(), List.of()).stream().map(tt -> new SystemConfigPreviewRes.Info().setName(apsMachineAtomic.get().getOrDefault(tt.getMachineId(), new ApsMachine().setMachineName("机器已删除")).getMachineName() + "耗时：" + tt.getMachineUseTimeSecond() + "（秒）")).toList())).toList();
 
 
     // 工厂配置
@@ -180,16 +180,24 @@ public class BasePreviewApiImpl implements BasePreviewApi {
           apsStatusAtomic.get().getOrDefault(ct.getStatusId(), new ApsStatus()).getStatusName(), //
           "耗时：", ct.getExecuteTime().toString()))).toList())).toList())).toList();
       childrenList.add(new SystemConfigPreviewRes.Info().setName("工艺路径").setChildren(pathList));
-
+      Map<Long, ApsMachine> machineMapList = apsMachineAtomic.get().getOrDefault(f.getId(), List.of()).stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+      List<SystemConfigPreviewRes.Info> produceProcessList =
+          apsProduceProcessAtomic.get().getOrDefault(f.getId(), List.of()).stream()
+              .map(mgt -> new SystemConfigPreviewRes.Info().setRefId(mgt.getId()).setName(mgt.getProduceProcessName()).setChildren(apsProduceProcessItemMapAtomic.get().getOrDefault(mgt.getId(), List.of())
+                  .stream().map(tt -> new SystemConfigPreviewRes.Info().setName(machineMapList.getOrDefault(tt.getMachineId(), new ApsMachine().setMachineName("机器已删除")).getMachineName() + "耗时：" + tt.getMachineUseTimeSecond() + "（秒）")).toList())).toList();
       //商品
       childrenList.add(new SystemConfigPreviewRes.Info().setName("商品").setChildren(apsGoodsAtomic.get().getOrDefault(f.getId(), List.of()).stream().//
           map(t -> new SystemConfigPreviewRes.Info().setName(t.getGoodsName()).setRefId(t.getId())//
           .setChildren(List.of(new SystemConfigPreviewRes.Info().setName("工艺路径").setChildren(pathList.stream().filter(gt -> Objects.equals(gt.getRefId(), t.getProcessPathId())).toList()),//
               new SystemConfigPreviewRes.Info().setName("制造路径").setChildren(produceProcessList.stream().filter(gt -> Objects.equals(gt.getRefId(), t.getProduceProcessId())).toList() //
               )))).toList()));
-
       // 日历
       childrenList.add(new SystemConfigPreviewRes.Info().setName("日历").setChildren(calendarAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getCalendarName()).setChildren(calendarDayMapAtomic.get().getOrDefault(t.getId(), List.of()).stream().map(t2 -> new SystemConfigPreviewRes.Info().setName(t2.getDayYear() + "/" + t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(ReflectUtil.getFieldValue(t2, "day" + t3), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
+      // 机器
+
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(machineMapList.values().stream().map((t) -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));
+
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("生产路径").setChildren(produceProcessList));
 
     });
 
@@ -209,9 +217,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("状态").setChildren(apsStatusAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStatusName())).toList()));
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工段").setChildren(apsWorkshopSectionAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getSectionName())).toList()));
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("工位").setChildren(apsWorkshopStationAtomic.get().values().stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getStationName())).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(apsMachineAtomic.get().values().stream().map((t) -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));
     factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("零件组").setChildren(apsBomGroupAtomic.get().stream().map(mgt -> new SystemConfigPreviewRes.Info().setName(mgt.getGroupName()).setChildren(apsBomMapAtomic.get().getOrDefault(mgt.getId(), List.of()).stream().map(tt -> new SystemConfigPreviewRes.Info().setName(tt.getBomName())).toList())).toList()));
-    factoryCommonChildrenList.add(new SystemConfigPreviewRes.Info().setName("生产路径").setChildren(produceProcessList));
     list.add(new SystemConfigPreviewRes.Info().setName("工厂通用配置").setChildren(factoryCommonChildrenList));
     list.forEach(t -> t.setValue(200L));
     setChildrenCount(list);
@@ -230,7 +236,8 @@ public class BasePreviewApiImpl implements BasePreviewApi {
       } else {
         list.forEach(t -> setChildrenCount(t.getChildren()));
         if (Objects.isNull(info.getValue())) {
-          info.setValue(info.getChildren().stream().mapToLong(SystemConfigPreviewRes.Info::getValue).sum() + info.getChildren().size());
+//          info.setValue(info.getChildren().stream().mapToLong(SystemConfigPreviewRes.Info::getValue).sum() + info.getChildren().size());
+          info.setValue(1L);
         }
       }
 
