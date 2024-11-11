@@ -203,7 +203,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
                 .setUseTime(t.getValue().stream().mapToLong(ProduceProcessComputeOrderRes::getUseTime).sum())).toList();
     machineUseTimeList.forEach(t ->
         t.setUseUsageRate(ObjectUtils.allNotNull(t.getUseTime(), computeRes.getMaxUseSecond()) && ObjectUtils.notEqual(computeRes.getMaxUseSecond(), 0) && ObjectUtils.notEqual(t.getUseTime(), 0) ?
-            new BigDecimal(t.getUseTime()).divide(new BigDecimal(computeRes.getMaxUseSecond()), 2, RoundingMode.HALF_DOWN).multiply(new BigDecimal(100))
+            new BigDecimal(t.getUseTime()).divide(new BigDecimal(computeRes.getMaxUseSecond()), 8, RoundingMode.HALF_DOWN).multiply(new BigDecimal(100))
             : new BigDecimal(0)));
     apsSchedulingDayConfigVersionDetailMachineUseTimeService.saveBatch(machineUseTimeList);
 
