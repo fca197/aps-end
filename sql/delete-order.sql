@@ -18,6 +18,10 @@ truncate table aps_scheduling_day_config_version;
 
 truncate table aps_scheduling_day_config_version_detail;
 
+truncate table aps_scheduling_day_config_version_detail_machine;
+truncate table aps_scheduling_day_config_version_detail_machine_use_time;
+
+
 truncate table aps_scheduling_goods_bom;
 
 truncate table aps_scheduling_goods_bom_total;
