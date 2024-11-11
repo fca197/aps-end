@@ -41,6 +41,7 @@ peanut:
     forecast-main-prefix: MAIN-
     forecast-main-suffix: 预测数据
   orderStatusUpdateNeedDayCount: 60
+  # 钉钉配置， 不接入可不配置
   ding-config-list:
     - ding-code: msgNotice
       ding-name: 消息通知
@@ -50,6 +51,7 @@ peanut:
       client-secret: dingAppSecret
       agent-id: dingAppId
       use-stream: true
+  # 钉钉配置， 不接入可不配置
   server-notice-user-id-map:
     common:
       - 1
@@ -81,7 +83,7 @@ spring:
       #最大连接数，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
       maximum-pool-size: 30
       #最小空闲连接，默认值 10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
-      minimum-idle: 5
+      minimum-idle: 30
       #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
       connection-timeout: 60000
       #空闲连接超时时间，默认值600000ms（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；
@@ -114,6 +116,10 @@ spring:
       host: redis.com
       password: admin!@#q123
       port: 6379
+      jedis:
+        pool:
+          max-idle: 20
+          min-idle: 20
 
 
 logging:

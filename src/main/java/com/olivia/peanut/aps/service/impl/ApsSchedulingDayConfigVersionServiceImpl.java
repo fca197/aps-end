@@ -39,11 +39,14 @@ import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -101,6 +104,9 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
   @Resource
   ApsSchedulingDayConfigVersionDetailMachineService apsSchedulingDayConfigVersionDetailMachineService;
+
+  @Resource
+  ApsSchedulingDayConfigVersionDetailMachineUseTimeService apsSchedulingDayConfigVersionDetailMachineUseTimeService;
 
 
   @Override
@@ -176,6 +182,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     tmpList.clear();
 
 
+    // 制造路径
     List<ApsProduceProcess> apsProduceProcesses = apsProduceProcessService.listByIds(apsGoodsList.stream().map(ApsGoods::getProduceProcessId).collect(Collectors.toSet()));
     Map<Long, List<ApsProduceProcessItem>> apsProduceProcessItemMap = apsProduceProcessItemService.list(new LambdaQueryWrapper<ApsProduceProcessItem>().in(ApsProduceProcessItem::getProduceProcessId, apsProduceProcesses.stream().map(BaseEntity::getId).collect(Collectors.toSet()))).stream().collect(Collectors.groupingBy(ApsProduceProcessItem::getProduceProcessId));
     Map<Long, ApsGoods> apsGoodsMap = apsGoodsList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
@@ -183,10 +190,23 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       List<ApsProduceProcessItem> apsProduceProcessItems = apsProduceProcessItemMap.get(apsGoodsMap.get(t.getGoodsId()).getProduceProcessId());
       return new ProduceOrder().setOrderId(t.getOrderId()).setOrderMachineList(apsProduceProcessItems.stream().map(t2 -> new ProduceOrderMachine().setMachineId(t2.getMachineId()).setUseTime(t2.getMachineUseTimeSecond())).toList());
     }).toList();
+    // 制造路径计算
     ProduceProcessComputeRes computeRes = ProduceProcessUtils.compute(new ProduceProcessComputeReq().setProduceStartTime(LocalDateTime.now()).setProduceOrderList(produceOrderList));
     List<ProduceProcessComputeOrderRes> processComputeOrderRes = computeRes.getProcessComputeOrderRes();
     List<ApsSchedulingDayConfigVersionDetailMachine> detailMachineList = processComputeOrderRes.stream().map(t -> $.copy(t, ApsSchedulingDayConfigVersionDetailMachine.class).setSchedulingDayId(dayConfigVersion.getId()).setBeginDateTime(t.getBeginLocalDateTime()).setEndDateTime(t.getEndLocalDateTime())).toList();
     detailMachineList.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
+
+    List<ApsSchedulingDayConfigVersionDetailMachineUseTime> machineUseTimeList =
+        computeRes.getProcessComputeOrderRes().stream().collect(Collectors.groupingBy(ProduceProcessComputeOrderRes::getMachineId))
+            .entrySet().stream().map(t -> new ApsSchedulingDayConfigVersionDetailMachineUseTime()
+                .setSchedulingDayId(dayConfigVersion.getId()).setMachineId(t.getKey()).setMakeProduceCount(t.getValue().size())
+                .setUseTime(t.getValue().stream().mapToLong(ProduceProcessComputeOrderRes::getUseTime).sum())).toList();
+    machineUseTimeList.forEach(t ->
+        t.setUseUsageRate(ObjectUtils.allNotNull(t.getUseTime(), computeRes.getMaxUseSecond()) && ObjectUtils.notEqual(computeRes.getMaxUseSecond(), 0) && ObjectUtils.notEqual(t.getUseTime(), 0) ?
+            new BigDecimal(t.getUseTime()).divide(new BigDecimal(computeRes.getMaxUseSecond()), 2, RoundingMode.HALF_DOWN)
+            : new BigDecimal(0)));
+    apsSchedulingDayConfigVersionDetailMachineUseTimeService.saveBatch(machineUseTimeList);
+
     this.save(dayConfigVersion);
     apsSchedulingDayConfigVersionDetailMachineService.saveBatch(detailMachineList);
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
