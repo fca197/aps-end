@@ -1,0 +1,124 @@
+package com.olivia.peanut.aps.service.impl;
+
+import org.springframework.aop.framework.AopContext;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.yulichang.base.MPJBaseServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import jakarta.annotation.Resource;
+import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.DynamicsPage;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.olivia.peanut.aps.mapper.ApsSellerStoreMapper;
+import com.olivia.peanut.aps.model.ApsSellerStore;
+import com.olivia.peanut.aps.service.ApsSellerStoreService;
+import cn.hutool.core.collection.CollUtil;
+//import com.olivia.peanut.aps.service.BaseTableHeaderService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.aps.api.entity.apsSellerStore.*;
+import com.olivia.peanut.util.SetNamePojoUtils;
+import com.olivia.sdk.service.SetNameService;
+
+/**
+ * aps销售门店(ApsSellerStore)表服务实现类
+ *
+ * @author makejava
+ * @since 2024-11-15 14:58:59
+ */
+@Service("apsSellerStoreService")
+@Transactional
+public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStoreMapper, ApsSellerStore> implements ApsSellerStoreService {
+
+  final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
+
+  @Resource
+  BaseTableHeaderService tableHeaderService;
+  @Resource
+  SetNameService setNameService;
+
+
+  public @Override ApsSellerStoreQueryListRes queryList(ApsSellerStoreQueryListReq req) {
+
+    MPJLambdaWrapper<ApsSellerStore> q = getWrapper(req.getData());
+    List<ApsSellerStore> list = this.list(q);
+
+    List<ApsSellerStoreDto> dataList = list.stream().map(t -> $.copy(t, ApsSellerStoreDto.class)).collect(Collectors.toList());
+    ((ApsSellerStoreService) AopContext.currentProxy()).setName(dataList);
+    return new ApsSellerStoreQueryListRes().setDataList(dataList);
+  }
+
+
+  public @Override DynamicsPage<ApsSellerStoreExportQueryPageListInfoRes> queryPageList(ApsSellerStoreExportQueryPageListReq req) {
+
+    DynamicsPage<ApsSellerStore> page = new DynamicsPage<>();
+    page.setCurrent(req.getPageNum()).setSize(req.getPageSize());
+    setQueryListHeader(page);
+    MPJLambdaWrapper<ApsSellerStore> q = getWrapper(req.getData());
+    List<ApsSellerStoreExportQueryPageListInfoRes> records;
+    if (Boolean.TRUE.equals(req.getQueryPage())) {
+      IPage<ApsSellerStore> list = this.page(page, q);
+      IPage<ApsSellerStoreExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsSellerStoreExportQueryPageListInfoRes.class));
+      records = dataList.getRecords();
+    } else {
+      records = $.copyList(this.list(q), ApsSellerStoreExportQueryPageListInfoRes.class);
+    }
+
+    // 类型转换，  更换枚举 等操作 
+
+    List<ApsSellerStoreExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSellerStoreExportQueryPageListInfoRes.class);
+    ((ApsSellerStoreService) AopContext.currentProxy()).setName(listInfoRes);
+
+    return DynamicsPage.init(page, listInfoRes);
+  }
+
+  // 以下为私有对象封装
+
+  public @Override void setName(List<? extends ApsSellerStoreDto> list) {
+
+    //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
+
+  }
+
+
+  private MPJLambdaWrapper<ApsSellerStore> getWrapper(ApsSellerStoreDto obj) {
+    MPJLambdaWrapper<ApsSellerStore> q = new MPJLambdaWrapper<>();
+
+
+    if (Objects.nonNull(obj)) {
+      q
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreCode()), ApsSellerStore::getSellerStoreCode, obj.getSellerStoreCode())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreName()), ApsSellerStore::getSellerStoreName, obj.getSellerStoreName())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStorePhone()), ApsSellerStore::getSellerStorePhone, obj.getSellerStorePhone())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreProvinceCode()), ApsSellerStore::getSellerStoreProvinceCode, obj.getSellerStoreProvinceCode())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreCityCode()), ApsSellerStore::getSellerStoreCityCode, obj.getSellerStoreCityCode())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreAreaCode()), ApsSellerStore::getSellerStoreAreaCode, obj.getSellerStoreAreaCode())
+          .eq(StringUtils.isNoneBlank(obj.getSellerStoreAddr()), ApsSellerStore::getSellerStoreAddr, obj.getSellerStoreAddr())
+          .eq(Objects.nonNull(obj.getSellerStoreGdLon()), ApsSellerStore::getSellerStoreGdLon, obj.getSellerStoreGdLon())
+          .eq(Objects.nonNull(obj.getSellerStoreGdLat()), ApsSellerStore::getSellerStoreGdLat, obj.getSellerStoreGdLat())
+
+      ;
+    }
+    q.orderByDesc(ApsSellerStore::getId);
+    return q;
+
+  }
+
+  private void setQueryListHeader(DynamicsPage<ApsSellerStore> page) {
+
+    tableHeaderService.listByBizKey(page, "ApsSellerStoreService#queryPageList");
+
+  }
+
+
+}
+

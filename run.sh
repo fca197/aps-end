@@ -1,8 +1,9 @@
-export JAVA_HOME=/Users/wangbao/Library/Java/JavaVirtualMachines/corretto-17.0.8.1/Contents/Home
-echo $JAVA_HOME
-#mvn -DskipTests clean package
-/Users/wangbao/Library/Java/JavaVirtualMachines/corretto-17.0.8.1/Contents/Home/bin/java -jar  ./target/app.jar
-#mvn  -v
 
-#/Users/wangbao/Library/Java/JavaVirtualMachines/corretto-17.0.8.1/Contents/Home/bin/java   -jar ./target/app.jar
+#ps -def |grep java | grep -v grep |cut -c 9-15| xargs kill -9
+ps -ef|grep java|grep -v grep|awk  '{print "kill -9 " $2}' |sh
+ps -ef |grep java
 
+
+rm -rf   log.log
+rm -rf gc.log
+nohup java  -Dfile.encoding=UTF-8     -jar   -Dspring.profiles.active=fwq  -Dserver.port=8080 app.jar >  log.log  2>&1 &

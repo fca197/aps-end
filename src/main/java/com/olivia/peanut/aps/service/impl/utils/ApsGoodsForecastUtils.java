@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.service.impl.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.olivia.peanut.aps.model.ApsGoods;
@@ -67,43 +68,45 @@ public class ApsGoodsForecastUtils {
       cell.setCellStyle(headerCellStyle);
       cell.setCellValue("月份");
       List<String> monthList = goodsForecast.getMonthList();
-      for (int i = 0; i < monthList.size(); i++) {
-        cell = row.createCell(i + 3);
-        cell.setCellStyle(headerCellStyle);
-        cell.setCellValue("'" + monthList.get(i));
-      }
-      SXSSFCell cc = sheet.createRow(1).createCell(2);
-      cc.setCellValue("总计");
-      cc.setCellStyle(headerCellStyle);
-      ApsSaleConfigService apsSaleConfigService = SpringUtil.getBean(ApsSaleConfigService.class);
-      Map<Long, ApsSaleConfig> saleConfigMap = apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
-      List<ApsGoodsSaleItem> apsGoodsSaleItemList = goodsSaleItemService.list(new LambdaQueryWrapper<ApsGoodsSaleItem>().eq(ApsGoodsSaleItem::getGoodsId, apsGoods.getId()));
+      if (CollUtil.isNotEmpty(monthList)) {
+        for (int i = 0; i < monthList.size(); i++) {
+          cell = row.createCell(i + 3);
+          cell.setCellStyle(headerCellStyle);
+          cell.setCellValue("'" + monthList.get(i));
+        }
+        SXSSFCell cc = sheet.createRow(1).createCell(2);
+        cc.setCellValue("总计");
+        cc.setCellStyle(headerCellStyle);
+        ApsSaleConfigService apsSaleConfigService = SpringUtil.getBean(ApsSaleConfigService.class);
+        Map<Long, ApsSaleConfig> saleConfigMap = apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+        List<ApsGoodsSaleItem> apsGoodsSaleItemList = goodsSaleItemService.list(new LambdaQueryWrapper<ApsGoodsSaleItem>().eq(ApsGoodsSaleItem::getGoodsId, apsGoods.getId()));
 
-      apsGoodsSaleItemList.forEach(item -> {
-        ApsSaleConfig apsSaleConfig = saleConfigMap.getOrDefault(item.getSaleConfigId(), new ApsSaleConfig());
-        item.setSaleConfigCode(apsSaleConfig.getSaleCode()).setSaleConfigName(apsSaleConfig.getSaleName()).setIsValue(apsSaleConfig.getIsValue());
-        apsSaleConfig = saleConfigMap.getOrDefault(apsSaleConfig.getParentId(), new ApsSaleConfig());
-        item.setParentSaleConfigCode(apsSaleConfig.getSaleCode()).setParentSaleConfigName(apsSaleConfig.getSaleName());
-      });
-      apsGoodsSaleItemList.removeIf(t -> !Objects.equals(t.getIsValue(), 1));
-      apsGoodsSaleItemList.sort(Comparator.comparing(ApsGoodsSaleItem::getSaleConfigCode));
-      SXSSFRow nameRow = sheet.createRow(2);
-      SXSSFCell ct1 = nameRow.createCell(0);
-      ct1.setCellValue("销售特征组");
-      ct1.setCellStyle(headerCellStyle);
-      SXSSFCell ct2 = nameRow.createCell(1);
-      ct2.setCellValue("销售特征");
-      ct2.setCellStyle(headerCellStyle);
-      IntStream.range(0, apsGoodsSaleItemList.size()).forEach(i -> {
-        SXSSFRow rowTmp = sheet.createRow(i + 3);
-        ApsGoodsSaleItem apsGoodsSaleItem = apsGoodsSaleItemList.get(i);
-        rowTmp.createCell(0).setCellValue(apsGoodsSaleItem.getParentSaleConfigCode() + "/" + apsGoodsSaleItem.getParentSaleConfigName());
-        rowTmp.createCell(1).setCellValue(apsGoodsSaleItem.getSaleConfigCode() + "/" + apsGoodsSaleItem.getSaleConfigName());
-      });
-      sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 1));
-      IntStream.range(0, sheet.getRow(0).getLastCellNum()).forEach(i -> {
-        sheet.setColumnWidth(i, 20 * 256);
-      });
+        apsGoodsSaleItemList.forEach(item -> {
+          ApsSaleConfig apsSaleConfig = saleConfigMap.getOrDefault(item.getSaleConfigId(), new ApsSaleConfig());
+          item.setSaleConfigCode(apsSaleConfig.getSaleCode()).setSaleConfigName(apsSaleConfig.getSaleName()).setIsValue(apsSaleConfig.getIsValue());
+          apsSaleConfig = saleConfigMap.getOrDefault(apsSaleConfig.getParentId(), new ApsSaleConfig());
+          item.setParentSaleConfigCode(apsSaleConfig.getSaleCode()).setParentSaleConfigName(apsSaleConfig.getSaleName());
+        });
+        apsGoodsSaleItemList.removeIf(t -> !Objects.equals(t.getIsValue(), 1));
+        apsGoodsSaleItemList.sort(Comparator.comparing(ApsGoodsSaleItem::getSaleConfigCode));
+        SXSSFRow nameRow = sheet.createRow(2);
+        SXSSFCell ct1 = nameRow.createCell(0);
+        ct1.setCellValue("销售特征组");
+        ct1.setCellStyle(headerCellStyle);
+        SXSSFCell ct2 = nameRow.createCell(1);
+        ct2.setCellValue("销售特征");
+        ct2.setCellStyle(headerCellStyle);
+        IntStream.range(0, apsGoodsSaleItemList.size()).forEach(i -> {
+          SXSSFRow rowTmp = sheet.createRow(i + 3);
+          ApsGoodsSaleItem apsGoodsSaleItem = apsGoodsSaleItemList.get(i);
+          rowTmp.createCell(0).setCellValue(apsGoodsSaleItem.getParentSaleConfigCode() + "/" + apsGoodsSaleItem.getParentSaleConfigName());
+          rowTmp.createCell(1).setCellValue(apsGoodsSaleItem.getSaleConfigCode() + "/" + apsGoodsSaleItem.getSaleConfigName());
+        });
+        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 1));
+        IntStream.range(0, sheet.getRow(0).getLastCellNum()).forEach(i -> {
+          sheet.setColumnWidth(i, 20 * 256);
+        });
+      }
       response.reset();
       response.setContentType("application/ms-excel;charset=UTF-8");
       response.setHeader("Content-Disposition", "attachment;filename=".concat(String.valueOf(URLEncoder.encode(goodsForecast.getForecastName() + ".xls", "UTF-8"))));
