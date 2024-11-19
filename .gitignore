@@ -13,7 +13,7 @@ src/main/resources/application-bty.yml
 *.iws
 *.iml
 /src/main/java/com/olivia/peanut/*/vue/*
-
+./java-doc
 *.ipr
 
 ### Eclipse ###

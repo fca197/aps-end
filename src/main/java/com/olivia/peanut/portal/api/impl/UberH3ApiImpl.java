@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UberH3ApiImpl implements UberH3Api {
 
-  private static final H3Core UBER_H3_CORE = getUberH3Core();
+  public static final H3Core UBER_H3_CORE = getUberH3Core();
   public static String REDIS_KEY_DRIVER_GEO = "RS_D_G";
   public static String REDIS_KEY_DRIVER_LAT_LNG = "RS_D_G_L_";
   public static String REDIS_KEY_PASSENGER_GEO = "RS_P_G";
