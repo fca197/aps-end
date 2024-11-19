@@ -15,6 +15,7 @@ import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.olivia.peanut.portal.api.impl.UberH3ApiImpl.UBER_H3_CORE;
+import static com.olivia.peanut.util.H3Utils.UBER_H3_CORE;
+
 
 /**
  * H3对应的值(BaseH3Code)表服务实现类
@@ -85,17 +87,18 @@ public class BaseH3CodeServiceImpl extends MPJBaseServiceImpl<BaseH3CodeMapper, 
 
   @Override
   public BaseH3Code saveOrGet(BigDecimal lat, BigDecimal lng) {
-    BaseH3Code one = this.getOne(new LambdaQueryWrapper<BaseH3Code>().eq(BaseH3Code::getLat, lat).eq(BaseH3Code::getLng, lng));
-    if (Objects.isNull(one)) {
-      BaseH3Code tmp = new BaseH3Code().setLat(lat).setLng(lng);
-      IntStream.range(0, 16).forEach(t -> {
-        long lngToCell = UBER_H3_CORE.latLngToCell(lat.doubleValue(), lng.doubleValue(), t);
-        ReflectUtil.setFieldValue(tmp, "value", lngToCell);
-      });
-      this.save(tmp);
-      return tmp;
-    }
-    return one;
+    BaseH3Code tmp = new BaseH3Code().setLat(lat).setLng(lng);
+    IntStream.range(0, 16).forEach(t -> {
+      long lngToCell = UBER_H3_CORE.latLngToCell(lat.doubleValue(), lng.doubleValue(), t);
+      ReflectUtil.setFieldValue(tmp, "value", lngToCell);
+    });
+    RunUtils.run("saveOrUpdate", () -> {
+      BaseH3Code one = this.getOne(new LambdaQueryWrapper<BaseH3Code>().eq(BaseH3Code::getLat, lat).eq(BaseH3Code::getLng, lng));
+      if (Objects.isNull(one)) {
+        this.save(tmp);
+      }
+    });
+    return tmp;
   }
   // 以下为私有对象封装
 

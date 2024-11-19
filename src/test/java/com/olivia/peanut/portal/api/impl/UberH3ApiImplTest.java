@@ -24,12 +24,14 @@ class UberH3ApiImplTest {
     double lat = 31.920523;
     double lng = 119.268182;
 
+    long time = System.nanoTime();
     IntStream.range(0, 16).forEach(t -> {
-      System.out.println(" value" + t + " bigint comment '第" + t + "级对应的h3值',");
-      long code = h3Core.latLngToCell(lat, lng, t);
-      String collect = h3Core.cellToBoundary(code).stream().map(tt -> tt.lat + "," + tt.lng).collect(Collectors.joining("/"));
+//      System.out.println(" value" + t + " bigint comment '第" + t + "级对应的h3值',");
+      h3Core.latLngToCell(lat, lng, t);
+//      String collect = h3Core.cellToBoundary(code).stream().map(tt -> tt.lat + "," + tt.lng).collect(Collectors.joining("/"));
 //      System.out.println(t + "\t" + code + "\t" + collect);
     });
+    System.out.println(System.nanoTime() - time);
 
   }
 }
