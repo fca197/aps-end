@@ -5,11 +5,10 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * BOM 清单(ApsBom)查询对象返回
@@ -52,6 +51,25 @@ public class ApsBomDto extends BaseEntityDto {
    */
   @NotNull(message = "库存不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomInventory;
+
+  /***
+   * 供应方式 ，make , buy
+   */
+  @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private String supplyMode;
+
+  /***
+   * 规格 ，100个*6
+   */
+  @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private String bomUnit;
+
+  /**
+   * 使用单位
+   */
+  @NotBlank(message = "使用单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private String useUnit;
+
 
 }
 
