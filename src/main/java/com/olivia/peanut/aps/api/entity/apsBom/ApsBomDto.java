@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * BOM 清单(ApsBom)查询对象返回
@@ -42,9 +43,9 @@ public class ApsBomDto extends BaseEntityDto {
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  库存
@@ -58,6 +59,10 @@ public class ApsBomDto extends BaseEntityDto {
   @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String supplyMode;
 
+  public String getSupplyModeStr() {
+    return Objects.equals("make", supplyMode) ? "自制" : Objects.equals("buy", supplyMode) ? "购买" : supplyMode;
+  }
+
   /***
    * 规格 ，100个*6
    */
@@ -65,9 +70,9 @@ public class ApsBomDto extends BaseEntityDto {
   private String bomUnit;
 
   /**
-   * 使用单位
+   * 使用规格
    */
-  @NotBlank(message = "使用单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String useUnit;
 
 
