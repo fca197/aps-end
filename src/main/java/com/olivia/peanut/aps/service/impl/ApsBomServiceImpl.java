@@ -19,17 +19,16 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * BOM 清单(ApsBom)表服务实现类
@@ -97,6 +96,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     if (Objects.nonNull(obj)) {
       q.eq(Objects.nonNull(obj.getGroupId()), ApsBom::getGroupId, obj.getGroupId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsBom::getBomCode, obj.getBomCode())
           .eq(StringUtils.isNoneBlank(obj.getBomName()), ApsBom::getBomName, obj.getBomName())
+          .eq(StringUtils.isNoneBlank(obj.getSupplyMode()), ApsBom::getSupplyMode, obj.getSupplyMode())
           .eq(Objects.nonNull(obj.getBomCostPrice()), ApsBom::getBomCostPrice, obj.getBomCostPrice())
           .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
           .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory());
