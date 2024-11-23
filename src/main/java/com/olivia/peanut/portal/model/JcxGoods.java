@@ -61,7 +61,7 @@ public class JcxGoods extends BaseEntity {
    */
   private BigDecimal goodsNetProfit;
   /***
-   *  单位
+   *  规格
    */
   private String goodsUnit;
   /***

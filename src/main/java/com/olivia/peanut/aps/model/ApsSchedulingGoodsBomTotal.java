@@ -46,7 +46,7 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
    */
   private Integer bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -54,7 +54,7 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***

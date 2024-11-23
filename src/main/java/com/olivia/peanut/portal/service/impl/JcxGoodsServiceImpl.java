@@ -91,7 +91,7 @@ public class JcxGoodsServiceImpl extends MPJBaseServiceImpl<JcxGoodsMapper, JcxG
         //
         .addHeader("goodsImg", "商品图片").addHeader("goodsBarCode", "条形码")
 //        .addHeader("goodsQrCode", "二维码")
-        .addHeader("costPrice", "成本价(分)").addHeader("salesPrice", "售卖价(分)").addHeader("goodsUnit", "单位")
+        .addHeader("costPrice", "成本价(分)").addHeader("salesPrice", "售卖价(分)").addHeader("goodsUnit", "规格")
         //
         .addHeader("goodsInventoryCount", "库存(分)")
         //

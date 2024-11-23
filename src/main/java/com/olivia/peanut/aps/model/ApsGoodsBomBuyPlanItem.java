@@ -48,7 +48,7 @@ public class ApsGoodsBomBuyPlanItem extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***

@@ -53,7 +53,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    */
   private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -61,7 +61,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***

@@ -60,9 +60,9 @@ public class ApsSchedulingGoodsBomDto extends BaseEntityDto {
   @NotNull(message = "使用量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer bomUsage;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomUnit;
   /***
    *  成本价
@@ -70,9 +70,9 @@ public class ApsSchedulingGoodsBomDto extends BaseEntityDto {
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "成本价单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "成本价规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  使用工位

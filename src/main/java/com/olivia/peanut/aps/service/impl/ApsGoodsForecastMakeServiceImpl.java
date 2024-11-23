@@ -532,7 +532,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     Map<Long, ApsGoodsForecastMakeQueryUseBomByIdRes> dataListMap = new HashMap<>();
     headerList.add(new Header().setFieldName("bomId").setShowName("零件编码").setWidth(100));
     headerList.add(new Header().setFieldName("bomName").setShowName("零件名称").setWidth(100));
-    headerList.add(new Header().setFieldName("bomUnit").setShowName("零件单位").setWidth(100));
+    headerList.add(new Header().setFieldName("bomUnit").setShowName("零件规格").setWidth(100));
     Map<String, List<WeekInfo>> weekListMap = weekInfoList.stream().collect(Collectors.groupingBy(t -> t.getCurrentDay().substring(0, 7) + t.getWeekNumber()));
     new ArrayList<>(weekListMap.keySet()).stream().sorted().forEach(ym -> {
       Long year = Long.parseLong(ym.substring(0, 4));

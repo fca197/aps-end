@@ -43,14 +43,14 @@ public class ApsGoodsBomDto extends BaseEntityDto {
   // 用量
   @NotNull(message = "零件用量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomUsage;
-  //单位
-  @NotBlank(message = "零件单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //规格
+  @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomUnit;
   // 成本价
   @NotNull(message = "零件成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
-  // 成本价单位
-  @NotBlank(message = "零件成本价单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  // 成本价规格
+  @NotBlank(message = "零件成本价规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   //使用工位
   @NotNull(message = "零件使用工位不能为空", groups = {InsertCheck.class, UpdateCheck.class})

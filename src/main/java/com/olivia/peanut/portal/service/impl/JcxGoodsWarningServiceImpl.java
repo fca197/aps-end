@@ -102,7 +102,7 @@ public class JcxGoodsWarningServiceImpl extends MPJBaseServiceImpl<JcxGoodsWarni
         .addHeader("goodsName", "商品名称", 200)
         .addHeader("costPrice", "成本价(分)")
         .addHeader("salesPrice", "售卖价(分)")
-//        .addHeader("goodsUnit", "单位")
+//        .addHeader("goodsUnit", "规格")
         //
         .addHeader("goodsInventoryCount", "库存(分)")
         //

@@ -52,9 +52,9 @@ public class ApsGoodsBomBuyPlanItemDto extends BaseEntityDto {
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  库存
