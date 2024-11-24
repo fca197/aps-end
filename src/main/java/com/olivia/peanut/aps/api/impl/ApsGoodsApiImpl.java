@@ -13,6 +13,7 @@ import com.olivia.sdk.utils.PoiExcelUtil;
 
 import java.util.List;
 
+import com.olivia.sdk.utils.RunUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -78,6 +79,7 @@ public class ApsGoodsApiImpl implements ApsGoodsApi {
   }
 
   public @Override ApsGoodsImportRes importData(@RequestParam("file") MultipartFile file) {
+    RunUtils.noImpl();
     List<ApsGoodsImportReq> reqList = PoiExcelUtil.readData(file, new ApsGoodsImportListener(), ApsGoodsImportReq.class);
     // 类型转换，  更换枚举 等操作
     List<ApsGoods> readList = $.copyList(reqList, ApsGoods.class);

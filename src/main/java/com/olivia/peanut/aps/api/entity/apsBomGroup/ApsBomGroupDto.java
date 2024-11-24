@@ -1,5 +1,8 @@
 package com.olivia.peanut.aps.api.entity.apsBomGroup;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.converters.bigdecimal.BigDecimalBooleanConverter;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
@@ -23,21 +26,28 @@ public class ApsBomGroupDto extends BaseEntityDto {
   /***
    *  组编码
    */
+  @ExcelProperty("编码")
   @NotBlank(message = "组编码不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String groupCode;
   /***
    *  组名称
    */
+  @ExcelProperty("组名称")
   @NotBlank(message = "组名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String groupName;
   /***
    *  父级ID
    */
+
+  @ExcelIgnore
   @NotNull(message = "父级ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long parentId;
+  @ExcelProperty(value = "上级")
+  private String parentName;
   /***
    *  路径配置
    */
+  @ExcelIgnore
 //  @NotBlank(message = "路径配置不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String pathId;
 

@@ -3,12 +3,11 @@ package com.olivia.peanut.portal.api.entity;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson2.JSON;
-
-import java.time.LocalDateTime;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 /***
  *
@@ -22,7 +21,7 @@ public class BaseEntityDto implements BaseCheck {
   /***
    *  id
    */
-  @ExcelProperty("id")
+  @ExcelIgnore
   private Long id;
   /***
    *  所属租户id
@@ -37,7 +36,10 @@ public class BaseEntityDto implements BaseCheck {
    */
   @ExcelProperty("创建时间")
   private LocalDateTime createTime;
+
+  @ExcelIgnore
   private Long createBy;
+  @ExcelIgnore
   private Long updateBy;
 
   /***
@@ -45,8 +47,11 @@ public class BaseEntityDto implements BaseCheck {
    */
   @ExcelProperty("更新时间")
   private LocalDateTime updateTime;
+  @ExcelIgnore
   private Integer versionNum;
+  @ExcelProperty("创建人")
   private String createUserName;
+  @ExcelProperty("更新人")
   private String updateUserName;
 
   @Override
