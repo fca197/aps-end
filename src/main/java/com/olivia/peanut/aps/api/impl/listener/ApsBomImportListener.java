@@ -3,7 +3,9 @@ package com.olivia.peanut.aps.api.impl.listener;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.fastjson2.JSON;
 import com.olivia.peanut.aps.api.entity.apsBom.ApsBomImportReq;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -13,11 +15,13 @@ import java.util.Map;
  * @author peanut
  * @since 2024-06-06 11:27:34
  */
+@Slf4j
 public class ApsBomImportListener extends AnalysisEventListener<ApsBomImportReq> {
 
   @Override
   public void invoke(ApsBomImportReq data, AnalysisContext analysisContext) {
     //  文件校验
+    log.info("ApsBomImportListener invoke data:{}", JSON.toJSONString(data));
   }
 
   @Override
@@ -36,6 +40,5 @@ public class ApsBomImportListener extends AnalysisEventListener<ApsBomImportReq>
     //  log.info("headMap:{}", JSON.toJSONString(headMap));
     super.invokeHeadMap(headMap, context);
   }
-
 
 }
