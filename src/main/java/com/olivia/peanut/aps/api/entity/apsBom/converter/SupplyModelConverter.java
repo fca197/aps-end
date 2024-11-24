@@ -3,6 +3,7 @@ package com.olivia.peanut.aps.api.entity.apsBom.converter;
 import com.alibaba.excel.converters.Converter;
 import com.alibaba.excel.converters.ReadConverterContext;
 import com.olivia.peanut.aps.api.entity.apsBom.SupplyModelEnum;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class SupplyModelConverter implements Converter<String> {
   @Override
   public String convertToJavaData(ReadConverterContext<?> context) throws Exception {
     String supplyModel = context.getReadCellData().getStringValue();
-    return supplyModelToMap.get(supplyModel);
+    String v = supplyModelToMap.get(supplyModel);
+    return StringUtils.firstNonEmpty(v, SupplyModelEnum.UNK.name());
   }
 }

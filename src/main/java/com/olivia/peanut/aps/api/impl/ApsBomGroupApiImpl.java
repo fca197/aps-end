@@ -14,6 +14,7 @@ import com.olivia.sdk.utils.PoiExcelUtil;
 import java.util.List;
 import java.util.Objects;
 
+import com.olivia.sdk.utils.RunUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -88,6 +89,7 @@ public class ApsBomGroupApiImpl implements ApsBomGroupApi {
   }
 
   public @Override ApsBomGroupImportRes importData(@RequestParam("file") MultipartFile file) {
+    RunUtils.noImpl();
     List<ApsBomGroupImportReq> reqList = PoiExcelUtil.readData(file, new ApsBomGroupImportListener(), ApsBomGroupImportReq.class);
     // 类型转换，  更换枚举 等操作
     List<ApsBomGroup> readList = $.copyList(reqList, ApsBomGroup.class);
