@@ -1,7 +1,9 @@
 package com.olivia.peanut.aps.api.entity.apsBom;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.olivia.peanut.ann.CheckObjectFieldValueAnn;
 import com.olivia.peanut.aps.api.entity.apsBom.converter.SupplyModelConverter;
+import com.olivia.peanut.enums.CheckEnums;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
@@ -24,10 +26,11 @@ import java.math.BigDecimal;
 @SuppressWarnings("serial")
 public class ApsBomDto extends BaseEntityDto {
 
-
+  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Long, max = 10, fieldShowName = "组ID")
   @NotNull(message = "groupId不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long groupId;
 
+  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Str, max = 10, strValues = {"组1", "组2"}, fieldShowName = "组名称")
   @ExcelProperty("组名称")
   private String groupName;
 
