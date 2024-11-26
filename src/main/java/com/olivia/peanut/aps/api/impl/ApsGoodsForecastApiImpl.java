@@ -4,7 +4,7 @@ package com.olivia.peanut.aps.api.impl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsGoodsForecastApi;
 import com.olivia.peanut.aps.api.entity.apsGoodsForecast.*;
-import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastImportListener;
+import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastImportListenerAbstract;
 import com.olivia.peanut.aps.model.ApsGoodsForecast;
 import com.olivia.peanut.aps.service.ApsGoodsForecastService;
 import com.olivia.sdk.utils.$;
@@ -83,7 +83,7 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
   }
 
   public @Override ApsGoodsForecastImportRes importData(@RequestParam("file") MultipartFile file) {
-    List<ApsGoodsForecastImportReq> reqList = PoiExcelUtil.readData(file, new ApsGoodsForecastImportListener(), ApsGoodsForecastImportReq.class);
+    List<ApsGoodsForecastImportReq> reqList = PoiExcelUtil.readData(file, new ApsGoodsForecastImportListenerAbstract(), ApsGoodsForecastImportReq.class);
     // 类型转换，  更换枚举 等操作
     List<ApsGoodsForecast> readList = $.copyList(reqList, ApsGoodsForecast.class);
     boolean bool = apsGoodsForecastService.saveBatch(readList);

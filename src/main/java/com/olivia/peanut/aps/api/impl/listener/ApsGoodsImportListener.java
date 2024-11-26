@@ -2,40 +2,26 @@ package com.olivia.peanut.aps.api.impl.listener;
 
 
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.fastjson2.JSON;
 import com.olivia.peanut.aps.api.entity.apsGoods.ApsGoodsImportReq;
-
-import java.util.Map;
+import com.olivia.peanut.listener.AbstractImportListener;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * (ApsGoods)文件导入监听
+ * aps 商品表(ApsGoods)文件导入监听
  *
- * @author peanut
- * @since 2024-03-29 16:11:23
+ * @author makejava
+ * @since 2024-11-26 15:49:26
  */
-public class ApsGoodsImportListener extends AnalysisEventListener<ApsGoodsImportReq> {
+@Slf4j
+public class ApsGoodsImportListener extends AbstractImportListener<ApsGoodsImportReq> {
 
   @Override
   public void invoke(ApsGoodsImportReq data, AnalysisContext analysisContext) {
     //  文件校验
-  }
+    log.info("ApsGoodsImportListener invoke data:{}", JSON.toJSONString(data));
+    checkData(data, analysisContext);
 
-  @Override
-  public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-    // 数据处理完毕后的操作（如果需要）
   }
-
-  @Override
-  public void onException(Exception exception, AnalysisContext context) throws Exception {
-    // 异常处理
-    super.onException(exception, context);
-  }
-
-  @Override
-  public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-    //  log.info("headMap:{}", JSON.toJSONString(headMap));
-    super.invokeHeadMap(headMap, context);
-  }
-
 
 }
