@@ -27,8 +27,5 @@ public class BaseH3CodeExportQueryPageListReq {
   private BaseH3CodeDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

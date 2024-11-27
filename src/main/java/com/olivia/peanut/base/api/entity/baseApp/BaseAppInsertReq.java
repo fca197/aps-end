@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class BaseAppInsertReq extends BaseAppDto {
 
-  public void checkParam() {
-  }
+
 }
 

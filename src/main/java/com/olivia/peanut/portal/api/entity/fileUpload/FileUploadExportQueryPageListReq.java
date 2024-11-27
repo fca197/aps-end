@@ -22,8 +22,5 @@ public class FileUploadExportQueryPageListReq {
   private FileUploadDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -28,8 +28,5 @@ public class FlowDefinitionExportQueryPageListReq {
   private FlowDefinitionDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

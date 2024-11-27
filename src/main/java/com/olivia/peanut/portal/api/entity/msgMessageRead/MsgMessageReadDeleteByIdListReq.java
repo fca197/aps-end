@@ -27,8 +27,5 @@ public class MsgMessageReadDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

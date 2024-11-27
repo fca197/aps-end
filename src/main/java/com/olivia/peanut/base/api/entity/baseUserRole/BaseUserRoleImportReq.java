@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class BaseUserRoleImportReq extends BaseUserRoleDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

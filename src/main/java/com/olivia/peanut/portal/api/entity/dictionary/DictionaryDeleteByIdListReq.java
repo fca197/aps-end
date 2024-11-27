@@ -27,8 +27,5 @@ public class DictionaryDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class FlowFormUserValueInsertReq extends FlowFormUserValueDto {
 
-  public void checkParam() {
-  }
+
 }
 

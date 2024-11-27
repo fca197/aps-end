@@ -30,8 +30,5 @@ public class BaseRoleDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

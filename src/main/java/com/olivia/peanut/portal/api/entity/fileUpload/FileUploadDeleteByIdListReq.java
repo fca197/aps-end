@@ -27,8 +27,5 @@ public class FileUploadDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

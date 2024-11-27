@@ -5,8 +5,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 排程结果机器使用率(ApsSchedulingDayConfigVersionDetailMachineUseTime)保存返回

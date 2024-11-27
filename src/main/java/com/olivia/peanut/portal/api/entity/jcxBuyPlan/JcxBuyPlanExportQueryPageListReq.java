@@ -22,8 +22,5 @@ public class JcxBuyPlanExportQueryPageListReq {
   private JcxBuyPlanDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

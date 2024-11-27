@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsMakeCapacitySaleConfig;
 
 import com.olivia.peanut.aps.api.entity.apsMakeCapacityFactory.MakeCapacityConfig;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * (ApsMakeCapacitySaleConfig)保存入参
@@ -23,7 +22,6 @@ public class ApsMakeCapacitySaleConfigInsertReq extends ApsMakeCapacitySaleConfi
 
   private List<MakeCapacityConfig> makeCapacityConfigList;
 
-  public void checkParam() {
-  }
+
 }
 

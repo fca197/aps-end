@@ -39,7 +39,7 @@ public class JcxOrderApiImpl implements JcxOrderApi {
    */
   @Transactional
   public @Override JcxOrderInsertRes insert(JcxOrderInsertReq req) {
-    req.checkParam();
+
     this.jcxOrderService.save(req);
     return new JcxOrderInsertRes().setCount(1);
   }

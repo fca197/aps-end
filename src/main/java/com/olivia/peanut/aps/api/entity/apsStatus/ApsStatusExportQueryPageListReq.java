@@ -22,8 +22,5 @@ public class ApsStatusExportQueryPageListReq {
   private ApsStatusDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

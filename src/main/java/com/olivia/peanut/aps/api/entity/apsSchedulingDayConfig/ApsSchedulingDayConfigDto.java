@@ -1,6 +1,5 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig;
 
-import cn.hutool.core.util.StrUtil;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.ApsSchedulingDayConfigItemDto;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
@@ -9,11 +8,10 @@ import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 排程版本表(ApsSchedulingDayConfig)查询对象返回

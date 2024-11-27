@@ -22,8 +22,5 @@ public class ApsSchedulingGoodsStatusDateExportQueryPageListReq {
   private ApsSchedulingGoodsStatusDateDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

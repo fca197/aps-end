@@ -22,8 +22,5 @@ public class WorkshopStationExportQueryPageListReq {
   private WorkshopStationDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

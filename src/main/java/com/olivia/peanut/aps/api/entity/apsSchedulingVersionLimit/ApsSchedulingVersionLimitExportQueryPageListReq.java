@@ -22,8 +22,5 @@ public class ApsSchedulingVersionLimitExportQueryPageListReq {
   private ApsSchedulingVersionLimitDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

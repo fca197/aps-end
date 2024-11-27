@@ -10,14 +10,13 @@ import com.olivia.peanut.aps.service.ApsGoodsForecastService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * (ApsGoodsForecast)表服务实现类
@@ -62,7 +61,7 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
    *
    */
   public @Override ApsGoodsForecastUpdateByIdRes updateById(ApsGoodsForecastUpdateByIdReq req) {
-    req.checkParam();
+
     ApsGoodsForecast forecast = $.copy(req, ApsGoodsForecast.class);
 
     apsGoodsForecastService.updateById(forecast);

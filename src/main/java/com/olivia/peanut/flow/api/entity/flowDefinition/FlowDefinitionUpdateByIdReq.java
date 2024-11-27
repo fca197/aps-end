@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class FlowDefinitionUpdateByIdReq extends FlowDefinitionDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

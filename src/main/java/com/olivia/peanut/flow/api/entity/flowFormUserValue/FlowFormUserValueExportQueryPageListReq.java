@@ -28,8 +28,5 @@ public class FlowFormUserValueExportQueryPageListReq {
   private FlowFormUserValueDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

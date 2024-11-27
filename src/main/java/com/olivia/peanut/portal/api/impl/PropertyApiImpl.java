@@ -41,7 +41,7 @@ public class PropertyApiImpl implements PropertyApi {
    *
    */
   public @Override PropertyInsertRes insert(PropertyInsertReq req) {
-    req.checkParam();
+
     long id = IdWorker.getId();
     req.setId(id);
     req.setPropertyCode(IdUtils.getUniqueId(id));

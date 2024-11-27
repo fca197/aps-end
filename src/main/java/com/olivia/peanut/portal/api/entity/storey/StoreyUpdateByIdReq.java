@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class StoreyUpdateByIdReq extends StoreyDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

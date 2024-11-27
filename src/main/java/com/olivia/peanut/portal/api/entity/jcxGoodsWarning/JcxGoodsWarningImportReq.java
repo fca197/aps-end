@@ -16,9 +16,6 @@ import lombok.Setter;
 public class JcxGoodsWarningImportReq extends JcxGoodsWarningDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

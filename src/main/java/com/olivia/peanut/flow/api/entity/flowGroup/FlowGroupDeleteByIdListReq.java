@@ -30,8 +30,5 @@ public class FlowGroupDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

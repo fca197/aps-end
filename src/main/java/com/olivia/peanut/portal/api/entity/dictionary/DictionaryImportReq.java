@@ -16,9 +16,6 @@ import lombok.Setter;
 public class DictionaryImportReq extends DictionaryDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -26,8 +26,5 @@ public class BaseDeptQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

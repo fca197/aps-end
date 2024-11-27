@@ -27,8 +27,5 @@ public class JcxOrderDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

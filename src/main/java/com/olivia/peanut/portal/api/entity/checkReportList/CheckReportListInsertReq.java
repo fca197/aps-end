@@ -24,7 +24,6 @@ public class CheckReportListInsertReq extends CheckReportListDto {
   @NotNull(message = "盘点不能为空")
   private Long checkId;
 
-  public void checkParam() {
-  }
+
 }
 

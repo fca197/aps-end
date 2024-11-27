@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class TenantInfoInsertReq extends TenantInfoDto {
 
-  public void checkParam() {
-  }
+
 }
 

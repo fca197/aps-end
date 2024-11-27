@@ -22,8 +22,5 @@ public class ApsLogisticsPathExportQueryPageListReq {
   private ApsLogisticsPathDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

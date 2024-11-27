@@ -21,8 +21,5 @@ public class JcxBuyOrderItemQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

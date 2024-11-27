@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class BaseH3CodeInsertReq extends BaseH3CodeDto {
 
-  public void checkParam() {
-  }
+
 }
 

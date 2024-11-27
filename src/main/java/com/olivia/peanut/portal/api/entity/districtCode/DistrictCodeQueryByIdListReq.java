@@ -21,8 +21,5 @@ public class DistrictCodeQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

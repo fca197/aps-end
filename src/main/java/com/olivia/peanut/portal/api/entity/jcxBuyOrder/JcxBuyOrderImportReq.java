@@ -16,9 +16,6 @@ import lombok.Setter;
 public class JcxBuyOrderImportReq extends JcxBuyOrderDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

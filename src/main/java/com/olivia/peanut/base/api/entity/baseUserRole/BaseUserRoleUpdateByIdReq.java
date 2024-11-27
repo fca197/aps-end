@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class BaseUserRoleUpdateByIdReq extends BaseUserRoleDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

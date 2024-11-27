@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsGoodsBomBuyPlanItemInsertReq extends ApsGoodsBomBuyPlanItemDto {
 
-  public void checkParam() {
-  }
+
 }
 

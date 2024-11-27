@@ -3,12 +3,11 @@ package com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDate;
 
 /***
  *

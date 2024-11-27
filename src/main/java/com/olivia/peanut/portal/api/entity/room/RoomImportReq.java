@@ -16,9 +16,6 @@ import lombok.Setter;
 public class RoomImportReq extends RoomDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

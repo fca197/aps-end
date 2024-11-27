@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsLogisticsPathImportReq extends ApsLogisticsPathDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

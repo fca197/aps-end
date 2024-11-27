@@ -30,8 +30,5 @@ public class BaseUserResourceDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

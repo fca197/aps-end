@@ -1,14 +1,13 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDateTime;
 
 /**
  * 排程版本详情_机器(ApsSchedulingDayConfigVersionDetailMachine)表实体类

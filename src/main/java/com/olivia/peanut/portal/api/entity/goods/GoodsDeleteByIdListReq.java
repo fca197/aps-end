@@ -27,8 +27,5 @@ public class GoodsDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

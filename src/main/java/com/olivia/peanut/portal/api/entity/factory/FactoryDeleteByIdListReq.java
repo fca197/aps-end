@@ -27,8 +27,5 @@ public class FactoryDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

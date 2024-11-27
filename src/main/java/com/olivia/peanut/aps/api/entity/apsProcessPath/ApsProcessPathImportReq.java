@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsProcessPathImportReq extends ApsProcessPathDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

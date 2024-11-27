@@ -16,9 +16,6 @@ import lombok.Setter;
 public class MsgMessageImportReq extends MsgMessageDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingVersionUpdateByIdReq extends ApsSchedulingVersionDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

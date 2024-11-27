@@ -21,8 +21,5 @@ public class FactoryQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

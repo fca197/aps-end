@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class BaseRoleGroupImportReq extends BaseRoleGroupDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

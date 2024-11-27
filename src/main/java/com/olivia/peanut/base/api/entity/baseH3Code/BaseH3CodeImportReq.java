@@ -27,9 +27,6 @@ import java.time.LocalDateTime;
 public class BaseH3CodeImportReq extends BaseH3CodeDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

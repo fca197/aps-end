@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlanItem;
 
 import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * BOM 购买清单(ApsGoodsBomBuyPlanItem)根据ID删除多个入参
@@ -26,9 +25,6 @@ public class ApsGoodsBomBuyPlanItemDeleteByIdListReq {
   @NotEmpty(message = "请选择删除对象")
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class FlowGroupInsertReq extends FlowGroupDto {
 
-  public void checkParam() {
-  }
+
 }
 

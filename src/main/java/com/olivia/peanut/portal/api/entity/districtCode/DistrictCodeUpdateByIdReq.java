@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class DistrictCodeUpdateByIdReq extends DistrictCodeDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

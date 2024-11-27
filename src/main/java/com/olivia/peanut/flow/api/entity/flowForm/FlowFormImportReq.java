@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class FlowFormImportReq extends FlowFormDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

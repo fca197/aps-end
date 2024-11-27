@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)查询对象返回

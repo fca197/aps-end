@@ -27,8 +27,5 @@ public class RoomDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

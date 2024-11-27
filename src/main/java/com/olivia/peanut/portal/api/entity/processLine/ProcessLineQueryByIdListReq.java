@@ -21,8 +21,5 @@ public class ProcessLineQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

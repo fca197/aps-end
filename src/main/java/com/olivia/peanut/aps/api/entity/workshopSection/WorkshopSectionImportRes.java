@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.workshopSection;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 工段信息(WorkshopSection)保存返回

@@ -21,8 +21,5 @@ public class BrandQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

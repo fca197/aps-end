@@ -22,8 +22,5 @@ public class CheckReportListExportQueryPageListReq {
   private CheckReportListDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

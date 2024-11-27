@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class BaseSupplierUpdateByIdReq extends BaseSupplierDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

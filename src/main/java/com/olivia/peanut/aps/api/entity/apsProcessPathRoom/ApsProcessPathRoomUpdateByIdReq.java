@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsProcessPathRoomUpdateByIdReq extends ApsProcessPathRoomDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -30,8 +30,5 @@ public class BaseAppDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

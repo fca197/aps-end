@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class DistrictCodeInsertReq extends DistrictCodeDto {
 
-  public void checkParam() {
-  }
+
 }
 

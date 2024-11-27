@@ -28,8 +28,5 @@ public class ApsSchedulingDayConfigExportQueryPageListReq {
   private ApsSchedulingDayConfigDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

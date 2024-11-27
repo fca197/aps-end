@@ -24,8 +24,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListReq {
    * 默认 间隔 5分钟
    */
   private Long timeSpan = 60 * 5L;
-  public void checkParam() {
-  }
+
 
 }
 

@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class BaseUserDeptUpdateByIdReq extends BaseUserDeptDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

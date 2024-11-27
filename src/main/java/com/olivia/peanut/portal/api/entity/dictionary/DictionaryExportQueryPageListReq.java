@@ -22,8 +22,5 @@ public class DictionaryExportQueryPageListReq {
   private DictionaryDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

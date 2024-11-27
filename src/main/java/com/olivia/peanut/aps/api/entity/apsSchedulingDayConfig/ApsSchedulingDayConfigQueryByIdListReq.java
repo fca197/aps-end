@@ -26,8 +26,5 @@ public class ApsSchedulingDayConfigQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

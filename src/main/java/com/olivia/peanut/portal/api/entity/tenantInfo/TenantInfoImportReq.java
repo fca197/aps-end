@@ -16,9 +16,6 @@ import lombok.Setter;
 public class TenantInfoImportReq extends TenantInfoDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

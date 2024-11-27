@@ -24,8 +24,5 @@ public class TenantInfoQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

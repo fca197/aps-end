@@ -22,8 +22,5 @@ public class RoomExportQueryPageListReq {
   private RoomDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

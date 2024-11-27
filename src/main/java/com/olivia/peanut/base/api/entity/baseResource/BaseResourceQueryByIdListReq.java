@@ -26,8 +26,5 @@ public class BaseResourceQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

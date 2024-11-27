@@ -16,9 +16,6 @@ import lombok.Setter;
 public class CheckReportImportReq extends CheckReportDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

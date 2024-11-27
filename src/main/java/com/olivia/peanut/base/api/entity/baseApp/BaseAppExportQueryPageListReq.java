@@ -28,8 +28,5 @@ public class BaseAppExportQueryPageListReq {
   private BaseAppDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

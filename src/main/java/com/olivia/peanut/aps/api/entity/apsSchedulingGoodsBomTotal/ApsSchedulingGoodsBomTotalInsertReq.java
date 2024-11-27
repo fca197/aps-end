@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsSchedulingGoodsBomTotalInsertReq extends ApsSchedulingGoodsBomTotalDto {
 
-  public void checkParam() {
-  }
+
 }
 

@@ -28,8 +28,5 @@ public class ApsOrderGoodsBomExportQueryPageListReq {
   private ApsOrderGoodsBomDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

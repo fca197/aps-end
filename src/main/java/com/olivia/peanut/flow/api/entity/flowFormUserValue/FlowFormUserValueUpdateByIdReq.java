@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class FlowFormUserValueUpdateByIdReq extends FlowFormUserValueDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -3,13 +3,12 @@ package com.olivia.peanut.aps.api.entity.apsMakeCapacityFactory;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDate;
-import java.util.Objects;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDate;
+import java.util.Objects;
 
 /***
  *

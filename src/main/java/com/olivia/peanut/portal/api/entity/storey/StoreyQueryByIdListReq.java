@@ -21,8 +21,5 @@ public class StoreyQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

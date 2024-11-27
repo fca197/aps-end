@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlanItem;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * BOM 购买清单(ApsGoodsBomBuyPlanItem)查询对象返回

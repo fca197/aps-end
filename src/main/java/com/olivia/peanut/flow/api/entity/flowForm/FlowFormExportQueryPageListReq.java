@@ -28,8 +28,5 @@ public class FlowFormExportQueryPageListReq {
   private FlowFormDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

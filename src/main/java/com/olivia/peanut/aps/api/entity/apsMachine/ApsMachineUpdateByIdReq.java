@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class ApsMachineUpdateByIdReq extends ApsMachineDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

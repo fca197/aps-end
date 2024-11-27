@@ -22,8 +22,5 @@ public class ShiftExportQueryPageListReq {
   private ShiftDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

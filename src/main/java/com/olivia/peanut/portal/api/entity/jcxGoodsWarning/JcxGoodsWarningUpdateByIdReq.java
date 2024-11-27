@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class JcxGoodsWarningUpdateByIdReq extends JcxGoodsWarningDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

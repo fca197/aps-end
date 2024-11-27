@@ -3,12 +3,11 @@ package com.olivia.peanut.aps.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.util.Objects;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.Objects;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)表实体类

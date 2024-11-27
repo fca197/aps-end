@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class DictionaryInsertReq extends DictionaryDto {
 
-  public void checkParam() {
-  }
+
 }
 

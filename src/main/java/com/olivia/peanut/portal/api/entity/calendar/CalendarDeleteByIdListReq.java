@@ -27,8 +27,5 @@ public class CalendarDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class BaseSupplierInsertReq extends BaseSupplierDto {
 
-  public void checkParam() {
-  }
+
 }
 

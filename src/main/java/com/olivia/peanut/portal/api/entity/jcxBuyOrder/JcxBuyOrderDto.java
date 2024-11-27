@@ -31,10 +31,7 @@ public class JcxBuyOrderDto extends BaseEntityDto {
   private Integer orderStatus;
   private String supplierName;
 
-  @Override
-  public void checkParam() {
 
-  }
 }
 
 

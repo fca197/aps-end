@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class ApsRollingForecastOrderItemUpdateByIdReq extends ApsRollingForecastOrderItemDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

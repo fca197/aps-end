@@ -21,8 +21,5 @@ public class PropertyQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

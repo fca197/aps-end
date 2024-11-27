@@ -26,8 +26,5 @@ public class BaseRoleQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

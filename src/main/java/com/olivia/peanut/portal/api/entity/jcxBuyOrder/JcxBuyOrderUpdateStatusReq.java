@@ -13,7 +13,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class JcxBuyOrderUpdateStatusReq extends JcxBuyOrderDto {
 
-  @Override
   public void checkParam() {
     $.requireNonNullCanIgnoreException(this.getId(), "订单不能为空");
     $.requireNonNullCanIgnoreException(this.getOrderStatus(), "订单状态不能为空");

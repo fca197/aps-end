@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class BaseResourceInsertReq extends BaseResourceDto {
 
-  public void checkParam() {
-  }
+
 }
 

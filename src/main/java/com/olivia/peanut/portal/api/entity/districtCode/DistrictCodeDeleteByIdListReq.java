@@ -27,8 +27,5 @@ public class DistrictCodeDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

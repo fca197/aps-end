@@ -25,8 +25,5 @@ import lombok.experimental.Accessors;
 public class BaseH3CodeUpdateByIdReq extends BaseH3CodeDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

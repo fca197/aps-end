@@ -28,8 +28,5 @@ public class FlowGroupExportQueryPageListReq {
   private FlowGroupDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class BaseResourceUpdateByIdReq extends BaseResourceDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)查询对象返回

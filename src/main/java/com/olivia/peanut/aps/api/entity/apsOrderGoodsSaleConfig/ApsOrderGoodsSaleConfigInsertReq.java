@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsOrderGoodsSaleConfigInsertReq extends ApsOrderGoodsSaleConfigDto {
 
-  public void checkParam() {
-  }
+
 }
 

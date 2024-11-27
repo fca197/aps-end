@@ -26,8 +26,5 @@ public class FlowGroupQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -21,8 +21,5 @@ public class FileUploadQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingGoodsStatusDate;
 
 import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 订单商品状态表(ApsSchedulingGoodsStatusDate)根据ID删除多个入参
@@ -26,9 +25,6 @@ public class ApsSchedulingGoodsStatusDateDeleteByIdListReq {
   @NotEmpty(message = "请选择删除对象")
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

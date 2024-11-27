@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class RoomUpdateByIdReq extends RoomDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

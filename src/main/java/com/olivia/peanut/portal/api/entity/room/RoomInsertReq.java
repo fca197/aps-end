@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class RoomInsertReq extends RoomDto {
 
-  public void checkParam() {
-  }
+
 }
 

@@ -22,8 +22,5 @@ public class ApsOrderGoodsStatusDateExportQueryPageListReq {
   private ApsOrderGoodsStatusDateDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

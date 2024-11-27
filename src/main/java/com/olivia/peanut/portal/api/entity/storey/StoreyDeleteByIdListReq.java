@@ -27,8 +27,5 @@ public class StoreyDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

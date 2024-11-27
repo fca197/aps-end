@@ -27,8 +27,5 @@ public class CheckReportListDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

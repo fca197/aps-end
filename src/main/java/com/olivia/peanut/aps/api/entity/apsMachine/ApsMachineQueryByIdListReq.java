@@ -25,8 +25,5 @@ public class ApsMachineQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

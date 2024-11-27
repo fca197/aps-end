@@ -21,8 +21,5 @@ public class CheckReportQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

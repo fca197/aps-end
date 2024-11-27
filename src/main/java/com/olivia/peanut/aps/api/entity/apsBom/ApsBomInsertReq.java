@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsBomInsertReq extends ApsBomDto {
 
-  public void checkParam() {
-  }
+
 }
 

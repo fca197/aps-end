@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class CalendarUpdateByIdReq extends CalendarDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

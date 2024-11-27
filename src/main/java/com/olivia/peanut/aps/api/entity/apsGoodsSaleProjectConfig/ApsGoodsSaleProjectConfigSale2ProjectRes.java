@@ -1,12 +1,12 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsSaleProjectConfig;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 /***
  *

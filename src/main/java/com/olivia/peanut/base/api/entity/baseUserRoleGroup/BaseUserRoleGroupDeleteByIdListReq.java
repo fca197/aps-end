@@ -30,8 +30,5 @@ public class BaseUserRoleGroupDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

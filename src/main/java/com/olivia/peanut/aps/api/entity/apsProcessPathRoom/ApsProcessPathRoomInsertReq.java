@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsProcessPathRoomInsertReq extends ApsProcessPathRoomDto {
 
-  public void checkParam() {
-  }
+
 }
 

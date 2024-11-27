@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecastMainSaleData;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * (ApsGoodsForecastMainSaleData)保存返回

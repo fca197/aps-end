@@ -26,8 +26,5 @@ public class BaseUserRoleGroupQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

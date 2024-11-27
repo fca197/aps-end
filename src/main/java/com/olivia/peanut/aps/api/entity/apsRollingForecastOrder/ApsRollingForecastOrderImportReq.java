@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsRollingForecastOrderImportReq extends ApsRollingForecastOrderDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

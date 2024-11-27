@@ -27,8 +27,5 @@ public class JcxGoodsWarningDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

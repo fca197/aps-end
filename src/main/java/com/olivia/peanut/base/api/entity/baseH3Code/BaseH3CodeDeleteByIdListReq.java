@@ -29,8 +29,5 @@ public class BaseH3CodeDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

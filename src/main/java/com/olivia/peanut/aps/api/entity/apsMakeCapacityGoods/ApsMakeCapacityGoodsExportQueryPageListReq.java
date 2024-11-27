@@ -22,8 +22,5 @@ public class ApsMakeCapacityGoodsExportQueryPageListReq {
   private ApsMakeCapacityGoodsDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

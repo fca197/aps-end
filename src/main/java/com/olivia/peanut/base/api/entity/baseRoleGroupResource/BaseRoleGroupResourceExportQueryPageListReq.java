@@ -28,8 +28,5 @@ public class BaseRoleGroupResourceExportQueryPageListReq {
   private BaseRoleGroupResourceDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

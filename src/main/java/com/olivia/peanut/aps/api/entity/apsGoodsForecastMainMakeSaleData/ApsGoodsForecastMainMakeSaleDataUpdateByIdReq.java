@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsGoodsForecastMainMakeSaleDataUpdateByIdReq extends ApsGoodsForecastMainMakeSaleDataDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

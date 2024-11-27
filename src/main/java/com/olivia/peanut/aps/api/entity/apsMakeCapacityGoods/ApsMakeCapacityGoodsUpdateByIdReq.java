@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsMakeCapacityGoodsUpdateByIdReq extends ApsMakeCapacityGoodsDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

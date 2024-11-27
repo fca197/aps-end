@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class StoreyInsertReq extends StoreyDto {
 
-  public void checkParam() {
-  }
+
 }
 

@@ -22,8 +22,5 @@ public class ProcessLineExportQueryPageListReq {
   private ProcessLineDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

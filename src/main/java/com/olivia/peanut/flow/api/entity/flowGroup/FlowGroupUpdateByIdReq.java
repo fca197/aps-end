@@ -24,8 +24,5 @@ import lombok.experimental.Accessors;
 public class FlowGroupUpdateByIdReq extends FlowGroupDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

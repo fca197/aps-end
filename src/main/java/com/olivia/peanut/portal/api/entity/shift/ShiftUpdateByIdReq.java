@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ShiftUpdateByIdReq extends ShiftDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

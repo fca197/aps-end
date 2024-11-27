@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class CheckReportListUpdateByIdReq extends CheckReportListDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

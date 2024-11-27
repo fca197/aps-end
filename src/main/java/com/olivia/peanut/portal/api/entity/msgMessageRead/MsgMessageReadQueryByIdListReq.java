@@ -21,8 +21,5 @@ public class MsgMessageReadQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

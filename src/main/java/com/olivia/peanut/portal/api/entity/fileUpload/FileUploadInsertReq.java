@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class FileUploadInsertReq extends FileUploadDto {
 
-  public void checkParam() {
-  }
+
 }
 

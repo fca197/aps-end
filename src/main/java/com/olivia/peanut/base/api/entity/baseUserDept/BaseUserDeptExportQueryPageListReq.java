@@ -28,8 +28,5 @@ public class BaseUserDeptExportQueryPageListReq {
   private BaseUserDeptDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

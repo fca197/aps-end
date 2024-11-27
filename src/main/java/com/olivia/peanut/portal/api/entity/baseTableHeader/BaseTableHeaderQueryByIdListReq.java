@@ -21,8 +21,5 @@ public class BaseTableHeaderQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

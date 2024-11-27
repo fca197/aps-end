@@ -26,8 +26,5 @@ public class BaseAppQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

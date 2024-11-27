@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingVersionItemImportReq extends ApsSchedulingVersionItemDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

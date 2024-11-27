@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class FlowGroupImportReq extends FlowGroupDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

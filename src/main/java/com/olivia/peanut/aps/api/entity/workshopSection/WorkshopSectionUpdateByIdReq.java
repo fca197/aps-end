@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class WorkshopSectionUpdateByIdReq extends WorkshopSectionDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

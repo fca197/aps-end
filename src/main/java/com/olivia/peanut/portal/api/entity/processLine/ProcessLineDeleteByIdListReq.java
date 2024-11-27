@@ -27,8 +27,5 @@ public class ProcessLineDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

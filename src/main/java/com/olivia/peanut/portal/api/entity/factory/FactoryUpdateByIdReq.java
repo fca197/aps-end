@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class FactoryUpdateByIdReq extends FactoryDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

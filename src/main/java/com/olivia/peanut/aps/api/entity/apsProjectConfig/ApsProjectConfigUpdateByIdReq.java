@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsProjectConfigUpdateByIdReq extends ApsProjectConfigDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

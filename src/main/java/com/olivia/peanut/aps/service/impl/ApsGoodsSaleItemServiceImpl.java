@@ -48,7 +48,7 @@ public class ApsGoodsSaleItemServiceImpl extends MPJBaseServiceImpl<ApsGoodsSale
 
 
   public @Override DynamicsPage<ApsGoodsSaleItemExportQueryPageListInfoRes> queryPageList(ApsGoodsSaleItemExportQueryPageListReq req) {
-    req.checkParam();
+
     DynamicsPage<ApsGoodsSaleItem> page = new DynamicsPage<>();
     page.setCurrent(req.getPageNum()).setSize(req.getPageSize());
     setQueryListHeader(page);

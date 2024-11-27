@@ -28,8 +28,5 @@ public class BaseResourceExportQueryPageListReq {
   private BaseResourceDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

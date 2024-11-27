@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class JcxOrderItemInsertReq extends JcxOrderItemDto {
 
-  public void checkParam() {
-  }
+
 }
 

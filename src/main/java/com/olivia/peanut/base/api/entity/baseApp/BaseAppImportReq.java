@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class BaseAppImportReq extends BaseAppDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

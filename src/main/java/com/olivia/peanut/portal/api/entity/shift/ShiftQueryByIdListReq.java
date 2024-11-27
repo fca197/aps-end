@@ -21,8 +21,5 @@ public class ShiftQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

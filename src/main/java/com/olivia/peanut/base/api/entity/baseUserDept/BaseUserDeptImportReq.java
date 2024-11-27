@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 public class BaseUserDeptImportReq extends BaseUserDeptDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

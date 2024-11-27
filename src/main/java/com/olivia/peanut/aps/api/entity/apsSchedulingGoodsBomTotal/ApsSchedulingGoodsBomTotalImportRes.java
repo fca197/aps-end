@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)保存返回

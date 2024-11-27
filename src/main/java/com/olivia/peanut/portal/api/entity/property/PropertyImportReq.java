@@ -16,9 +16,6 @@ import lombok.Setter;
 public class PropertyImportReq extends PropertyDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

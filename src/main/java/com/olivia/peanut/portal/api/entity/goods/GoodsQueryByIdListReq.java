@@ -21,8 +21,5 @@ public class GoodsQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

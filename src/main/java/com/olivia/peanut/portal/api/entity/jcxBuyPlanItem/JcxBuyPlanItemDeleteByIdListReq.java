@@ -27,8 +27,5 @@ public class JcxBuyPlanItemDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

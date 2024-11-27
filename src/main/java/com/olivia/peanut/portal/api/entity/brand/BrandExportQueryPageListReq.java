@@ -22,8 +22,5 @@ public class BrandExportQueryPageListReq {
   private BrandDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsProcessPathUpdateByIdReq extends ApsProcessPathDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

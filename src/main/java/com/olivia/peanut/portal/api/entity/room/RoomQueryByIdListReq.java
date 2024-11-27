@@ -21,8 +21,5 @@ public class RoomQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

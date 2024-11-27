@@ -25,8 +25,5 @@ public class BaseH3CodeQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

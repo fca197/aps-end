@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsRoomConfigUpdateByIdReq extends ApsRoomConfigDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

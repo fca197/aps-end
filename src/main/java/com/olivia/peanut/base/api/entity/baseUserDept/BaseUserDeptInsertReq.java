@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class BaseUserDeptInsertReq extends BaseUserDeptDto {
 
-  public void checkParam() {
-  }
+
 }
 

@@ -27,8 +27,5 @@ public class ShiftDeleteByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

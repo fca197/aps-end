@@ -118,7 +118,7 @@ public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper
   @Override
   @Transactional
   public JcxBuyOrderInsertRes save(JcxBuyOrderInsertReq req) {
-    req.checkParam();
+
     List<JcxBuyPlan> planList = this.jcxBuyPlanService.listByIds(req.getBuyPlanIdList());
     if (planList.size() != req.getBuyPlanIdList().size()) {
       throw new CanIgnoreException("有计划未找到，不能生成采购单");

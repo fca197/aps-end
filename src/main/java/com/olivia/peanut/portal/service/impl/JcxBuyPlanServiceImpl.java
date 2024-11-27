@@ -135,7 +135,7 @@ public class JcxBuyPlanServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanMapper, 
   @Override
   @Transactional
   public JcxBuyPlanInsertRes save(JcxBuyPlanInsertReq req) {
-    req.checkParam();
+
     JcxBuyPlan jcxBuyPlan = new JcxBuyPlan();
     jcxBuyPlan.setPlanName(req.getPlanName()).setPlanStatus(JcxBuyPlanStatusEnum.INIT.getCode()).setId(IdWorker.getId());
     jcxBuyPlan.setPlanStatus(JcxBuyPlanStatusEnum.INIT.getCode());

@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class FlowDefinitionInsertReq extends FlowDefinitionDto {
 
-  public void checkParam() {
-  }
+
 }
 

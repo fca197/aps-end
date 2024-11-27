@@ -21,8 +21,5 @@ public class DictionaryQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

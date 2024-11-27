@@ -34,15 +34,6 @@ import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -52,6 +43,14 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * (ApsGoodsForecast)表服务实现类
@@ -147,7 +146,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       // header
       IntStream.range(3, monthList.size() + 3).forEach(i -> {
         if (!Objects.equals(sheet.getRow(0).getCell(i).getStringCellValue().substring(1), monthList.get(Math.min(i - 3, monthList.size())))) {
-          excelErrorMsgList.add(new ExcelErrorMsg(i + 3, 1, "月份不匹配"));
+          excelErrorMsgList.add(new ExcelErrorMsg().setColumnIndex(i + 3).setRowIndex(1).setErrMsg("月份不匹配"));
         }
       });
       IntStream.range(3, monthList.size() + 3).forEach(i -> {

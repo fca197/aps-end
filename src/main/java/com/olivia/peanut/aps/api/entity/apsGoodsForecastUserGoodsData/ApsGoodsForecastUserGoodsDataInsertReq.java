@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsGoodsForecastUserGoodsDataInsertReq extends ApsGoodsForecastUserGoodsDataDto {
 
-  public void checkParam() {
-  }
+
 }
 

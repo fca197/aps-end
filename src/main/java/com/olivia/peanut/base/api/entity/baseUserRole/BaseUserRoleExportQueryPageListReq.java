@@ -28,8 +28,5 @@ public class BaseUserRoleExportQueryPageListReq {
   private BaseUserRoleDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

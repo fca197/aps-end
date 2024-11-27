@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class BaseUserRoleGroupInsertReq extends BaseUserRoleGroupDto {
 
-  public void checkParam() {
-  }
+
 }
 

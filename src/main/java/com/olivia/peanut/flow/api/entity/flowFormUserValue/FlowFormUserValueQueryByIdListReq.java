@@ -26,8 +26,5 @@ public class FlowFormUserValueQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 

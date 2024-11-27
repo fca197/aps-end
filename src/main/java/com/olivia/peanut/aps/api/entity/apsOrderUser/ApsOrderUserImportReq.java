@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsOrderUserImportReq extends ApsOrderUserDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -6,11 +6,10 @@ import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.Str;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * BOM 购买清单(ApsGoodsBomBuyPlanItem)查询对象返回

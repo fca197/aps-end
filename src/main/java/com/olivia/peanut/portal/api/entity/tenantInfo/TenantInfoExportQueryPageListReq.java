@@ -22,8 +22,5 @@ public class TenantInfoExportQueryPageListReq {
   private TenantInfoDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

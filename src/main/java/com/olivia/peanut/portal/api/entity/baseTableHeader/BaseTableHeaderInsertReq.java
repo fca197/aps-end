@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class BaseTableHeaderInsertReq extends BaseTableHeaderDto {
 
-  public void checkParam() {
-  }
+
 }
 

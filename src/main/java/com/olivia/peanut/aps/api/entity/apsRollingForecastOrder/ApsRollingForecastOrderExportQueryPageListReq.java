@@ -22,8 +22,5 @@ public class ApsRollingForecastOrderExportQueryPageListReq {
   private ApsRollingForecastOrderDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

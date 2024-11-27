@@ -21,8 +21,5 @@ public class JcxGoodsWarningQueryByIdListReq {
   private List<Long> idList;
 
 
-  public void checkParam() {
-  }
-
 }
 
