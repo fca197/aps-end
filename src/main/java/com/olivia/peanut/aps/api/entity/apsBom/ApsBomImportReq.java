@@ -16,6 +16,8 @@ import lombok.Setter;
 public class ApsBomImportReq extends ApsBomDto {
 
 
+  private Integer rowIndex;
+
   public void checkParam() {
   }
 

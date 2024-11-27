@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.api.entity.apsBom;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.ann.CheckObjectFieldValueAnn;
 import com.olivia.peanut.aps.api.entity.apsBom.converter.SupplyModelConverter;
@@ -26,11 +27,12 @@ import java.math.BigDecimal;
 @SuppressWarnings("serial")
 public class ApsBomDto extends BaseEntityDto {
 
-  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Long, max = 10, fieldShowName = "组ID")
+  @ExcelIgnore
+  //  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Long, max = 10, fieldShowName = "组ID")
   @NotNull(message = "groupId不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long groupId;
 
-  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Str, max = 10, strValues = {"组1", "组2"}, fieldShowName = "组名称")
+  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Str, max = 10, fieldShowName = "组名称")
   @ExcelProperty("组名称")
   private String groupName;
 
@@ -38,6 +40,7 @@ public class ApsBomDto extends BaseEntityDto {
    *  bom 编码
    */
   @ExcelProperty("编码")
+  @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Str, max = 10, fieldShowName = "组编码")
   @NotBlank(message = "bom 编码不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCode;
   /***

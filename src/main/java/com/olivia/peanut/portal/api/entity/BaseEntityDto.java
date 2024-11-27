@@ -59,5 +59,7 @@ public class BaseEntityDto implements BaseCheck {
     return JSON.toJSONString(this);
   }
 
+  @ExcelIgnore
+  private Integer rowIndex;
 
 }
