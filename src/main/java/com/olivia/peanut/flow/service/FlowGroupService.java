@@ -1,14 +1,11 @@
 package com.olivia.peanut.flow.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.flow.api.entity.flowGroup.*;
 import com.olivia.peanut.flow.model.FlowGroup;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.flow.api.entity.flowGroup.*;
 
 /**
  * 工作流组表(FlowGroup)表服务接口

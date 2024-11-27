@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.aps.api.entity.apsMachine.*;
 import com.olivia.peanut.aps.model.ApsMachine;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.aps.api.entity.apsMachine.*;
 
 /**
  * aps 生产机器(ApsMachine)表服务接口

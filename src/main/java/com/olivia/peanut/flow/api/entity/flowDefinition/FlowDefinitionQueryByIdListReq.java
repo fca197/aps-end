@@ -1,15 +1,10 @@
 package com.olivia.peanut.flow.api.entity.flowDefinition;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 工作定义表(FlowDefinition)查询对象入参

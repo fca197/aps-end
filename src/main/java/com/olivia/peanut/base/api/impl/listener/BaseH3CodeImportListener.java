@@ -1,20 +1,11 @@
 package com.olivia.peanut.base.api.impl.listener;
 
 
-import com.olivia.peanut.base.model.BaseH3Code;
-import org.apache.ibatis.annotations.Mapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.olivia.peanut.base.api.entity.baseH3Code.*;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.olivia.peanut.base.api.entity.baseH3Code.BaseH3CodeImportReq;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * H3对应的值(BaseH3Code)文件导入监听

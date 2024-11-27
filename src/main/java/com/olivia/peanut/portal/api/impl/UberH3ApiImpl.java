@@ -3,18 +3,15 @@ package com.olivia.peanut.portal.api.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.olivia.peanut.portal.api.UberH3Api;
 import com.olivia.peanut.portal.api.entity.uber.h3.*;
-import com.uber.h3core.H3Core;
 import com.uber.h3core.LengthUnit;
 import com.uber.h3core.util.LatLng;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.olivia.peanut.util.H3Utils.UBER_H3_CORE;
 

@@ -1,9 +1,5 @@
 package com.olivia.peanut.aps.service.impl;
 
-import static com.olivia.peanut.util.SetNamePojoUtils.FACTORY;
-import static com.olivia.peanut.util.SetNamePojoUtils.GOODS;
-import static com.olivia.peanut.util.SetNamePojoUtils.OP_USER_NAME;
-
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -21,6 +17,10 @@ import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,10 +28,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.olivia.peanut.util.SetNamePojoUtils.*;
 
 /**
  * (ApsGoodsBom)表服务实现类

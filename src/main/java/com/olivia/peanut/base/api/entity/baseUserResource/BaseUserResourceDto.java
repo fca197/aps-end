@@ -4,11 +4,10 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 用户角色资源表(BaseUserResource)查询对象返回

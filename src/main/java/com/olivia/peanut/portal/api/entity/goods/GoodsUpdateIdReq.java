@@ -2,11 +2,10 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
 
 /**
  * 商品信息(Goods)表实体类

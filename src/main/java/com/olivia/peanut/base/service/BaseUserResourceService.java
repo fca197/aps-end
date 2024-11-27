@@ -1,14 +1,11 @@
 package com.olivia.peanut.base.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.base.api.entity.baseUserResource.*;
 import com.olivia.peanut.base.model.BaseUserResource;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.base.api.entity.baseUserResource.*;
 
 /**
  * 用户角色资源表(BaseUserResource)表服务接口

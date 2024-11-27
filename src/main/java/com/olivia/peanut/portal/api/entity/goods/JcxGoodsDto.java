@@ -2,11 +2,10 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * 商品信息(Goods)查询对象返回

@@ -1,14 +1,14 @@
 package com.olivia.peanut.portal.model;
 
 
-import static com.olivia.sdk.utils.Str.SQLITE;
-
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.ann.BelongDb;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import static com.olivia.sdk.utils.Str.SQLITE;
 
 /**
  * 品牌信息(Brand)表实体类

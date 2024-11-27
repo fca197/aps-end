@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetail.*;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetail;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetail.*;
 
 /**
  * 排程版本配置明细表(ApsSchedulingDayConfigVersionDetail)表服务接口

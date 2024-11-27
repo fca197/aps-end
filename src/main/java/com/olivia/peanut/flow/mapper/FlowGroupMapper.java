@@ -1,7 +1,6 @@
 package com.olivia.peanut.flow.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.olivia.peanut.flow.model.FlowGroup;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.service;
 
+import com.github.yulichang.base.MPJBaseService;
 import com.olivia.peanut.aps.api.entity.apsLogisticsPath.*;
-import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.peanut.aps.model.ApsLogisticsPath;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
 
 /**
  * 物流路径表(ApsLogisticsPath)表服务接口

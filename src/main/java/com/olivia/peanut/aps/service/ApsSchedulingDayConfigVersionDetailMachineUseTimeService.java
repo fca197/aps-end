@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachineUseTime.*;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetailMachineUseTime;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachineUseTime.*;
 
 /**
  * 排程结果机器使用率(ApsSchedulingDayConfigVersionDetailMachineUseTime)表服务接口

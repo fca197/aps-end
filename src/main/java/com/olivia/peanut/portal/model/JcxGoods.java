@@ -3,12 +3,11 @@ package com.olivia.peanut.portal.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
 
 /**
  * 商品信息(Goods)表实体类

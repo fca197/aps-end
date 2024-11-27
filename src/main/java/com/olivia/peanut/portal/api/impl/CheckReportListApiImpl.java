@@ -1,8 +1,5 @@
 package com.olivia.peanut.portal.api.impl;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -18,15 +15,17 @@ import com.olivia.peanut.portal.service.*;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * 报表检查记录信息(CheckReportList)表服务实现类

@@ -1,14 +1,11 @@
 package com.olivia.peanut.base.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.base.api.entity.baseRoleGroupResource.*;
 import com.olivia.peanut.base.model.BaseRoleGroupResource;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.base.api.entity.baseRoleGroupResource.*;
 
 /**
  * 角色组资源表(BaseRoleGroupResource)表服务接口

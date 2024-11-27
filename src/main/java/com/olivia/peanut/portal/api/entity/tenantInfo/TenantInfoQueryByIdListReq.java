@@ -1,12 +1,11 @@
 package com.olivia.peanut.portal.api.entity.tenantInfo;
 
 import jakarta.validation.constraints.NotNull;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 租户信息(TenantInfo)查询对象入参

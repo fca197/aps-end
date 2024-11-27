@@ -1,8 +1,5 @@
 package com.olivia.peanut.flow.service.impl;
 
-import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_USER_ID;
-import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_USER_ID_LIST;
-
 import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -16,11 +13,6 @@ import com.olivia.peanut.flow.core.listener.DelegateTaskInfo;
 import com.olivia.peanut.flow.service.FlowConfigService;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.$;
-
-import java.time.Duration;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.RuntimeService;
@@ -28,6 +20,13 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_USER_ID;
+import static com.olivia.peanut.flow.api.entity.FlowStr.FLOW_USER_ID_LIST;
 
 /***
  *

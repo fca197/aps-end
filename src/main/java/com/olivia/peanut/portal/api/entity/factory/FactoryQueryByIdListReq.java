@@ -1,10 +1,10 @@
 package com.olivia.peanut.portal.api.entity.factory;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 工段信息(Factory)查询对象入参

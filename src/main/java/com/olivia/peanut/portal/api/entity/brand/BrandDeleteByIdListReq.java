@@ -1,12 +1,11 @@
 package com.olivia.peanut.portal.api.entity.brand;
 
 import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 品牌信息(Brand)根据ID删除多个入参

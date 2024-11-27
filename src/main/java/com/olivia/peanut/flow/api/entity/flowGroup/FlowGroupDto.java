@@ -5,11 +5,10 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 工作流组表(FlowGroup)查询对象返回
