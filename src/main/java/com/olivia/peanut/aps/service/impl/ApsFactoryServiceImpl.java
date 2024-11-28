@@ -2,6 +2,7 @@ package com.olivia.peanut.aps.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.annotations.Beta;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -55,9 +57,9 @@ public class ApsFactoryServiceImpl implements ApsFactoryService {
   @Resource
   ApsProcessPathService apsProcessPathService;
 
-  Cache<String, List<WeekInfo>> factoryWeekInfoCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(Duration.ofMinutes(10)).build();
-  Cache<String, List<ShiftItem>> factoryShiftCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(Duration.ofMinutes(10)).build();
-  Cache<String, Map<Long, ApsProcessPathDto>> factoryPathCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(Duration.ofMinutes(10)).build();
+  static final Cache<String, List<WeekInfo>> factoryWeekInfoCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(10, TimeUnit.MINUTES).build();
+  static final Cache<String, List<ShiftItem>> factoryShiftCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(10, TimeUnit.MINUTES).build();
+  static final Cache<String, Map<Long, ApsProcessPathDto>> factoryPathCache = CacheBuilder.newBuilder().maximumSize(20).expireAfterWrite(10, TimeUnit.MINUTES).build();
 
   @Override
   public FactoryConfigRes getFactoryConfig(FactoryConfigReq req) {

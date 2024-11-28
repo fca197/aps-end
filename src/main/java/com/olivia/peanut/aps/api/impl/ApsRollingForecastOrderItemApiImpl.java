@@ -22,7 +22,6 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetData;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetHeader;
 import jakarta.annotation.Resource;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -130,7 +129,7 @@ public class ApsRollingForecastOrderItemApiImpl implements ApsRollingForecastOrd
       sheetHeaderList.add(new SheetHeader().setShowName(statusIdNameMap.get(statusId)).setFieldName("status_" + statusId).setWidth(200));
     });
     sheetData.setHeaderList(sheetHeaderList);
-    ArrayList<@Nullable Object> dataList = Lists.newArrayList();
+    ArrayList<Object> dataList = Lists.newArrayList();
 
     apsOrderMap.values().forEach(order -> {
       Map<String, Object> orderMapTmp = new HashMap<>();

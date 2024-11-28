@@ -82,11 +82,6 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
 
   @SetUserName
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
-
-    if (CollUtil.isEmpty(apsBomDtoList)) {
-    }
-
-
   }
 
 
