@@ -6,8 +6,6 @@
 
 [工作流相关](doc/workflow.md)
 
-[版本变更记录](doc/version-change.md)
-
 # 前端地址
 
 [aps-web](https://gitee.com/slsplatform/aps-inventory-sales)

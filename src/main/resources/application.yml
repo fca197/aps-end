@@ -106,9 +106,9 @@ spring:
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource
 
-  redis:
-    redisson:
-      file: classpath:redisson.yml
+  #  redis:
+  #    redisson:
+  #      file: classpath:redisson.yml
   data:
     redis:
       database: 3
