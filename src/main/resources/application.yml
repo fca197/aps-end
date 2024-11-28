@@ -61,9 +61,6 @@ peanut:
     end:
       - 1
 spring:
-  boot:
-    custom:
-      classloader: com.olivia.peanut.MyClassLoader
   application:
     name: peanut-api
   servlet:
@@ -107,6 +104,7 @@ spring:
     url: jdbc:mysql://local:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
     username: root
     password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
 
   redis:
     redisson:
@@ -121,6 +119,11 @@ spring:
         pool:
           max-idle: 20
           min-idle: 20
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml,classpath:/mapper/*/*.xml  # 指定 MyBatis Mapper XML 文件的位置
+  type-aliases-package: com.olivia.peanut.*.model  # 指定实体类所在包名
 
 
 logging:

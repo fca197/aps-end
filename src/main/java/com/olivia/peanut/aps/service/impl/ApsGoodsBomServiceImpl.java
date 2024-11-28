@@ -106,6 +106,8 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
           .eq(Objects.nonNull(obj.getBomUseWorkStation()), ApsGoodsBom::getBomUseWorkStation, obj.getBomUseWorkStation())
           .eq(StringUtils.isNoneBlank(obj.getBomUseExpression()), ApsGoodsBom::getBomUseExpression, obj.getBomUseExpression())
           .eq(Objects.nonNull(obj.getFactoryId()), ApsGoodsBom::getFactoryId, obj.getFactoryId())
+          .eq(Objects.nonNull(obj.getId()), ApsGoodsBom::getId, obj.getId())
+
 
       ;
     }

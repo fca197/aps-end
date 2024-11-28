@@ -94,7 +94,9 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
           .eq(StringUtils.isNoneBlank(obj.getSupplyMode()), ApsBom::getSupplyMode, obj.getSupplyMode())
           .eq(Objects.nonNull(obj.getBomCostPrice()), ApsBom::getBomCostPrice, obj.getBomCostPrice())
           .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
-          .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory());
+          .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory())
+          .eq(Objects.nonNull(obj.getId()), ApsBom::getId, obj.getId())
+      ;
       if (Objects.nonNull(obj.getGroupId())) {
         ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());
         if (Objects.nonNull(apsBomGroup)) {

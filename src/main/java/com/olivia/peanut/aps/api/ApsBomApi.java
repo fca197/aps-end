@@ -36,7 +36,7 @@ public interface ApsBomApi {
   /**
    * 查询 BOM 清单
    */
-  @PostMapping("xx/apsBom/queryList")
+  @PostMapping("/apsBom/queryList")
   ApsBomQueryListRes queryList(@RequestBody @Valid ApsBomQueryListReq req);
 
   /**
