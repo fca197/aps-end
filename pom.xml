@@ -59,21 +59,21 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>9.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-            <version>${camunda.spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-            <version>${camunda.spring-boot.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.springboot</groupId>
-            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>
-            <version>${camunda.spring-boot.version}</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
+        <!--            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>-->
+        <!--            <version>${camunda.spring-boot.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
+        <!--            <artifactId>camunda-bpm-spring-boot-starter</artifactId>-->
+        <!--            <version>${camunda.spring-boot.version}</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
+        <!--            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>-->
+        <!--            <version>${camunda.spring-boot.version}</version>-->
+        <!--        </dependency>-->
 
 
     </dependencies>
