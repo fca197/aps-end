@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableCaching
 //@EnableAspectJAutoProxy
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
-@MapperScan(basePackages = {"com.olivia.peanut.*.mapper"})
+@MapperScan(basePackages = {"com.olivia.peanut.*.mapper", "com.olivia.sdk.mapper"})
 @SpringBootApplication
 
 @EnableTransactionManagement

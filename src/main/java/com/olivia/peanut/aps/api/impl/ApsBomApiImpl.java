@@ -6,6 +6,7 @@ import com.olivia.peanut.aps.api.entity.apsBom.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsBomImportListener;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.service.ApsBomService;
+import com.olivia.sdk.ann.Oplog;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
@@ -27,10 +28,13 @@ public class ApsBomApiImpl implements ApsBomApi {
 
   private @Autowired ApsBomService apsBomService;
 
+  private static final String businessType = "apsBom";
+
   /****
    * insert
    *
    */
+  @Oplog(content = "零件存储", businessKey = "#req.bomCode", businessType = businessType, paramName = "保存零件")
   public @Override ApsBomInsertRes insert(ApsBomInsertReq req) {
     this.apsBomService.save($.copy(req, ApsBom.class));
     return new ApsBomInsertRes().setCount(1);

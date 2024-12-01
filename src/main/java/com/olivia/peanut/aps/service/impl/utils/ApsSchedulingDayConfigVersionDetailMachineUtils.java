@@ -84,7 +84,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
     SXSSFCell hc = row.createCell(index.getAndIncrement());
     hc.setCellStyle(headerCellStyle);
     hc.setCellValue("机器名称");
-    long epochSecond = beginLocalDateTime.toEpochSecond(ZoneOffset.of(Str.offsetId)) * 1000;
+    long epochSecond = beginLocalDateTime.toEpochSecond(ZoneOffset.of(Str.OFFSET_ID)) * 1000;
     for (int i = 0; i < timeStep; i++) {
       SXSSFCell cell = row.createCell(index.getAndIncrement());
       cell.setCellStyle(headerCellStyle);
@@ -163,6 +163,6 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
   }
 
   private static long getTimeIndex(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListReq req, LocalDateTime localDateTime) {
-    return localDateTime.toEpochSecond(ZoneOffset.of(Str.offsetId)) / req.getTimeSpan();
+    return localDateTime.toEpochSecond(ZoneOffset.of(Str.OFFSET_ID)) / req.getTimeSpan();
   }
 }

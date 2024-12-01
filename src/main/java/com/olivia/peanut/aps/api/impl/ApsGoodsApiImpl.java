@@ -7,6 +7,7 @@ import com.olivia.peanut.aps.api.entity.apsGoods.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsGoodsImportListener;
 import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
+import com.olivia.sdk.ann.Oplog;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
@@ -28,11 +29,14 @@ import java.util.List;
 public class ApsGoodsApiImpl implements ApsGoodsApi {
 
   private @Autowired ApsGoodsService apsGoodsService;
+  private static final String businessType = "apsGoods";
 
   /****
    * insert
    *
    */
+  @Oplog(content = "商品存储", businessKey = "#req.bomCode", businessType = businessType, paramName = "保存零件")
+
   public @Override ApsGoodsInsertRes insert(ApsGoodsInsertReq req) {
     this.apsGoodsService.save($.copy(req, ApsGoods.class));
     return new ApsGoodsInsertRes().setCount(1);
@@ -42,6 +46,7 @@ public class ApsGoodsApiImpl implements ApsGoodsApi {
    * deleteByIds
    *
    */
+  @Oplog(content = "商品存删除", businessKey = "#req.idList", businessType = businessType, paramName = "删除商品ID")
   public @Override ApsGoodsDeleteByIdListRes deleteByIdList(ApsGoodsDeleteByIdListReq req) {
     apsGoodsService.removeByIds(req.getIdList());
     return new ApsGoodsDeleteByIdListRes();

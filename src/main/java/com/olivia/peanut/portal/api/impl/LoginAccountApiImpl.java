@@ -16,12 +16,11 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.login.account.*;
 import com.olivia.peanut.portal.model.LoginAccount;
 import com.olivia.peanut.portal.service.LoginAccountService;
+import com.olivia.sdk.ann.Oplog;
 import com.olivia.sdk.ann.Timed;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.filter.LoginUserContext;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -45,6 +44,7 @@ import static java.lang.Boolean.TRUE;
 @RestController
 public class LoginAccountApiImpl implements LoginAccountApi {
 
+  static final String businessType = "loginAccount";
   @Resource
   PeanutProperties peanutProperties;
 
@@ -69,6 +69,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
   @Override
   @Timed
+  @Oplog(content = "登录", businessKey = "#req.loginPhone", url = "/loginPhonePwd", businessType = businessType, paramName = "登录入参")
 //  @RedissonCacheAnn(group = "login", key = "#req.loginPhone+':'+#req.pwd",ttl = 60,unit = TimeUnit.SECONDS)
   public LoginPhonePwdRes loginPhonePwd(LoginPhonePwdReq req) {
 
@@ -76,8 +77,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     RLock lock = redissonClient.getLock(peanutProperties.getRedisKey().getLoginLock() + req.getLoginPhone());
 
     lock.lock(3, TimeUnit.SECONDS);
-    LoginAccount loginAccount = this.loginAccountService.getOne(
-        new LambdaQueryWrapper<LoginAccount>().eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
+    LoginAccount loginAccount = this.loginAccountService.getOne(new LambdaQueryWrapper<LoginAccount>().eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
     $.requireNonNullCanIgnoreException(loginAccount, "用户名密码错误");
     loginAccount.setUserPwd(null);
     String token = String.join("_", IdWorker.get32UUID().toUpperCase());
@@ -92,8 +92,8 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   }
 
   @Override
-  public GetUserInfoRes getUserInfo(GetUserInfoReq req, String token) {
-
+  public GetUserInfoRes getUserInfo(GetUserInfoReq req) {
+    String token = ReqResUtils.getRequest().getHeader(Str.ReqHeader.J_TOKEN);
     LoginUserContext.ignoreTenantId();
     String key = peanutProperties.getRedisKey().getUserToken() + token;
     String str = stringRedisTemplate.opsForValue().get(key);
@@ -120,22 +120,12 @@ public class LoginAccountApiImpl implements LoginAccountApi {
       Map<Long, String> rnMap = this.baseRoleService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseRole::getRoleName));
       Map<Long, String> dnMap = deptService.list().stream().collect(Collectors.toMap(BaseEntity::getId, BaseDept::getDeptName));
       List<Long> userIdList = result.stream().map(BaseEntityDto::getId).toList();
-      Map<Long, List<Long>> userDeptMap = this.baseUserDeptService.list(new LambdaQueryWrapper<BaseUserDept>().in(BaseUserDept::getUserId, userIdList)).stream().collect(
-          Collectors.groupingBy(BaseUserDept::getUserId,
-              Collectors.collectingAndThen(Collectors.<BaseUserDept>toList(),
-                  list -> list.stream().map(BaseUserDept::getDeptId).toList())
-          )
-      );
+      Map<Long, List<Long>> userDeptMap = this.baseUserDeptService.list(new LambdaQueryWrapper<BaseUserDept>().in(BaseUserDept::getUserId, userIdList)).stream().collect(Collectors.groupingBy(BaseUserDept::getUserId, Collectors.collectingAndThen(Collectors.<BaseUserDept>toList(), list -> list.stream().map(BaseUserDept::getDeptId).toList())));
 
       List<BaseUserRoleGroup> userRoleGroupList = baseUserRoleGroupService.list(new LambdaQueryWrapper<BaseUserRoleGroup>().in(BaseUserRoleGroup::getUserId, userIdList));
-      Map<Long, List<Long>> userRoleGroupIdMap = userRoleGroupList.stream().collect(Collectors.groupingBy(BaseUserRoleGroup::getUserId,
-          Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(), list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
+      Map<Long, List<Long>> userRoleGroupIdMap = userRoleGroupList.stream().collect(Collectors.groupingBy(BaseUserRoleGroup::getUserId, Collectors.collectingAndThen(Collectors.<BaseUserRoleGroup>toList(), list -> list.stream().map(BaseUserRoleGroup::getRoleGroupId).collect(Collectors.toList()))));
 
-      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList))
-          .stream().collect(
-              Collectors.groupingBy(BaseUserRole::getUserId,
-                  Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(),
-                      list -> list.stream().map(BaseUserRole::getRoleId).toList())));
+      Map<Long, List<Long>> userRoleMap = this.baseUserRoleService.list(new LambdaQueryWrapper<BaseUserRole>().in(BaseUserRole::getUserId, userIdList)).stream().collect(Collectors.groupingBy(BaseUserRole::getUserId, Collectors.collectingAndThen(Collectors.<BaseUserRole>toList(), list -> list.stream().map(BaseUserRole::getRoleId).toList())));
 
       result.forEach(t -> {
         List<Long> userGroupIdList = userRoleGroupIdMap.getOrDefault(t.getId(), List.of());
@@ -154,6 +144,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   }
 
   @Override
+  @Oplog(content = "重置密码", businessKey = "#req.id", url = "/resetPwd", businessType = businessType, paramName = "重置密码")
   public ResetPwdRes resetPwd(ResetPwdReq req) {
 
     LoginUserContext.ignoreTenantId();
@@ -166,6 +157,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   }
 
   @Override
+  @Oplog(content = "添加用户", businessKey = "#req.loginPhone", url = "/insert", businessType = businessType, paramName = "用户信息")
   public InsertRes insert(InsertReq req) {
     LoginUserContext.ignoreTenantId();
     LoginAccount copy = $.copy(req, LoginAccount.class);
@@ -176,6 +168,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
   @Override
   @Transactional
+  @Oplog(content = "更新角色", businessKey = "#req.userId", url = "/insert", businessType = businessType, paramName = "用户角色信息")
   public UpdateRoleRes updateRole(UpdateRoleReq req) {
     this.baseUserRoleService.remove(new LambdaQueryWrapper<BaseUserRole>().eq(BaseUserRole::getUserId, req.getUserId()));
     this.baseUserRoleGroupService.remove(new LambdaQueryWrapper<BaseUserRoleGroup>().eq(BaseUserRoleGroup::getUserId, req.getUserId()));
@@ -189,6 +182,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     return new UpdateRoleRes();
   }
 
+  @Oplog(content = "更新部门", businessKey = "#req.userId", url = "/updateDept", businessType = businessType, paramName = "用户部门信息")
   @Override
   public UpdateDeptRes updateDept(UpdateDeptReq req) {
     this.baseUserDeptService.remove(new LambdaQueryWrapper<BaseUserDept>().eq(BaseUserDept::getUserId, req.getUserId()));

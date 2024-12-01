@@ -1,4 +1,4 @@
-package com.olivia.peanut.base.api.entity.baseRoleGroupResource;
+package com.olivia.peanut.base.api.entity.baseOplog;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -8,23 +8,21 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * 角色组资源表(BaseRoleGroupResource)根据ID删除多个入参
+ * 操作日志(BaseOplog)根据ID删除多个入参
  *
- * @author peanut
- * @since 2024-08-09 15:42:34
+ * @author makejava
+ * @since 2024-11-30 16:01:01
  */
 @Accessors(chain = true)
 @Getter
 @Setter
 @SuppressWarnings("serial")
-public class BaseRoleGroupResourceDeleteByIdListReq {
-
+public class BaseOplogDeleteByIdListReq {
   /***
    * 要删除的ID
    */
   @NotEmpty(message = "请选择删除对象")
   private List<Long> idList;
-
 
 }
 
