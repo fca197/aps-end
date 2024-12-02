@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.fastjson.Boolean2StrFeature;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -86,6 +87,9 @@ public class BaseOplogDto extends BaseEntityDto {
   private String methodName;
 
   private String traceId;
+
+  @JSONField(serializeUsing = Boolean2StrFeature.class)
+  private Boolean isSuccess;
 
 }
 
