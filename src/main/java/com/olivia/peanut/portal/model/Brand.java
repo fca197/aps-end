@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import static com.olivia.sdk.utils.Str.SQLITE;
 
 /**
  * 品牌信息(Brand)表实体类
@@ -21,7 +20,6 @@ import static com.olivia.sdk.utils.Str.SQLITE;
 @Setter
 //
 @TableName("t_brand")
-@BelongDb(dataSourceNames = {SQLITE})
 public class Brand extends BaseEntity {
 
   /***
