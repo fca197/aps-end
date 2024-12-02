@@ -5,18 +5,19 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsBom.ApsBomImportReq;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.sdk.dto.ExcelErrorMsg;
+import com.olivia.sdk.exception.RunException;
 import com.olivia.sdk.listener.AbstractImportListener;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -38,11 +39,20 @@ public class ApsBomImportListener extends AbstractImportListener<ApsBomImportReq
     reqList.add(data);
   }
 
+
+  final static Cache<String, Map<String, Long>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
+
+
   @Override
   public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-    Map<String, Long> nameIdMap = SpringUtil.getBean(ApsBomGroupService.class)
-        .list(new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId, ApsBomGroup::getGroupName))
-        .stream().collect(Collectors.toMap(ApsBomGroup::getGroupName, BaseEntity::getId));
+    Map<String, Long> nameIdMap;
+    try {
+      nameIdMap = new HashMap<>(cache.get("all", () -> SpringUtil.getBean(ApsBomGroupService.class)
+          .list(new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId, ApsBomGroup::getGroupName))
+          .stream().collect(Collectors.toMap(ApsBomGroup::getGroupName, BaseEntity::getId))));
+    } catch (Exception e) {
+      throw new RunException(e);
+    }
     reqList.forEach(t -> {
       Long groupId = nameIdMap.get(t.getGroupName());
       t.setGroupId(groupId);

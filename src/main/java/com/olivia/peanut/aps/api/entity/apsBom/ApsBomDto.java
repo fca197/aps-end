@@ -6,6 +6,7 @@ import com.olivia.peanut.ann.CheckObjectFieldValueAnn;
 import com.olivia.peanut.aps.api.entity.apsBom.converter.SupplyModelConverter;
 import com.olivia.peanut.enums.CheckEnums;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import com.olivia.sdk.ann.ImportCheck;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
@@ -41,38 +42,43 @@ public class ApsBomDto extends BaseEntityDto {
    */
   @ExcelProperty("编码")
   @CheckObjectFieldValueAnn(checkEnum = CheckEnums.Str, max = 10, fieldShowName = "组编码")
-  @NotBlank(message = "bom 编码不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "bom 编码不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomCode;
   /***
    *  bom 名称
    */
   @ExcelProperty("名称")
-  @NotBlank(message = "bom 名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @CheckObjectFieldValueAnn(useValid = true)
+  @NotBlank(message = "bom 名称不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomName;
   /***
    *  成本价
    */
   @ExcelProperty("成本价")
-  @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @CheckObjectFieldValueAnn(useValid = true)
+  @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private BigDecimal bomCostPrice;
   /***
    *  规格
    */
-  @ExcelProperty("规格")
+  @ExcelProperty("成本价规格")
+  @CheckObjectFieldValueAnn(useValid = true)
   @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  库存
    */
   @ExcelProperty("库存")
-  @NotNull(message = "库存不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @CheckObjectFieldValueAnn(useValid = true)
+  @NotNull(message = "库存不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private BigDecimal bomInventory;
 
   /***
    * 供应方式 ，make , buy
    */
+  @CheckObjectFieldValueAnn(useValid = true)
   @ExcelProperty(value = "供应方式", converter = SupplyModelConverter.class)
-  @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String supplyMode;
 
   public String getSupplyModeStr() {
@@ -82,15 +88,17 @@ public class ApsBomDto extends BaseEntityDto {
   /***
    * 规格 ，100个*6
    */
+  @CheckObjectFieldValueAnn(useValid = true)
   @ExcelProperty("零件规格")
-  @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomUnit;
 
   /**
    * 使用规格
    */
-  @ExcelProperty("规格")
-  @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @CheckObjectFieldValueAnn(useValid = true)
+  @ExcelProperty("使用规格")
+  @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String useUnit;
 
 
