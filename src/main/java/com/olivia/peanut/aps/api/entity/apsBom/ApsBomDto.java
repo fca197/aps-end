@@ -48,35 +48,35 @@ public class ApsBomDto extends BaseEntityDto {
    *  bom 名称
    */
   @ExcelProperty("名称")
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "零件名称")
   @NotBlank(message = "bom 名称不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomName;
   /***
    *  成本价
    */
   @ExcelProperty("成本价")
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "成本价")
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private BigDecimal bomCostPrice;
   /***
    *  规格
    */
   @ExcelProperty("成本价规格")
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "成本价规格")
   @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  库存
    */
   @ExcelProperty("库存")
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "库存")
   @NotNull(message = "库存不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private BigDecimal bomInventory;
 
   /***
    * 供应方式 ，make , buy
    */
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "供应方式")
   @ExcelProperty(value = "供应方式", converter = SupplyModelConverter.class)
   @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String supplyMode;
@@ -88,7 +88,7 @@ public class ApsBomDto extends BaseEntityDto {
   /***
    * 规格 ，100个*6
    */
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "零件规格")
   @ExcelProperty("零件规格")
   @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomUnit;
@@ -96,7 +96,7 @@ public class ApsBomDto extends BaseEntityDto {
   /**
    * 使用规格
    */
-  @CheckObjectFieldValueAnn(useValid = true)
+  @CheckObjectFieldValueAnn(useValid = true, fieldShowName = "使用规格")
   @ExcelProperty("使用规格")
   @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String useUnit;

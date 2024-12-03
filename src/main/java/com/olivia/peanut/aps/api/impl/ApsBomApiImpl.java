@@ -81,9 +81,6 @@ public class ApsBomApiImpl implements ApsBomApi {
 
   public @Override ApsBomImportRes importData(@RequestParam("file") MultipartFile file) {
     List<ApsBomImportReq> reqList = PoiExcelUtil.readData(file, new ApsBomImportListener(), ApsBomImportReq.class);
-    if (true) {
-      return null;
-    }
     // 类型转换，  更换枚举 等操作
     List<ApsBom> readList = $.copyList(reqList, ApsBom.class);
     boolean bool = apsBomService.saveBatch(readList);
