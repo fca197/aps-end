@@ -22,8 +22,8 @@
 
 | 组建名称              | 依赖版本         | 说明                                                                           |
 |-------------------|--------------|------------------------------------------------------------------------------|
-| JDK               | jdk 17       | Jdk最低版本                                                                      |
-| Spring Boot       | 3.2.0        | springboot版本                                                                 |
+| JDK               | jdk 21       | Jdk最低版本                                                                      |
+| Spring Boot       | 3.4.0        | springboot版本                                                                 |
 | mybatis-plus      | 3.5.3.1      | mybatisplus版本                                                                |
 | mybatis-plus-join | 1.4.8.1      | mybatisplus-join版本                                                           | 
 | lombok            | 1.18.22      | lombok版本                                                                     |
