@@ -13,8 +13,10 @@ import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.peanut.aps.service.ApsBomService;
-import com.olivia.sdk.ann.SetUserName;
+import com.olivia.peanut.aps.service.ApsProduceProcessService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -45,6 +47,8 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
   // 以下为私有对象封装
   @Resource
   ApsBomGroupService apsBomGroupService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsBomQueryListRes queryList(ApsBomQueryListReq req) {
 
@@ -80,8 +84,11 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  @SetUserName
+
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
+
+    setNameService.setName(apsBomDtoList,
+        SetNamePojoUtils.OP_USER_NAME, SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName"));
   }
 
 

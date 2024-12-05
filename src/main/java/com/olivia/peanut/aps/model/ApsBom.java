@@ -58,5 +58,7 @@ public class ApsBom extends BaseEntity {
    * 规格 ，100个*6
    */
   private String bomUnit;
+
+  private Long produceProcessId;
 }
 

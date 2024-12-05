@@ -101,7 +101,8 @@ public class ApsBomDto extends BaseEntityDto {
   @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String useUnit;
 
-
+  private Long produceProcessId;
+  private String produceProcessName;
 }
 
 
