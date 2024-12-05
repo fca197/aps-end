@@ -61,6 +61,71 @@ peanut:
     end:
       - 1
 spring:
+
+  shardingsphere:
+    rules:
+
+      sharding:
+        auditors:
+          mustHasShardingId:
+            type: DML_SHARDING_CONDITIONS
+        tables:
+          aps_order_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_order_goods_bom_${0..2}
+            # aps_order_goods_bom库路由
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_default_database_inline
+            # aps_order_goods_bom表路由
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_bom_algorithm
+            audit-strategy:
+              auditor-names:
+                mustHasShardingId
+
+          aps_scheduling_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_default_database_inline
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_scheduling_goods_bom_algorithm
+            audit-strategy:
+              auditor-names:
+                mustHasShardingId
+
+
+        sharding-algorithms:
+          # aps_order_goods_bom库路由算法
+          aps_default_database_inline:
+            type: INLINE
+            props:
+              algorithm-expression: db_${order_id % 1}
+
+          aps_order_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_bom_${order_id % 3}
+
+          aps_scheduling_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_${order_id % 3}
+        default-table-strategy:
+          none:
+
+
+    props:
+      sql-show: true
+      sql-comment-parse-enabled: true
+
+
   application:
     name: peanut-api
   servlet:

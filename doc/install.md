@@ -15,7 +15,7 @@
 |-------|-------|---------------------------------------------------------------------------|
 | MySQL | 8     |                                                                           |
 | Redis | 6     | [安装](https://zhuanlan.zhihu.com/p/700234831)                              |
-| JDK   | 17    | [环境变量配置](https://blog.csdn.net/weixin_52070377/article/details/133829439) |
+| JDK   | 21    | [环境变量配置](https://blog.csdn.net/weixin_52070377/article/details/133829439) |
 | maven | 3.8.4 | 下载依赖打包使用                                                                  |
 
 ### 安装步骤
