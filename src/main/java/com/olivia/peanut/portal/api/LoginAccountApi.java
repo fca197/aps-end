@@ -2,18 +2,15 @@ package com.olivia.peanut.portal.api;
 
 import com.olivia.peanut.portal.api.entity.login.account.*;
 import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.Str;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /***
  *
  */
 public interface LoginAccountApi {
-
 
 
   @RequestMapping("/loginAccount/login/phone/pwd")

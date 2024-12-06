@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 import com.olivia.peanut.aps.api.entity.apsOrder.OrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersion.*;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
@@ -55,6 +56,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -66,7 +68,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.alibaba.fastjson2.JSON.toJSONString;
+import static com.olivia.peanut.aps.con.ApsStr.GOODS_STATUS_ID;
 import static com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
+import static com.olivia.sdk.utils.FieldUtils.getField;
 import static com.olivia.sdk.utils.ValueUtils.value2Str;
 
 /**
@@ -245,8 +249,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         Map<String, Object> map = new HashMap<>();
         map.putAll(BeanUtil.beanToMap(t));
         map.putAll(BeanUtil.beanToMap(oMap.get(t.getOrderId())));
-        map.put("factoryId", t.getFactoryId());
-        map.put("orderNo", orderIdNoMap.get(t.getOrderId()));
+        map.put(ApsStr.FACTORY_ID, t.getFactoryId());
+        map.put(ApsStr.ORDER_NO, orderIdNoMap.get(t.getOrderId()));
         saleMap.getOrDefault(t.getOrderId(), List.of()).forEach(s -> {
           ApsSaleConfig apsSaleConfig = saleConfigMap.get(s.getConfigId());
           map.put("sale_" + apsSaleConfig.getParentId(), apsSaleConfig.getId());
@@ -270,9 +274,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<ApsSchedulingVersionItem> itemList = result.getDataList().stream().map(m -> {
         ApsSchedulingVersionItem item = new ApsSchedulingVersionItem().setSchedulingVersionId(req.getId());
         item.setId(IdWorker.getId());
-        item.setFactoryId((Long) m.get("factoryId"));
-        item.setGoodsId((Long) m.get("goodsId"));
-        item.setOrderNo((String) m.get("orderNo"));
+        item.setFactoryId((Long) m.get(ApsStr.FACTORY_ID));
+        item.setGoodsId((Long) m.get(ApsStr.GOODS_ID));
+        item.setOrderNo((String) m.get(ApsStr.ORDER_NO));
         item.setNumberIndex((Long) m.get("numberIndex"));
         item.setOrderId((Long) m.get("id"));
         IntStream.range(0, Math.min(result.getHeaderList().size(), 20)).forEach(i -> {
@@ -402,15 +406,18 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
           log.info("{}  {} 空节点", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
-        Object value = ReflectUtil.getFieldValue(calendarDay, "day" + ym.getDayOfMonth());
+        Field field = getField(calendarDay, "day" + ym.getDayOfMonth());
+        Object value = ReflectUtil.getFieldValue(calendarDay, field);
         if (Boolean.FALSE.equals(value)) {
           log.info("{}  {} 移除非工作日", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
-        Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth());
-        Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth());
+        Field minField = getField(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth());
+        Field maxField = getField(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth());
+        Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, minField);
+        Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, maxField);
         Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId()))
-            .setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId())).setFieldName("factoryId").setShowName(fnMap.get(apsMakeCapacityFactory.getFactoryId()))
+            .setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId())).setFieldName(ApsStr.FACTORY_ID).setShowName(fnMap.get(apsMakeCapacityFactory.getFactoryId()))
             .setLimitTypeEnum(LimitTypeEnum.FACTORY_LIMIT);
         limitList.add(limit);
       } else {
@@ -422,10 +429,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         for (ApsMakeCapacityGoods apsMakeCapacityGoods : apsMakeCapacityGoodsList) {
           if (Objects.nonNull(apsMakeCapacityGoods)) {
 
-            Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, "dayMin" + ym.getDayOfMonth());
-            Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, "dayMax" + ym.getDayOfMonth());
+            Field minField = getField(apsMakeCapacityGoods, "dayMin" + ym.getDayOfMonth());
+            Field maxField = getField(apsMakeCapacityGoods, "dayMax" + ym.getDayOfMonth());
+            Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, minField);
+            Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, maxField);
             Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacityGoods.getGoodsId()))
-                .setFieldName("goodsId").setShowName(gnMap.get(apsMakeCapacityGoods.getGoodsId())).setLimitTypeEnum(LimitTypeEnum.GOODS_LIMIT);
+                .setFieldName(ApsStr.GOODS_ID).setShowName(gnMap.get(apsMakeCapacityGoods.getGoodsId())).setLimitTypeEnum(LimitTypeEnum.GOODS_LIMIT);
             limitList.add(limit);
           }
         }
@@ -439,8 +448,11 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
             return;
           }
           ApsSaleConfig parentSaleConfig = apsSaleConfigMap.get(apsSaleConfig.getParentId());
-          Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, "dayMin" + ym.getDayOfMonth());
-          Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, "dayMax" + ym.getDayOfMonth());
+
+          Field minField = getField(apsMakeCapacitySaleConfig, "dayMin" + ym.getDayOfMonth());
+          Field maxField = getField(apsMakeCapacitySaleConfig, "dayMax" + ym.getDayOfMonth());
+          Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, minField);
+          Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, maxField);
           Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacitySaleConfig.getSaleConfigId()))
               .setFieldName(SALE + apsSaleConfig.getParentId()).setShowName(parentSaleConfig.getSaleName() + "_" + apsSaleConfig.getSaleName()).setLimitTypeEnum(SALE_CONFIG_LIMIT);
           limitList.add(limit);
@@ -483,10 +495,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
           .setHasEnough(info.getLimitList().stream().noneMatch(t -> t.getCurrentCount() < t.getMin())));
       mapList.forEach(map -> {
         ApsSchedulingVersionCapacity apsSchedulingVersionCapacity = new ApsSchedulingVersionCapacity();
-        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate()).setOrderNo((String) map.get("orderNo"));
+        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate()).setOrderNo((String) map.get(ApsStr.ORDER_NO));
         apsSchedulingVersionCapacity.setId(IdWorker.getId());
-        apsSchedulingVersionCapacity.setGoodsId((Long) map.get("goodsId")).setOrderId((Long) map.get("orderId")).setFactoryId((Long) map.get("factoryId"))
-            .setGoodsStatusId((Long) map.get("goodsStatusId"));
+        apsSchedulingVersionCapacity.setGoodsId((Long) map.get(ApsStr.GOODS_ID)).setOrderId((Long) map.get(ApsStr.ORDER_ID)).setFactoryId((Long) map.get(ApsStr.FACTORY_ID))
+            .setGoodsStatusId((Long) map.get(GOODS_STATUS_ID));
         apsSchedulingVersionCapacity.setNumberIndex(index.getAndIncrement());
         IntStream.range(0, limitListFinal.size()).forEach(l -> {
           Limit limit = limitListFinal.get(l);
@@ -597,7 +609,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       ret.putAll(BeanUtil.beanToMap(t));
       ret.put("goodsName", gnMap.get(t.getGoodsId()));
       ret.put("userName", unMap.get(t.getOrderId()));
-      ret.put("orderNo", apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
+      ret.put(ApsStr.ORDER_NO, apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
       return ret;
     }).collect(Collectors.toList());
 
@@ -639,7 +651,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       ret.putAll(BeanUtil.beanToMap(t));
       ret.put("goodsName", gnMap.get(t.getGoodsId()));
       ret.put("userName", unMap.get(t.getOrderId()));
-      ret.put("orderNo", apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
+      ret.put(ApsStr.ORDER_NO, apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
       ret.put("preNumberIndex", versionItemMap.getOrDefault(t.getOrderId(), new ApsSchedulingVersionItem()).getNumberIndex());
       return ret;
     }).collect(Collectors.toList());
@@ -668,7 +680,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
   private List<Header> getResultHeader(String headerStr) {
     ArrayList<Header> headerList = new ArrayList<>();
-    headerList.add(new Header().setFieldName("orderNo").setShowName("订单号").setWidth(150));
+    headerList.add(new Header().setFieldName(ApsStr.ORDER_NO).setShowName("订单号").setWidth(150));
     headerList.add(new Header().setFieldName("numberIndex").setShowName("预排序号").setWidth(80));
     headerList.add(new Header("goodsName", "商品名称", 100, ""));
     headerList.add(new Header("userName", "用户名", 100, ""));
@@ -683,7 +695,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   private List<Header> getMakeResultHeader(String headerStr) {
     ArrayList<Header> headerList = new ArrayList<>();
 //    headerList.add(new Header().setFieldName("id").setShowName("序号").setWidth(200));
-    headerList.add(new Header().setFieldName("orderNo").setShowName("订单号").setWidth(150));
+    headerList.add(new Header().setFieldName(ApsStr.ORDER_NO).setShowName("订单号").setWidth(150));
     headerList.add(new Header().setFieldName("preNumberIndex").setShowName("预排序号").setWidth(80));
     headerList.add(new Header().setFieldName("numberIndex").setShowName("产能序号").setWidth(80));
     headerList.add(new Header("goodsName", "商品名称", 100, ""));

@@ -52,6 +52,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -63,6 +64,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.olivia.sdk.utils.BomUtils.bomExpression2List;
+import static com.olivia.sdk.utils.FieldUtils.getField;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -201,7 +203,8 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         String key = year + "-" + c.getSaleConfigCode();
         ApsGoodsForecastMakeSaleData makeSaleData = apsGoodsForecastMakeSaleDataMap.getOrDefault(key, new ApsGoodsForecastMakeSaleData()).setSaleConfigCode(c.getSaleConfigCode());
         makeSaleData.setFactoryId(forecastMain.getFactoryId()).setYear(Integer.valueOf(year));
-        Long count = (Long) ReflectUtil.getFieldValue(c, "month" + month);
+        Field field = getField(c, "month" + month);
+        Long count = (Long) ReflectUtil.getFieldValue(c, field);
         if (Objects.isNull(count)) {
           return;
         }
@@ -415,9 +418,11 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         weekInfoList.stream().filter(t -> t.getCurrentDate().getYear() == y).forEach(d -> {
           Object v = 0L;
           if (Objects.nonNull(tmp)) {
-            v = ReflectUtil.getFieldValue(tmp, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+            Field field = getField(tmp, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+            v = ReflectUtil.getFieldValue(tmp, field);
           }
-          ReflectUtil.setFieldValue(c, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear(), v);
+          Field field = getField(c, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          ReflectUtil.setFieldValue(c, field, v);
         });
       });
     });
@@ -455,7 +460,8 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         ApsGoodsForecastMakeQueryDataByIdRes queryDataByIdRes = dataListMap.getOrDefault(t.getSaleConfigCode(), new ApsGoodsForecastMakeQueryDataByIdRes());
         AtomicLong s = new AtomicLong(0);
         weekInfoListTmp.forEach(d -> {
-          Object value = ReflectUtil.getFieldValue(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Field field = getField(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Object value = ReflectUtil.getFieldValue(t, field);
           if (Objects.nonNull(value)) {
             s.addAndGet((Long) value);
           }
@@ -496,7 +502,8 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         ApsGoodsForecastMakeQueryDataByIdRes queryDataByIdRes = dataListMap.getOrDefault(t.getProjectConfigCode(), new ApsGoodsForecastMakeQueryDataByIdRes());
         AtomicLong s = new AtomicLong(0);
         weekInfoListTmp.forEach(d -> {
-          Object value = ReflectUtil.getFieldValue(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Field field = getField(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Object value = ReflectUtil.getFieldValue(t, field);
           if (Objects.nonNull(value)) {
             s.addAndGet((Long) value);
           }
@@ -544,7 +551,8 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         queryDataByIdRes.put("bomName", apsGoodsBom.getBomName());
         queryDataByIdRes.put("bomUnit", apsGoodsBom.getBomUnit());
         weekInfoListTmp.forEach(d -> {
-          Object value = ReflectUtil.getFieldValue(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Field field = getField(t, DAY_NUM_FIELD + d.getCurrentDate().getDayOfYear());
+          Object value = ReflectUtil.getFieldValue(t, field);
           if (Objects.nonNull(value)) {
             s.addAndGet((Long) value);
           }

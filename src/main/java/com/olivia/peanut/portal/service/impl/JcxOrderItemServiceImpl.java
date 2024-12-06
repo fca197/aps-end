@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.jcxOrderItem.*;
 import com.olivia.peanut.portal.mapper.JcxOrderItemMapper;
 import com.olivia.peanut.portal.model.JcxOrderItem;
@@ -95,9 +96,9 @@ public class JcxOrderItemServiceImpl extends MPJBaseServiceImpl<JcxOrderItemMapp
 
   private void setQueryListHeader(DynamicsPage<JcxOrderItem> page) {
     page
-        .addHeader("orderId", "订单编号")
+        .addHeader(ApsStr.ORDER_ID, "订单编号")
         .addHeader("orderRemark", "订单备注")
-        .addHeader("goodsId", "$column.comment")
+        .addHeader(ApsStr.GOODS_ID, "$column.comment")
         .addHeader("goodsCount", "售出数量")
         .addHeader("goodsCostPrice", "成本价")
         .addHeader("goodsSalePrice", "售卖价")

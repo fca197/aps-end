@@ -13,28 +13,14 @@
  */
 package org.yaml.snakeyaml.representer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
-import org.yaml.snakeyaml.nodes.MappingNode;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeId;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.ScalarNode;
-import org.yaml.snakeyaml.nodes.SequenceNode;
-import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.nodes.*;
+
+import java.util.*;
 
 /**
  * Represent JavaBeans
@@ -74,13 +60,6 @@ public class Representer extends SafeRepresenter {
     }
   }
 
-  protected class RepresentJavaBean implements Represent {
-
-    public Node representData(Object data) {
-      return representJavaBean(getProperties(data.getClass()), data);
-    }
-  }
-
   /**
    * Tag logic: - explicit root tag is set in serializer - if there is a predefined class tag it is
    * used - a global tag with class name is always used as tag. The JavaBean parent of the specified
@@ -88,7 +67,7 @@ public class Representer extends SafeRepresenter {
    * runtime class
    *
    * @param properties JavaBean getters
-   * @param javaBean instance for Node
+   * @param javaBean   instance for Node
    * @return Node to get serialized
    */
   protected MappingNode representJavaBean(Set<Property> properties, Object javaBean) {
@@ -128,10 +107,10 @@ public class Representer extends SafeRepresenter {
   /**
    * Represent one JavaBean property.
    *
-   * @param javaBean - the instance to be represented
-   * @param property - the property of the instance
+   * @param javaBean      - the instance to be represented
+   * @param property      - the property of the instance
    * @param propertyValue - value to be represented
-   * @param customTag - user defined Tag
+   * @param customTag     - user defined Tag
    * @return NodeTuple to be used in a MappingNode. Return null to skip the property
    */
   protected NodeTuple representJavaBeanProperty(Object javaBean, Property property,
@@ -175,8 +154,8 @@ public class Representer extends SafeRepresenter {
    * by the JavaBean property
    *
    * @param property - JavaBean property
-   * @param node - representation of the property
-   * @param object - instance represented by the node
+   * @param node     - representation of the property
+   * @param object   - instance represented by the node
    */
   @SuppressWarnings("unchecked")
   protected void checkGlobalTag(Property property, Node node, Object object) {
@@ -263,5 +242,12 @@ public class Representer extends SafeRepresenter {
       return typeDefinitions.get(type).getProperties();
     }
     return getPropertyUtils().getProperties(type);
+  }
+
+  protected class RepresentJavaBean implements Represent {
+
+    public Node representData(Object data) {
+      return representJavaBean(getProperties(data.getClass()), data);
+    }
   }
 }

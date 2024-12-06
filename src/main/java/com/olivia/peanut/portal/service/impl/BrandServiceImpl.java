@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.brand.*;
 import com.olivia.peanut.portal.mapper.BrandMapper;
 import com.olivia.peanut.portal.model.Brand;
@@ -90,7 +91,7 @@ public class BrandServiceImpl extends MPJBaseServiceImpl<BrandMapper, Brand> imp
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("brandCode", "品牌编码")
         .addHeader("brandName", "品牌名称")
         .addHeader("brandStatus", "品牌状态")

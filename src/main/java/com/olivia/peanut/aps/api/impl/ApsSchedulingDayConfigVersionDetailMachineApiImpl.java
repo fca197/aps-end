@@ -75,7 +75,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineApiImpl implements ApsSch
     // 类型转换，  更换枚举 等操作
 //    List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes> listInfoRes = $.copyList(list, ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class);
 
-    ApsSchedulingDayConfigVersionDetailMachineUtils.downLoad(req,list);
+    ApsSchedulingDayConfigVersionDetailMachineUtils.downLoad(req, list);
     //    PoiExcelUtil.export(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes.class, listInfoRes, "排程版本详情_机器");
   }
 

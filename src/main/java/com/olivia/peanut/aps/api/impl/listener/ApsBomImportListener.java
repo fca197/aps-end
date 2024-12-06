@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApsBomImportListener extends AbstractImportListener<ApsBomImportReq> {
 
+  final static Cache<String, Map<String, Long>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
   List<ApsBomImportReq> reqList = new ArrayList<>();
 
   @Override
@@ -38,10 +39,6 @@ public class ApsBomImportListener extends AbstractImportListener<ApsBomImportReq
     checkData(data, analysisContext);
     reqList.add(data);
   }
-
-
-  final static Cache<String, Map<String, Long>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
-
 
   @Override
   public void doAfterAllAnalysed(AnalysisContext analysisContext) {

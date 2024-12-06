@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.storey.*;
 import com.olivia.peanut.portal.mapper.StoreyMapper;
 import com.olivia.peanut.portal.model.Storey;
@@ -95,7 +96,7 @@ public class StoreyServiceImpl extends MPJBaseServiceImpl<StoreyMapper, Storey> 
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("storeyName", "楼层")
         .addHeader("storeySort", "排序")
         .addHeader("isDelete", "是否删除(0:否 1:是)")

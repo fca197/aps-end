@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.checkReportList.*;
 import com.olivia.peanut.portal.mapper.CheckReportListMapper;
 import com.olivia.peanut.portal.model.CheckReportList;
@@ -92,7 +93,7 @@ public class CheckReportListServiceImpl extends MPJBaseServiceImpl<CheckReportLi
   }
 
   private void setQueryListHeader(DynamicsPage<CheckReportList> page) {
-    page.addHeader("id", "id").addHeader("tenantId", "所属租户id").addHeader("factoryId", "工厂ID").addHeader("reportId", "报表编码").addHeader("propertyId", "资产ID")
+    page.addHeader("id", "id").addHeader("tenantId", "所属租户id").addHeader(ApsStr.FACTORY_ID, "工厂ID").addHeader("reportId", "报表编码").addHeader("propertyId", "资产ID")
         .addHeader("remark", "备注").addHeader("isDelete", "是否删除(0:否 1:是)").addHeader("createTime", "创建时间").addHeader("createBy", "创建人id")
         .addHeader("updateTime", "更新时间").addHeader("updateBy", "更新人id").addHeader("traceId", "链路追踪ID").addHeader("version", "版本号");
   }

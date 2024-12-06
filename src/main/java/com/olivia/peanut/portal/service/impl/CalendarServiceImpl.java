@@ -9,6 +9,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.calendar.*;
 import com.olivia.peanut.portal.mapper.CalendarMapper;
 import com.olivia.peanut.portal.model.Calendar;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.olivia.sdk.utils.FieldUtils.getField;
 import static java.lang.Boolean.TRUE;
 
 /**
@@ -100,7 +102,7 @@ public class CalendarServiceImpl extends MPJBaseServiceImpl<CalendarMapper, Cale
   }
 
   private void setQueryListHeader(DynamicsPage<Calendar> page) {
-    page.addHeader("id", "id").addHeader("tenantId", "所属租户id").addHeader("factoryId", "所属工厂id").addHeader("calendarName", "日历名称").addHeader("calendarCode", "日历编码")
+    page.addHeader("id", "id").addHeader("tenantId", "所属租户id").addHeader(ApsStr.FACTORY_ID, "所属工厂id").addHeader("calendarName", "日历名称").addHeader("calendarCode", "日历编码")
         .addHeader("calendarType", "日历类型 ").addHeader("calendarDesc", "日历描述").addHeader("calendarDisabled", "日历状态 0 启用 ,1 禁用  ")
         .addHeader("isDelete", "是否删除(0:否 1:是)").addHeader("createTime", "创建时间").addHeader("createBy", "创建人id").addHeader("updateTime", "更新时间")
         .addHeader("updateBy", "更新人id").addHeader("traceId", "调用链");
@@ -118,7 +120,7 @@ public class CalendarServiceImpl extends MPJBaseServiceImpl<CalendarMapper, Cale
           .eq(CalendarDay::getDayYear, Integer.valueOf(ys)).in(CalendarDay::getDayMonth, mListMap.keySet())).forEach(m -> {
         List<WeekInfo> weekInfos = mListMap.get(m.getDayMonth());
         IntStream.range(1, weekInfos.size()).forEach(i -> {
-          ReflectUtil.invoke(weekInfos.get(i), "setIsWorkDay", TRUE.equals(ReflectUtil.getFieldValue(m, "day" + i)));
+          ReflectUtil.invoke(weekInfos.get(i), "setIsWorkDay", TRUE.equals(ReflectUtil.getFieldValue(m, getField(m, "day" + i))));
         });
       });
     });

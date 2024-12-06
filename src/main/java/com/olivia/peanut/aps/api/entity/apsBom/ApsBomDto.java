@@ -80,11 +80,6 @@ public class ApsBomDto extends BaseEntityDto {
   @ExcelProperty(value = "供应方式", converter = SupplyModelConverter.class)
   @NotBlank(message = "供应方式不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String supplyMode;
-
-  public String getSupplyModeStr() {
-    return SupplyModelEnum.getDesc(this.supplyMode);
-  }
-
   /***
    * 规格 ，100个*6
    */
@@ -92,7 +87,6 @@ public class ApsBomDto extends BaseEntityDto {
   @ExcelProperty("零件规格")
   @NotBlank(message = "零件规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String bomUnit;
-
   /**
    * 使用规格
    */
@@ -100,9 +94,12 @@ public class ApsBomDto extends BaseEntityDto {
   @ExcelProperty("使用规格")
   @NotBlank(message = "使用规格不能为空", groups = {InsertCheck.class, UpdateCheck.class, ImportCheck.class})
   private String useUnit;
-
   private Long produceProcessId;
   private String produceProcessName;
+
+  public String getSupplyModeStr() {
+    return SupplyModelEnum.getDesc(this.supplyMode);
+  }
 }
 
 

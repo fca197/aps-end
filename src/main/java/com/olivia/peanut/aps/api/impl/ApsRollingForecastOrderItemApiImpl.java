@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.ApsRollingForecastOrderItemApi;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsRollingForecastOrderItem.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsRollingForecastOrderItemImportListener;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.aps.model.ApsOrder;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrder;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrderItem;
@@ -122,7 +123,7 @@ public class ApsRollingForecastOrderItemApiImpl implements ApsRollingForecastOrd
     SheetData sheetData = new SheetData();
     sheetData.setSheetName("sheet");
     List<SheetHeader> sheetHeaderList = Lists.newLinkedList();
-    sheetHeaderList.add(new SheetHeader().setShowName("订单号").setFieldName("orderNo").setWidth(200));
+    sheetHeaderList.add(new SheetHeader().setShowName("订单号").setFieldName(ApsStr.ORDER_NO).setWidth(200));
     sheetHeaderList.add(new SheetHeader().setShowName("紧急度").setFieldName("urgencyLevel").setWidth(150));
     sheetHeaderList.add(new SheetHeader().setShowName("当前订单状态").setFieldName("orderStatusName").setWidth(150));
     statusBetween.forEach(statusId -> {
@@ -133,7 +134,7 @@ public class ApsRollingForecastOrderItemApiImpl implements ApsRollingForecastOrd
 
     apsOrderMap.values().forEach(order -> {
       Map<String, Object> orderMapTmp = new HashMap<>();
-      orderMapTmp.put("orderNo", order.getOrderNo());
+      orderMapTmp.put(ApsStr.ORDER_NO, order.getOrderNo());
       orderMapTmp.put("urgencyLevel", order.getUrgencyLevel());
       orderMapTmp.put("orderStatusName", statusIdNameMap.get(order.getOrderStatus()));
       Map<Long, ApsRollingForecastOrderItem> orderItemMap = orderMap.get(order.getId());

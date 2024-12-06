@@ -29,6 +29,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.olivia.sdk.utils.FieldUtils.getField;
+
 @RestController
 
 public class BasePreviewApiImpl implements BasePreviewApi {
@@ -192,7 +194,8 @@ public class BasePreviewApiImpl implements BasePreviewApi {
               new SystemConfigPreviewRes.Info().setName("制造路径").setChildren(produceProcessList.stream().filter(gt -> Objects.equals(gt.getRefId(), t.getProduceProcessId())).toList() //
               )))).toList()));
       // 日历
-      childrenList.add(new SystemConfigPreviewRes.Info().setName("日历").setChildren(calendarAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getCalendarName()).setChildren(calendarDayMapAtomic.get().getOrDefault(t.getId(), List.of()).stream().map(t2 -> new SystemConfigPreviewRes.Info().setName(t2.getDayYear() + "/" + t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(ReflectUtil.getFieldValue(t2, "day" + t3), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
+      childrenList.add(new SystemConfigPreviewRes.Info().setName("日历").setChildren(calendarAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getCalendarName()).setChildren(calendarDayMapAtomic.get().getOrDefault(t.getId(), List.of()).stream().map(t2 -> new SystemConfigPreviewRes.Info().setName(t2.getDayYear() + "/" +
+          t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(ReflectUtil.getFieldValue(t2, getField(t2, "day" + t3)), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
       // 机器
 
       childrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(machineMapList.values().stream().map((t) -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));

@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.jcxBuyPlanItem.*;
 import com.olivia.peanut.portal.mapper.JcxBuyPlanItemMapper;
 import com.olivia.peanut.portal.model.JcxBuyPlanItem;
@@ -93,7 +94,7 @@ public class JcxBuyPlanItemServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanItem
     page
         .addHeader("id", "$column.comment")
         .addHeader("planId", "$column.comment")
-        .addHeader("goodsId", "$column.comment")
+        .addHeader(ApsStr.GOODS_ID, "$column.comment")
         .addHeader("costPrice", "$column.comment")
         .addHeader("salesPrice", "$column.comment")
         .addHeader("warningCount", "$column.comment")

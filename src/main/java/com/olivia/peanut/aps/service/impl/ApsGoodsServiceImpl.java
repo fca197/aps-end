@@ -10,7 +10,6 @@ import com.olivia.peanut.aps.mapper.ApsGoodsMapper;
 import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsProcessPathService;
-import com.olivia.peanut.aps.service.ApsProduceProcessService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.service.SetNameService;
@@ -83,8 +82,8 @@ public class ApsGoodsServiceImpl extends MPJBaseServiceImpl<ApsGoodsMapper, ApsG
 
     setNameService.setName(apsGoodsDtoList,//
         SetNamePojoUtils.OP_USER_NAME,
-        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName"),
-        SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName")
+        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName")
+//        , SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName")
     );
 
 //    if (CollUtil.isEmpty(ApsGoodsDtoList)) {

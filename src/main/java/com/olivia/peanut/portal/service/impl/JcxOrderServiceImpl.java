@@ -9,6 +9,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.jcxOrder.*;
 import com.olivia.peanut.portal.api.entity.jcxOrder.JcxOrderInsertReq.GoodsInfo;
 import com.olivia.peanut.portal.api.entity.jcxOrderItem.JcxOrderItemDto;
@@ -176,7 +177,7 @@ public class JcxOrderServiceImpl extends MPJBaseServiceImpl<JcxOrderMapper, JcxO
   }
 
   private void setQueryListHeader(DynamicsPage<JcxOrder> page) {
-    page.addHeader("orderNo", "订单编号", 200).addHeader("goodsName", "商品名称", 400)
+    page.addHeader(ApsStr.ORDER_NO, "订单编号", 200).addHeader("goodsName", "商品名称", 400)
         .addHeader("orderTotalSalePrice", "总额").addHeader("orderRemark", "订单备注")
         .addHeader("orderStatusName", "订单状态")
         .addHeader("createTime", "创建时间", 200);

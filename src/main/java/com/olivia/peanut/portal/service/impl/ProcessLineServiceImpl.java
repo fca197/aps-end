@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.processLine.*;
 import com.olivia.peanut.portal.mapper.ProcessLineMapper;
 import com.olivia.peanut.portal.model.ProcessLine;
@@ -97,7 +98,7 @@ public class ProcessLineServiceImpl extends MPJBaseServiceImpl<ProcessLineMapper
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("processId", "所属进程id")
         .addHeader("lineName", "线别名称")
         .addHeader("lineCode", "线别编码")

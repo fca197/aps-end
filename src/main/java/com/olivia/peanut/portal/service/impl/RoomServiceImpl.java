@@ -5,6 +5,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.room.*;
 import com.olivia.peanut.portal.mapper.RoomMapper;
 import com.olivia.peanut.portal.model.Room;
@@ -97,7 +98,7 @@ public class RoomServiceImpl extends MPJBaseServiceImpl<RoomMapper, Room> implem
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("storeyId", "楼层")
         .addHeader("roomCode", "编号")
         .addHeader("roomName", "楼层")

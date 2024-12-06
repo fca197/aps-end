@@ -31,8 +31,8 @@ public class ApsGoodsDto extends BaseEntityDto {
   private Long processPathId;
   private String processPathName;
 
-  @NotNull(message = "制造路径不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Long produceProcessId;
+  //  @NotNull(message = "制造路径不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  private Long produceProcessId;
   private String produceProcessName;
 
 }

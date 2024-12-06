@@ -31,10 +31,13 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * (ApsGoodsForecastMainMake)表服务实现类
@@ -152,7 +155,8 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
               .forEach((mw, weekInfoListTmpTmp) -> {
                 AtomicLong sum = new AtomicLong(0);
                 weekInfoListTmpTmp.forEach(d -> {
-                  Long value = (Long) ReflectUtil.getFieldValue(saleData, "dayNum" + d.getCurrentDate().getDayOfYear());
+                  Field field = getField(saleData, "dayNum" + d.getCurrentDate().getDayOfYear());
+                  Long value = (Long) ReflectUtil.getFieldValue(saleData, field);
                   if (Objects.nonNull(value)) {
                     sum.addAndGet(value);
                   }

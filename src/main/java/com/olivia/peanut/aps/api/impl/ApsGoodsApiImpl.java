@@ -28,8 +28,8 @@ import java.util.List;
 @RestController
 public class ApsGoodsApiImpl implements ApsGoodsApi {
 
-  private @Autowired ApsGoodsService apsGoodsService;
   private static final String businessType = "apsGoods";
+  private @Autowired ApsGoodsService apsGoodsService;
 
   /****
    * insert

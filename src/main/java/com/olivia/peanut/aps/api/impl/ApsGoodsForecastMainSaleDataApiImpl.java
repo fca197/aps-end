@@ -22,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * (ApsGoodsForecastMainSaleData)表服务实现类
@@ -142,7 +145,8 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         ApsGoodsForecastMainSaleData mainSaleData = v.get(year);
         IntStream.range(1, 13).forEach(m -> {
           String month = m < 10 ? "0" + m : "" + m;
-          data.put(year + "-" + month, ReflectUtil.getFieldValue(mainSaleData, "month" + month));
+          Field field = getField(mainSaleData, "month" + month);
+          data.put(year + "-" + month, ReflectUtil.getFieldValue(mainSaleData, field));
         });
       });
 

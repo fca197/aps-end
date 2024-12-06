@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -51,6 +52,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * (ApsGoodsForecast)表服务实现类
@@ -195,9 +198,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
   public DynamicsPage<GetForecastDataByIdRes> getForecastDataById(GetForecastDataByIdReq req) {
     ApsGoodsForecast goodsForecast = this.getById(req.getId());
     $.requireNonNullCanIgnoreException(goodsForecast, "未找到该预测数据");
-    Map<String, ApsGoodsForecastUserGoodsData> goodsDataMap = this.goodsForecastUserGoodsDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> String.valueOf(t.getYear()), t -> t, (a, b) -> a));
+    Map<String, ApsGoodsForecastUserGoodsData> goodsDataMap = this.goodsForecastUserGoodsDataService.list(new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> String.valueOf(t.getYear()), t -> t, (a, b) -> a));
 
     Map<Long, ApsSaleConfig> apsSaleConfigMap = this.saleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, v -> v, (a, b) -> a));
     List<String> monthList = goodsForecast.getMonthList();
@@ -214,17 +215,15 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     monthList.forEach(t -> {
       String year = t.substring(0, 4);
       ApsGoodsForecastUserGoodsData goodsData = goodsDataMap.get(year);
-      data.put(t, ReflectUtil.getFieldValue(goodsData, "month" + t.substring(5)));
+      Field field = getField(goodsData, "month" + t.substring(5));
+      data.put(t, ReflectUtil.getFieldValue(goodsData, field));
     });
     data.setSaleConfigCode("");
     dataList.add(data);
 
-    Map<String, ApsGoodsForecastUserSaleData> forecastUserSaleDataMap = this.goodsForecastUserSaleDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastUserSaleData>().eq(ApsGoodsForecastUserSaleData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> t.getSaleConfigId() + "-" + t.getYear(), t -> t, (a, b) -> a));
+    Map<String, ApsGoodsForecastUserSaleData> forecastUserSaleDataMap = this.goodsForecastUserSaleDataService.list(new LambdaQueryWrapper<ApsGoodsForecastUserSaleData>().eq(ApsGoodsForecastUserSaleData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> t.getSaleConfigId() + "-" + t.getYear(), t -> t, (a, b) -> a));
 
-    List<ApsGoodsSaleItemExportQueryPageListInfoRes> queryPageListInfoResList = this.goodsSaleItemService.queryPageList(
-        new ApsGoodsSaleItemExportQueryPageListReq().setData(new ApsGoodsSaleItemDto().setGoodsId(goodsForecast.getGoodsId()))).getDataList();
+    List<ApsGoodsSaleItemExportQueryPageListInfoRes> queryPageListInfoResList = this.goodsSaleItemService.queryPageList(new ApsGoodsSaleItemExportQueryPageListReq().setData(new ApsGoodsSaleItemDto().setGoodsId(goodsForecast.getGoodsId()))).getDataList();
 
     queryPageListInfoResList.forEach(t -> {
       GetForecastDataByIdRes tmp = new GetForecastDataByIdRes();
@@ -241,7 +240,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       tmp.setSaleConfigCode(apsSaleConfig.getSaleCode());
       monthList.forEach(m -> {
         ApsGoodsForecastUserSaleData saleData = forecastUserSaleDataMap.get(t.getSaleConfigId() + "-" + m.substring(0, 4));
-        tmp.put(m, ReflectUtil.getFieldValue(saleData, "month" + m.substring(5)));
+        Field field = getField(saleData, "month" + m.substring(5));
+        tmp.put(m, ReflectUtil.getFieldValue(saleData, field));
       });
 
       dataList.add(tmp);
@@ -255,18 +255,13 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
   public ComputeRes compute(ComputeReq req) {
     ApsGoodsForecast goodsForecast = this.getById(req.getId());
     $.requireNonNullCanIgnoreException(goodsForecast, "未找到该预测数据");
-    Map<String, ApsGoodsForecastUserGoodsData> userSaleDataMap = this.goodsForecastUserGoodsDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> String.valueOf(t.getYear()), f -> f, (a, b) -> a));
-    Map<String, ApsGoodsForecastUserSaleData> forecastUserSaleDataMap = this.goodsForecastUserSaleDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastUserSaleData>().eq(ApsGoodsForecastUserSaleData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> t.getSaleConfigId() + "-" + t.getYear(), m -> m, (a, b) -> a));
+    Map<String, ApsGoodsForecastUserGoodsData> userSaleDataMap = this.goodsForecastUserGoodsDataService.list(new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> String.valueOf(t.getYear()), f -> f, (a, b) -> a));
+    Map<String, ApsGoodsForecastUserSaleData> forecastUserSaleDataMap = this.goodsForecastUserSaleDataService.list(new LambdaQueryWrapper<ApsGoodsForecastUserSaleData>().eq(ApsGoodsForecastUserSaleData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> t.getSaleConfigId() + "-" + t.getYear(), m -> m, (a, b) -> a));
 
     List<String> monthList = goodsForecast.getMonthList();
     Map<Long, ApsSaleConfig> apsSaleConfigMap = this.saleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, v -> v, (a, b) -> a));
 
-    DynamicsPage<ApsGoodsSaleItemExportQueryPageListInfoRes> apsGoodsSaleItemList = this.goodsSaleItemService.queryPageList(
-        new ApsGoodsSaleItemExportQueryPageListReq().setData(new ApsGoodsSaleItemDto().setGoodsId(goodsForecast.getGoodsId())));
+    DynamicsPage<ApsGoodsSaleItemExportQueryPageListInfoRes> apsGoodsSaleItemList = this.goodsSaleItemService.queryPageList(new ApsGoodsSaleItemExportQueryPageListReq().setData(new ApsGoodsSaleItemDto().setGoodsId(goodsForecast.getGoodsId())));
     Map<String, ApsGoodsForecastComputeSaleData> computeSaleDataMap = new HashMap<>();
     monthList.forEach(m -> {
       try {
@@ -277,7 +272,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
           ApsSaleConfig saleConfig = apsSaleConfigMap.get(saleConfigId);
           if (Objects.nonNull(saleConfig) && saleConfig.getIsValue() == 1) {
             ApsGoodsForecastUserSaleData saleData = forecastUserSaleDataMap.get(saleConfigId + "-" + year);
-            Double value = (Double) ReflectUtil.getFieldValue(saleData, "month" + m.substring(5));
+            Field field = getField(saleData, "month" + m.substring(5));
+            Double value = (Double) ReflectUtil.getFieldValue(saleData, field);
             allTmpList.add(new SaleItemConfig().setSaleCode(saleConfig.getSaleCode()).setTarget(value).setParentId(saleConfig.getParentId()));
           }
         });
@@ -288,7 +284,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
           return;
         }
         ApsGoodsForecastUserGoodsData userGoodsData = userSaleDataMap.get(year);
-        Double value = (Double) ReflectUtil.getFieldValue(userGoodsData, "month" + m.substring(5));
+        Field field = getField(userGoodsData, "month" + m.substring(5));
+        Double value = (Double) ReflectUtil.getFieldValue(userGoodsData, field);
         List<OrToolsComputeRes> orToolsComputeResList = OrToolsUtils.compute(list, value.intValue());
         log.info("req compute saleId {} value:{}", JSON.toJSONString(list), value.intValue());
         log.info("ret compute saleId {}", JSON.toJSONString(orToolsComputeResList));
@@ -308,8 +305,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     goodsForecastComputeSaleDataService.remove(new LambdaQueryWrapper<ApsGoodsForecastComputeSaleData>().eq(ApsGoodsForecastComputeSaleData::getForecastId, req.getId()));
     this.goodsForecastComputeSaleDataService.saveBatch(computeSaleDataMap.values());
 
-    this.update(new LambdaUpdateWrapper<ApsGoodsForecast>().eq(ApsGoodsForecast::getId, req.getId())
-        .set(ApsGoodsForecast::getForecastStatus, ForecastStatusEnum.COMPUTED_RESULT.getCode()));
+    this.update(new LambdaUpdateWrapper<ApsGoodsForecast>().eq(ApsGoodsForecast::getId, req.getId()).set(ApsGoodsForecast::getForecastStatus, ForecastStatusEnum.COMPUTED_RESULT.getCode()));
     return null;
   }
 
@@ -322,9 +318,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     List<String> monthList = goodsForecast.getMonthList();
     monthList.forEach(m -> dynamicsPage.addHeader(m, m, 150));
 
-    Map<String, ApsGoodsForecastComputeSaleData> saleDataMap = this.goodsForecastComputeSaleDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastComputeSaleData>().eq(ApsGoodsForecastComputeSaleData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> String.valueOf(t.getSaleConfigCode() + "-" + t.getYear()), f -> f, (a, b) -> a));
+    Map<String, ApsGoodsForecastComputeSaleData> saleDataMap = this.goodsForecastComputeSaleDataService.list(new LambdaQueryWrapper<ApsGoodsForecastComputeSaleData>().eq(ApsGoodsForecastComputeSaleData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> String.valueOf(t.getSaleConfigCode() + "-" + t.getYear()), f -> f, (a, b) -> a));
     List<ComputeResultRes> retList = new ArrayList<>();
 
     saleDataMap.forEach((sd, sdv) -> {
@@ -337,7 +331,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
         if (Objects.isNull(saleData)) {
           return;
         }
-        e.put(m, ReflectUtil.getFieldValue(saleData, "month" + m.substring(5)));
+        Field field = getField(saleData, "month" + m.substring(5));
+        e.put(m, ReflectUtil.getFieldValue(saleData, field));
       });
 
     });
@@ -354,28 +349,16 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       throw new CanIgnoreException("请先计算结果");
     }
     ApsGoods apsGoods = apsGoodsService.getById(goodsForecast.getGoodsId());
-    LambdaQueryWrapper<ApsGoodsForecastMain> lambdaQueryWrapper = new LambdaQueryWrapper<ApsGoodsForecastMain>().eq(ApsGoodsForecastMain::getGoodsId, goodsForecast.getGoodsId())
-        .last(Str.LIMIT_1);
+    LambdaQueryWrapper<ApsGoodsForecastMain> lambdaQueryWrapper = new LambdaQueryWrapper<ApsGoodsForecastMain>().eq(ApsGoodsForecastMain::getGoodsId, goodsForecast.getGoodsId()).last(Str.LIMIT_1);
     ApsGoodsForecastMain forecastMain = goodsForecastMainService.getOne(lambdaQueryWrapper);
 
-    Map<String, ApsGoodsForecastComputeSaleData> computeSaleDataMap = this.goodsForecastComputeSaleDataService.list(
-            new LambdaQueryWrapper<ApsGoodsForecastComputeSaleData>().eq(ApsGoodsForecastComputeSaleData::getForecastId, req.getId())).stream()
-        .collect(Collectors.toMap(t -> t.getSaleConfigCode() + t.getYear(), f -> f));
+    Map<String, ApsGoodsForecastComputeSaleData> computeSaleDataMap = this.goodsForecastComputeSaleDataService.list(new LambdaQueryWrapper<ApsGoodsForecastComputeSaleData>().eq(ApsGoodsForecastComputeSaleData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> t.getSaleConfigCode() + t.getYear(), f -> f));
 
     if (Objects.isNull(forecastMain)) {
-      forecastMain = new ApsGoodsForecastMain().setGoodsId(goodsForecast.getGoodsId()).setFactoryId(apsGoods.getFactoryId())
-          .setForecastBeginDate(goodsForecast.getForecastBeginDate()).setForecastEndDate(goodsForecast.getForecastEndDate())
-          .setForecastNo("main-" + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN))
-          .setForecastName(peanutProperties.getAps().getForecastMainPrefix() + apsGoods.getGoodsName() + peanutProperties.getAps().getForecastMainSuffix());
+      forecastMain = new ApsGoodsForecastMain().setGoodsId(goodsForecast.getGoodsId()).setFactoryId(apsGoods.getFactoryId()).setForecastBeginDate(goodsForecast.getForecastBeginDate()).setForecastEndDate(goodsForecast.getForecastEndDate()).setForecastNo("main-" + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_PATTERN)).setForecastName(peanutProperties.getAps().getForecastMainPrefix() + apsGoods.getGoodsName() + peanutProperties.getAps().getForecastMainSuffix());
       this.goodsForecastMainService.save(forecastMain);
     } else {
-      this.goodsForecastMainService.update(
-          new LambdaUpdateWrapper<ApsGoodsForecastMain>().eq(BaseEntity::getId, forecastMain.getId()).set(BaseEntity::getUpdateTime, LocalDateTime.now())
-              .set(forecastMain.getForecastBeginDate().compareTo(goodsForecast.getForecastBeginDate()) > 0, ApsGoodsForecastMain::getForecastBeginDate,
-                  goodsForecast.getForecastBeginDate())
-              .set(ApsGoodsForecastMain::getFactoryId, apsGoods.getFactoryId())
-              .set(forecastMain.getForecastEndDate().compareTo(goodsForecast.getForecastEndDate()) < 0, ApsGoodsForecastMain::getForecastEndDate,
-                  goodsForecast.getForecastEndDate()));
+      this.goodsForecastMainService.update(new LambdaUpdateWrapper<ApsGoodsForecastMain>().eq(BaseEntity::getId, forecastMain.getId()).set(BaseEntity::getUpdateTime, LocalDateTime.now()).set(forecastMain.getForecastBeginDate().compareTo(goodsForecast.getForecastBeginDate()) > 0, ApsGoodsForecastMain::getForecastBeginDate, goodsForecast.getForecastBeginDate()).set(ApsGoodsForecastMain::getFactoryId, apsGoods.getFactoryId()).set(forecastMain.getForecastEndDate().compareTo(goodsForecast.getForecastEndDate()) < 0, ApsGoodsForecastMain::getForecastEndDate, goodsForecast.getForecastEndDate()));
     }
     Long forecastMainId = forecastMain.getId();
     List<Integer> yearList = goodsForecast.getMonthList().stream().map(t -> t.substring(0, 4)).distinct().map(Integer::valueOf).toList();
@@ -386,12 +369,9 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       monthMap.put(year, goodsForecast.getMonthList().stream().filter(m -> m.substring(0, 4).equals(String.valueOf(year))).map(m -> m.substring(5)).toList());
     });
 
-    Map<String, ApsGoodsForecastMainSaleData> mainSaleDataMap = this.goodsForecastMainSaleDataService.list(
-        new LambdaQueryWrapper<ApsGoodsForecastMainSaleData>().eq(ApsGoodsForecastMainSaleData::getGoodsId, goodsForecast.getGoodsId())
-            .in(ApsGoodsForecastMainSaleData::getYear, yearList)).stream().collect(Collectors.toMap(t -> t.getSaleConfigCode() + t.getYear(), t -> t));
+    Map<String, ApsGoodsForecastMainSaleData> mainSaleDataMap = this.goodsForecastMainSaleDataService.list(new LambdaQueryWrapper<ApsGoodsForecastMainSaleData>().eq(ApsGoodsForecastMainSaleData::getGoodsId, goodsForecast.getGoodsId()).in(ApsGoodsForecastMainSaleData::getYear, yearList)).stream().collect(Collectors.toMap(t -> t.getSaleConfigCode() + t.getYear(), t -> t));
     monthMap.forEach((y, ml) -> {
-      UpdateWrapper<ApsGoodsForecastMainSaleData> dataUpdateWrapper = new UpdateWrapper<ApsGoodsForecastMainSaleData>().eq("forecast_main_id", forecastMainId)
-          .eq("goods_id", goodsForecast.getGoodsId()).eq("year", y);
+      UpdateWrapper<ApsGoodsForecastMainSaleData> dataUpdateWrapper = new UpdateWrapper<ApsGoodsForecastMainSaleData>().eq("forecast_main_id", forecastMainId).eq("goods_id", goodsForecast.getGoodsId()).eq("year", y);
       ml.forEach(m -> dataUpdateWrapper.set("month_" + m, null));
       // 当年当月清空
       this.goodsForecastMainSaleDataService.update(dataUpdateWrapper);
@@ -404,14 +384,17 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       ApsGoodsForecastMainSaleData apsGoodsForecastMainSaleData = mainSaleDataMap.get(k);
       if (Objects.nonNull(apsGoodsForecastMainSaleData)) {
         monthMap.get(v.getYear()).forEach(m -> {
-          ReflectUtil.setFieldValue(apsGoodsForecastMainSaleData, "month" + m, ReflectUtil.getFieldValue(v, "month" + m));
+          Field sf = getField(v, "month" + m);
+          Field tf = getField(apsGoodsForecastMainSaleData, "month" + m);
+          ReflectUtil.setFieldValue(apsGoodsForecastMainSaleData, tf, ReflectUtil.getFieldValue(v, sf));
         });
         updateList.add(apsGoodsForecastMainSaleData);
       } else {
-        ApsGoodsForecastMainSaleData saleData = new ApsGoodsForecastMainSaleData().setGoodsId(goodsForecast.getGoodsId()).setForecastMainId(forecastMainId)
-            .setSaleConfigCode(v.getSaleConfigCode()).setYear(v.getYear());
+        ApsGoodsForecastMainSaleData saleData = new ApsGoodsForecastMainSaleData().setGoodsId(goodsForecast.getGoodsId()).setForecastMainId(forecastMainId).setSaleConfigCode(v.getSaleConfigCode()).setYear(v.getYear());
         monthMap.get(v.getYear()).forEach(m -> {
-          ReflectUtil.setFieldValue(saleData, "month" + m, ReflectUtil.getFieldValue(v, "month" + m));
+          Field sourceField = getField(v, "month" + m);
+          Field targetField = getField(saleData, "month" + m);
+          ReflectUtil.setFieldValue(saleData, targetField, ReflectUtil.getFieldValue(v, sourceField));
         });
         insertList.add(saleData);
       }
@@ -433,11 +416,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     MPJLambdaWrapper<ApsGoodsForecast> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsForecast::getGoodsId, obj.getGoodsId())
-          .likeRight(StringUtils.isNoneBlank(obj.getForecastNo()), ApsGoodsForecast::getForecastNo, obj.getForecastNo())
-          .likeRight(StringUtils.isNoneBlank(obj.getForecastName()), ApsGoodsForecast::getForecastName, obj.getForecastName())
-          .eq(StringUtils.isNoneBlank(obj.getForecastBeginDate()), ApsGoodsForecast::getForecastBeginDate, obj.getForecastBeginDate())
-          .eq(StringUtils.isNoneBlank(obj.getForecastEndDate()), ApsGoodsForecast::getForecastEndDate, obj.getForecastEndDate())
+      q.eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsForecast::getGoodsId, obj.getGoodsId()).likeRight(StringUtils.isNoneBlank(obj.getForecastNo()), ApsGoodsForecast::getForecastNo, obj.getForecastNo()).likeRight(StringUtils.isNoneBlank(obj.getForecastName()), ApsGoodsForecast::getForecastName, obj.getForecastName()).eq(StringUtils.isNoneBlank(obj.getForecastBeginDate()), ApsGoodsForecast::getForecastBeginDate, obj.getForecastBeginDate()).eq(StringUtils.isNoneBlank(obj.getForecastEndDate()), ApsGoodsForecast::getForecastEndDate, obj.getForecastEndDate())
 
       ;
     }

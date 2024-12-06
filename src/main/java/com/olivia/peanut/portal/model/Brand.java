@@ -2,7 +2,6 @@ package com.olivia.peanut.portal.model;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.olivia.sdk.ann.BelongDb;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;

@@ -29,11 +29,14 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)表服务实现类
@@ -181,7 +184,9 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
     localDateBetween.forEach(t -> {
       ApsRollingForecastFactoryCapacity apsRollingForecastFactoryCapacity = capacityMap.get(t.getYear() + "-" + t.getMonthValue());
       if (Objects.nonNull(apsRollingForecastFactoryCapacity)) {
-        Integer capacity = (Integer) ReflectUtil.getFieldValue(apsRollingForecastFactoryCapacity, "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth()));
+        String fieldName = "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth());
+        Field field = getField(apsRollingForecastFactoryCapacity, fieldName);
+        Integer capacity = (Integer) ReflectUtil.getFieldValue(apsRollingForecastFactoryCapacity, field);
         capacity = Objects.isNull(capacity) ? 0 : capacity;
         dayList.add(new FactoryCapacityDay().setCapacity(capacity).setLocalDate(t));
       }

@@ -24,7 +24,7 @@ import java.time.LocalDate;
 public class ApsSchedulingGoodsBomTotal extends BaseEntity {
 
   /***
-   *  订单ID
+   *  排产版本 ID
    */
   private Long schedulingId;
   private Long bomId;

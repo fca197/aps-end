@@ -111,7 +111,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
       Map<Long, List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes>> machineTimeStemOrderMap =
           ml.stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes::getCellIndex, Collectors.collectingAndThen(Collectors.toList(), a -> a.stream().sorted(Comparator.comparing(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime)).collect(Collectors.toList()))));
 
-      log.info("write excel {} ml {} {}",machineName,ml.size(),ml.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getOrderNo).toList());
+      log.info("write excel {} ml {} {}", machineName, ml.size(), ml.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getOrderNo).toList());
 
       int maxOrderList = machineTimeStemOrderMap.values().stream().mapToInt(Collection::size).max().orElse(0);
       for (int i = 0; i < maxOrderList; i++) {

@@ -26,9 +26,8 @@ import java.util.List;
 @RestController
 public class ApsBomApiImpl implements ApsBomApi {
 
-  private @Autowired ApsBomService apsBomService;
-
   private static final String businessType = "apsBom";
+  private @Autowired ApsBomService apsBomService;
 
   /****
    * insert

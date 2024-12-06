@@ -45,7 +45,8 @@ public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStore
   BaseTableHeaderService tableHeaderService;
   @Resource
   SetNameService setNameService;
-
+  @Resource
+  DistrictCodeService districtCodeService;
 
   public @Override ApsSellerStoreQueryListRes queryList(ApsSellerStoreQueryListReq req) {
 
@@ -56,7 +57,6 @@ public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStore
     ((ApsSellerStoreService) AopContext.currentProxy()).setName(dataList);
     return new ApsSellerStoreQueryListRes().setDataList(dataList);
   }
-
 
   public @Override DynamicsPage<ApsSellerStoreExportQueryPageListInfoRes> queryPageList(ApsSellerStoreExportQueryPageListReq req) {
 
@@ -73,16 +73,13 @@ public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStore
       records = $.copyList(this.list(q), ApsSellerStoreExportQueryPageListInfoRes.class);
     }
 
-    // 类型转换，  更换枚举 等操作 
+    // 类型转换，  更换枚举 等操作
 
     List<ApsSellerStoreExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsSellerStoreExportQueryPageListInfoRes.class);
     ((ApsSellerStoreService) AopContext.currentProxy()).setName(listInfoRes);
 
     return DynamicsPage.init(page, listInfoRes);
   }
-
-  @Resource
-  DistrictCodeService districtCodeService;
 
   // 以下为私有对象封装
 
