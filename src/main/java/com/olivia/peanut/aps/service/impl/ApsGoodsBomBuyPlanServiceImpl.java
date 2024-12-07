@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static com.olivia.sdk.utils.Str.UN_CHECKED;
+
 /**
  * BOM 购买计划(ApsGoodsBomBuyPlan)表服务实现类
  *
@@ -83,18 +85,10 @@ public class ApsGoodsBomBuyPlanServiceImpl extends MPJBaseServiceImpl<ApsGoodsBo
   }
 
 
+  @SuppressWarnings(UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsBomBuyPlan> getWrapper(ApsGoodsBomBuyPlanDto obj) {
     MPJLambdaWrapper<ApsGoodsBomBuyPlan> q = new MPJLambdaWrapper<>();
-
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getPlanName()), ApsGoodsBomBuyPlan::getPlanName, obj.getPlanName())
-          .eq(Objects.nonNull(obj.getPlanTotalAmount()), ApsGoodsBomBuyPlan::getPlanTotalAmount, obj.getPlanTotalAmount())
-          .eq(StringUtils.isNoneBlank(obj.getPlanSource()), ApsGoodsBomBuyPlan::getPlanSource, obj.getPlanSource())
-          .eq(StringUtils.isNoneBlank(obj.getPlanRemark()), ApsGoodsBomBuyPlan::getPlanRemark, obj.getPlanRemark())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlan.class, ApsGoodsBomBuyPlan::getPlanName, ApsGoodsBomBuyPlan::getPlanSource);
     q.orderByDesc(ApsGoodsBomBuyPlan::getId);
     return q;
 

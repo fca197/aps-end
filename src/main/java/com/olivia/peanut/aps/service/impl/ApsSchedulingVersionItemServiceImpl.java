@@ -14,14 +14,13 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import org.apache.commons.lang3.StringUtils;
+import com.olivia.sdk.utils.Str;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -87,39 +86,14 @@ public class ApsSchedulingVersionItemServiceImpl extends MPJBaseServiceImpl<ApsS
   }
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsSchedulingVersionItem> getWrapper(ApsSchedulingVersionItemDto obj) {
     MPJLambdaWrapper<ApsSchedulingVersionItem> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getSchedulingVersionId()), ApsSchedulingVersionItem::getSchedulingVersionId, obj.getSchedulingVersionId())
-          .eq(Objects.nonNull(obj.getOrderId()), ApsSchedulingVersionItem::getOrderId, obj.getOrderId())
-          .eq(Objects.nonNull(obj.getGoodsId()), ApsSchedulingVersionItem::getGoodsId, obj.getGoodsId())
-          .eq(StringUtils.isNoneBlank(obj.getField0()), ApsSchedulingVersionItem::getField0, obj.getField0())
-          .eq(StringUtils.isNoneBlank(obj.getField1()), ApsSchedulingVersionItem::getField1, obj.getField1())
-          .eq(StringUtils.isNoneBlank(obj.getField2()), ApsSchedulingVersionItem::getField2, obj.getField2())
-          .eq(StringUtils.isNoneBlank(obj.getField3()), ApsSchedulingVersionItem::getField3, obj.getField3())
-          .eq(StringUtils.isNoneBlank(obj.getField4()), ApsSchedulingVersionItem::getField4, obj.getField4())
-          .eq(StringUtils.isNoneBlank(obj.getField5()), ApsSchedulingVersionItem::getField5, obj.getField5())
-          .eq(StringUtils.isNoneBlank(obj.getField6()), ApsSchedulingVersionItem::getField6, obj.getField6())
-          .eq(StringUtils.isNoneBlank(obj.getField7()), ApsSchedulingVersionItem::getField7, obj.getField7())
-          .eq(StringUtils.isNoneBlank(obj.getField8()), ApsSchedulingVersionItem::getField8, obj.getField8())
-          .eq(StringUtils.isNoneBlank(obj.getField9()), ApsSchedulingVersionItem::getField9, obj.getField9())
-          .eq(StringUtils.isNoneBlank(obj.getField10()), ApsSchedulingVersionItem::getField10, obj.getField10())
-          .eq(StringUtils.isNoneBlank(obj.getField11()), ApsSchedulingVersionItem::getField11, obj.getField11())
-          .eq(StringUtils.isNoneBlank(obj.getField12()), ApsSchedulingVersionItem::getField12, obj.getField12())
-          .eq(StringUtils.isNoneBlank(obj.getField13()), ApsSchedulingVersionItem::getField13, obj.getField13())
-          .eq(StringUtils.isNoneBlank(obj.getField14()), ApsSchedulingVersionItem::getField14, obj.getField14())
-          .eq(StringUtils.isNoneBlank(obj.getField15()), ApsSchedulingVersionItem::getField15, obj.getField15())
-          .eq(StringUtils.isNoneBlank(obj.getField16()), ApsSchedulingVersionItem::getField16, obj.getField16())
-          .eq(StringUtils.isNoneBlank(obj.getField17()), ApsSchedulingVersionItem::getField17, obj.getField17())
-          .eq(StringUtils.isNoneBlank(obj.getField18()), ApsSchedulingVersionItem::getField18, obj.getField18())
-          .eq(StringUtils.isNoneBlank(obj.getField19()), ApsSchedulingVersionItem::getField19, obj.getField19())
-          .eq(StringUtils.isNoneBlank(obj.getField20()), ApsSchedulingVersionItem::getField20, obj.getField20())
-          .eq(Objects.nonNull(obj.getResultType()), ApsSchedulingVersionItem::getResultType, obj.getResultType())
-          .eq(Objects.nonNull(obj.getNumberIndex()), ApsSchedulingVersionItem::getNumberIndex, obj.getNumberIndex())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsSchedulingVersionItem.class,
+        ApsSchedulingVersionItem::getSchedulingVersionId, ApsSchedulingVersionItem::getOrderId,
+        ApsSchedulingVersionItem::getGoodsId
+    );
     q.orderByDesc(ApsSchedulingVersionItem::getId);
     return q;
 

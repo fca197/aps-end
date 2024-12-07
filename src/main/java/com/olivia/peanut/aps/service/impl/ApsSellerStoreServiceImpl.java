@@ -16,15 +16,14 @@ import com.olivia.peanut.portal.service.DistrictCodeService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -105,24 +104,15 @@ public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStore
   }
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsSellerStore> getWrapper(ApsSellerStoreDto obj) {
     MPJLambdaWrapper<ApsSellerStore> q = new MPJLambdaWrapper<>();
 
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreCode()), ApsSellerStore::getSellerStoreCode, obj.getSellerStoreCode())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreName()), ApsSellerStore::getSellerStoreName, obj.getSellerStoreName())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStorePhone()), ApsSellerStore::getSellerStorePhone, obj.getSellerStorePhone())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreProvinceCode()), ApsSellerStore::getSellerStoreProvinceCode, obj.getSellerStoreProvinceCode())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreCityCode()), ApsSellerStore::getSellerStoreCityCode, obj.getSellerStoreCityCode())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreAreaCode()), ApsSellerStore::getSellerStoreAreaCode, obj.getSellerStoreAreaCode())
-          .eq(StringUtils.isNoneBlank(obj.getSellerStoreAddr()), ApsSellerStore::getSellerStoreAddr, obj.getSellerStoreAddr())
-          .eq(Objects.nonNull(obj.getSellerStoreGdLon()), ApsSellerStore::getSellerStoreGdLon, obj.getSellerStoreGdLon())
-          .eq(Objects.nonNull(obj.getSellerStoreGdLat()), ApsSellerStore::getSellerStoreGdLat, obj.getSellerStoreGdLat())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsSellerStore.class, ApsSellerStore::getId,
+        ApsSellerStore::getSellerStoreCode, ApsSellerStore::getSellerStoreName,
+        ApsSellerStore::getSellerStorePhone, ApsSellerStore::getSellerStoreProvinceCode, ApsSellerStore::getSellerStoreCityCode
+        , ApsSellerStore::getSellerStoreAreaCode);
     q.orderByDesc(ApsSellerStore::getId);
     return q;
 

@@ -11,13 +11,12 @@ import com.olivia.peanut.aps.service.ApsWorkshopSectionService;
 import com.olivia.peanut.portal.mapper.WorkshopSectionMapper;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-import org.apache.commons.lang3.StringUtils;
+import com.olivia.sdk.utils.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -68,20 +67,12 @@ public class ApsWorkshopSectionServiceImpl extends MPJBaseServiceImpl<WorkshopSe
   // 以下为私有对象封装
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsWorkshopSection> getWrapper(WorkshopSectionDto obj) {
     MPJLambdaWrapper<ApsWorkshopSection> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getId()), ApsWorkshopSection::getId, obj.getId())
-          .eq(Objects.nonNull(obj.getTenantId()), ApsWorkshopSection::getTenantId, obj.getTenantId())
-          .eq(StringUtils.isNoneBlank(obj.getSectionName()), ApsWorkshopSection::getSectionName, obj.getSectionName())
-          .eq(StringUtils.isNoneBlank(obj.getSectionCode()), ApsWorkshopSection::getSectionCode, obj.getSectionCode())
-          .eq(Objects.nonNull(obj.getCreateTime()), ApsWorkshopSection::getCreateTime, obj.getCreateTime())
-          .eq(Objects.nonNull(obj.getUpdateTime()), ApsWorkshopSection::getUpdateTime, obj.getUpdateTime())
-          .orderByDesc(ApsWorkshopSection::getId)
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsWorkshopSection.class, ApsWorkshopSection::getId, ApsWorkshopSection::getSectionCode, ApsWorkshopSection::getSectionName);
+    q.orderByDesc(ApsWorkshopSection::getId);
 
     return q;
 

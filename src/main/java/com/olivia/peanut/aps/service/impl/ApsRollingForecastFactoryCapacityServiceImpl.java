@@ -198,12 +198,12 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
     MPJLambdaWrapper<ApsRollingForecastFactoryCapacity> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getFactoryId()), ApsRollingForecastFactoryCapacity::getFactoryId, obj.getFactoryId())
-          .eq(Objects.nonNull(obj.getYear()), ApsRollingForecastFactoryCapacity::getYear, obj.getYear())
-          .eq(Objects.nonNull(obj.getMonth()), ApsRollingForecastFactoryCapacity::getMonth, obj.getMonth())
-
-      ;
+      ApsRollingForecastFactoryCapacity copy = $.copy(obj, ApsRollingForecastFactoryCapacity.class);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getYear);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getMonth);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getFactoryId);
     }
+    q.orderByDesc(ApsRollingForecastFactoryCapacity::getId);
     List<SFunction<ApsRollingForecastFactoryCapacity, ?>> columns = List.of(ApsRollingForecastFactoryCapacity::getYear, ApsRollingForecastFactoryCapacity::getMonth);
     q.orderByDesc(columns);
     return q;

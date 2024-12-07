@@ -733,7 +733,6 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
     if (Objects.nonNull(obj)) {
       q.eq(StringUtils.isNoneBlank(obj.getSchedulingVersionNo()), ApsSchedulingVersion::getSchedulingVersionNo, obj.getSchedulingVersionNo())
-
       ;
     }
     q.orderByDesc(ApsSchedulingVersion::getId);
