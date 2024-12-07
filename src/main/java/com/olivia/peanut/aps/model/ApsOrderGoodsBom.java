@@ -27,6 +27,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    *  订单ID
    */
   private Long orderId;
+  private Long goodsBomId;
   /***
    *  商品ID
    */

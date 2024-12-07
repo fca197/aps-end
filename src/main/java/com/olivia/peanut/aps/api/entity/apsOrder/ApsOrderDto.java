@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.entity.apsOrder;
 
 import com.olivia.peanut.aps.api.entity.apsOrderGoods.ApsOrderGoodsDto;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsBom.ApsOrderGoodsBomDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoodsProjectConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
@@ -48,6 +49,7 @@ public class ApsOrderDto extends BaseEntityDto {
   private List<ApsOrderGoodsDto> goodsList;
   private List<ApsOrderGoodsProjectConfigDto> goodsProjectConfigList;
   private List<ApsOrderGoodsSaleConfigDto> goodsSaleConfigList;
+  private List<ApsOrderGoodsBomDto> apsOrderGoodsBomList;
 }
 
 

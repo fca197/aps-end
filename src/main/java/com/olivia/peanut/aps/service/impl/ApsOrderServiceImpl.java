@@ -15,6 +15,7 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrder.*;
 import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderTimeLineRes.StatusInfo;
 import com.olivia.peanut.aps.api.entity.apsOrderGoods.ApsOrderGoodsDto;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsBom.ApsOrderGoodsBomDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoodsProjectConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
@@ -136,6 +137,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @Resource
+  ApsOrderGoodsBomService apsOrderGoodsBomService;
+  @Resource
+  ApsGoodsBomService apsGoodsBomService;
+
   @Override
   public ApsOrderInsertRes save(ApsOrderInsertReq req) {
     ApsOrder apsOrder = $.copy(req, ApsOrder.class);
@@ -150,6 +156,12 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     saleConfigList.forEach(t -> t.setOrderId(apsOrder.getId()).setFactoryId(req.getFactoryId()));
     ApsOrderUser orderUser = $.copy(req.getOrderUser(), ApsOrderUser.class);
     orderUser.setOrderId(apsOrder.getId());
+    if (CollUtil.isNotEmpty(req.getApsOrderGoodsBomList())) {
+      List<ApsOrderGoodsBom> orderGoodsBomList = this.apsGoodsBomService.lambdaQuery().//
+          in(BaseEntity::getId, req.getApsOrderGoodsBomList().stream().map(ApsOrderGoodsBomDto::getGoodsBomId).toList()) //
+          .list().stream().map(v -> $.copy(v, ApsOrderGoodsBom.class).setOrderId(apsOrder.getId())).peek(t -> t.setId(IdUtils.getId())).toList();
+      this.apsOrderGoodsBomService.saveBatch(orderGoodsBomList);
+    }
     this.apsOrderGoodsSaleConfigService.saveBatch(saleConfigList);
     this.apsOrderGoodsProjectConfigService.saveBatch(projectConfigList);
     this.apsOrderGoodsService.saveBatch(goodsList);
@@ -345,8 +357,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     int year = Objects.isNull(req.getYear()) ? LocalDate.now().getYear() : req.getYear();
     LocalDateTime beginLocalDate = LocalDateTime.of(year, 1, 1, 0, 0, 0);
     LocalDateTime endLocalDate = LocalDateTime.of(year + 1, 1, 1, 0, 0, 0);
-    List<OrderCreateDayCountRes.Info> list = this.listMaps(new QueryWrapper<ApsOrder>()
-        .select("date_format(create_time,'%Y-%m-%d') date ,count(1) c ").groupBy("date").lambda().between(BaseEntity::getCreateTime, beginLocalDate, endLocalDate)).stream().map(t -> new OrderCreateDayCountRes.Info().setDate(t.get("date")).setCount(t.get("c"))).toList();
+    List<OrderCreateDayCountRes.Info> list = this.listMaps(new QueryWrapper<ApsOrder>().select("date_format(create_time,'%Y-%m-%d') date ,count(1) c ").groupBy("date").lambda().between(BaseEntity::getCreateTime, beginLocalDate, endLocalDate)).stream().map(t -> new OrderCreateDayCountRes.Info().setDate(t.get("date")).setCount(t.get("c"))).toList();
     return new OrderCreateDayCountRes().setDataList(list);
   }
 

@@ -1,15 +1,20 @@
 truncate table aps_order;
 truncate table aps_order_goods;
 
-truncate table aps_order_goods_bom;
 
 truncate table aps_order_goods_forecast_make;
 
-truncate table aps_order_goods_project_config;
+# rename table  aps_rolling_forecast_order_item to aps_rolling_forecast_order_item_0;
+# rename table  aps_order_goods_project_config to aps_order_goods_project_config_0;
+# rename table  aps_order_goods_status_date to aps_order_goods_status_date_0;
+# rename table  aps_order_goods_sale_config to aps_order_goods_sale_config_0;
 
-truncate table aps_order_goods_sale_config;
+truncate table aps_order_goods_project_config_0;
+truncate table aps_order_goods_sale_config_0;
+truncate table aps_order_goods_status_date_0;
+truncate table aps_order_goods_bom_0;
+truncate table aps_rolling_forecast_order_item_0;
 
-truncate table aps_order_goods_status_date;
 
 truncate table aps_order_user;
 
@@ -42,9 +47,7 @@ truncate table aps_scheduling_version_limit;
 
 truncate table aps_goods_bom_buy_plan;
 
-truncate table aps_goods_bom_buy_plan_item;
+truncate table aps_goods_bom_buy_plan_item_0;
 
 truncate table aps_rolling_forecast_order;
-
-truncate table aps_rolling_forecast_order_item;
 

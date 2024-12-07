@@ -28,6 +28,10 @@ public class ApsOrderGoodsBomDto extends BaseEntityDto {
    */
   @NotNull(message = "订单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long orderId;
+
+
+  @NotNull(message = "商品零件ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long goodsBomId;
   /***
    *  商品ID
    */
