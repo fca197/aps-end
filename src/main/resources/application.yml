@@ -180,9 +180,9 @@ spring:
               standard:
                 sharding-column: order_id
                 sharding-algorithm-name: aps_scheduling_goods_bom_algorithm
-            audit-strategy:
-              auditor-names:
-                mustHasShardingId
+        #            audit-strategy:
+        #              auditor-names:
+        #                mustHasShardingId
 
 
         sharding-algorithms:
@@ -238,7 +238,9 @@ spring:
             type: INLINE
             props:
               algorithm-expression: aps_order_goods_sale_config_${order_id % 1}
-
+        default-audit-strategy:
+          auditor-names:
+            - mustHasShardingId
 
     props:
       sql-show: true

@@ -101,6 +101,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   @Resource
   PeanutProperties peanutProperties;
 
+
   public @Override ApsOrderQueryListRes queryList(ApsOrderQueryListReq req) {
 
     MPJLambdaWrapper<ApsOrder> q = getWrapper(req.getData());
@@ -187,6 +188,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     List<ApsProjectConfigExportQueryPageListInfoRes> projectConfigList = this.apsProjectConfigService.queryPageList(new ApsProjectConfigExportQueryPageListReq().setQueryPage(false)).getDataList();
     ArrayList<ApsOrderGoodsProjectConfig> projectConfigArrayList = new ArrayList<>();
 
+    Map<Long, List<ApsGoodsBom>> goodsBomMap = this.apsGoodsBomService.list().stream().collect(Collectors.groupingBy(ApsGoodsBom::getGoodsId));
+    List<ApsOrderGoodsBom> apsOrderGoodsBomList = new ArrayList<>();
     IntStream.range(1, req.getCreateCount() + 1).forEach(i -> {
       long totalPrice = i * MathUtil.randomLong(1000, 2000);
 
@@ -199,11 +202,17 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       apsOrderList.add(apsOrder);
       ApsGoods goods = goodsList.get(RandomUtil.randomInt(0, goodsList.size()));
 
+      List<ApsGoodsBom> apsGoodsBomList = goodsBomMap.getOrDefault(goods.getId(), List.of());
+      List<ApsOrderGoodsBom> apsOrderGoodsBomListTmp = apsGoodsBomList.stream().map(t -> $.copy(t, ApsOrderGoodsBom.class).setGoodsBomId(t.getBomId())).toList();// $.copyList(apsGoodsBomList, ApsOrderGoodsBom.class);
+
+      apsOrderGoodsBomListTmp.forEach(t -> t.setOrderId(IdUtils.getId()).setOrderId(apsOrder.getId()).setBomUsage(BigDecimal.valueOf(MathUtil.randomLong(1, 60))).setId(IdUtils.getId()));
+      apsOrderGoodsBomList.addAll(apsOrderGoodsBomListTmp);
+
+
       ApsOrderGoods apsOrderGood = new ApsOrderGoods().setOrderId(apsOrder.getId()).setGoodsId(goods.getId()).setGoodsName(goods.getGoodsName()).setGoodsRemark(goods.getGoodsRemark()).setFactoryId(goods.getFactoryId()).setGoodsUnit("").setGoodsUnitPrice(new BigDecimal(RandomUtil.randomInt(100, 999)))
 
           .setGoodsTotalPrice(new BigDecimal(totalPrice)).setGoodsAmount(new BigDecimal(RandomUtil.randomInt(50000)));
       apsOrderGoodList.add(apsOrderGood);
-
       saleConfigList.forEach(saleCode -> {
         List<? extends ApsSaleConfigDto> saleItemDtoList = saleCode.getChildren();
         if (CollUtil.isEmpty(saleItemDtoList)) {
@@ -234,6 +243,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     this.apsOrderGoodsSaleConfigService.saveBatch(insertSaleConfigList);
     this.apsOrderUserService.saveBatch(apsOrderUserList);
     this.apsOrderGoodsProjectConfigService.saveBatch(projectConfigArrayList);
+    this.apsOrderGoodsBomService.saveBatch(apsOrderGoodsBomList);
 
     return new ApsOrderBatchInsertRes().setOrderNoList(orderNoList).setIdList(idList);
   }
