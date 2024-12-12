@@ -60,7 +60,20 @@ peanut:
       - 1
     end:
       - 1
+  filter-table-list: # 数据条件过滤， 不配置则不区分数据，支持单值，多值匹配
+    - column-name: tenant_id
+      one-filter-value: true
+      data-permission-type: tenant_id
+      ignore-path: # 先验证 , 支持通配符，oneFilterValue=true配置表名 ，=false配置mapperId
+        - t_district_code
+        - base_resource
+        - base_table_header
+        - t_file_upload
+        - t_login_account
+        - t_tenant_info
 
+      filter-path: # 后验证
+        - /
 
 db:
   url: jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
