@@ -63,7 +63,7 @@ peanut:
   filter-table-list: # 数据条件过滤， 不配置则不区分数据，支持单值，多值匹配
     - column-name: tenant_id
       one-filter-value: true
-      data-permission-type: tenant_id
+      data-permission-type: tenant_id  # 实现 DataPermissionService 接口， getType()值
       ignore-path: # 先验证 , 支持通配符，oneFilterValue=true配置表名 ，=false配置mapperId
         - t_district_code
         - base_resource
