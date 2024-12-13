@@ -87,19 +87,6 @@ public class ApsGoodsForecastMainSaleDataServiceImpl extends MPJBaseServiceImpl<
           .eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsForecastMainSaleData::getGoodsId, obj.getGoodsId())
           .eq(StringUtils.isNoneBlank(obj.getSaleConfigCode()), ApsGoodsForecastMainSaleData::getSaleConfigCode, obj.getSaleConfigCode())
           .eq(Objects.nonNull(obj.getYear()), ApsGoodsForecastMainSaleData::getYear, obj.getYear())
-          .eq(Objects.nonNull(obj.getMonth01()), ApsGoodsForecastMainSaleData::getMonth01, obj.getMonth01())
-          .eq(Objects.nonNull(obj.getMonth02()), ApsGoodsForecastMainSaleData::getMonth02, obj.getMonth02())
-          .eq(Objects.nonNull(obj.getMonth03()), ApsGoodsForecastMainSaleData::getMonth03, obj.getMonth03())
-          .eq(Objects.nonNull(obj.getMonth04()), ApsGoodsForecastMainSaleData::getMonth04, obj.getMonth04())
-          .eq(Objects.nonNull(obj.getMonth05()), ApsGoodsForecastMainSaleData::getMonth05, obj.getMonth05())
-          .eq(Objects.nonNull(obj.getMonth06()), ApsGoodsForecastMainSaleData::getMonth06, obj.getMonth06())
-          .eq(Objects.nonNull(obj.getMonth07()), ApsGoodsForecastMainSaleData::getMonth07, obj.getMonth07())
-          .eq(Objects.nonNull(obj.getMonth08()), ApsGoodsForecastMainSaleData::getMonth08, obj.getMonth08())
-          .eq(Objects.nonNull(obj.getMonth09()), ApsGoodsForecastMainSaleData::getMonth09, obj.getMonth09())
-          .eq(Objects.nonNull(obj.getMonth10()), ApsGoodsForecastMainSaleData::getMonth10, obj.getMonth10())
-          .eq(Objects.nonNull(obj.getMonth11()), ApsGoodsForecastMainSaleData::getMonth11, obj.getMonth11())
-          .eq(Objects.nonNull(obj.getMonth12()), ApsGoodsForecastMainSaleData::getMonth12, obj.getMonth12())
-
       ;
     }
     q.orderByDesc(ApsGoodsForecastMainSaleData::getId);

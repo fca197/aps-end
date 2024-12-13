@@ -23,7 +23,7 @@ public class ApsMakeCapacitySaleConfigDto extends BaseEntityDto {
   private Long saleConfigId;
 
   private String saleConfigName;
-  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Integer makeCapacityQuantity;
   private Integer year;
   private Integer month;

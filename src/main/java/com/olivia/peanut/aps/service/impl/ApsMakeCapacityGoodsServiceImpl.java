@@ -153,7 +153,7 @@ public class ApsMakeCapacityGoodsServiceImpl extends MPJBaseServiceImpl<ApsMakeC
     if (Objects.nonNull(obj)) {
       q.eq(Objects.nonNull(obj.getFactoryId()), ApsMakeCapacityGoods::getFactoryId, obj.getFactoryId()).eq(Objects.nonNull(obj.getGoodsId()), ApsMakeCapacityGoods::getGoodsId, obj.getGoodsId()).eq(Objects.nonNull(obj.getMakeCapacityQuantity()), ApsMakeCapacityGoods::getMakeCapacityQuantity, obj.getMakeCapacityQuantity()).eq(Objects.nonNull(obj.getYear()), ApsMakeCapacityGoods::getYear, obj.getYear()).eq(Objects.nonNull(obj.getMonth()), ApsMakeCapacityGoods::getMonth, obj.getMonth());
     }
-    q.orderByDesc(ApsMakeCapacityGoods::getId);
+    q.orderByDesc(ApsMakeCapacityGoods::getYear, ApsMakeCapacityGoods::getMonth);
     return q;
 
   }

@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.entity.apsMakeCapacitySaleConfig;
 
 import com.olivia.peanut.aps.api.entity.apsMakeCapacityFactory.MakeCapacityConfig;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ApsMakeCapacitySaleConfigInsertReq extends ApsMakeCapacitySaleConfigDto {
 
 
+  @Size(min = 1, max = 50, message = "最少1条，最多50条")
   private List<MakeCapacityConfig> makeCapacityConfigList;
 
 
