@@ -105,7 +105,7 @@ public class ApsGoodsSaleItemApiImpl implements ApsGoodsSaleItemApi {
     $.assertTrueCanIgnoreException(CollUtil.isNotEmpty(saleItemList), "没有该记录");
     $.assertTrueCanIgnoreException(saleItemList.size() == 1, "没有该记录或有多条记录");
     this.apsGoodsSaleItemService.update(
-        new LambdaUpdateWrapper<ApsGoodsSaleItem>().eq(BaseEntity::getId, saleItemList.get(0).getId())
+        new LambdaUpdateWrapper<ApsGoodsSaleItem>().eq(BaseEntity::getId, saleItemList.getFirst().getId())
             .set(ApsGoodsSaleItem::getUseForecast, req.getUseForecast()));
     return new UpdateForecastRes();
   }

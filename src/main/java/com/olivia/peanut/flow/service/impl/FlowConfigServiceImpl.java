@@ -53,7 +53,7 @@
 //    Map<String, String> userAssigneeMap = (Map<String, String>) variableMap.get("userAssignee");
 //    List<String> list = getUserIdList(addVariableMap, delegateTaskInfo, userAssigneeMap);
 //    if (Boolean.TRUE.equals(addVariableMap) && CollUtil.isNotEmpty(list)) {
-//      runtimeService.setVariable(delegateTaskInfo.getProcessInstanceId(), FLOW_USER_ID, list.get(0));
+//      runtimeService.setVariable(delegateTaskInfo.getProcessInstanceId(), FLOW_USER_ID, list.getFirst());
 //      runtimeService.setVariable(delegateTaskInfo.getProcessInstanceId(), FLOW_USER_ID_LIST, list);
 //    }
 //    Map<String, String> copyAssigneeMap = (Map<String, String>) variableMap.get("copyAssignee");
@@ -69,7 +69,7 @@
 //      }
 //      if (StringUtils.isBlank(delegateTask.getAssignee())) {
 //        if (CollUtil.isNotEmpty(list)) {
-//          delegateTask.setAssignee(list.get(0));
+//          delegateTask.setAssignee(list.getFirst());
 //        } else {
 //          delegateTask.setAssignee(LoginUserContext.getLoginUser().getIdStr());
 //        }
@@ -98,7 +98,7 @@
 //        user = user.replaceAll(" ", "");
 //        if ("login".equalsIgnoreCase(user)) {
 //          list = List.of(LoginUserContext.getLoginUser().getIdStr());
-////          delegateTaskInfo.getDelegateTask().setAssignee(list.get(0));
+////          delegateTaskInfo.getDelegateTask().setAssignee(list.getFirst());
 //        }
 //      }
 //      String deptRole = userAssigneeMap.get("deptRole");

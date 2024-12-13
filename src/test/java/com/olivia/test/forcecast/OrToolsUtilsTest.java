@@ -133,7 +133,7 @@ class OrToolsUtilsTest {
 //        log.info(" {} ci {} sum {}", t.key, ci, sum);
         List<SaleItemConfig> itemConfigList = t.getList();
         if (Objects.equals(ci, 0)) {
-          ar.add(itemConfigList.get(0).getSaleCode());
+          ar.add(itemConfigList.getFirst().getSaleCode());
           ci++;
         } else {
 //          AtomicInteger tm = new AtomicInteger();

@@ -130,7 +130,7 @@ public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<Aps
           return;
         }
         if (goodsSaleProjectConfigList.size() == 1) {
-          ApsGoodsSaleProjectConfig apsGoodsSaleProjectConfig = goodsSaleProjectConfigList.get(0);
+          ApsGoodsSaleProjectConfig apsGoodsSaleProjectConfig = goodsSaleProjectConfigList.getFirst();
           projectConfigList.add(apsGoodsSaleProjectConfig.getProjectConfigId());
           return;
         }

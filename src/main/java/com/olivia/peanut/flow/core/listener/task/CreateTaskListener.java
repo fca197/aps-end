@@ -24,8 +24,8 @@
 //    FlowConfigService flowConfigService = getFlowConfigService();
 //    Map<String, Object> map = runtimeService.getVariables(delegateTask.getExecutionId());
 //    flowConfigService.setInputConfig(map, true, getDelegateTaskInfo(delegateTask));
-////    delegateTask.setAssignee(userIdList.get(0));
-////    log.info("setAssignee:{}", userIdList.get(0));
+////    delegateTask.setAssignee(userIdList.getFirst());
+////    log.info("setAssignee:{}", userIdList.getFirst());
 //
 //  }
 //}

@@ -312,7 +312,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     $.requireNonNullCanIgnoreException(byId, "状态不存在");
     List<ApsOrderGoods> apsOrderGoods = apsOrderGoodsService.getApsOrderGoodsByOrderId(apsOrder.getId());
     $.requireNonNullCanIgnoreException(apsOrderGoods, "订单商品不存在");
-    ApsOrderGoods orderGoods = apsOrderGoods.get(0);
+    ApsOrderGoods orderGoods = apsOrderGoods.getFirst();
     ApsGoods apsGoods = apsGoodsService.getById(orderGoods.getGoodsId());
 
     LocalDate now = LocalDate.now();

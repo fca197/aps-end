@@ -122,7 +122,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     Set<String> headerSet = new HashSet<>();
 //    String bomTotalEndDate = schedulingVersion.getBomTotalEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     bomUserMap.forEach((goodsBomId, bomList) -> {
-      ApsSchedulingGoodsBomTotal apsSchedulingGoodsBomTotal = bomList.get(0);
+      ApsSchedulingGoodsBomTotal apsSchedulingGoodsBomTotal = bomList.getFirst();
       ApsSchedulingGoodsBomTotalQueryBomTotalRes retObj = new ApsSchedulingGoodsBomTotalQueryBomTotalRes().setBomName(apsSchedulingGoodsBomTotal.getBomName());
       retObj.putAll(BeanUtil.beanToMap(apsSchedulingGoodsBomTotal));
 

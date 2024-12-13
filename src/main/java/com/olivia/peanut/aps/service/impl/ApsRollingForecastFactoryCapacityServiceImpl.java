@@ -116,7 +116,7 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
     Map<String, ApsRollingForecastFactoryCapacity> capacityMap = Maps.newHashMap();
 
-    LocalDate beginDate = minMaxDate.get(0);
+    LocalDate beginDate = minMaxDate.getFirst();
     LocalDate endDate = minMaxDate.get(1);
     log.info("time range :{} - {}", beginDate, endDate);
 

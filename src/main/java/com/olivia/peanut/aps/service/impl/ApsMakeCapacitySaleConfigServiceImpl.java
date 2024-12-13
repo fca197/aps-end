@@ -17,10 +17,7 @@ import com.olivia.peanut.aps.service.ApsMakeCapacitySaleConfigService;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DateUtils;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,8 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * (ApsMakeCapacitySaleConfig)表服务实现类
@@ -108,12 +107,12 @@ public class ApsMakeCapacitySaleConfigServiceImpl extends MPJBaseServiceImpl<Aps
           Optional<LocalDate> dateOptional = DateUtils.getLocalDateBetween(nextMakeCapacityConfig.getBeginDate(), nextMakeCapacityConfig.getEndDate()).stream()
               .filter(t -> t.isEqual(currentDate)).findAny();
           if (dateOptional.isPresent()) {
-            ReflectUtil.setFieldValue(makeCapacityFactory, "dayMin" + currentDate.getDayOfMonth(), nextMakeCapacityConfig.getMinValue());
-            ReflectUtil.setFieldValue(makeCapacityFactory, "dayMax" + currentDate.getDayOfMonth(), nextMakeCapacityConfig.getMaxValue());
+            ReflectUtil.setFieldValue(makeCapacityFactory, getField(makeCapacityFactory, "dayMin" + currentDate.getDayOfMonth()), nextMakeCapacityConfig.getMinValue());
+            ReflectUtil.setFieldValue(makeCapacityFactory, getField(makeCapacityFactory, "dayMax" + currentDate.getDayOfMonth()), nextMakeCapacityConfig.getMaxValue());
           }
         }
-        ReflectUtil.setFieldValue(makeCapacityFactory, "dayMin" + currentDate.getDayOfMonth(), makeCapacityConfig.getMinValue());
-        ReflectUtil.setFieldValue(makeCapacityFactory, "dayMax" + currentDate.getDayOfMonth(), makeCapacityConfig.getMaxValue());
+        ReflectUtil.setFieldValue(makeCapacityFactory, getField(makeCapacityFactory, "dayMin" + currentDate.getDayOfMonth()), makeCapacityConfig.getMinValue());
+        ReflectUtil.setFieldValue(makeCapacityFactory, getField(makeCapacityFactory, "dayMax" + currentDate.getDayOfMonth()), makeCapacityConfig.getMaxValue());
         apsMakeCapacityFactoryMap.put(key, makeCapacityFactory);
       });
     }

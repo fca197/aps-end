@@ -89,14 +89,8 @@ spring:
     datasource:
       # 默认数据源
       sharding:
-        default-data-source-name: db_master
-      names: db_master,db_0,db_1
-      db_master:
-        type: ${db.data-source-type}
-        driver-class-name: ${db.mysql-driver}
-        jdbc-url: ${db.url}
-        username: ${db.username}
-        password: ${db.password}
+        default-data-source-name: db_0
+      names: db_0
       db_0:
         type: ${db.data-source-type}
         driver-class-name: ${db.mysql-driver}

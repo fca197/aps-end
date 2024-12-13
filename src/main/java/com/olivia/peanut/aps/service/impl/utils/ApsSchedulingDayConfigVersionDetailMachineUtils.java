@@ -67,8 +67,8 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
     }
 
     Map<Long, List<ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes>> machineMap = list.stream().collect(Collectors.groupingBy(ApsSchedulingDayConfigVersionDetailMachineDto::getMachineId));
-    LocalDateTime beginLocalDateTime = list.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime).sorted().limit(1).toList().get(0);
-    LocalDateTime endLocalDateTime = list.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime).sorted(Comparator.reverseOrder()).limit(1).toList().get(0);
+    LocalDateTime beginLocalDateTime = list.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime).sorted().limit(1).toList().getFirst();
+    LocalDateTime endLocalDateTime = list.stream().map(ApsSchedulingDayConfigVersionDetailMachineDto::getBeginDateTime).sorted(Comparator.reverseOrder()).limit(1).toList().getFirst();
     log.info("beginLocalDateTime {} endLocalDateTime {}", beginLocalDateTime, endLocalDateTime);
     long bt = getTimeIndex(req, beginLocalDateTime);
     long et = getTimeIndex(req, endLocalDateTime);
@@ -136,7 +136,7 @@ public class ApsSchedulingDayConfigVersionDetailMachineUtils {
         for (int j = 0; j < stemOrderList.size(); j++) {
           int rowNum = rowIndex.get() + j;
           SXSSFRow tmpRow = sheet.getRow(rowNum);
-//          tmpRow.createCell(0).setCellValue(stemOrderList.get(0).getMachineName());
+//          tmpRow.createCell(0).setCellValue(stemOrderList.getFirst().getMachineName());
           ApsSchedulingDayConfigVersionDetailMachineExportQueryPageListInfoRes orderInfo = stemOrderList.get(j);
           SXSSFCell cell = tmpRow.getCell(i + 1);
           cell.setCellValue(orderInfo.getOrderNo());

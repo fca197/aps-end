@@ -119,7 +119,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     DynamicsPage<ApsSchedulingDayConfigExportQueryPageListInfoRes> apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage = apsSchedulingDayConfigService.queryPageList(new ApsSchedulingDayConfigExportQueryPageListReq().setQueryPage(false).setData(dayConfigDto));
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage, "排程配置不能为空");
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList(), "排程配置不能为空");
-    ApsSchedulingDayConfigExportQueryPageListInfoRes apsSchedulingDayConfigDto = apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList().get(0);
+    ApsSchedulingDayConfigExportQueryPageListInfoRes apsSchedulingDayConfigDto = apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList().getFirst();
     ApsStatus statusServiceOne = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, true));
     $.requireNonNullCanIgnoreException(statusServiceOne, "订单开始状态位不能为空");
 
@@ -286,7 +286,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       Map<Long, String> statusNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
       Map<Long, String> roomNameMap = this.apsRoomService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
       roomDtoList.forEach(rl -> {
-        Header header = new Header().setFieldName(rl.get(0) + "-" + rl.get(1)).setShowName(roomNameMap.get(rl.get(0)) + "/" + statusNameMap.get(rl.get(1))).setWidth(400).setSortValue("");
+        Header header = new Header().setFieldName(rl.getFirst() + "-" + rl.get(1)).setShowName(roomNameMap.get(rl.getFirst()) + "/" + statusNameMap.get(rl.get(1))).setWidth(400).setSortValue("");
         headerList.add(header);
       });
 

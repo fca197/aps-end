@@ -365,9 +365,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     LambdaQueryWrapper<CalendarDay> queryWrapper = new LambdaQueryWrapper<>();
 
     ymList.forEach(t -> {
-      factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.get(0)).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
-      configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.get(0)).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
-      queryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.get(0)).eq(CalendarDay::getDayMonth, t.get(1)));
+      factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.getFirst()).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
+      configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.getFirst()).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
+      queryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.getFirst()).eq(CalendarDay::getDayMonth, t.get(1)));
     });
     Map<String, CalendarDay> calendarDayMap = calendarDayService.list(queryWrapper).stream()
         .collect(Collectors.toMap(t -> t.getDayYear() + "-" + t.getDayMonth() + "-" + t.getFactoryId(), Function.identity()));
@@ -403,13 +403,13 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       if (Objects.nonNull(apsMakeCapacityFactory)) {
         CalendarDay calendarDay = calendarDayMap.get(ymKey + "-" + apsMakeCapacityFactory.getFactoryId());
         if (Objects.isNull(calendarDay)) {
-          log.info("{}  {} 空节点", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
+          log.info("工厂Id: {}  {} 日期为空，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
         Field field = getField(calendarDay, "day" + ym.getDayOfMonth());
         Object value = ReflectUtil.getFieldValue(calendarDay, field);
         if (Boolean.FALSE.equals(value)) {
-          log.info("{}  {} 移除非工作日", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
+          log.info("工厂ID: {}  {} 非工作日，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
         Field minField = getField(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth());
@@ -421,7 +421,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
             .setLimitTypeEnum(LimitTypeEnum.FACTORY_LIMIT);
         limitList.add(limit);
       } else {
-        log.info("{}  {} 空节点", "工厂", currentDate);
+        log.info("工厂: {}  {} 空节点", "工厂", currentDate);
         return;
       }
       List<ApsMakeCapacityGoods> apsMakeCapacityGoodsList = makeCapacityGoodsMap.get(ymKey);
@@ -552,7 +552,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       Map<String, List<ApsSchedulingGoodsBom>> bomsTotalMap = apsSchedulingGoodsBomList.stream().collect(Collectors.groupingBy(t -> t.getBomId() + "" + t.getBomUseDate()));
       List<ApsSchedulingGoodsBomTotal> insertApsSchedulingGoodsBomList = new ArrayList<>();
       bomsTotalMap.values().forEach(bomList -> {
-        ApsSchedulingGoodsBom apsSchedulingGoodsBom = bomList.get(0);
+        ApsSchedulingGoodsBom apsSchedulingGoodsBom = bomList.getFirst();
         ApsSchedulingGoodsBomTotal bomTotal = $.copy(apsSchedulingGoodsBom, ApsSchedulingGoodsBomTotal.class);
         insertApsSchedulingGoodsBomList.add(bomTotal);
         IntStream.range(1, bomList.size()).forEach(i -> {

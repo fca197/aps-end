@@ -203,7 +203,7 @@
 //  public RejectRes reject(RejectReq req) {
 //    List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
 //    $.requireNonNullCanIgnoreException(taskList, "任务不存在,或已结束");
-//    Task task = taskList.get(0);
+//    Task task = taskList.getFirst();
 //    String processInstanceId = task.getProcessInstanceId();
 //    taskService.createComment(req.getTaskId(), processInstanceId, req.getMessage());
 //
@@ -226,7 +226,7 @@
 //  public CompleteRes complete(CompleteReq req) {
 //    List<Task> taskList = taskService.createTaskQuery().taskId(req.getTaskId()).active().list();
 //    $.requireNonNullCanIgnoreException(taskList, "任务不存在,或已结束");
-//    String processInstanceId = taskList.get(0).getProcessInstanceId();
+//    String processInstanceId = taskList.getFirst().getProcessInstanceId();
 //    Map<String, Object> flowValueMap = this.flowFormUserValueService.list(
 //            new LambdaQueryWrapper<FlowFormUserValue>().eq(FlowFormUserValue::getProcessInstanceId, processInstanceId).eq(FlowFormUserValue::getIsAddFlowValue, true)).stream()
 //        .collect(Collectors.toMap(FlowFormUserValue::getFormItemFiled, FlowFormUserValue::getUserValue, (a, b) -> b));

@@ -125,7 +125,7 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         headerList.add(DateUtil.format(instance.getTime(), DatePattern.NORM_MONTH_FORMAT));
       });
     } else {
-      List<YearMonth> monthList = DateUtils.getMonthList(req.getDateRange().get(0), req.getDateRange().get(1));
+      List<YearMonth> monthList = DateUtils.getMonthList(req.getDateRange().getFirst(), req.getDateRange().get(1));
       monthList.stream().mapToInt(YearMonth::getYear).distinct().forEach(yearSet::add);
       headerList.addAll(monthList.stream().map(YearMonth::toString).toList());
     }

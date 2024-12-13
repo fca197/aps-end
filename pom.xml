@@ -73,6 +73,12 @@
         <!--            <version>${camunda.spring-boot.version}</version>-->
         <!--        </dependency>-->
 
+        <!--        分词-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.hankcs</groupId>-->
+        <!--            <artifactId>hanlp</artifactId>-->
+        <!--            <version>portable-1.8.5</version>-->
+        <!--        </dependency>-->
 
     </dependencies>
     <groupId>com.peanut</groupId>

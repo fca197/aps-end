@@ -174,7 +174,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
     List<Runnable> runnableList = new ArrayList<>();
     List<ApsGoodsSaleProjectConfigSale2ProjectRes> sale2ProjectResList = Collections.synchronizedList(new ArrayList<>());
 
-    ApsProcessPathDto apsProcessPathDto = apsProcessPathQueryListRes.getDataList().get(0);
+    ApsProcessPathDto apsProcessPathDto = apsProcessPathQueryListRes.getDataList().getFirst();
     ApsProcessPathVo apsProcessPathVo = $.copy(apsProcessPathDto, ApsProcessPathVo.class);
 
     Shift shift = shiftService.getOne(new LambdaQueryWrapper<Shift>().eq(Shift::getFactoryId, forecastMain.getFactoryId()), false);
@@ -466,12 +466,12 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
             s.addAndGet((Long) value);
           }
         });
-//        WeekInfo weekInfo = weekInfoListTmp.get(0);
+//        WeekInfo weekInfo = weekInfoListTmp.getFirst();
         queryDataByIdRes.put(ym, s.get());
         queryDataByIdRes.put("saleConfigCode", t.getSaleConfigCode());
         dataListMap.put(t.getSaleConfigCode(), queryDataByIdRes.setSaleConfigCode(t.getSaleConfigCode()));
       });
-      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).get(0).getWeekNumber() + "周"));
+      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).getFirst().getWeekNumber() + "周"));
 
     });
     List<ApsGoodsForecastMakeQueryDataByIdRes> values = new ArrayList<>(dataListMap.values());
@@ -508,12 +508,12 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
             s.addAndGet((Long) value);
           }
         });
-//        WeekInfo weekInfo = weekInfoListTmp.get(0);
+//        WeekInfo weekInfo = weekInfoListTmp.getFirst();
         queryDataByIdRes.put(ym, s.get());
         queryDataByIdRes.put("saleConfigCode", t.getProjectConfigCode());
         dataListMap.put(t.getProjectConfigCode(), queryDataByIdRes.setSaleConfigCode(t.getProjectConfigCode()));
       });
-      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).get(0).getWeekNumber() + "周"));
+      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).getFirst().getWeekNumber() + "周"));
 
     });
     List<ApsGoodsForecastMakeQueryDataByIdRes> values = new ArrayList<>(dataListMap.values());
@@ -560,7 +560,7 @@ public class ApsGoodsForecastMakeServiceImpl extends MPJBaseServiceImpl<ApsGoods
         queryDataByIdRes.put(ym, s.get());
         dataListMap.put(t.getBomId(), queryDataByIdRes.setBomName(apsGoodsBom.getBomName()));
       });
-      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).get(0).getWeekNumber() + "周"));
+      headerList.add(new Header().setWidth(60).setFieldName(ym).setShowName(ym.substring(5, 7) + "月" + weekListMap.get(ym).getFirst().getWeekNumber() + "周"));
 
     });
     List<ApsGoodsForecastMakeQueryUseBomByIdRes> values = new ArrayList<>(dataListMap.values());

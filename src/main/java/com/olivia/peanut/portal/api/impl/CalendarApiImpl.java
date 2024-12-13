@@ -152,7 +152,7 @@ public class CalendarApiImpl implements CalendarApi {
   private Boolean isInSide(List<List<String>> dayList, String day) {
     if (CollUtil.isNotEmpty(dayList)) {
       for (List<String> days : dayList) {
-        if (Objects.nonNull(days) && days.size() == 2 && day.compareTo(days.get(0)) >= 0 && day.compareTo(days.get(1)) <= 0) {
+        if (Objects.nonNull(days) && days.size() == 2 && day.compareTo(days.getFirst()) >= 0 && day.compareTo(days.get(1)) <= 0) {
           return true;
         }
       }

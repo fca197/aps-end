@@ -172,7 +172,7 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
     weekInfoList.stream().collect(Collectors.groupingBy(t -> t.getCurrentDate().getYear())).forEach((y, weekInfoListTmp) -> {
       weekInfoListTmp.stream().collect(Collectors.groupingBy(t -> t.getCurrentDay().substring(5, 7) + "月" + t.getWeekNumber() + "周"))
           .forEach((mw, weekInfoListTmpTmp) -> {
-            headerList.add(new Header().setWidth(80).setFieldName(mw).setShowName(mw).setSortValue(weekInfoListTmpTmp.get(0).getCurrentDay()));
+            headerList.add(new Header().setWidth(80).setFieldName(mw).setShowName(mw).setSortValue(weekInfoListTmpTmp.getFirst().getCurrentDay()));
           });
     });
     headerList.sort(Comparator.comparing(Header::getSortValue));
