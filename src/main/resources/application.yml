@@ -207,7 +207,7 @@ spring:
           aps_database_inline_plan_id:
             type: INLINE
             props:
-              algorithm-expression: db_${plan_id % 1}
+              algorithm-expression: db_${buy_plan_id % 1}
 
           aps_rolling_forecast_order_item_alg:
             type: INLINE

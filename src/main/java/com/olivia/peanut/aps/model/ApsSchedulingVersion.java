@@ -29,6 +29,8 @@ public class ApsSchedulingVersion extends BaseEntity {
   private String capacityHeaderList;
   private String capacityDateList;
   private Integer schedulingDayCount;
+
+  private LocalDate startDate;
   // 1 第一步 ,开始第二步计算: 20 ,25步异常 ,第三步 30  三步异常35 3步结束 40  结束 100
   private Integer versionStep;
   private String versionStepError;

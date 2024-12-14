@@ -3141,16 +3141,16 @@ create table if not exists aps_scheduling_goods_bom
     comment '订单商品零件表';
 
 create index idx_aps_scheduling_goods_bom_factory_id
-    on aps_scheduling_goods_bom (factory_id);
+    on aps_scheduling_goods_bom_0 (factory_id);
 
 create index idx_aps_scheduling_goods_bom_goods_id
-    on aps_scheduling_goods_bom (goods_id);
+    on aps_scheduling_goods_bom_0 (goods_id);
 
 create index idx_aps_scheduling_goods_bom_scheduling_id
-    on aps_scheduling_goods_bom (scheduling_id);
+    on aps_scheduling_goods_bom_0 (scheduling_id);
 
 create index idx_aps_scheduling_goods_bom_tenant_id
-    on aps_scheduling_goods_bom (tenant_id);
+    on aps_scheduling_goods_bom_0 (tenant_id);
 
 create table if not exists aps_scheduling_goods_bom_total
 (

@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public class ApsSchedulingVersionDto extends BaseEntityDto {
   private String schedulingConstraintsName;
 
 
+  private LocalDate startDate;
   private String headerList;
   private String capacityHeaderList;
   private String capacityDateList;

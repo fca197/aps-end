@@ -330,7 +330,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     List<ApsSchedulingVersionItem> schedulingList = this.apsSchedulingVersionItemService.list(
         new LambdaQueryWrapper<ApsSchedulingVersionItem>().eq(ApsSchedulingVersionItem::getSchedulingVersionId, req.getId()));
     //
-    LocalDate nowDate = LocalDate.now().plusDays(1);
+
+    List<Long> orderIdList = schedulingList.stream().map(ApsSchedulingVersionItem::getOrderId).toList();
+
+    LocalDate nowDate = schedulingVersion.getStartDate();
     LocalDate lastDate = nowDate.plusDays(schedulingVersion.getSchedulingDayCount());
 
     List<LocalDate> localDateBetween = DateUtils.getLocalDateBetween(nowDate, lastDate);
@@ -364,10 +367,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     LambdaQueryWrapper<ApsMakeCapacitySaleConfig> configLambdaQueryWrapper = new LambdaQueryWrapper<>();
     LambdaQueryWrapper<CalendarDay> queryWrapper = new LambdaQueryWrapper<>();
 
+    LambdaQueryWrapper<ApsMakeCapacityGoods> apsMakeCapacityGoodsWrapper = new LambdaQueryWrapper<>();
     ymList.forEach(t -> {
       factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.getFirst()).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
       configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.getFirst()).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
       queryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.getFirst()).eq(CalendarDay::getDayMonth, t.get(1)));
+      apsMakeCapacityGoodsWrapper.or(r -> r.eq(ApsMakeCapacityGoods::getYear, t.getFirst()).eq(ApsMakeCapacityGoods::getMonth, t.get(1)));
     });
     Map<String, CalendarDay> calendarDayMap = calendarDayService.list(queryWrapper).stream()
         .collect(Collectors.toMap(t -> t.getDayYear() + "-" + t.getDayMonth() + "-" + t.getFactoryId(), Function.identity()));
@@ -377,9 +382,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     Map<String, List<ApsMakeCapacitySaleConfig>> makeCapacitySaleConfigMap = this.apsMakeCapacitySaleConfigService.list(configLambdaQueryWrapper).stream()
         .collect(Collectors.groupingBy(t -> t.getYear() + "-" + t.getMonth()));
 
-    LambdaQueryWrapper<ApsMakeCapacityGoods> apsMakeCapacityGoodsWrapper = new LambdaQueryWrapper<>();
-
     List<ApsMakeCapacityGoods> makeCapacityGoodsList = this.apsMakeCapacityGoodsService.list(apsMakeCapacityGoodsWrapper);
+
     Map<String, List<ApsMakeCapacityGoods>> makeCapacityGoodsMap = makeCapacityGoodsList.stream().collect(Collectors.groupingBy(t -> t.getYear() + "-" + t.getMonth()));
 
     List<Limit> limitList = new ArrayList<>();
@@ -390,9 +394,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         .collect(Collectors.toMap(ApsGoods::getId, ApsGoods::getGoodsName));
     Map<Long, List<ApsOrderGoodsSaleConfig>> orderSaleListMap = new HashMap<>();
     Map<Long, ApsSaleConfig> apsSaleConfigMap = new HashMap<>();
+
     if (CollUtil.isNotEmpty(makeCapacitySaleConfigMap)) {
       apsSaleConfigMap.putAll(this.apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity())));
-      orderSaleListMap.putAll(this.apsOrderGoodsSaleConfigService.list().stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
+      orderSaleListMap.putAll(this.apsOrderGoodsSaleConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList)).stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
     }
 
     localDateBetween.forEach(ym -> {
@@ -543,7 +548,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     apsSchedulingVersionLimitService.saveBatch(insertLimit);
     apsSchedulingVersionCapacityService.remove(new LambdaQueryWrapper<ApsSchedulingVersionCapacity>().eq(ApsSchedulingVersionCapacity::getSchedulingVersionId, req.getId()));
     apsSchedulingGoodsBomTotalService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBomTotal>().eq(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getId()));
-    apsSchedulingGoodsBomService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBom>().eq(ApsSchedulingGoodsBom::getSchedulingId, req.getId()));
+    apsSchedulingGoodsBomService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBom>().in(ApsSchedulingGoodsBom::getOrderId, orderIdList).eq(ApsSchedulingGoodsBom::getSchedulingId, req.getId()));
     if (CollUtil.isNotEmpty(apsSchedulingVersionCapacityList)) {
       this.apsSchedulingVersionCapacityService.saveBatch(apsSchedulingVersionCapacityList);
     }
