@@ -44,13 +44,11 @@ public class ApsGoodsBomBuyPlanDto extends BaseEntityDto {
   private String planRemark;
 
   private String buyPlanType;
-
+  private String bomUseDate;
 
   public void setBuyPlanType(Object buyPlanType) {
     this.buyPlanType = String.valueOf(buyPlanType);
   }
-
-  private String bomUseDate;
 }
 
 

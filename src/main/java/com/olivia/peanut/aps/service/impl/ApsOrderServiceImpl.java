@@ -100,7 +100,10 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   ApsFactoryService apsFactoryService;
   @Resource
   PeanutProperties peanutProperties;
-
+  @Resource
+  ApsOrderGoodsBomService apsOrderGoodsBomService;
+  @Resource
+  ApsGoodsBomService apsGoodsBomService;
 
   public @Override ApsOrderQueryListRes queryList(ApsOrderQueryListReq req) {
 
@@ -137,11 +140,6 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
 
     return DynamicsPage.init(page, listInfoRes);
   }
-
-  @Resource
-  ApsOrderGoodsBomService apsOrderGoodsBomService;
-  @Resource
-  ApsGoodsBomService apsGoodsBomService;
 
   @Override
   public ApsOrderInsertRes save(ApsOrderInsertReq req) {

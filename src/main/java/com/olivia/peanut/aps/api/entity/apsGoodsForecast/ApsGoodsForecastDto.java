@@ -1,28 +1,13 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecast;
 
-import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.util.List;
-
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import com.alibaba.excel.annotation.ExcelIgnore;
-import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.olivia.sdk.utils.fastjson.Boolean2StrFeature;
-import com.olivia.sdk.utils.fastjson.Str2BooleanConverter;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 预测表(ApsGoodsForecast)查询对象返回
