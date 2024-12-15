@@ -417,10 +417,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
           log.info("工厂ID: {}  {} 非工作日，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
-        Field minField = getField(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth());
-        Field maxField = getField(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth());
-        Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, minField);
-        Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, maxField);
+        Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, getField(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth()));
+        Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, getField(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth()));
         Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId()))
             .setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId())).setFieldName(ApsStr.FACTORY_ID).setShowName(fnMap.get(apsMakeCapacityFactory.getFactoryId()))
             .setLimitTypeEnum(LimitTypeEnum.FACTORY_LIMIT);

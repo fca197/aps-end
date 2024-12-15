@@ -43,6 +43,14 @@ public class ApsGoodsBomBuyPlanDto extends BaseEntityDto {
   @NotBlank(message = "计划备注不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String planRemark;
 
+  private String buyPlanType;
+
+
+  public void setBuyPlanType(Object buyPlanType) {
+    this.buyPlanType = String.valueOf(buyPlanType);
+  }
+
+  private String bomUseDate;
 }
 
 

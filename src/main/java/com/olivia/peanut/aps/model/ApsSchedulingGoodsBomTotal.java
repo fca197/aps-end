@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)表实体类
@@ -43,7 +44,7 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
   /***
    *  使用量
    */
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
    *  规格
    */
@@ -69,13 +70,20 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
    */
   private Long factoryId;
 
-  public ApsSchedulingGoodsBomTotal setBomUsageAdd(Integer bomUsage) {
-    this.bomUsage += bomUsage;
+
+  public ApsSchedulingGoodsBomTotal setBomUsageAdd(BigDecimal bomUsage) {
+    if (Objects.isNull(this.bomUsage))
+      this.bomUsage = bomUsage;
+    else
+      this.bomUsage = this.bomUsage.add(bomUsage);
     return this;
   }
 
   public ApsSchedulingGoodsBomTotal setBomCostPriceAdd(BigDecimal bomCostPrice) {
-    this.bomCostPrice = bomCostPrice.add(bomCostPrice);
+    if (Objects.isNull(bomCostPrice))
+      this.bomCostPrice = bomCostPrice;
+    else
+      this.bomCostPrice = this.bomCostPrice.add(bomCostPrice);
     return this;
   }
 }

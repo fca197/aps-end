@@ -96,6 +96,8 @@ public class ApsBomDto extends BaseEntityDto {
   private String useUnit;
   private Long produceProcessId;
   private String produceProcessName;
+  private Integer deliveryCycleDay;
+  private Long apsBomSupplierId;
 
   public String getSupplyModeStr() {
     return SupplyModelEnum.getDesc(this.supplyMode);

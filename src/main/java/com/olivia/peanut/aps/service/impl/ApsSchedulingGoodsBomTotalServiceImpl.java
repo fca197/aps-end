@@ -2,6 +2,8 @@ package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -12,6 +14,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsGoodsBom.ApsGoodsBomDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal.*;
+import com.olivia.peanut.aps.enums.ApsGoodsBomBuyPlanTypeEnum;
 import com.olivia.peanut.aps.mapper.ApsSchedulingGoodsBomTotalMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
@@ -30,13 +33,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.olivia.sdk.utils.FieldUtils.getField;
 import static com.olivia.sdk.utils.Str.DISTINCT;
+import static java.lang.Boolean.FALSE;
+import static java.math.BigDecimal.ZERO;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)表服务实现类
@@ -46,8 +53,7 @@ import static com.olivia.sdk.utils.Str.DISTINCT;
  */
 @Service("apsSchedulingGoodsBomTotalService")
 @Transactional
-public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<ApsSchedulingGoodsBomTotalMapper, ApsSchedulingGoodsBomTotal> implements
-    ApsSchedulingGoodsBomTotalService {
+public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<ApsSchedulingGoodsBomTotalMapper, ApsSchedulingGoodsBomTotal> implements ApsSchedulingGoodsBomTotalService {
 
   final static Cache<String, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(30, TimeUnit.MINUTES).build();
 
@@ -63,6 +69,10 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
   Redisson redisson;
   @Resource
   ApsBomService apsBomService;
+
+
+  @Resource
+  ApsSchedulingGoodsBomService apsSchedulingGoodsBomService;
 
   public @Override ApsSchedulingGoodsBomTotalQueryListRes queryList(ApsSchedulingGoodsBomTotalQueryListReq req) {
 
@@ -105,9 +115,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     ApsSchedulingVersion schedulingVersion = apsSchedulingVersionService.getById(req.getSchedulingVersionId());
     $.requireNonNullCanIgnoreException(schedulingVersion, "排产为空,请确认版本");
     DynamicsPage<ApsSchedulingGoodsBomTotalQueryBomTotalRes> retPage = new DynamicsPage<>();
-    List<Long> bomIdList = this.list(
-            new QueryWrapper<ApsSchedulingGoodsBomTotal>().select(DISTINCT + "  goods_bom_Id").lambda().in(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getSchedulingVersionId()))
-        .stream().map(ApsSchedulingGoodsBomTotal::getGoodsBomId).collect(Collectors.toList());
+    List<Long> bomIdList = this.list(new QueryWrapper<ApsSchedulingGoodsBomTotal>().select(DISTINCT + "  goods_bom_Id").lambda().in(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getSchedulingVersionId())).stream().map(ApsSchedulingGoodsBomTotal::getGoodsBomId).collect(Collectors.toList());
     ;
     if (CollUtil.isEmpty(bomIdList)) {
 //      retPage.setCurrent(req.getPageNum()).setTotal(bomTotalList.size());
@@ -115,9 +123,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     }
     Map<Long, ApsGoodsBom> goodsBomMap = apsGoodsBomService.listByIds(bomIdList).stream().collect(Collectors.toMap(ApsGoodsBom::getId, Function.identity()));
     Map<Long, ApsBom> apsBomMap = apsBomService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
-    Map<Long, List<ApsSchedulingGoodsBomTotal>> bomUserMap = this.list(
-        new LambdaQueryWrapper<ApsSchedulingGoodsBomTotal>().eq(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getSchedulingVersionId())
-            .in(ApsSchedulingGoodsBomTotal::getGoodsBomId, bomIdList)).stream().collect(Collectors.groupingBy(ApsSchedulingGoodsBomTotal::getGoodsBomId));
+    Map<Long, List<ApsSchedulingGoodsBomTotal>> bomUserMap = this.list(new LambdaQueryWrapper<ApsSchedulingGoodsBomTotal>().eq(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getSchedulingVersionId()).in(ApsSchedulingGoodsBomTotal::getGoodsBomId, bomIdList)).stream().collect(Collectors.groupingBy(ApsSchedulingGoodsBomTotal::getGoodsBomId));
     List<ApsSchedulingGoodsBomTotalQueryBomTotalRes> retList = new ArrayList<>();
     Set<String> headerSet = new HashSet<>();
 //    String bomTotalEndDate = schedulingVersion.getBomTotalEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -126,14 +132,14 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
       ApsSchedulingGoodsBomTotalQueryBomTotalRes retObj = new ApsSchedulingGoodsBomTotalQueryBomTotalRes().setBomName(apsSchedulingGoodsBomTotal.getBomName());
       retObj.putAll(BeanUtil.beanToMap(apsSchedulingGoodsBomTotal));
 
-      AtomicLong usageCount = new AtomicLong(0);
+      AtomicReference<BigDecimal> usageCount = new AtomicReference<>(new BigDecimal(0));
       bomList.forEach(bomTotal -> {
 
         String currentDate = bomTotal.getBomUseDate().toString();
         headerSet.add(currentDate);
         retObj.put(currentDate, bomTotal.getBomUsage());
 //        if (currentDate.compareTo(bomTotalEndDate) <= 0) {
-        usageCount.addAndGet(bomTotal.getBomUsage());
+        usageCount.getAndAccumulate(bomTotal.getBomUsage(), BigDecimal::add);
 //        }
       });
       retList.add(retObj);
@@ -143,11 +149,11 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
         retObj.setApsGoodsBomDto($.copy(apsGoodsBom, ApsGoodsBomDto.class));
       }
 //      apsBomMap.get()
-      Long bomInventory = apsBom.getBomInventory().longValue();
-      boolean isEnough = bomInventory > usageCount.get();
+      BigDecimal bomInventory = apsBom.getBomInventory();
+      boolean isEnough = bomInventory.compareTo(usageCount.get()) >= 0;
       retObj.put("bomInventory", bomInventory);
       retObj.put("bomUseCount", usageCount.get());
-      retObj.put("bomLackCount", bomInventory - usageCount.get());
+      retObj.put("bomLackCount", bomInventory.subtract(usageCount.get()));
       retObj.put("bomContrast", usageCount.get() + "/" + bomInventory);
       retObj.put("enough", isEnough ? 1 : 0);
       retObj.put("isFollowStr", Str.booleanToStr(apsGoodsBom.getIsFollow()));
@@ -165,38 +171,59 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     return retPage;
   }
 
+
   @Override
   @Transactional
   @RedissonLockAnn(lockBizKeyFlag = "schedulingBom#createBomBuyPlan", loginBizKeyExpression = "#req.schedulingVersionId")
   public ApsSchedulingGoodsBomTotalCreateBomBuyPlanRes createBomBuyPlan(ApsSchedulingGoodsBomTotalCreateBomBuyPlanReq req) {
-    DynamicsPage<ApsSchedulingGoodsBomTotalQueryBomTotalRes> queryBomTotalRes = this.queryBomTotal(
-        $.copy(req, ApsSchedulingGoodsBomTotalQueryBomTotalReq.class).setRetBom(Boolean.TRUE));
 
-    List<ApsSchedulingGoodsBomTotalQueryBomTotalRes> totalResList = queryBomTotalRes.getDataList();
-    $.assertTrueCanIgnoreException(CollUtil.isNotEmpty(totalResList), "没有需要生成的采购数据");
-    totalResList.removeIf(ApsSchedulingGoodsBomTotalQueryBomTotalRes::isEnough);
-    $.assertTrueCanIgnoreException(CollUtil.isNotEmpty(totalResList), "没有需要生成的采购数据,当前库存都满足需求");
-    ApsSchedulingVersion schedulingVersion = apsSchedulingVersionService.getById(req.getSchedulingVersionId());
 
-    ApsGoodsBomBuyPlan apsGoodsBomBuyPlan = new ApsGoodsBomBuyPlan().setPlanName(schedulingVersion.getSchedulingVersionName() + "排产零件购买")
-        .setPlanRemark("基于排产结果生成零件购买计划").setPlanSource("scheduling");
+    ApsSchedulingVersion apsSchedulingVersion = apsSchedulingVersionService.getById(req.getSchedulingVersionId());
+    $.requireNonNullCanIgnoreException(apsSchedulingVersion, "没有需要生成的采购数据,当前版本为空");
+
+    List<ApsSchedulingGoodsBomTotal> bomTotalList = this.list(new LambdaQueryWrapper<ApsSchedulingGoodsBomTotal>().eq(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getSchedulingVersionId()));
+
+    List<Long> bomIdList = bomTotalList.stream().map(ApsSchedulingGoodsBomTotal::getBomId).toList();
+    List<ApsBom> bomList = this.apsBomService.listByIds(bomIdList);
+    Map<Long, Boolean> bomFollowMap = apsGoodsBomService.list(new LambdaQueryWrapper<ApsGoodsBom>().in(ApsGoodsBom::getBomId, bomIdList)).stream().collect(Collectors.toMap(BaseEntity::getId, ApsGoodsBom::getIsFollow));
+    Map<Long, BigDecimal> bomInvMap = bomList.stream().collect(Collectors.toMap(BaseEntity::getId, ApsBom::getBomInventory));
+
+    Map<Long, BigDecimal> bomUseMap = bomTotalList.stream().collect(Collectors.groupingBy(ApsSchedulingGoodsBomTotal::getBomId,
+        Collectors.collectingAndThen(Collectors.toList(),
+            r -> r.stream().map(ApsSchedulingGoodsBomTotal::getBomUsage).filter(Objects::nonNull).reduce(BigDecimal::add).orElse(ZERO))));
+
+
+    Set<Long> bomIdSet = new HashSet<>(bomInvMap.keySet());
+    // 如果库存>=使用  移除零件，剩下的不合格
+    bomIdSet.removeIf(bomId -> bomInvMap.get(bomId).compareTo(bomUseMap.get(bomId)) <= 0);
+
+    // 删除,非不合格
+    bomTotalList.removeIf(b -> bomIdSet.contains(b.getBomId()));
+
+    $.assertTrueCanIgnoreException(CollUtil.isNotEmpty(bomTotalList), "没有需要生成的采购数据");
     long buyPlanId = IdWorker.getId();
-    apsGoodsBomBuyPlan.setId(buyPlanId);
+
     List<ApsGoodsBomBuyPlanItem> apsGoodsBomBuyPlanItemList = new ArrayList<>();
-    Map<Long, ApsBom> apsBomMap = apsBomService.listByIds(
-            totalResList.stream().map(ApsSchedulingGoodsBomTotalQueryBomTotalRes::getApsGoodsBomDto).map(ApsGoodsBomDto::getBomId).toList()).stream()
-        .collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
-    totalResList.forEach(retBom -> {
-      ApsGoodsBomDto bom = retBom.getApsGoodsBomDto();
-      ApsGoodsBomBuyPlanItem planItem = new ApsGoodsBomBuyPlanItem().setBuyPlanId(buyPlanId);
-      ApsBom apsBom = apsBomMap.get(bom.getBomId());
-      planItem.setGoodsBomId(bom.getId()).setBomId(apsBom.getId()).setBomCode(bom.getBomCode()).setBomName(bom.getBomName()).setIsFollow(bom.getIsFollow())
-          .setBomCostPrice(bom.getBomCostPrice()).setBomCostPriceUnit(bom.getBomCostPriceUnit()).setBomInventory(apsBom.getBomInventory())
-          .setBomBuyCount(new BigDecimal(-retBom.getInteger("bomLackCount")));
-      apsGoodsBomBuyPlanItemList.add(planItem);
-    });
-    apsGoodsBomBuyPlan.setPlanTotalAmount(
-        apsGoodsBomBuyPlanItemList.stream().map(t -> t.getBomCostPrice().multiply(t.getBomBuyCount())).reduce(new BigDecimal(0), BigDecimal::add));
+    bomTotalList.stream().collect(Collectors.groupingBy(ApsSchedulingGoodsBomTotal::getBomId))
+        .forEach((k, vl) -> {
+          ApsSchedulingGoodsBomTotal bom = vl.getFirst();
+          ApsGoodsBomBuyPlanItem planItem = $.copy(bom, ApsGoodsBomBuyPlanItem.class);
+          planItem.setBuyPlanId(buyPlanId).setIsFollow(bomFollowMap.getOrDefault(bom.getId(), FALSE)).setId(IdWorker.getId());
+
+          vl.forEach(v -> {
+            BigDecimal inv = bomInvMap.getOrDefault(v.getBomId(), ZERO);
+            BigDecimal lastInv = inv.subtract(v.getBomUsage());
+            Map<String, Object> map = Map.of("need_use", v.getBomUsage(), "buy_inv", lastInv, "bom_inv", inv, "lack", lastInv.compareTo(ZERO) < 0);
+            ReflectUtil.setFieldValue(planItem, getField(ApsGoodsBomBuyPlanItem.class, ApsGoodsBomBuyPlanItem.fieldName + v.getBomUseDate().getDayOfYear()), JSON.toJSONString(map));
+          });
+          apsGoodsBomBuyPlanItemList.add(planItem);
+        });
+
+    String dateList = JSON.toJSONString(bomTotalList.stream().map(ApsSchedulingGoodsBomTotal::getBomUseDate).distinct().sorted().map(t -> Map.of("date", t, "day", t.getDayOfYear())).toList());
+    ApsGoodsBomBuyPlan apsGoodsBomBuyPlan = new ApsGoodsBomBuyPlan().setPlanName(apsSchedulingVersion.getSchedulingVersionName() + "排产零件购买").setPlanRemark("基于排产结果生成零件购买计划").setPlanSource("scheduling").setBuyPlanType(ApsGoodsBomBuyPlanTypeEnum.SCHEDULING);
+    apsGoodsBomBuyPlan.setBomUseDate(dateList).setId(buyPlanId);
+
+    apsGoodsBomBuyPlan.setPlanTotalAmount(apsGoodsBomBuyPlanItemList.stream().map(t -> t.getBomCostPrice().multiply(t.getBomUsage())).reduce(ZERO, BigDecimal::add));
     this.apsGoodsBomBuyPlanService.save(apsGoodsBomBuyPlan);
     this.apsGoodsBomBuyPlanItemService.saveBatch(apsGoodsBomBuyPlanItemList);
 
@@ -219,17 +246,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     MPJLambdaWrapper<ApsSchedulingGoodsBomTotal> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getSchedulingId()), ApsSchedulingGoodsBomTotal::getSchedulingId, obj.getSchedulingId())
-          .eq(Objects.nonNull(obj.getBomId()), ApsSchedulingGoodsBomTotal::getGoodsBomId, obj.getBomId())
-          .eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsSchedulingGoodsBomTotal::getBomCode, obj.getBomCode())
-          .eq(StringUtils.isNoneBlank(obj.getBomName()), ApsSchedulingGoodsBomTotal::getBomName, obj.getBomName())
-          .eq(Objects.nonNull(obj.getBomUsage()), ApsSchedulingGoodsBomTotal::getBomUsage, obj.getBomUsage())
-          .eq(StringUtils.isNoneBlank(obj.getBomUnit()), ApsSchedulingGoodsBomTotal::getBomUnit, obj.getBomUnit())
-          .eq(Objects.nonNull(obj.getBomCostPrice()), ApsSchedulingGoodsBomTotal::getBomCostPrice, obj.getBomCostPrice())
-          .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsSchedulingGoodsBomTotal::getBomCostPriceUnit, obj.getBomCostPriceUnit())
-          .eq(Objects.nonNull(obj.getBomUseWorkStation()), ApsSchedulingGoodsBomTotal::getBomUseWorkStation, obj.getBomUseWorkStation())
-          .eq(Objects.nonNull(obj.getBomUseDate()), ApsSchedulingGoodsBomTotal::getBomUseDate, obj.getBomUseDate())
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingGoodsBomTotal::getFactoryId, obj.getFactoryId())
+      q.eq(Objects.nonNull(obj.getSchedulingId()), ApsSchedulingGoodsBomTotal::getSchedulingId, obj.getSchedulingId()).eq(Objects.nonNull(obj.getBomId()), ApsSchedulingGoodsBomTotal::getGoodsBomId, obj.getBomId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsSchedulingGoodsBomTotal::getBomCode, obj.getBomCode()).eq(StringUtils.isNoneBlank(obj.getBomName()), ApsSchedulingGoodsBomTotal::getBomName, obj.getBomName()).eq(Objects.nonNull(obj.getBomUsage()), ApsSchedulingGoodsBomTotal::getBomUsage, obj.getBomUsage()).eq(StringUtils.isNoneBlank(obj.getBomUnit()), ApsSchedulingGoodsBomTotal::getBomUnit, obj.getBomUnit()).eq(Objects.nonNull(obj.getBomCostPrice()), ApsSchedulingGoodsBomTotal::getBomCostPrice, obj.getBomCostPrice()).eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsSchedulingGoodsBomTotal::getBomCostPriceUnit, obj.getBomCostPriceUnit()).eq(Objects.nonNull(obj.getBomUseWorkStation()), ApsSchedulingGoodsBomTotal::getBomUseWorkStation, obj.getBomUseWorkStation()).eq(Objects.nonNull(obj.getBomUseDate()), ApsSchedulingGoodsBomTotal::getBomUseDate, obj.getBomUseDate()).eq(Objects.nonNull(obj.getFactoryId()), ApsSchedulingGoodsBomTotal::getFactoryId, obj.getFactoryId())
 
       ;
     }

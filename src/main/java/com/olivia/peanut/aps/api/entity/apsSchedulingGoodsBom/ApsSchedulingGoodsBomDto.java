@@ -57,7 +57,7 @@ public class ApsSchedulingGoodsBomDto extends BaseEntityDto {
    *  使用量
    */
   @NotNull(message = "使用量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
    *  规格
    */

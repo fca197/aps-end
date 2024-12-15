@@ -38,7 +38,7 @@ public class ApsSchedulingGoodsBomTotalDto extends BaseEntityDto {
   /***
    *  使用量
    */
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
    *  规格
    */

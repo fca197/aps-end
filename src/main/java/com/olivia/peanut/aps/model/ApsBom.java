@@ -60,5 +60,8 @@ public class ApsBom extends BaseEntity {
   private String bomUnit;
 
   private Long produceProcessId;
+  private Long apsBomSupplierId;
+  private Integer deliveryCycleDay;
+
 }
 

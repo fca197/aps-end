@@ -1,17 +1,17 @@
 package com.olivia.test.forcecast;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /***
  *
@@ -31,17 +31,17 @@ public class PoiTest {
     CellStyle cellStyle = wb.createCellStyle();
 
     Cell cell = row.createCell(0);
-//        cell.setCellFormula("<table> <img  src='https://img-home.csdnimg.cn/images/20240129062750.png'/> </table >");
+//cell.setCellFormula("<table> <img  src='https://img-home.csdnimg.cn/images/20240129062750.png'/> </table >");
 
     XSSFRichTextString richTextString = new XSSFRichTextString(str);
-//        cell.setCellValue(richTextString);
-//        richTextString.getCTRst().addNewPhoneticPr().set(new CTTableStyleInfoImpl(new SchemaTypeImpl()));
-//        cell.setCellFormula(CellType.FORMULA);
-//    FileOutputStream fout = new FileOutputStream("test.xls");
-//    wb.write(fout);
-//    wb.close();
-//    fout.close();
-//    System.out.println("ok");
+//cell.setCellValue(richTextString);
+//richTextString.getCTRst().addNewPhoneticPr().set(new CTTableStyleInfoImpl(new SchemaTypeImpl()));
+//cell.setCellFormula(CellType.FORMULA);
+//FileOutputStream fout = new FileOutputStream("test.xls");
+//wb.write(fout);
+//wb.close();
+//fout.close();
+//System.out.println("ok");
   }
 
   @Test
@@ -59,4 +59,14 @@ public class PoiTest {
     Duration duration = Duration.of(1, ChronoUnit.valueOf("DAYS"));
     log.info("duration:{}", duration.getSeconds());
   }
+
+  @Test
+  public void tes32() {
+    IntStream.range(1, 368).forEach(t -> {
+      System.out.println("bom_use_day_enough" + t + " tinyint  null comment '是否满足',   bom_lack_usage_day" + t + "   decimal(15, 6) null comment '差量',");
+    });
+  }
+
 }
+
+
