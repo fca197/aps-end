@@ -1,11 +1,14 @@
 package com.olivia.peanut.portal.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.enums.DistrictCodeSelectType;
 import com.olivia.peanut.portal.api.entity.districtCode.*;
 import com.olivia.peanut.portal.mapper.DistrictCodeMapper;
 import com.olivia.peanut.portal.model.DistrictCode;
@@ -14,14 +17,12 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.FieldUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -91,6 +92,35 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
 
   }
 
+  @Override
+  public void setDistrictName(List<?> list, DistrictCodeSelectType... selectTypes) {
+    if (CollUtil.isEmpty(list) || selectTypes == null || selectTypes.length == 0) {
+      return;
+    }
+    DistrictCodeSelectType selectType = selectTypes[0];
+    if (DistrictCodeSelectType.all.equals(selectType)) {
+      setDistrictNameValue(list, DistrictCodeSelectType.provinceCode, DistrictCodeSelectType.cityCode, DistrictCodeSelectType.areaCode);
+    } else {
+      setDistrictNameValue(list, selectTypes);
+
+    }
+  }
+
+  private void setDistrictNameValue(List<?> list, DistrictCodeSelectType... selectTypes) {
+    List<DistrictCodeSelectType> selectTypeList = Arrays.stream(selectTypes).toList();
+    List<Object> codeList = list.stream().map(t -> selectTypeList.stream().map(s -> ReflectUtil.getFieldValue(t, FieldUtils.getField(t, s.name()))).toList())
+        .flatMap(List::stream).distinct().toList();
+
+    Map<String, String> codeNameMap = this.list(new LambdaQueryWrapper<DistrictCode>().in(DistrictCode::getCode, codeList)).stream().collect(Collectors.toMap(DistrictCode::getCode, DistrictCode::getName));
+
+    list.forEach(v -> {
+      selectTypeList.stream().forEach(s -> {
+        ReflectUtil.setFieldValue(v, FieldUtils.getField(v, s.getShowFieldName()),
+            codeNameMap.get(ReflectUtil.getFieldValue(v, FieldUtils.getField(v, s.name()))));
+      });
+    });
+
+  }
 
   private MPJLambdaWrapper<DistrictCode> getWrapper(DistrictCodeDto obj) {
     MPJLambdaWrapper<DistrictCode> q = new MPJLambdaWrapper<>();

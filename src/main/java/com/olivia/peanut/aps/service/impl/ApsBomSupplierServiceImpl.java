@@ -9,8 +9,12 @@ import com.olivia.peanut.aps.api.entity.apsBomSupplier.*;
 import com.olivia.peanut.aps.mapper.ApsBomSupplierMapper;
 import com.olivia.peanut.aps.model.ApsBomSupplier;
 import com.olivia.peanut.aps.service.ApsBomSupplierService;
+import com.olivia.peanut.enums.DistrictCodeSelectType;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.portal.service.DistrictCodeService;
 import com.olivia.sdk.service.SetNameService;
+import com.olivia.sdk.service.pojo.NameConfig;
+import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
@@ -39,6 +43,8 @@ public class ApsBomSupplierServiceImpl extends MPJBaseServiceImpl<ApsBomSupplier
   BaseTableHeaderService tableHeaderService;
   @Resource
   SetNameService setNameService;
+  @Resource
+  DistrictCodeService districtCodeService;
 
 
   public @Override ApsBomSupplierQueryListRes queryList(ApsBomSupplierQueryListReq req) {
@@ -75,12 +81,14 @@ public class ApsBomSupplierServiceImpl extends MPJBaseServiceImpl<ApsBomSupplier
     return DynamicsPage.init(page, listInfoRes);
   }
 
+
   // 以下为私有对象封装
 
   public @Override void setName(List<? extends ApsBomSupplierDto> list) {
 
-    //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
+    districtCodeService.setDistrictName(list, DistrictCodeSelectType.all);
+//    setNameService.setName(list, setNamePojo);
   }
 
 
