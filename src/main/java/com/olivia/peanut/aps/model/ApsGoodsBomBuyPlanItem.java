@@ -63,6 +63,9 @@ public class ApsGoodsBomBuyPlanItem extends BaseEntity {
    *  使用工位
    */
   private Long bomUseWorkStation;
+
+  private Integer year;
+
   /***
    *  使用时间
    */

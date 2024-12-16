@@ -3180,10 +3180,10 @@ create table if not exists aps_scheduling_goods_bom_total
     comment '订单商品零件汇总表';
 
 create index idx_aps_scheduling_goods_bom_total_scheduling_id
-    on aps_scheduling_goods_bom_total (scheduling_id);
+    on aps_scheduling_goods_bom_total_0 (scheduling_id);
 
 create index idx_aps_scheduling_goods_bom_total_tenant_id
-    on aps_scheduling_goods_bom_total (tenant_id);
+    on aps_scheduling_goods_bom_total_0 (tenant_id);
 
 create table if not exists aps_scheduling_goods_status_date
 (

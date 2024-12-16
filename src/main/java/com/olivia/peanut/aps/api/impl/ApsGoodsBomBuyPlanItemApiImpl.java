@@ -92,4 +92,10 @@ public class ApsGoodsBomBuyPlanItemApiImpl implements ApsGoodsBomBuyPlanItemApi 
     this.apsGoodsBomBuyPlanItemService.setName(dataList);
     return new ApsGoodsBomBuyPlanItemQueryByIdListRes().setDataList(dataList);
   }
+
+  @Override
+  public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
+    this.apsGoodsBomBuyPlanItemService.sendMail2supplier(req);
+    return null;
+  }
 }

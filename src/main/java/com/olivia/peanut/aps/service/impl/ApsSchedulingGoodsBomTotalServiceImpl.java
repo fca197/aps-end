@@ -203,12 +203,11 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
     long buyPlanId = IdWorker.getId();
 
     List<ApsGoodsBomBuyPlanItem> apsGoodsBomBuyPlanItemList = new ArrayList<>();
-    bomTotalList.stream().collect(Collectors.groupingBy(ApsSchedulingGoodsBomTotal::getBomId))
+    bomTotalList.stream().collect(Collectors.groupingBy(t -> t.getBomId() + t.getBomUseDate().getYear()))
         .forEach((k, vl) -> {
           ApsSchedulingGoodsBomTotal bom = vl.getFirst();
           ApsGoodsBomBuyPlanItem planItem = $.copy(bom, ApsGoodsBomBuyPlanItem.class);
-          planItem.setBuyPlanId(buyPlanId).setIsFollow(bomFollowMap.getOrDefault(bom.getId(), FALSE)).setId(IdWorker.getId());
-
+          planItem.setBuyPlanId(buyPlanId).setYear(bom.getBomUseDate().getYear()).setIsFollow(bomFollowMap.getOrDefault(bom.getId(), FALSE)).setId(IdWorker.getId());
           vl.forEach(v -> {
             BigDecimal inv = bomInvMap.getOrDefault(v.getBomId(), ZERO);
             BigDecimal lastInv = inv.subtract(v.getBomUsage());

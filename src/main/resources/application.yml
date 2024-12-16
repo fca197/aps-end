@@ -84,6 +84,11 @@ db:
 
 
 spring:
+  mail:
+    # 参考 https://baijiahao.baidu.com/s?id=1695308391844521693&wfr=spider&for=pc
+    password: 邮箱授权码
+    username: 邮箱地址
+    host: 邮箱发送地址
 
   shardingsphere:
     datasource:
@@ -110,6 +115,16 @@ spring:
           mustHasShardingId:
             type: DML_SHARDING_CONDITIONS
         tables:
+          aps_scheduling_goods_bom_total:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_total_${0..1}
+            database-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_db_alg
+            table-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_alg
           aps_rolling_forecast_order_item:
             actual-data-nodes: db_${0..1}.aps_rolling_forecast_order_item_${0..1}
             database-strategy:
@@ -193,6 +208,15 @@ spring:
 
 
         sharding-algorithms:
+          schedulingId_db_alg:
+            type: INLINE
+            props:
+              algorithm-expression: db_${scheduling_id % 1}
+          schedulingId_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_total_${scheduling_id % 1}
+
           # aps_order_goods_bom库路由算法
           aps_database_inline_order_id:
             type: INLINE

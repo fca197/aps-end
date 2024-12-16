@@ -29,7 +29,7 @@ truncate table aps_scheduling_day_config_version_detail_machine_use_time;
 
 truncate table aps_scheduling_goods_bom_0;
 
-truncate table aps_scheduling_goods_bom_total;
+truncate table aps_scheduling_goods_bom_total_0;
 
 truncate table aps_scheduling_goods_status_date;
 
