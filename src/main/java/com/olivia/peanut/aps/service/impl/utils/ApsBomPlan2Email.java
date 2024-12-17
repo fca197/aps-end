@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.service.impl.utils;
 
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlanItem.SendMail2supplierReq;
@@ -8,12 +9,18 @@ import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomSupplier;
 import com.olivia.peanut.aps.model.ApsGoodsBomBuyPlanItem;
 import com.olivia.peanut.aps.service.impl.po.ApsBomEmail;
+import com.olivia.peanut.base.service.MailService;
+import com.olivia.peanut.base.service.entity.SendMailReq;
+import com.olivia.peanut.portal.model.TenantInfo;
+import com.olivia.peanut.portal.service.TenantInfoService;
+import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.FieldUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.olivia.peanut.aps.model.ApsGoodsBomBuyPlanItem.fieldName;
@@ -33,7 +40,7 @@ public class ApsBomPlan2Email {
     apsBomList.forEach(apsBom -> {
       Map<Integer, List<ApsGoodsBomBuyPlanItem>> listMap = planBomMap.get(apsBom.getId()).stream().collect(Collectors.groupingBy(ApsGoodsBomBuyPlanItem::getYear));
       ApsBomEmail apsBomEmail = new ApsBomEmail();
-      HashMap<String, Object> buyMap = new HashMap<>();
+      HashMap<LocalDate, Object> buyMap = new HashMap<>();
       apsBomEmail.setBomName(apsBom.getBomName()).setBomUnit(apsBomEmail.getBomUnit()).setBuyMap(buyMap);
       apsBomEmailList.add(apsBomEmail);
       localDateBetween.forEach(localDate -> {
@@ -45,10 +52,96 @@ public class ApsBomPlan2Email {
         }
         JSONObject jsonObject = JSON.parseObject(String.valueOf(fieldValue));
         if (TRUE.equals(jsonObject.getBooleanValue("lack"))) {
-          buyMap.put(localDate.toString(), jsonObject.getString("buy_inv"));
+          buyMap.put(localDate, jsonObject.getString("buy_inv"));
         }
       });
     });
     log.info("apsBomEmailList {}", JSON.toJSONString(apsBomEmailList));
+    StringBuilder content = new StringBuilder();
+
+    localDateBetween.removeIf(t -> {
+      AtomicInteger atomicInteger = new AtomicInteger();
+
+      for (ApsBomEmail b : apsBomEmailList) {
+        if (b.getBuyMap().containsKey(t)) {
+          atomicInteger.incrementAndGet();
+          break;
+        }
+      }
+
+      // 如果都不存在， 删除
+      return atomicInteger.get() == 0;
+    });
+
+    TenantInfoService tenantInfoService = SpringUtil.getBean(TenantInfoService.class);
+    TenantInfo tenantInfo = tenantInfoService.getById(LoginUserContext.getLoginUser().getTenantId());
+
+    content.append("""
+        尊敬的
+        """);
+    content.append(apsBomSupplier.getBomSupplierName());
+    content.append("""
+        团队：
+                            
+        您好！
+               
+        我是""");
+    content.append(tenantInfo.getTenantName());
+    content.append("""
+                    ，首先对您在供应链的专业与成就表示由衷的赞赏。
+                    我司近期因业务扩展/项目需求，拟采购一批零件，经过初步市场调研，贵公司因其优质的产品/服务质量和良好的市场口碑，成为我们此次采购的重点考虑对象。
+                   
+                    一、采购需求详情
+                    <br/>
+        """);
+
+
+    content.append("<table>");
+    content.append("<tr> <td>零件名称</td> <td> 规格</td>");
+    localDateBetween.forEach(d -> {
+      content.append("<td>").append(d).append("</td>");
+    });
+    content.append("</tr>");
+    apsBomEmailList.forEach(b -> {
+      content.append("<tr>");
+      content.append("<td>").append(b.getBomName()).append("</td>");
+      content.append("<td>").append(b.getBomUnit()).append("</td>");
+      localDateBetween.forEach(d -> {
+        content.append("<td>").append(b.getBuyMap().get(d)).append("</td>");
+      });
+    });
+
+
+    content.append("</table>");
+    content.append("<br/>");
+    content.append("""
+            二、询价/报价请求
+            
+            请提供上述产品的单价、总价（含税/不含税）、付款方式及付款条件。
+            如有不同批次或配置的价格差异，请一并说明。
+            附上产品目录、样品、技术手册或任何有助于我们了解产品的资料将不胜感激。
+            三、合作意愿
+            
+            我们期待与贵公司建立长期稳定的合作关系，共同促进双方业务的繁荣发展。
+            若贵公司能满足我们的采购需求，并能在价格、质量、交货期等方面提供竞争优势，我们将优先考虑与贵公司签订正式采购合同。
+            
+            四、联系方式
+            
+            为便于进一步沟通，请通过以下方式联系我们：
+            
+            电话：[您的联系电话]
+            邮箱：[您的电子邮箱]
+            请您在收到本函后，于[期望回复日期]前给予回复。如有任何疑问或需要进一步讨论的事项，欢迎随时与我们联系。
+            感谢您的关注与支持，期待与贵公司的合作能带来双赢的局面。
+            
+            此致
+            
+            敬礼！
+            
+        """);
+    content.append(tenantInfo.getTenantName());
+    content.append("<br/>");
+    MailService mailService = SpringUtil.getBean(MailService.class);
+    mailService.sendMail(new SendMailReq().setTo(apsBomSupplier.getBomSupplierEmail()).setSubject(req.getBeginDate() + "-" + req.getEndDate() + "零件采购通知函").setContent(content.toString()));
   }
 }

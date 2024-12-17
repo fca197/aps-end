@@ -95,7 +95,7 @@ public class ApsGoodsBomBuyPlanItemApiImpl implements ApsGoodsBomBuyPlanItemApi 
 
   @Override
   public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
-    this.apsGoodsBomBuyPlanItemService.sendMail2supplier(req);
-    return null;
+    return this.apsGoodsBomBuyPlanItemService.sendMail2supplier(req);
+
   }
 }

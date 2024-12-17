@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @Setter
@@ -12,5 +13,5 @@ import java.util.Map;
 public class ApsBomEmail {
   private String bomName;
   private String bomUnit;
-  private Map<String, Object> buyMap;
+  private Map<LocalDate, Object> buyMap;
 }

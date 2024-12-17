@@ -22,6 +22,6 @@ public interface ApsGoodsBomBuyPlanItemService extends MPJBaseService<ApsGoodsBo
 
   void setName(List<? extends ApsGoodsBomBuyPlanItemDto> apsGoodsBomBuyPlanItemDtoList);
 
-  void sendMail2supplier(SendMail2supplierReq req);
+  SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req);
 }
 

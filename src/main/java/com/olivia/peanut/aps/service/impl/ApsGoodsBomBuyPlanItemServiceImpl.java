@@ -97,7 +97,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   }
 
   @Override
-  public void sendMail2supplier(SendMail2supplierReq req) {
+  public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
     List<ApsGoodsBomBuyPlanItem> planItemList = this.list(new LambdaQueryWrapper<ApsGoodsBomBuyPlanItem>().in(ApsGoodsBomBuyPlanItem::getBuyPlanId, req.getBuyPlanId()));
     $.requireNonNullCanIgnoreException(planItemList, "零件获取为空");
     List<ApsBom> bomList = apsBomService.list(new LambdaQueryWrapper<ApsBom>().in(BaseEntity::getId, planItemList.stream().map(ApsGoodsBomBuyPlanItem::getBomId).toList())
@@ -109,9 +109,10 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
     Map<Long, ApsBomSupplier> bomSupplierMap = apsBomSupplierService.listByIds(bomList.stream().map(ApsBom::getApsBomSupplierId).toList()).stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
     bomList.stream().collect(Collectors.groupingBy(ApsBom::getApsBomSupplierId)).forEach((k, vl) -> {
       ApsBomSupplier apsBomSupplier = bomSupplierMap.get(k);
-
       ApsBomPlan2Email.sendMail(req, k, apsBomSupplier, vl, planBomMap);
     });
+
+    return new SendMail2supplierRes();
   }
 
   // 以下为私有对象封装
