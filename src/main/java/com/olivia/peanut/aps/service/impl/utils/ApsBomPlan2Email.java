@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.service.impl.utils;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
@@ -37,12 +38,14 @@ public class ApsBomPlan2Email {
 
     List<ApsBomEmail> apsBomEmailList = new ArrayList<>();
     List<LocalDate> localDateBetween = DateUtils.getLocalDateBetween(req.getBeginDate(), req.getEndDate());
+    AtomicInteger maxDay = new AtomicInteger(0);
     apsBomList.forEach(apsBom -> {
       Map<Integer, List<ApsGoodsBomBuyPlanItem>> listMap = planBomMap.get(apsBom.getId()).stream().collect(Collectors.groupingBy(ApsGoodsBomBuyPlanItem::getYear));
       ApsBomEmail apsBomEmail = new ApsBomEmail();
       HashMap<LocalDate, Object> buyMap = new HashMap<>();
       apsBomEmail.setBomName(apsBom.getBomName()).setBomCostPriceUnit(apsBom.getBomCostPriceUnit()).setBuyMap(buyMap);
       apsBomEmailList.add(apsBomEmail);
+      maxDay.set(Math.max(maxDay.get(), apsBom.getDeliveryCycleDay()));
       localDateBetween.forEach(localDate -> {
         ApsGoodsBomBuyPlanItem planItem = listMap.get(localDate.getYear()).getFirst();
         Object fieldValue = ReflectUtil.getFieldValue(planItem, FieldUtils.getField(planItem, fieldName + localDate.getDayOfYear()));
@@ -52,14 +55,14 @@ public class ApsBomPlan2Email {
         }
         JSONObject jsonObject = JSON.parseObject(String.valueOf(fieldValue));
         if (TRUE.equals(jsonObject.getBooleanValue("lack"))) {
-          buyMap.put(localDate, jsonObject.getBigDecimal("buy_inv").abs());
+          buyMap.put(localDate.minusDays(apsBom.getDeliveryCycleDay()), jsonObject.getBigDecimal("buy_inv").abs());
         }
       });
     });
     log.info("apsBomEmailList {}", JSON.toJSONString(apsBomEmailList));
     StringBuilder content = new StringBuilder();
-
-    localDateBetween.removeIf(t -> {
+    List<LocalDate> localDateBetweenEmail = DateUtils.getLocalDateBetween(req.getBeginDate().minusDays(maxDay.get()), req.getEndDate());
+    localDateBetweenEmail.removeIf(t -> {
       AtomicInteger atomicInteger = new AtomicInteger();
 
       for (ApsBomEmail b : apsBomEmailList) {
@@ -73,6 +76,17 @@ public class ApsBomPlan2Email {
       return atomicInteger.get() == 0;
     });
 
+    apsBomEmailList.removeIf(b -> {
+      Map<LocalDate, Object> buyMap = b.getBuyMap();
+      if (CollUtil.isEmpty(buyMap)) {
+        return true;
+      }
+      AtomicInteger count = new AtomicInteger(0);
+      localDateBetweenEmail.forEach(d -> {
+        if (Objects.isNull(buyMap.get(d))) count.incrementAndGet();
+      });
+      return count.get() == localDateBetweenEmail.size();
+    });
     TenantInfoService tenantInfoService = SpringUtil.getBean(TenantInfoService.class);
     TenantInfo tenantInfo = tenantInfoService.getById(LoginUserContext.getLoginUser().getTenantId());
 
@@ -121,7 +135,7 @@ public class ApsBomPlan2Email {
 
     content.append("<table >  ");
     content.append("<tr> <td  style='width:200px' >零件名称</td> <td style='width:200px'> 规格</td>");
-    localDateBetween.forEach(d -> {
+    localDateBetweenEmail.forEach(d -> {
       content.append("<td style='width:150px'>").append(d).append("</td>");
     });
     content.append("</tr>");
@@ -129,7 +143,7 @@ public class ApsBomPlan2Email {
       content.append("<tr>");
       content.append("<td>").append(b.getBomName()).append("</td>");
       content.append("<td>").append(b.getBomCostPriceUnit()).append("</td>");
-      localDateBetween.forEach(d -> {
+      localDateBetweenEmail.forEach(d -> {
         content.append("<td>").append(b.getBuyMap().getOrDefault(d, "")).append("</td>");
       });
     });

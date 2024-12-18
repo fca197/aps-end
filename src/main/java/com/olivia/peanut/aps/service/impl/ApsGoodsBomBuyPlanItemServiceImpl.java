@@ -18,6 +18,7 @@ import com.olivia.peanut.aps.service.ApsBomSupplierService;
 import com.olivia.peanut.aps.service.ApsGoodsBomBuyPlanItemService;
 import com.olivia.peanut.aps.service.ApsGoodsBomBuyPlanService;
 import com.olivia.peanut.aps.service.impl.utils.ApsBomPlan2Email;
+import com.olivia.sdk.ann.RedissonLockAnn;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
@@ -97,6 +98,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   }
 
   @Override
+  @RedissonLockAnn(lockBizKeyFlag = "plan#sendMail", loginBizKeyExpression = "#req.buyPlanId", unLocked = false)
   public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
     List<ApsGoodsBomBuyPlanItem> planItemList = this.list(new LambdaQueryWrapper<ApsGoodsBomBuyPlanItem>().in(ApsGoodsBomBuyPlanItem::getBuyPlanId, req.getBuyPlanId()));
     $.requireNonNullCanIgnoreException(planItemList, "零件获取为空");
