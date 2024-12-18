@@ -89,7 +89,15 @@ spring:
     password: 邮箱授权码
     username: 邮箱地址
     host: 邮箱发送地址
-
+    port: 465
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
   shardingsphere:
     datasource:
       # 默认数据源

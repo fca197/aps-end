@@ -6,9 +6,12 @@ import com.olivia.peanut.base.service.MailService;
 import com.olivia.peanut.base.service.entity.SendMailAttFileReq;
 import com.olivia.peanut.base.service.entity.SendMailReq;
 import com.olivia.sdk.utils.RunUtils;
+import jakarta.annotation.Resource;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,10 @@ import java.util.Objects;
 @Slf4j
 @Service
 public class MailServiceImpl implements MailService {
+
+  @Resource
+  MailProperties mailProperties;
+
   @Override
   public void sendMail(List<SendMailReq> reqArr) {
     if (reqArr != null) {
@@ -41,7 +48,8 @@ public class MailServiceImpl implements MailService {
     MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
     mimeMessageHelper.setSubject(req.getSubject());
     mimeMessageHelper.setTo(req.getTo());
-    mimeMessageHelper.setText(req.getContent());
+    mimeMessageHelper.setText(req.getContent(), true);
+    mimeMessageHelper.setFrom(mailProperties.getUsername());
     if (CollUtil.isNotEmpty(req.getMailAttReqList())) {
       for (SendMailAttFileReq mailAttReq : req.getMailAttReqList()) {
         mimeMessageHelper.addAttachment(mailAttReq.getFileName(), new File(mailAttReq.getFilePath()));

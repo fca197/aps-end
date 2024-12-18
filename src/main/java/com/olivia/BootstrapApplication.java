@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,7 +22,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableAspectJAutoProxy
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
 @MapperScan(basePackages = {"com.olivia.peanut.*.mapper", "com.olivia.sdk.mapper"})
-@SpringBootApplication
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+
 
 @EnableTransactionManagement
 public class BootstrapApplication {

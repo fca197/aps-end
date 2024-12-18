@@ -12,6 +12,6 @@ import java.util.Map;
 @Accessors(chain = true)
 public class ApsBomEmail {
   private String bomName;
-  private String bomUnit;
+  private String bomCostPriceUnit;
   private Map<LocalDate, Object> buyMap;
 }
