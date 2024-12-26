@@ -69,7 +69,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
 
   @Override
   @Timed
-  @Oplog(content = "登录", businessKey = "#req.loginPhone", url = "/loginPhonePwd", businessType = businessType, paramName = "登录入参")
+//  @Oplog(content = "登录", businessKey = "#req.loginPhone", url = "/loginPhonePwd", businessType = businessType, paramName = "登录入参")
 //  @RedissonCacheAnn(group = "login", key = "#req.loginPhone+':'+#req.pwd",ttl = 60,unit = TimeUnit.SECONDS)
   public LoginPhonePwdRes loginPhonePwd(LoginPhonePwdReq req) {
 

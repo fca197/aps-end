@@ -74,7 +74,21 @@ peanut:
 
       filter-path: # 后验证
         - /
-
+  public-key: >
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxcyfd8+Rv2sbWBXClt
+    /p1XvgaHocgNN0AEiSNWYsbBVvPxTJbHEugmQYeExb39F18XBaglYfK3ocDYuN
+    02TUY4IRmRkwUYlOyJccvtABfIzR8Ca096ecYskO9Qv3TSyJHt8kHX96S/0oZe
+    juRpSQXFOeFjvzju9uvvSlJwa99b5Sp8XLHDgQw6kEataOZTgH/5qg9SR29J8H
+    eTMKBeWvK/YQ05aJLsOZcSFgWEiZVYhQJx5tZwXcJRwYXXQ/HNA4lB6MFDvw+1
+    Qjyq7frCvitLPwqydWhp+ktU1FDeJ/M31xR0XZrpHqsyOTNEOEmyr38OtV8+jv
+    Von60likPjt+eQIDAQAB
+  License-code: >
+    AYa9muOIUGgrF9DLdPuPJmKzf0cEgHy8c5nJM08R6J8TfOjfs8QEmndWQbNQmhdD
+    zGD4ke498osfxPH3XujFOaSFw12Uh/sGm/MK68lDPPVVZEoMfTSsnaJIv25L5Ils
+    wmtrackG/WT2PMw4OHgsEmoVoQtEAjwVBx1UNjPvruWNYjMJE0hvskmE4XVLmyMg
+    6lIo9psHLG2uJa1as7pRuhcXL7kAKs3Pe2fUg1du2HpaAVtk0GQT3cfsOlX8dM//
+    f7qHu9IQJogb4/lrWXHk4SaVD5E0pTMcLvrFguUiXPz4euJrzkbC6FV23XheLorP
+    SZ/ZLoA1Bjah9nPtZOh6NQ==
 db:
   url: jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
   username: root
@@ -280,8 +294,12 @@ spring:
         default-audit-strategy:
           auditor-names:
             - mustHasShardingId
+      sql-parser:
+        sql-comment-parse-enabled: false
+    #        sql-parse-enabled: false
 
     props:
+      check-table-metadata-enabled: false
       sql-show: true
       sql-comment-parse-enabled: true
 

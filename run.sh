@@ -6,4 +6,4 @@ ps -ef |grep java
 
 rm -rf   log.log
 rm -rf gc.log
-nohup java  -Dfile.encoding=UTF-8     -jar   -Dspring.profiles.active=read  -Dserver.port=8080 app.jar >  log.log  2>&1 &
+nohup java  --add-opens java.base/java.lang.invoke=ALL-UNNAMED  -Dfile.encoding=UTF-8     -jar   -Dspring.profiles.active=read  -Dserver.port=8080 app.jar >  log.log  2>&1 &
