@@ -1,9 +1,12 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingVersion;
 
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersionLimit.ApsSchedulingVersionLimitDto;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
+import com.olivia.sdk.utils.fastjson.Boolean2StrFeature;
+import com.olivia.sdk.utils.fastjson.Str2BooleanConverter;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -50,6 +53,28 @@ public class ApsSchedulingVersionDto extends BaseEntityDto {
 //  @NotNull(message = "零件统计截止日期不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 //  private LocalDate bomTotalEndDate;
   private List<ApsSchedulingVersionLimitDto> limitDtoList;
+
+
+  /***
+   * 使用工厂产能约束
+   */
+  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+  private Boolean useFactoryMakeCapacity;
+  /***
+   *  使用产品产能约束
+   */
+  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+  private Boolean useGoodsMakeCapacity;
+  /****
+   * 使用销售配置产能约束
+   */
+  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+  private Boolean useSaleConfigMakeCapacity;
+  /****
+   * 使用工程配置产能约束
+   */
+  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+  private Boolean useProjectConfigMakeCapacity;
 }
 
 

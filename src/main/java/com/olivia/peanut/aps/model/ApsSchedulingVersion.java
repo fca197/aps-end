@@ -39,5 +39,22 @@ public class ApsSchedulingVersion extends BaseEntity {
    * bom 统计截止日期
    */
   private LocalDate bomTotalEndDate;
+
+  /***
+   * 使用工厂产能约束
+   */
+  private Boolean useFactoryMakeCapacity;
+  /***
+   *  使用产品产能约束
+   */
+  private Boolean useGoodsMakeCapacity;
+  /****
+   * 使用销售配置产能约束
+   */
+  private Boolean useSaleConfigMakeCapacity;
+  /****
+   * 使用工程配置产能约束
+   */
+  private Boolean useProjectConfigMakeCapacity;
 }
 

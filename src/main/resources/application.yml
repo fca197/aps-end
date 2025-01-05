@@ -46,7 +46,6 @@ peanut:
   ding-config-list:
     - ding-code: msgNotice
       ding-name: 消息通知
-      app-id: 3126584161
       client-id: dingAppClientId
       robot-code: dingAppKey
       client-secret: dingAppSecret
@@ -90,7 +89,10 @@ peanut:
     f7qHu9IQJogb4/lrWXHk4SaVD5E0pTMcLvrFguUiXPz4euJrzkbC6FV23XheLorP
     SZ/ZLoA1Bjah9nPtZOh6NQ==
 db:
-  url: jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
+  url: >
+    jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8
+    &useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    &allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
   username: root
   password: root
   mysql-driver: com.mysql.cj.jdbc.Driver
@@ -338,13 +340,21 @@ spring:
       connection-init-sql: select 2
       keepalive-time: 30000
       validation-timeout: 3000
-      wait-timeout: 3000
-      unitTest: true
       leakDetectionThreshold: 30000
 
 
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://local:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
+    url: >
+      jdbc:mysql://
+      local:3306/peanut_prod
+      ?useUnicode=true
+      &characterEncoding=utf8
+      &useSSL=false
+      &serverTimezone=Asia/Shanghai
+      &allowPublicKeyRetrieval=true
+      &allowMultiQueries=true
+      &autoReconnect=true
+      &rewriteBatchedStatements=true
     username: root
     password: 123456
     type: com.zaxxer.hikari.HikariDataSource

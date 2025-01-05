@@ -2,6 +2,7 @@ package com.olivia.peanut.aps.model;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigVersionProductType;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,5 +43,12 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
   private Boolean isIssuedThird;
 
   private String headerList;
+
+  // 生产方式  ， 工艺路径， 制造路径
+  private ApsSchedulingDayConfigVersionProductType productType;
+
+  //
+  private Integer bbb;
+
 }
 

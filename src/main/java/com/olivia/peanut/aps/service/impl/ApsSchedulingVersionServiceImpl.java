@@ -72,6 +72,7 @@ import static com.olivia.peanut.aps.con.ApsStr.GOODS_STATUS_ID;
 import static com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
 import static com.olivia.sdk.utils.FieldUtils.getField;
 import static com.olivia.sdk.utils.ValueUtils.value2Str;
+import static java.lang.Boolean.FALSE;
 
 /**
  * (ApsSchedulingVersion)表服务实现类
@@ -365,16 +366,20 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
     LambdaQueryWrapper<ApsMakeCapacityFactory> factoryUpdateWrapper = new LambdaQueryWrapper<>();
     LambdaQueryWrapper<ApsMakeCapacitySaleConfig> configLambdaQueryWrapper = new LambdaQueryWrapper<>();
-    LambdaQueryWrapper<CalendarDay> queryWrapper = new LambdaQueryWrapper<>();
-
+    LambdaQueryWrapper<CalendarDay> calendarDayLambdaQueryWrapper = new LambdaQueryWrapper<>();
     LambdaQueryWrapper<ApsMakeCapacityGoods> apsMakeCapacityGoodsWrapper = new LambdaQueryWrapper<>();
+    setCapacityWrapper(schedulingVersion.getUseFactoryMakeCapacity(), factoryUpdateWrapper);
+    setCapacityWrapper(schedulingVersion.getUseGoodsMakeCapacity(), apsMakeCapacityGoodsWrapper);
+    setCapacityWrapper(schedulingVersion.getUseSaleConfigMakeCapacity(), configLambdaQueryWrapper);
+    // 工程配置 TODO： 待实现
+
     ymList.forEach(t -> {
       factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.getFirst()).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
       configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.getFirst()).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
-      queryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.getFirst()).eq(CalendarDay::getDayMonth, t.get(1)));
+      calendarDayLambdaQueryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.getFirst()).eq(CalendarDay::getDayMonth, t.get(1)));
       apsMakeCapacityGoodsWrapper.or(r -> r.eq(ApsMakeCapacityGoods::getYear, t.getFirst()).eq(ApsMakeCapacityGoods::getMonth, t.get(1)));
     });
-    Map<String, CalendarDay> calendarDayMap = calendarDayService.list(queryWrapper).stream()
+    Map<String, CalendarDay> calendarDayMap = calendarDayService.list(calendarDayLambdaQueryWrapper).stream()
         .collect(Collectors.toMap(t -> t.getDayYear() + "-" + t.getDayMonth() + "-" + t.getFactoryId(), Function.identity()));
     Map<String, ApsMakeCapacityFactory> makeCapacityFactoryMap = this.apsMakeCapacityFactoryService.list(factoryUpdateWrapper).stream()
         .collect(Collectors.toMap(t -> t.getYear() + "-" + t.getMonth(), Function.identity(), (a, b) -> a));
@@ -413,7 +418,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         }
         Field field = getField(calendarDay, "day" + ym.getDayOfMonth());
         Object value = ReflectUtil.getFieldValue(calendarDay, field);
-        if (Boolean.FALSE.equals(value)) {
+        if (FALSE.equals(value)) {
           log.info("工厂ID: {}  {} 非工作日，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
@@ -570,6 +575,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     apsSchedulingGoodsStatusDateService.saveBatch(apsOrderGoodsStatusDateList);
 //    updateApsOrderGoodsStatusDate(apsGoodsList, apsOrderGoodsStatusDateList);
     return new ApsSchedulingVersionUseMakeCapacityRes();
+  }
+
+  private static void setCapacityWrapper(Boolean bool, LambdaQueryWrapper<? extends BaseEntity> wrapper) {
+    if (FALSE.equals(bool)) {
+      wrapper.eq(BaseEntity::getId, Long.MIN_VALUE);
+    }
   }
 
   private void updateApsOrderGoodsStatusDate(Set<OrderGoods> orderGoodsSet, List<ApsOrderGoodsStatusDate> apsOrderGoodsStatusDateList) {
