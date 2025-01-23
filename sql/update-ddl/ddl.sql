@@ -1,11 +1,11 @@
-create table if not exists aps_bom
+create table aps_bom
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
     bom_code            varchar(255)                         null comment 'bom 编码',
     bom_name            varchar(255)                         null comment 'bom 名称',
     bom_cost_price      decimal(15, 6)                       null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
+    bom_cost_price_unit varchar(255)                         null comment '单位',
     bom_inventory       decimal(15, 6)                       null comment '库存',
     tenant_id           bigint                               null comment '租户ID',
     is_delete           tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
@@ -15,7 +15,13 @@ create table if not exists aps_bom
     update_by           bigint                               null comment '修改人',
     trace_id            varchar(64)                          null comment '调用链路',
     version_num         int        default 0                 null comment '版本号',
-    group_id            bigint                               null comment '组ID'
+    group_id            bigint                               null comment '组ID',
+    supply_mode         varchar(4)                           null comment '供给方式 make, buy',
+    use_unit            varchar(64)                          null comment '使用单位',
+    bom_unit            varchar(64)                          null comment '零件单位',
+    produce_process_id  bigint                               null comment '制造路径',
+    delivery_cycle_day  int        default 1                 null comment '到货周期',
+    aps_bom_supplier_id bigint                               null comment '供应商ID'
 )
     comment 'BOM 清单';
 
@@ -26,7 +32,7 @@ create index idx_g_id
     on aps_bom (group_id)
     comment '组';
 
-create table if not exists aps_bom_group
+create table aps_bom_group
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -48,7 +54,36 @@ create table if not exists aps_bom_group
 create index id_tenant_id
     on aps_bom_group (tenant_id);
 
-create table if not exists aps_goods
+create table aps_bom_supplier
+(
+    id                  bigint auto_increment comment 'ID 自增'
+        primary key,
+    bom_supplier_name   varchar(255)                         null comment '名称',
+    bom_supplier_code   varchar(255)                         null comment '编号',
+    bom_supplier_phone  varchar(255)                         null comment '手机',
+    bom_supplier_tel    varchar(255)                         null comment '座机',
+    bom_supplier_email  varchar(255)                         null comment '邮件',
+    province_code       varchar(255)                         null comment '省编码',
+    city_code           varchar(255)                         null comment '市编码',
+    area_code           varchar(255)                         null comment '县编码',
+    bom_supplier_addr   varchar(255)                         null comment '地址',
+    bom_supplier_remark varchar(255)                         null comment '备注',
+    supplier_status     varchar(255)                         null comment '状态',
+    is_delete           tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time         datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by           bigint                               null comment '创建人',
+    update_time         datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by           bigint                               null comment '修改人',
+    trace_id            varchar(64)                          null comment '调用链路',
+    version_num         int        default 0                 null comment '版本号',
+    tenant_id           bigint                               null comment '租户ID'
+)
+    comment '供应商表';
+
+create index idx_base_supplier_tenant_id
+    on aps_bom_supplier (tenant_id);
+
+create table aps_goods
 (
     id                 bigint auto_increment comment 'ID 自增'
         primary key,
@@ -75,7 +110,7 @@ create index idx_aps_goods_factory_id
 create index idx_aps_goods_tenant_id
     on aps_goods (tenant_id);
 
-create table if not exists aps_goods_bom
+create table aps_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -85,9 +120,9 @@ create table if not exists aps_goods_bom
     bom_code             varchar(255)                             null comment 'bom 编码',
     bom_name             varchar(255)                             null comment 'bom 名称',
     bom_usage            decimal(15, 6)                           null comment '使用量',
-    bom_unit            varchar(255) null comment '规格',
+    bom_unit             varchar(255)                             null comment '单位',
     bom_cost_price       decimal(15, 6)                           null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
+    bom_cost_price_unit  varchar(255)                             null comment '单位',
     bom_use_work_station bigint                                   null comment '使用工位',
     bom_use_expression   varchar(255)                             null comment '使用表达式',
     bom_inventory        decimal(15, 6) default 0.000000          null comment '库存',
@@ -117,7 +152,7 @@ create index idx_g_id
     on aps_goods_bom (group_id)
     comment '组Id ';
 
-create table if not exists aps_goods_bom_buy_plan
+create table aps_goods_bom_buy_plan
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -125,6 +160,8 @@ create table if not exists aps_goods_bom_buy_plan
     plan_total_amount decimal(15, 6)                       null comment '总价',
     plan_source       varchar(255)                         null comment '计划来源',
     plan_remark       varchar(255)                         null comment '计划备注',
+    buy_plan_type     varchar(32)                          null comment '购买类型',
+    is_follow         tinyint    default 0                 null comment '是否关注',
     tenant_id         bigint                               null comment '租户ID',
     is_delete         tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
     create_time       datetime   default CURRENT_TIMESTAMP null comment '创建时间',
@@ -132,48 +169,415 @@ create table if not exists aps_goods_bom_buy_plan
     update_time       datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
     update_by         bigint                               null comment '修改人',
     trace_id          varchar(64)                          null comment '调用链路',
-    version_num       int        default 0                 null comment '版本号'
+    version_num       int        default 0                 null comment '版本号',
+    bom_use_date      varchar(4096)                        null comment '日期'
 )
     comment 'BOM 购买计划';
 
 create index idx_aps_goods_bom_plan_tenant_id
     on aps_goods_bom_buy_plan (tenant_id);
 
-create table if not exists aps_goods_bom_buy_plan_item
+create table aps_goods_bom_buy_plan_item
 (
-    id                  bigint auto_increment comment 'ID 自增'
+    id                   bigint auto_increment comment 'ID 自增'
         primary key,
-    buy_plan_id         bigint                               null comment '计划ID',
-    bom_id              bigint                               null comment 'ID',
-    bom_code            varchar(255)                         null comment 'bom 编码',
-    bom_name            varchar(255)                         null comment 'bom 名称',
-    is_follow           tinyint(1) default 0                 null comment '是否关注',
-    bom_cost_price      decimal(15, 6)                       null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
-    bom_inventory       decimal(15, 6)                       null comment '库存',
-    bom_buy_count       decimal(15, 6)                       null comment '购买数量',
-    tenant_id           bigint                               null comment '租户ID',
-    is_delete           tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time         datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by           bigint                               null comment '创建人',
-    update_time         datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by           bigint                               null comment '修改人',
-    trace_id            varchar(64)                          null comment '调用链路',
-    version_num         int        default 0                 null comment '版本号',
-    goods_bom_id        bigint                               not null comment '商品零件ID'
+    buy_plan_id          bigint                               null comment '购买计划ID',
+    year                 smallint                             null comment '年',
+    bom_id               bigint                               null comment '零件ID',
+    goods_bom_id         bigint                               null comment '商品零件ID',
+    bom_code             varchar(255)                         null comment 'bom 编码',
+    bom_name             varchar(255)                         null comment 'bom 名称',
+    bom_usage            decimal(15, 6)                       null comment '使用量',
+    bom_unit             varchar(255)                         null comment '规格',
+    bom_cost_price       decimal(15, 6)                       null comment '成本价',
+    bom_cost_price_unit  varchar(255)                         null comment '规格',
+    bom_use_work_station bigint                               null comment '使用工位',
+    bom_use_day1         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day2         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day3         tinyint                              null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day4         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day5         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day6         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day7         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day8         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day9         json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day10        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day11        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day12        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day13        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day14        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day15        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day16        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day17        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day18        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day19        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day20        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day21        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day22        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day23        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day24        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day25        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day26        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day27        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day28        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day29        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day30        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day31        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day32        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day33        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day34        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day35        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day36        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day37        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day38        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day39        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day40        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day41        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day42        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day43        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day44        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day45        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day46        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day47        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day48        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day49        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day50        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day51        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day52        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day53        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day54        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day55        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day56        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day57        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day58        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day59        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day60        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day61        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day62        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day63        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day64        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day65        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day66        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day67        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day68        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day69        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day70        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day71        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day72        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day73        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day74        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day75        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day76        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day77        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day78        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day79        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day80        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day81        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day82        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day83        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day84        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day85        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day86        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day87        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day88        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day89        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day90        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day91        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day92        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day93        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day94        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day95        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day96        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day97        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day98        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day99        json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day100       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day101       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day102       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day103       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day104       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day105       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day106       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day107       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day108       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day109       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day110       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day111       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day112       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day113       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day114       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day115       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day116       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day117       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day118       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day119       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day120       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day121       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day122       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day123       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day124       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day125       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day126       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day127       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day128       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day129       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day130       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day131       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day132       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day133       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day134       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day135       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day136       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day137       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day138       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day139       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day140       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day141       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day142       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day143       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day144       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day145       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day146       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day147       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day148       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day149       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day150       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day151       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day152       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day153       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day154       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day155       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day156       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day157       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day158       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day159       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day160       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day161       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day162       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day163       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day164       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day165       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day166       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day167       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day168       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day169       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day170       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day171       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day172       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day173       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day174       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day175       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day176       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day177       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day178       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day179       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day180       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day181       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day182       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day183       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day184       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day185       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day186       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day187       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day188       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day189       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day190       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day191       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day192       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day193       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day194       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day195       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day196       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day197       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day198       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day199       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day200       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day201       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day202       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day203       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day204       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day205       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day206       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day207       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day208       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day209       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day210       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day211       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day212       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day213       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day214       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day215       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day216       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day217       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day218       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day219       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day220       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day221       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day222       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day223       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day224       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day225       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day226       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day227       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day228       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day229       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day230       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day231       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day232       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day233       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day234       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day235       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day236       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day237       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day238       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day239       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day240       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day241       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day242       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day243       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day244       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day245       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day246       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day247       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day248       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day249       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day250       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day251       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day252       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day253       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day254       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day255       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day256       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day257       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day258       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day259       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day260       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day261       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day262       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day263       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day264       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day265       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day266       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day267       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day268       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day269       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day270       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day271       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day272       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day273       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day274       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day275       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day276       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day277       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day278       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day279       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day280       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day281       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day282       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day283       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day284       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day285       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day286       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day287       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day288       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day289       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day290       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day291       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day292       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day293       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day294       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day295       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day296       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day297       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day298       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day299       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day300       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day301       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day302       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day303       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day304       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day305       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day306       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day307       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day308       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day309       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day310       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day311       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day312       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day313       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day314       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day315       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day316       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day317       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day318       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day319       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day320       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day321       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day322       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day323       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day324       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day325       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day326       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day327       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day328       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day329       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day330       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day331       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day332       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day333       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day334       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day335       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day336       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day337       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day338       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day339       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day340       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day341       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day342       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day343       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day344       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day345       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day346       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day347       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day348       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day349       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day350       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day351       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day352       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day353       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day354       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day355       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day356       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day357       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day358       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day359       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day360       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day361       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day362       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day363       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day364       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day365       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    bom_use_day366       json                                 null comment '使用信息 {lack:1, quantity:3}',
+    factory_id           bigint                               null comment '工厂ID',
+    is_follow            tinyint    default 0                 null comment '是否关注',
+    tenant_id            bigint                               null comment '租户ID',
+    is_delete            tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time          datetime   default CURRENT_TIMESTAMP null comment '创建信息 {lack:1, quantity:3}',
+    create_by            bigint                               null comment '创建人',
+    update_time          datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改信息 {lack:1, quantity:3}',
+    update_by            bigint                               null comment '修改人',
+    trace_id             varchar(64)                          null comment '调用链路',
+    version_num          int        default 0                 null comment '版本号'
 )
-    comment 'BOM 购买清单';
+    comment '订单商品零件汇总表';
 
-create index idx_aps_goods_bom_buy_plan_item_buy_plan_id_index
+create index idx_buy_plan_id
     on aps_goods_bom_buy_plan_item (buy_plan_id);
 
-create index idx_aps_goods_bom_plan_item_factory_id
-    on aps_goods_bom_buy_plan_item (bom_id);
-
-create index idx_aps_goods_bom_plan_item_tenant_id
+create index idx_tenant_id
     on aps_goods_bom_buy_plan_item (tenant_id);
 
-create table if not exists aps_goods_forecast
+create table aps_goods_forecast
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -202,7 +606,7 @@ create index idx_aps_goods_forecast_goods_id
 create index idx_aps_goods_forecast_tenant_id
     on aps_goods_forecast (tenant_id);
 
-create table if not exists aps_goods_forecast_compute_sale_data
+create table aps_goods_forecast_compute_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -239,7 +643,7 @@ create index idx_aps_goods_forecast_compute_sale_data_forecast_id
 create index idx_aps_goods_forecast_compute_sale_data_tenant_id
     on aps_goods_forecast_compute_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_main
+create table aps_goods_forecast_main
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -271,7 +675,7 @@ create index idx_aps_goods_forecast_main_goods_id
 create index idx_aps_goods_forecast_main_tenant_id
     on aps_goods_forecast_main (tenant_id);
 
-create table if not exists aps_goods_forecast_main_goods_data
+create table aps_goods_forecast_main_goods_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -301,7 +705,7 @@ create table if not exists aps_goods_forecast_main_goods_data
 )
     comment '预测商品数据';
 
-create table if not exists aps_goods_forecast_main_make
+create table aps_goods_forecast_main_make
 (
     id                            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -331,7 +735,7 @@ create index idx_aps_goods_forecast_main_make_goods_id
 create index idx_aps_goods_forecast_main_make_tenant_id
     on aps_goods_forecast_main_make (tenant_id);
 
-create table if not exists aps_goods_forecast_main_make_sale_data
+create table aps_goods_forecast_main_make_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -729,7 +1133,7 @@ create index idx_aps_goods_forecast_main_make_sale_data_main_make_id
 create index idx_aps_goods_forecast_main_make_sale_data_tenant_id
     on aps_goods_forecast_main_make_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_main_sale_data
+create table aps_goods_forecast_main_sale_data
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -769,7 +1173,7 @@ create index idx_aps_goods_forecast_main_sale_data_goods_id
 create index idx_aps_goods_forecast_main_sale_data_tenant_id
     on aps_goods_forecast_main_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_make
+create table aps_goods_forecast_make
 (
     id                             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -808,7 +1212,7 @@ create index idx_aps_goods_forecast_make_goods_id
 create index idx_aps_goods_forecast_make_tenant_id
     on aps_goods_forecast_make (tenant_id);
 
-create table if not exists aps_goods_forecast_make_bom_use
+create table aps_goods_forecast_make_bom_use
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1207,7 +1611,7 @@ create index idx_aps_goods_forecast_make_bom_use_make_month_id
 create index idx_aps_goods_forecast_make_bom_use_tenant_id
     on aps_goods_forecast_make_bom_use (tenant_id);
 
-create table if not exists aps_goods_forecast_make_project_data
+create table aps_goods_forecast_make_project_data
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -1603,7 +2007,7 @@ create index idx_aps_goods_forecast_make_project_data_make_sale_config_id
 create index idx_aps_goods_forecast_make_project_data_tenant_id
     on aps_goods_forecast_make_project_data (tenant_id);
 
-create table if not exists aps_goods_forecast_make_sale_data
+create table aps_goods_forecast_make_sale_data
 (
     id               bigint                               null,
     goods_id         bigint                               null comment '商品ID',
@@ -2004,7 +2408,7 @@ create index idx_aps_goods_forecast_make_sale_data_make_month_id
 create index idx_aps_goods_forecast_make_sale_data_tenant_id
     on aps_goods_forecast_make_sale_data (tenant_id);
 
-create table if not exists aps_goods_forecast_user_goods_data
+create table aps_goods_forecast_user_goods_data
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2038,7 +2442,7 @@ create index idx_aps_goods_forecast_user_goods_data_forecast_id
 create index idx_aps_goods_forecast_user_goods_data_tenant_id
     on aps_goods_forecast_user_goods_data (tenant_id);
 
-create table if not exists aps_goods_forecast_user_sale_data
+create table aps_goods_forecast_user_sale_data
 (
     id             bigint                               null,
     forecast_id    bigint                               null,
@@ -2076,7 +2480,7 @@ create index idx_aps_goods_forecast_user_sale_data_sale_config_id
 create index idx_aps_goods_forecast_user_sale_data_tenant_id
     on aps_goods_forecast_user_sale_data (tenant_id);
 
-create table if not exists aps_goods_sale_item
+create table aps_goods_sale_item
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2105,7 +2509,7 @@ create index idx_aps_goods_sale_item_sale_config_id
 create index idx_aps_goods_sale_item_tenant_id
     on aps_goods_sale_item (tenant_id);
 
-create table if not exists aps_goods_sale_project_config
+create table aps_goods_sale_project_config
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2151,7 +2555,7 @@ create index idx_aps_goods_sale_project_config_sale_config_parent_id
 create index idx_aps_goods_sale_project_config_tenant_id
     on aps_goods_sale_project_config (tenant_id);
 
-create table if not exists aps_logistics_path
+create table aps_logistics_path
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2177,7 +2581,7 @@ create index idx_aps_logistics_path_factory_id
 create index idx_aps_logistics_path_tenant_id
     on aps_logistics_path (tenant_id);
 
-create table if not exists aps_logistics_path_item
+create table aps_logistics_path_item
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2203,12 +2607,14 @@ create table if not exists aps_logistics_path_item
 create index idx_logistics_path_id
     on aps_logistics_path_item (logistics_path_id);
 
-create table if not exists aps_machine
+create table aps_machine
 (
     id           bigint auto_increment comment 'ID 自增'
         primary key,
     machine_no   varchar(32)                          not null comment '机器编号',
     machine_name varchar(32)                          not null comment '机器名称',
+    factory_id   bigint                               null comment '工厂ID',
+    sort_index   bigint     default 0                 null comment '排序索引',
     tenant_id    bigint                               null comment '租户ID',
     is_delete    tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
     create_time  datetime   default CURRENT_TIMESTAMP null comment '创建时间',
@@ -2223,7 +2629,7 @@ create table if not exists aps_machine
 create index idx_tenant_id
     on aps_machine (tenant_id);
 
-create table if not exists aps_make_capacity_factory
+create table aps_make_capacity_factory
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2231,68 +2637,68 @@ create table if not exists aps_make_capacity_factory
     make_capacity_quantity varchar(255)                         null,
     year                   smallint                             null,
     month                  tinyint                              null,
-    day_min1               decimal(15, 6)                       null comment '制造数',
-    day_max1               decimal(15, 6)                       null comment '制造数',
-    day_min2               decimal(15, 6)                       null comment '制造数',
-    day_max2               decimal(15, 6)                       null comment '制造数',
-    day_min3               decimal(15, 6)                       null comment '制造数',
-    day_max3               decimal(15, 6)                       null comment '制造数',
-    day_min4               decimal(15, 6)                       null comment '制造数',
-    day_max4               decimal(15, 6)                       null comment '制造数',
-    day_min5               decimal(15, 6)                       null comment '制造数',
-    day_max5               decimal(15, 6)                       null comment '制造数',
-    day_min6               decimal(15, 6)                       null comment '制造数',
-    day_max6               decimal(15, 6)                       null comment '制造数',
-    day_min7               decimal(15, 6)                       null comment '制造数',
-    day_max7               decimal(15, 6)                       null comment '制造数',
-    day_min8               decimal(15, 6)                       null comment '制造数',
-    day_max8               decimal(15, 6)                       null comment '制造数',
-    day_min9               decimal(15, 6)                       null comment '制造数',
-    day_max9               decimal(15, 6)                       null comment '制造数',
-    day_min10              decimal(15, 6)                       null comment '制造数',
-    day_max10              decimal(15, 6)                       null comment '制造数',
-    day_min11              decimal(15, 6)                       null comment '制造数',
-    day_max11              decimal(15, 6)                       null comment '制造数',
-    day_min12              decimal(15, 6)                       null comment '制造数',
-    day_max12              decimal(15, 6)                       null comment '制造数',
-    day_min13              decimal(15, 6)                       null comment '制造数',
-    day_max13              decimal(15, 6)                       null comment '制造数',
-    day_min14              decimal(15, 6)                       null comment '制造数',
-    day_max14              decimal(15, 6)                       null comment '制造数',
-    day_min15              decimal(15, 6)                       null comment '制造数',
-    day_max15              decimal(15, 6)                       null comment '制造数',
-    day_min16              decimal(15, 6)                       null comment '制造数',
-    day_max16              decimal(15, 6)                       null comment '制造数',
-    day_min17              decimal(15, 6)                       null comment '制造数',
-    day_max17              decimal(15, 6)                       null comment '制造数',
-    day_min18              decimal(15, 6)                       null comment '制造数',
-    day_max18              decimal(15, 6)                       null comment '制造数',
-    day_min19              decimal(15, 6)                       null comment '制造数',
-    day_max19              decimal(15, 6)                       null comment '制造数',
-    day_min20              decimal(15, 6)                       null comment '制造数',
-    day_max20              decimal(15, 6)                       null comment '制造数',
-    day_min21              decimal(15, 6)                       null comment '制造数',
-    day_max21              decimal(15, 6)                       null comment '制造数',
-    day_min22              decimal(15, 6)                       null comment '制造数',
-    day_max22              decimal(15, 6)                       null comment '制造数',
-    day_min23              decimal(15, 6)                       null comment '制造数',
-    day_max23              decimal(15, 6)                       null comment '制造数',
-    day_min24              decimal(15, 6)                       null comment '制造数',
-    day_max24              decimal(15, 6)                       null comment '制造数',
-    day_min25              decimal(15, 6)                       null comment '制造数',
-    day_max25              decimal(15, 6)                       null comment '制造数',
-    day_min26              decimal(15, 6)                       null comment '制造数',
-    day_max26              decimal(15, 6)                       null comment '制造数',
-    day_min27              decimal(15, 6)                       null comment '制造数',
-    day_max27              decimal(15, 6)                       null comment '制造数',
-    day_min28              decimal(15, 6)                       null comment '制造数',
-    day_max28              decimal(15, 6)                       null comment '制造数',
-    day_min29              decimal(15, 6)                       null comment '制造数',
-    day_max29              decimal(15, 6)                       null comment '制造数',
-    day_min30              decimal(15, 6)                       null comment '制造数',
-    day_max30              decimal(15, 6)                       null comment '制造数',
-    day_min31              decimal(15, 6)                       null comment '制造数',
-    day_max31              decimal(15, 6)                       null comment '制造数',
+    day_min1               int        default 0                 null comment '制造数',
+    day_max1               int        default 0                 null comment '制造数',
+    day_min2               int        default 0                 null comment '制造数',
+    day_max2               int        default 0                 null comment '制造数',
+    day_min3               int        default 0                 null comment '制造数',
+    day_max3               int        default 0                 null comment '制造数',
+    day_min4               int        default 0                 null comment '制造数',
+    day_max4               int        default 0                 null comment '制造数',
+    day_min5               int        default 0                 null comment '制造数',
+    day_max5               int        default 0                 null comment '制造数',
+    day_min6               int        default 0                 null comment '制造数',
+    day_max6               int        default 0                 null comment '制造数',
+    day_min7               int        default 0                 null comment '制造数',
+    day_max7               int        default 0                 null comment '制造数',
+    day_min8               int        default 0                 null comment '制造数',
+    day_max8               int        default 0                 null comment '制造数',
+    day_min9               int        default 0                 null comment '制造数',
+    day_max9               int        default 0                 null comment '制造数',
+    day_min10              int        default 0                 null comment '制造数',
+    day_max10              int        default 0                 null comment '制造数',
+    day_min11              int        default 0                 null comment '制造数',
+    day_max11              int        default 0                 null comment '制造数',
+    day_min12              int        default 0                 null comment '制造数',
+    day_max12              int        default 0                 null comment '制造数',
+    day_min13              int        default 0                 null comment '制造数',
+    day_max13              int        default 0                 null comment '制造数',
+    day_min14              int        default 0                 null comment '制造数',
+    day_max14              int        default 0                 null comment '制造数',
+    day_min15              int        default 0                 null comment '制造数',
+    day_max15              int        default 0                 null comment '制造数',
+    day_min16              int        default 0                 null comment '制造数',
+    day_max16              int        default 0                 null comment '制造数',
+    day_min17              int        default 0                 null comment '制造数',
+    day_max17              int        default 0                 null comment '制造数',
+    day_min18              int        default 0                 null comment '制造数',
+    day_max18              int        default 0                 null comment '制造数',
+    day_min19              int        default 0                 null comment '制造数',
+    day_max19              int        default 0                 null comment '制造数',
+    day_min20              int        default 0                 null comment '制造数',
+    day_max20              int        default 0                 null comment '制造数',
+    day_min21              int        default 0                 null comment '制造数',
+    day_max21              int        default 0                 null comment '制造数',
+    day_min22              int        default 0                 null comment '制造数',
+    day_max22              int        default 0                 null comment '制造数',
+    day_min23              int        default 0                 null comment '制造数',
+    day_max23              int        default 0                 null comment '制造数',
+    day_min24              int        default 0                 null comment '制造数',
+    day_max24              int        default 0                 null comment '制造数',
+    day_min25              int        default 0                 null comment '制造数',
+    day_max25              int        default 0                 null comment '制造数',
+    day_min26              int        default 0                 null comment '制造数',
+    day_max26              int        default 0                 null comment '制造数',
+    day_min27              int        default 0                 null comment '制造数',
+    day_max27              int        default 0                 null comment '制造数',
+    day_min28              int        default 0                 null comment '制造数',
+    day_max28              int        default 0                 null comment '制造数',
+    day_min29              int        default 0                 null comment '制造数',
+    day_max29              int        default 0                 null comment '制造数',
+    day_min30              int        default 0                 null comment '制造数',
+    day_max30              int        default 0                 null comment '制造数',
+    day_min31              int        default 0                 null comment '制造数',
+    day_max31              int        default 0                 null comment '制造数',
     tenant_id              bigint                               null comment '租户ID',
     is_delete              tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
     create_time            datetime   default CURRENT_TIMESTAMP null comment '创建时间',
@@ -2310,7 +2716,7 @@ create index idx_aps_make_capacity_factory_factory_id
 create index idx_aps_make_capacity_factory_tenant_id
     on aps_make_capacity_factory (tenant_id);
 
-create table if not exists aps_make_capacity_goods
+create table aps_make_capacity_goods
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2398,7 +2804,7 @@ create index idx_aps_make_capacity_goods_goods_id
 create index idx_aps_make_capacity_goods_tenant_id
     on aps_make_capacity_goods (tenant_id);
 
-create table if not exists aps_make_capacity_sale_config
+create table aps_make_capacity_sale_config
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2485,7 +2891,7 @@ create index idx_aps_make_capacity_sale_config_sale_config_id
 create index idx_aps_make_capacity_sale_config_tenant_id
     on aps_make_capacity_sale_config (tenant_id);
 
-create table if not exists aps_order
+create table aps_order
 (
     id                    bigint                               null,
     order_no              varchar(255)                         null,
@@ -2520,7 +2926,7 @@ create index idx_aps_order_tenant_id
 create index idx_order_no_parent
     on aps_order (order_no_parent);
 
-create table if not exists aps_order_goods
+create table aps_order_goods
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2559,47 +2965,43 @@ create index idx_aps_order_goods_order_id
 create index idx_aps_order_goods_tenant_id
     on aps_order_goods (tenant_id);
 
-create table if not exists aps_order_goods_bom
+create table aps_order_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
-    order_id             bigint                               null comment '订单ID',
-    goods_id             bigint                               null comment '商品ID',
-    goods_status_id      bigint                               null comment '订单状态',
-    bom_id               bigint                               null comment '零件ID',
-    bom_code             varchar(255)                         null comment 'bom 编码',
-    bom_name             varchar(255)                         null comment 'bom 名称',
-    bom_usage            decimal(15, 6)                       null comment '使用量',
-    bom_unit            varchar(255) null comment '规格',
-    bom_cost_price       decimal(15, 6)                       null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
-    bom_use_work_station bigint                               null comment '使用工位',
-    bom_use_date         date                                 null comment '使用时间',
-    factory_id           bigint                               null comment '工厂ID',
-    tenant_id            bigint                               null comment '租户ID',
-    is_delete            tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time          datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by            bigint                               null comment '创建人',
-    update_time          datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by            bigint                               null comment '修改人',
-    trace_id             varchar(64)                          null comment '调用链路',
-    version_num          int        default 0                 null comment '版本号'
+    order_id             bigint                                   null comment '订单ID',
+    goods_bom_id         bigint                                   null comment 'aps_goods_bom ID ',
+    goods_id             bigint                                   null comment '商品ID',
+    group_id             bigint                                   null comment '零件组ID',
+    bom_id               bigint                                   null comment '商品ID',
+    bom_code             varchar(255)                             null comment 'bom 编码',
+    bom_name             varchar(255)                             null comment 'bom 名称',
+    bom_usage            decimal(15, 6)                           null comment '使用量',
+    bom_unit             varchar(255)                             null comment '单位',
+    bom_cost_price       decimal(15, 6)                           null comment '成本价',
+    bom_cost_price_unit  varchar(255)                             null comment '单位',
+    bom_use_work_station bigint                                   null comment '使用工位',
+    bom_use_expression   varchar(255)                             null comment '使用表达式',
+    bom_inventory        decimal(15, 6) default 0.000000          null comment '库存',
+    is_follow            tinyint(1)     default 0                 null comment '是否关注',
+    factory_id           bigint                                   null comment '工厂ID',
+    tenant_id            bigint                                   null comment '租户ID',
+    is_delete            tinyint(1)     default 0                 null comment '是否删除 0 否,1 是',
+    create_time          datetime       default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by            bigint                                   null comment '创建人',
+    update_time          datetime       default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by            bigint                                   null comment '修改人',
+    trace_id             varchar(64)                              null comment '调用链路',
+    version_num          int            default 0                 null comment '版本号',
+    goods_status_id      bigint                                   null comment '状态',
+    bom_use_date         date                                     null comment '使用时间'
 )
-    comment '订单商品零件表';
+    comment 'BOM 清单';
 
-create index idx_aps_order_goods_bom_factory_id
-    on aps_order_goods_bom (factory_id);
-
-create index idx_aps_order_goods_bom_goods_id
-    on aps_order_goods_bom (goods_id);
-
-create index idx_aps_order_goods_bom_order_id
+create index idx_order_id
     on aps_order_goods_bom (order_id);
 
-create index idx_aps_order_goods_bom_tenant_id
-    on aps_order_goods_bom (tenant_id);
-
-create table if not exists aps_order_goods_forecast_make
+create table aps_order_goods_forecast_make
 (
     id                 bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2632,7 +3034,7 @@ create index idx_aps_order_goods_order_id
 create index idx_aps_order_goods_tenant_id
     on aps_order_goods_forecast_make (tenant_id);
 
-create table if not exists aps_order_goods_project_config
+create table aps_order_goods_project_config
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2651,7 +3053,7 @@ create table if not exists aps_order_goods_project_config
 )
     comment '订单商品项目配置表';
 
-create table if not exists aps_order_goods_sale_config
+create table aps_order_goods_sale_config
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2685,7 +3087,7 @@ create index idx_aps_order_goods_sale_config_order_id
 create index idx_aps_order_goods_sale_config_tenant_id
     on aps_order_goods_sale_config (tenant_id);
 
-create table if not exists aps_order_goods_status_date
+create table aps_order_goods_status_date
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2715,7 +3117,7 @@ create index idx_order_goods_id
 create index idx_order_id
     on aps_order_goods_status_date (order_id);
 
-create table if not exists aps_order_user
+create table aps_order_user
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2747,7 +3149,7 @@ create index idx_aps_order_user_order_id
 create index idx_aps_order_user_tenant_id
     on aps_order_user (tenant_id);
 
-create table if not exists aps_process_path
+create table aps_process_path
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2773,7 +3175,7 @@ create index idx_aps_process_path_factory_id
 create index idx_aps_process_path_tenant_id
     on aps_process_path (tenant_id);
 
-create table if not exists aps_process_path_room
+create table aps_process_path_room
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2800,12 +3202,13 @@ create index idx_aps_process_path_room_room_id
 create index idx_aps_process_path_room_tenant_id
     on aps_process_path_room (tenant_id);
 
-create table if not exists aps_produce_process
+create table aps_produce_process
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
     produce_process_no   varchar(32)                          not null comment '生产路径编码',
     produce_process_name varchar(32)                          not null comment '生产路径名称',
+    factory_id           bigint                               null comment '工厂ID',
     is_default           tinyint    default 0                 null comment '是否默认',
     tenant_id            bigint                               null comment '租户ID',
     is_delete            tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
@@ -2821,7 +3224,7 @@ create table if not exists aps_produce_process
 create index idx_tenant_id
     on aps_produce_process (tenant_id);
 
-create table if not exists aps_produce_process_item
+create table aps_produce_process_item
 (
     id                      bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2846,7 +3249,7 @@ create index idx_produce_process_id
 create index idx_tenant_id
     on aps_produce_process_item (tenant_id);
 
-create table if not exists aps_project_config
+create table aps_project_config
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2872,7 +3275,7 @@ create index idx_aps_project_config_parent_id
 create index idx_aps_project_config_tenant_id
     on aps_project_config (tenant_id);
 
-create table if not exists aps_rolling_forecast_factory_capacity
+create table aps_rolling_forecast_factory_capacity
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2922,7 +3325,7 @@ create table if not exists aps_rolling_forecast_factory_capacity
 )
     comment '滚动预测';
 
-create table if not exists aps_rolling_forecast_order
+create table aps_rolling_forecast_order
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2944,7 +3347,7 @@ create table if not exists aps_rolling_forecast_order
 )
     comment '滚动预测';
 
-create table if not exists aps_rolling_forecast_order_item
+create table aps_rolling_forecast_order_item
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2970,7 +3373,7 @@ create index idx_forecast_id
 create index idx_order_id
     on aps_rolling_forecast_order_item (order_id);
 
-create table if not exists aps_room
+create table aps_room
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -2994,7 +3397,7 @@ create index idx_aps_room_factory_id
 create index idx_aps_room_tenant_id
     on aps_room (tenant_id);
 
-create table if not exists aps_room_config
+create table aps_room_config
 (
     id           bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3030,7 +3433,7 @@ create index idx_aps_room_config_status_id
 create index idx_aps_room_config_tenant_id
     on aps_room_config (tenant_id);
 
-create table if not exists aps_sale_config
+create table aps_sale_config
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3056,7 +3459,7 @@ create index idx_aps_sale_config_parent_id
 create index idx_aps_sale_config_tenant_id
     on aps_sale_config (tenant_id);
 
-create table if not exists aps_scheduling_constraints
+create table aps_scheduling_constraints
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3078,7 +3481,7 @@ create table if not exists aps_scheduling_constraints
 create index idx_aps_scheduling_constraints_tenant_id
     on aps_scheduling_constraints (tenant_id);
 
-create table if not exists aps_scheduling_day_config
+create table aps_scheduling_day_config
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3099,7 +3502,7 @@ create table if not exists aps_scheduling_day_config
 )
     comment '排程版本表';
 
-create table if not exists aps_scheduling_day_config_item
+create table aps_scheduling_day_config_item
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3127,7 +3530,7 @@ create table if not exists aps_scheduling_day_config_item
 create index scheduling_day_id
     on aps_scheduling_day_config_item (scheduling_day_id);
 
-create table if not exists aps_scheduling_day_config_version
+create table aps_scheduling_day_config_version
 (
     id                        bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3148,7 +3551,7 @@ create table if not exists aps_scheduling_day_config_version
 )
     comment '排程版本';
 
-create table if not exists aps_scheduling_day_config_version_detail
+create table aps_scheduling_day_config_version_detail
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3182,7 +3585,7 @@ create index idx_order_id
 create index idx_scheduling_day_id
     on aps_scheduling_day_config_version_detail (scheduling_day_id);
 
-create table if not exists aps_scheduling_day_config_version_detail_machine
+create table aps_scheduling_day_config_version_detail_machine
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3209,7 +3612,30 @@ create table if not exists aps_scheduling_day_config_version_detail_machine
 create index idx_scheduling_day_id
     on aps_scheduling_day_config_version_detail_machine (scheduling_day_id);
 
-create table if not exists aps_scheduling_goods_bom
+create table aps_scheduling_day_config_version_detail_machine_use_time
+(
+    id                 bigint auto_increment comment 'ID 自增'
+        primary key,
+    scheduling_day_id  bigint                               null comment '排程ID',
+    machine_id         bigint                               null comment '机器ID',
+    use_time           bigint                               null comment '耗时',
+    use_usage_rate     decimal(15, 6)                       null comment '使用率',
+    make_produce_count int                                  null comment '商品数',
+    tenant_id          bigint                               null comment '租户ID',
+    is_delete          tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time        datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by          bigint                               null comment '创建人',
+    update_time        datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by          bigint                               null comment '修改人',
+    trace_id           varchar(64)                          null comment '调用链路',
+    version_num        int        default 0                 null comment '版本号'
+)
+    comment '排程结果机器使用率';
+
+create index idx_scheduling_day_id
+    on aps_scheduling_day_config_version_detail_machine_use_time (scheduling_day_id);
+
+create table aps_scheduling_goods_bom
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3221,9 +3647,9 @@ create table if not exists aps_scheduling_goods_bom
     bom_code             varchar(255)                         null comment 'bom 编码',
     bom_name             varchar(255)                         null comment 'bom 名称',
     bom_usage            decimal(15, 6)                       null comment '使用量',
-    bom_unit            varchar(255) null comment '规格',
+    bom_unit             varchar(255)                         null comment '单位',
     bom_cost_price       decimal(15, 6)                       null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
+    bom_cost_price_unit  varchar(255)                         null comment '单位',
     bom_use_work_station bigint                               null comment '使用工位',
     bom_use_date         date                                 null comment '使用时间',
     factory_id           bigint                               null comment '工厂ID',
@@ -3240,18 +3666,18 @@ create table if not exists aps_scheduling_goods_bom
     comment '订单商品零件表';
 
 create index idx_aps_scheduling_goods_bom_factory_id
-    on aps_scheduling_goods_bom_0 (factory_id);
+    on aps_scheduling_goods_bom (factory_id);
 
 create index idx_aps_scheduling_goods_bom_goods_id
-    on aps_scheduling_goods_bom_0 (goods_id);
+    on aps_scheduling_goods_bom (goods_id);
 
 create index idx_aps_scheduling_goods_bom_scheduling_id
-    on aps_scheduling_goods_bom_0 (scheduling_id);
+    on aps_scheduling_goods_bom (scheduling_id);
 
 create index idx_aps_scheduling_goods_bom_tenant_id
-    on aps_scheduling_goods_bom_0 (tenant_id);
+    on aps_scheduling_goods_bom (tenant_id);
 
-create table if not exists aps_scheduling_goods_bom_total
+create table aps_scheduling_goods_bom_total
 (
     id                   bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3261,9 +3687,9 @@ create table if not exists aps_scheduling_goods_bom_total
     bom_code             varchar(255)                         null comment 'bom 编码',
     bom_name             varchar(255)                         null comment 'bom 名称',
     bom_usage            decimal(15, 6)                       null comment '使用量',
-    bom_unit            varchar(255) null comment '规格',
+    bom_unit             varchar(255)                         null comment '单位',
     bom_cost_price       decimal(15, 6)                       null comment '成本价',
-    bom_cost_price_unit varchar(255) null comment '规格',
+    bom_cost_price_unit  varchar(255)                         null comment '单位',
     bom_use_work_station bigint                               null comment '使用工位',
     bom_use_date         date                                 null comment '使用时间',
     factory_id           bigint                               null comment '工厂ID',
@@ -3279,12 +3705,12 @@ create table if not exists aps_scheduling_goods_bom_total
     comment '订单商品零件汇总表';
 
 create index idx_aps_scheduling_goods_bom_total_scheduling_id
-    on aps_scheduling_goods_bom_total_0 (scheduling_id);
+    on aps_scheduling_goods_bom_total (scheduling_id);
 
 create index idx_aps_scheduling_goods_bom_total_tenant_id
-    on aps_scheduling_goods_bom_total_0 (tenant_id);
+    on aps_scheduling_goods_bom_total (tenant_id);
 
-create table if not exists aps_scheduling_goods_status_date
+create table aps_scheduling_goods_status_date
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3314,7 +3740,7 @@ create table if not exists aps_scheduling_goods_status_date
 create index idx_scheduling_id
     on aps_scheduling_goods_status_date (scheduling_id);
 
-create table if not exists aps_scheduling_issue_item
+create table aps_scheduling_issue_item
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3342,28 +3768,33 @@ create index idx_current_day
 create index idx_factory_id
     on aps_scheduling_issue_item (factory_id);
 
-create table if not exists aps_scheduling_version
+create table aps_scheduling_version
 (
-    id                        bigint auto_increment comment 'ID 自增'
+    id                               bigint auto_increment comment 'ID 自增'
         primary key,
-    scheduling_version_no     varchar(255)                         null,
-    tenant_id                 bigint                               null comment '租户ID',
-    is_delete                 tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time               datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by                 bigint                               null comment '创建人',
-    update_time               datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by                 bigint                               null comment '修改人',
-    trace_id                  varchar(64)                          null comment '调用链路',
-    version_num               int        default 0                 null comment '版本号',
-    scheduling_version_name   varchar(255)                         null,
-    scheduling_constraints_id varchar(255)                         null,
-    header_list               text                                 null,
-    capacity_header_list      text                                 null,
-    capacity_date_list        varchar(1024)                        null,
-    scheduling_day_count      bigint                               null,
-    version_step              smallint                             null,
-    version_step_error        varchar(255)                         null,
-    bom_total_end_date        date                                 null comment 'bom汇总结束日期'
+    scheduling_version_no            varchar(255)                         null,
+    tenant_id                        bigint                               null comment '租户ID',
+    is_delete                        tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time                      datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by                        bigint                               null comment '创建人',
+    update_time                      datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by                        bigint                               null comment '修改人',
+    trace_id                         varchar(64)                          null comment '调用链路',
+    version_num                      int        default 0                 null comment '版本号',
+    scheduling_version_name          varchar(255)                         null,
+    scheduling_constraints_id        varchar(255)                         null,
+    header_list                      text                                 null,
+    capacity_header_list             text                                 null,
+    capacity_date_list               varchar(1024)                        null,
+    scheduling_day_count             bigint                               null,
+    version_step                     smallint                             null,
+    version_step_error               varchar(255)                         null,
+    bom_total_end_date               date                                 null comment 'bom汇总结束日期',
+    start_date                       date                                 null comment '开始时间',
+    use_factory_make_capacity        tinyint(1) default 0                 null comment '使用工厂产能约束',
+    use_goods_make_capacity          tinyint(1) default 0                 null comment '使用商品产能约束',
+    use_sale_config_make_capacity    tinyint(1) default 0                 null comment '使用销售配置产能约束',
+    use_project_config_make_capacity tinyint(1) default 0                 null comment '使用工程配置产能约束'
 )
     comment '排产版本表';
 
@@ -3373,7 +3804,7 @@ create index idx_aps_scheduling_version_scheduling_constraints_id
 create index idx_aps_scheduling_version_tenant_id
     on aps_scheduling_version (tenant_id);
 
-create table if not exists aps_scheduling_version_capacity
+create table aps_scheduling_version_capacity
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3431,7 +3862,7 @@ create index idx_aps_scheduling_version_capacity_scheduling_version_id
 create index idx_aps_scheduling_version_capacity_tenant_id
     on aps_scheduling_version_capacity (tenant_id);
 
-create table if not exists aps_scheduling_version_day
+create table aps_scheduling_version_day
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3455,7 +3886,7 @@ create index idx_aps_scheduling_version_day_tenant_id
 create index idx_aps_scheduling_version_day_version_id
     on aps_scheduling_version_day (version_id);
 
-create table if not exists aps_scheduling_version_item
+create table aps_scheduling_version_item
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3513,7 +3944,7 @@ create index idx_aps_scheduling_version_item_scheduling_version_id
 create index idx_aps_scheduling_version_item_tenant_id
     on aps_scheduling_version_item (tenant_id);
 
-create table if not exists aps_scheduling_version_limit
+create table aps_scheduling_version_limit
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3522,8 +3953,8 @@ create table if not exists aps_scheduling_version_limit
     field_name    varchar(255)                         null,
     field_value   varchar(255)                         null,
     current_count tinyint                              null,
-    min           tinyint                              null,
-    max           tinyint                              null,
+    min           int                                  null comment '最小数量',
+    max           int                                  null comment '最大数量',
     tenant_id     bigint                               null comment '租户ID',
     is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
     create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
@@ -3543,7 +3974,34 @@ create index idx_aps_scheduling_version_limit_tenant_id
 create index idx_aps_scheduling_version_limit_version_id
     on aps_scheduling_version_limit (version_id);
 
-create table if not exists aps_status
+create table aps_seller_store
+(
+    id                         bigint auto_increment comment 'ID 自增'
+        primary key,
+    seller_store_code          varchar(32)                          null comment '销售门店编码',
+    seller_store_name          varchar(32)                          null comment '销售门店名称',
+    seller_store_phone         varchar(32)                          null comment '销售门店手机号',
+    seller_store_province_code varchar(32)                          null comment '销售门店省编码',
+    seller_store_city_code     varchar(32)                          null comment '销售门店市编码',
+    seller_store_area_code     varchar(32)                          null comment '销售门店区编码',
+    seller_store_addr          varchar(1024)                        null comment '销售门店地址',
+    seller_store_gd_lon        decimal(10, 6)                       null comment '销售门店高的经纬度 如117.500244',
+    seller_store_gd_lat        decimal(10, 6)                       null comment '销售门店高的经纬度 如 40.417801 ',
+    tenant_id                  bigint                               null comment '租户ID',
+    is_delete                  tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time                datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by                  bigint                               null comment '创建人',
+    update_time                datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by                  bigint                               null comment '修改人',
+    trace_id                   varchar(64)                          null comment '调用链路',
+    version_num                int        default 0                 null comment '版本号'
+)
+    comment 'aps销售门店';
+
+create index idx_scheduling_day_id
+    on aps_seller_store (tenant_id);
+
+create table aps_status
 (
     id                  bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3568,7 +4026,7 @@ create index idx_aps_status_factory_id
 create index idx_aps_status_tenant_id
     on aps_status (tenant_id);
 
-create table if not exists aps_workshop_section
+create table aps_workshop_section
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3591,7 +4049,7 @@ create table if not exists aps_workshop_section
 create index idx_aps_workshop_section_tenant_id
     on aps_workshop_section (tenant_id);
 
-create table if not exists aps_workshop_station
+create table aps_workshop_station
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3615,7 +4073,7 @@ create table if not exists aps_workshop_station
 create index idx_aps_workshop_station_tenant_id
     on aps_workshop_station (tenant_id);
 
-create table if not exists base_app
+create table base_app
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3635,7 +4093,7 @@ create table if not exists base_app
 create index idx_app_code
     on base_app (app_code);
 
-create table if not exists base_app_resource
+create table base_app_resource
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3655,7 +4113,7 @@ create table if not exists base_app_resource
 create index idx_app_id
     on base_app_resource (app_id);
 
-create table if not exists base_dept
+create table base_dept
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3674,7 +4132,78 @@ create table if not exists base_dept
 )
     comment '部门表';
 
-create table if not exists base_resource
+create table base_h3_code
+(
+    id          bigint                               not null comment 'ID 自增'
+        primary key,
+    lat         decimal(13, 6)                       null comment '纬度',
+    lng         decimal(13, 6)                       null comment '经度',
+    value0      bigint                               null comment '第0级对应的h3值',
+    value1      bigint                               null comment '第1级对应的h3值',
+    value2      bigint                               null comment '第2级对应的h3值',
+    value3      bigint                               null comment '第3级对应的h3值',
+    value4      bigint                               null comment '第4级对应的h3值',
+    value5      bigint                               null comment '第5级对应的h3值',
+    value6      bigint                               null comment '第6级对应的h3值',
+    value7      bigint                               null comment '第7级对应的h3值',
+    value8      bigint                               null comment '第8级对应的h3值',
+    value9      bigint                               null comment '第9级对应的h3值',
+    value10     bigint                               null comment '第10级对应的h3值',
+    value11     bigint                               null comment '第11级对应的h3值',
+    value12     bigint                               null comment '第12级对应的h3值',
+    value13     bigint                               null comment '第13级对应的h3值',
+    value14     bigint                               null comment '第14级对应的h3值',
+    value15     bigint                               null comment '第15级对应的h3值',
+    tenant_id   bigint                               null comment '租户ID',
+    is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by   bigint                               null comment '创建人',
+    update_time datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by   bigint                               null comment '修改人',
+    trace_id    varchar(64)                          null comment '调用链路',
+    version_num int        default 0                 null comment '版本号'
+)
+    comment 'H3对应的值';
+
+create index idx_lat
+    on base_h3_code (lat);
+
+create index idx_lng
+    on base_h3_code (lng);
+
+create table base_oplog
+(
+    id               bigint                               not null comment 'id'
+        primary key,
+    content          varchar(128)                         null comment '操作内容',
+    business_key     varchar(128)                         null comment '业务Key',
+    method_name      varchar(128)                         null comment '方法名称',
+    business_type    varchar(128)                         null comment '业务类型',
+    business_type0   varchar(128)                         null comment '业务类型',
+    business_type1   varchar(128)                         null comment '业务类型',
+    business_type2   varchar(128)                         null comment '业务类型',
+    business_type3   varchar(128)                         null comment '业务类型',
+    business_type4   varchar(128)                         null comment '业务类型',
+    url              varchar(128)                         null comment '请求地址',
+    use_time         varchar(128)                         null comment '耗时',
+    param_name       varchar(128)                         null comment '参数名 参数1,参数2',
+    req_body         longtext                             null comment '请求入参',
+    is_success       tinyint                              null comment '是否成功',
+    result_str       longtext                             null comment '请求入参',
+    remark           varchar(128)                         null comment '备注',
+    create_user_name varchar(32)                          null comment '创建人',
+    tenant_id        bigint                               null comment '租户ID',
+    is_delete        tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time      datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by        bigint                               null comment '创建人',
+    update_time      datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by        bigint                               null comment '修改人',
+    trace_id         varchar(64)                          null comment '调用链路',
+    version_num      int        default 0                 null comment '版本号'
+)
+    comment '操作日志';
+
+create table base_resource
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3698,7 +4227,7 @@ create table if not exists base_resource
 )
     comment '资源';
 
-create table if not exists base_role
+create table base_role
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3716,7 +4245,7 @@ create table if not exists base_role
 )
     comment '角色表';
 
-create table if not exists base_role_group
+create table base_role_group
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3733,7 +4262,7 @@ create table if not exists base_role_group
 )
     comment '角色组表';
 
-create table if not exists base_role_group_resource
+create table base_role_group_resource
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3753,7 +4282,7 @@ create table if not exists base_role_group_resource
 create index idx_role_group_id
     on base_role_group_resource (role_group_id);
 
-create table if not exists base_role_resource
+create table base_role_resource
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3770,7 +4299,7 @@ create table if not exists base_role_resource
 )
     comment '角色资源表';
 
-create table if not exists base_supplier
+create table base_supplier
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3795,7 +4324,7 @@ create table if not exists base_supplier
 create index idx_base_supplier_tenant_id
     on base_supplier (tenant_id);
 
-create table if not exists base_table_header
+create table base_table_header
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3823,7 +4352,7 @@ create index idx_base_table_header_tenant_id
 create index idx_biz_key
     on base_table_header (biz_key);
 
-create table if not exists base_user_dept
+create table base_user_dept
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3843,7 +4372,7 @@ create table if not exists base_user_dept
 create index idx_user_id_dept_id
     on base_user_dept (user_id, dept_id);
 
-create table if not exists base_user_resource
+create table base_user_resource
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3863,7 +4392,7 @@ create table if not exists base_user_resource
 create index idx_user_id
     on base_user_resource (user_id);
 
-create table if not exists base_user_role
+create table base_user_role
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3883,7 +4412,7 @@ create table if not exists base_user_role
 create index idx_user_id
     on base_user_role (user_id);
 
-create table if not exists base_user_role_group
+create table base_user_role_group
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3903,7 +4432,7 @@ create table if not exists base_user_role_group
 create index idx_user_id
     on base_user_role_group (user_id);
 
-create table if not exists flow_definition
+create table flow_definition
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3922,7 +4451,7 @@ create table if not exists flow_definition
 )
     comment '工作定义表';
 
-create table if not exists flow_form
+create table flow_form
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3945,7 +4474,7 @@ create index idx_flow_form_code
 create index idx_form_code
     on flow_form (form_code);
 
-create table if not exists flow_form_item
+create table flow_form_item
 (
     id                      bigint auto_increment comment 'ID 自增'
         primary key,
@@ -3973,7 +4502,7 @@ create table if not exists flow_form_item
 create index idx_form_id
     on flow_form_item (form_id);
 
-create table if not exists flow_form_user_value
+create table flow_form_user_value
 (
     id                      bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4007,7 +4536,7 @@ create index idx_business_key
 create index idx_process_instance_id
     on flow_form_user_value (process_instance_id);
 
-create table if not exists flow_group
+create table flow_group
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4024,7 +4553,7 @@ create table if not exists flow_group
 )
     comment '工作流组表';
 
-create table if not exists jcx_buy_order
+create table jcx_buy_order
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4049,7 +4578,7 @@ create table if not exists jcx_buy_order
 create index idx_jcx_buy_order_tenant_id
     on jcx_buy_order (tenant_id);
 
-create table if not exists jcx_buy_order_item
+create table jcx_buy_order_item
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4087,7 +4616,7 @@ create index idx_jcx_buy_order_item_supplier_id
 create index idx_jcx_buy_order_item_tenant_id
     on jcx_buy_order_item (tenant_id);
 
-create table if not exists jcx_buy_plan
+create table jcx_buy_plan
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4115,7 +4644,7 @@ create index idx_jcx_buy_plan_buy_order_id
 create index idx_jcx_buy_plan_tenant_id
     on jcx_buy_plan (tenant_id);
 
-create table if not exists jcx_buy_plan_item
+create table jcx_buy_plan_item
 (
     id                       bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4153,7 +4682,7 @@ create index idx_jcx_buy_plan_item_plan_id
 create index idx_jcx_buy_plan_item_tenant_id
     on jcx_buy_plan_item (tenant_id);
 
-create table if not exists jcx_goods
+create table jcx_goods
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4189,7 +4718,7 @@ create index idx_jcx_goods_supplier_id
 create index idx_jcx_goods_tenant_id
     on jcx_goods (tenant_id);
 
-create table if not exists jcx_goods_warning
+create table jcx_goods_warning
 (
     id                    bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4221,7 +4750,7 @@ create index idx_jcx_goods_warning_goods_id
 create index idx_jcx_goods_warning_tenant_id
     on jcx_goods_warning (tenant_id);
 
-create table if not exists jcx_order
+create table jcx_order
 (
     id                     bigint                               null,
     tenant_id              bigint                               null comment '租户ID',
@@ -4242,7 +4771,7 @@ create table if not exists jcx_order
 create index idx_jcx_order_tenant_id
     on jcx_order (tenant_id);
 
-create table if not exists jcx_order_item
+create table jcx_order_item
 (
     id                     bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4275,7 +4804,7 @@ create index idx_jcx_order_item_order_id
 create index idx_jcx_order_item_tenant_id
     on jcx_order_item (tenant_id);
 
-create table if not exists msg_message
+create table msg_message
 (
     id                bigint                               null,
     tenant_id         bigint                               null comment '租户ID',
@@ -4297,7 +4826,7 @@ create table if not exists msg_message
 create index idx_msg_message_tenant_id
     on msg_message (tenant_id);
 
-create table if not exists msg_message_read
+create table msg_message_read
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4321,7 +4850,7 @@ create index idx_msg_message_read_tenant_id
 create index idx_msg_message_read_user_id
     on msg_message_read (user_id);
 
-create table if not exists t_brand
+create table t_brand
 (
     id           bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4347,7 +4876,7 @@ create index idx_t_brand_factory_id
 create index idx_t_brand_tenant_id
     on t_brand (tenant_id);
 
-create table if not exists t_calendar
+create table t_calendar
 (
     id                bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4374,44 +4903,44 @@ create index idx_t_calendar_factory_id
 create index idx_t_calendar_tenant_id
     on t_calendar (tenant_id);
 
-create table if not exists t_calendar_day
+create table t_calendar_day
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
-    calendar_id varchar(255)                         null,
-    day_month   decimal(15, 6)                       null comment '制造数',
-    day_year    decimal(15, 6)                       null comment '制造数',
-    day_1       decimal(15, 6)                       null comment '制造数',
-    day_2       decimal(15, 6)                       null comment '制造数',
-    day_3       decimal(15, 6)                       null comment '制造数',
-    day_4       decimal(15, 6)                       null comment '制造数',
-    day_5       decimal(15, 6)                       null comment '制造数',
-    day_6       decimal(15, 6)                       null comment '制造数',
-    day_7       decimal(15, 6)                       null comment '制造数',
-    day_8       decimal(15, 6)                       null comment '制造数',
-    day_9       decimal(15, 6)                       null comment '制造数',
-    day_10      decimal(15, 6)                       null comment '制造数',
-    day_11      decimal(15, 6)                       null comment '制造数',
-    day_12      decimal(15, 6)                       null comment '制造数',
-    day_13      decimal(15, 6)                       null comment '制造数',
-    day_14      decimal(15, 6)                       null comment '制造数',
-    day_15      decimal(15, 6)                       null comment '制造数',
-    day_16      decimal(15, 6)                       null comment '制造数',
-    day_17      decimal(15, 6)                       null comment '制造数',
-    day_18      decimal(15, 6)                       null comment '制造数',
-    day_19      decimal(15, 6)                       null comment '制造数',
-    day_20      decimal(15, 6)                       null comment '制造数',
-    day_21      decimal(15, 6)                       null comment '制造数',
-    day_22      decimal(15, 6)                       null comment '制造数',
-    day_23      decimal(15, 6)                       null comment '制造数',
-    day_24      decimal(15, 6)                       null comment '制造数',
-    day_25      decimal(15, 6)                       null comment '制造数',
-    day_26      decimal(15, 6)                       null comment '制造数',
-    day_27      decimal(15, 6)                       null comment '制造数',
-    day_28      decimal(15, 6)                       null comment '制造数',
-    day_29      decimal(15, 6)                       null comment '制造数',
-    day_30      decimal(15, 6)                       null comment '制造数',
-    day_31      decimal(15, 6)                       null comment '制造数',
+    calendar_id bigint                               null comment '日历ID',
+    day_month   smallint                             null comment '制造数',
+    day_year    smallint                             null comment '制造数',
+    day_1       tinyint    default 0                 null comment '制造数',
+    day_2       tinyint    default 0                 null comment '制造数',
+    day_3       tinyint    default 0                 null comment '制造数',
+    day_4       tinyint    default 0                 null comment '制造数',
+    day_5       tinyint    default 0                 null comment '制造数',
+    day_6       tinyint    default 0                 null comment '制造数',
+    day_7       tinyint    default 0                 null comment '制造数',
+    day_8       tinyint    default 0                 null comment '制造数',
+    day_9       tinyint    default 0                 null comment '制造数',
+    day_10      tinyint    default 0                 null comment '制造数',
+    day_11      tinyint    default 0                 null comment '制造数',
+    day_12      tinyint    default 0                 null comment '制造数',
+    day_13      tinyint    default 0                 null comment '制造数',
+    day_14      tinyint    default 0                 null comment '制造数',
+    day_15      tinyint    default 0                 null comment '制造数',
+    day_16      tinyint    default 0                 null comment '制造数',
+    day_17      tinyint    default 0                 null comment '制造数',
+    day_18      tinyint    default 0                 null comment '制造数',
+    day_19      tinyint    default 0                 null comment '制造数',
+    day_20      tinyint    default 0                 null comment '制造数',
+    day_21      tinyint    default 0                 null comment '制造数',
+    day_22      tinyint    default 0                 null comment '制造数',
+    day_23      tinyint    default 0                 null comment '制造数',
+    day_24      tinyint    default 0                 null comment '制造数',
+    day_25      tinyint    default 0                 null comment '制造数',
+    day_26      tinyint    default 0                 null comment '制造数',
+    day_27      tinyint    default 0                 null comment '制造数',
+    day_28      tinyint    default 0                 null comment '制造数',
+    day_29      tinyint    default 0                 null comment '制造数',
+    day_30      tinyint    default 0                 null comment '制造数',
+    day_31      tinyint    default 0                 null comment '制造数',
     factory_id  bigint                               null comment '工厂ID',
     tenant_id   bigint                               null comment '租户ID',
     is_delete   tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
@@ -4433,7 +4962,7 @@ create index idx_t_calendar_day_factory_id
 create index idx_t_calendar_day_tenant_id
     on t_calendar_day (tenant_id);
 
-create table if not exists t_check_report
+create table t_check_report
 (
     id          bigint                               null,
     tenant_id   bigint                               null comment '租户ID',
@@ -4457,7 +4986,7 @@ create index idx_t_check_report_factory_id
 create index idx_t_check_report_tenant_id
     on t_check_report (tenant_id);
 
-create table if not exists t_check_report_list
+create table t_check_report_list
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4496,7 +5025,7 @@ create index idx_t_check_report_list_storey_id
 create index idx_t_check_report_list_tenant_id
     on t_check_report_list (tenant_id);
 
-create table if not exists t_dictionary
+create table t_dictionary
 (
     id               bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4515,7 +5044,7 @@ create table if not exists t_dictionary
 )
     comment '数据字典表';
 
-create table if not exists t_district_code
+create table t_district_code
 (
     id          bigint                               null,
     code        varchar(255)                         null,
@@ -4543,7 +5072,7 @@ create index t_district_code_parent_code_index
 create index t_district_code_path_index
     on t_district_code (path);
 
-create table if not exists t_factory
+create table t_factory
 (
     id             bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4564,7 +5093,7 @@ create table if not exists t_factory
 create index idx_t_factory_tenant_id
     on t_factory (tenant_id);
 
-create table if not exists t_file_upload
+create table t_file_upload
 (
     id              bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4589,7 +5118,7 @@ create table if not exists t_file_upload
 create index idx_t_file_upload_tenant_id
     on t_file_upload (tenant_id);
 
-create table if not exists t_login_account
+create table t_login_account
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4612,7 +5141,7 @@ create table if not exists t_login_account
 create index idx_t_login_account_tenant_id
     on t_login_account (tenant_id);
 
-create table if not exists t_process_line
+create table t_process_line
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4633,7 +5162,7 @@ create table if not exists t_process_line
 )
     comment '产线表';
 
-create table if not exists t_property
+create table t_property
 (
     id            bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4666,7 +5195,7 @@ create index idx_t_property_storey_id
 create index idx_t_property_tenant_id
     on t_property (tenant_id);
 
-create table if not exists t_room
+create table t_room
 (
     id          bigint                               null,
     tenant_id   bigint                               null comment '租户ID',
@@ -4694,7 +5223,7 @@ create index idx_t_room_storey_id
 create index idx_t_room_tenant_id
     on t_room (tenant_id);
 
-create table if not exists t_shift
+create table t_shift
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4718,7 +5247,7 @@ create index idx_t_shift_factory_id
 create index idx_t_shift_tenant_id
     on t_shift (tenant_id);
 
-create table if not exists t_shift_item
+create table t_shift_item
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4743,7 +5272,7 @@ create index idx_t_shift_item_shift_id
 create index idx_t_shift_item_tenant_id
     on t_shift_item (tenant_id);
 
-create table if not exists t_storey
+create table t_storey
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
@@ -4768,7 +5297,7 @@ create index idx_t_storey_factory_id
 create index idx_t_storey_tenant_id
     on t_storey (tenant_id);
 
-create table if not exists t_tenant_info
+create table t_tenant_info
 (
     id          bigint auto_increment comment 'ID 自增'
         primary key,
