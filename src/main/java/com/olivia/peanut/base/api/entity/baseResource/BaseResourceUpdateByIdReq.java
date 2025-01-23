@@ -1,14 +1,7 @@
 package com.olivia.peanut.base.api.entity.baseResource;
 
-import java.time.LocalDateTime;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -23,9 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class BaseResourceUpdateByIdReq extends BaseResourceDto {
 
-
-  public void checkParam() {
-  }
 
 }
 

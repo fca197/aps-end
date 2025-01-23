@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class ProcessLineInsertReq extends ProcessLineDto {
 
-  public void checkParam() {
-  }
+
 }
 

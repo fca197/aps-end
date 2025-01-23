@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingConstraintsUpdateByIdReq extends ApsSchedulingConstraintsDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -1,12 +1,10 @@
 package com.olivia.peanut.portal.api.entity.fileUpload;
 
-import static com.olivia.sdk.utils.Str.SQLITE;
-
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.olivia.sdk.ann.BelongDb;
 import lombok.Getter;
 import lombok.Setter;
+
 
 /**
  * (FileUpload)查询对象返回
@@ -17,7 +15,6 @@ import lombok.Setter;
 //@Accessors(chain=true)
 @Getter
 @Setter
-@BelongDb(SQLITE)
 public class FileUploadDto extends BaseEntityDto {
 
   @ExcelProperty("文件名称")

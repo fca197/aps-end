@@ -1,9 +1,5 @@
 package com.olivia.peanut.aps.service.impl;
 
-import static com.alibaba.fastjson2.JSON.toJSONString;
-import static com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
-import static com.olivia.sdk.utils.ValueUtils.value2Str;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -18,9 +14,10 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
-import com.olivia.peanut.aps.api.entity.apsOrder.OrderStatusEnum;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersion.*;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.aps.mapper.ApsSchedulingVersionMapper;
 import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
@@ -52,7 +49,14 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -63,12 +67,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.alibaba.fastjson2.JSON.toJSONString;
+import static com.olivia.peanut.aps.con.ApsStr.GOODS_STATUS_ID;
+import static com.olivia.peanut.aps.utils.capacity.model.Limit.LimitTypeEnum.SALE_CONFIG_LIMIT;
+import static com.olivia.sdk.utils.FieldUtils.getField;
+import static com.olivia.sdk.utils.ValueUtils.value2Str;
+import static java.lang.Boolean.FALSE;
 
 /**
  * (ApsSchedulingVersion)表服务实现类
@@ -225,29 +229,31 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<ConstrainedContent> constrainedList = JSON.parseArray(schedulingConstraints.getConstraintsContext(), ConstrainedContent.class);
 
       // 获取数据
-      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().lt(ApsOrder::getOrderStatus, OrderStatusEnum.DELIVERED.getCode()));
+      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().lt(ApsOrder::getOrderStatus, ApsOrderStatusEnum.DELIVERED.getCode()));
       Map<Long, ApsSaleConfig> saleConfigMap = new HashMap<>();
       Map<Long, List<ApsOrderGoodsSaleConfig>> saleMap = new HashMap<>();
 
+      List<Long> orderIdList = orderList.stream().map(BaseEntity::getId).toList();
+      $.requireNonNullCanIgnoreException(orderIdList, "订单为空");
       if (hasSale(constrainedList, SALE)) {
         saleConfigMap.putAll(apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity())));
         saleMap.putAll(apsOrderGoodsSaleConfigService.list(
-                new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderList.stream().map(BaseEntity::getId).toList())).stream()
+                new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList)).stream()
             .collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
       }
 
       Map<Long, String> orderIdNoMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, ApsOrder::getOrderNo));
 
       List<ApsOrderGoods> goodsList = this.apsOrderGoodsService.list(
-          new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, orderList.stream().map(BaseEntity::getId).toList()));
+          new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, orderIdList));
       Map<Long, ApsOrder> oMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
       // 分组排序
       List<Map<String, Object>> orgList = goodsList.stream().map(t -> {
         Map<String, Object> map = new HashMap<>();
         map.putAll(BeanUtil.beanToMap(t));
         map.putAll(BeanUtil.beanToMap(oMap.get(t.getOrderId())));
-        map.put("factoryId", t.getFactoryId());
-        map.put("orderNo", orderIdNoMap.get(t.getOrderId()));
+        map.put(ApsStr.FACTORY_ID, t.getFactoryId());
+        map.put(ApsStr.ORDER_NO, orderIdNoMap.get(t.getOrderId()));
         saleMap.getOrDefault(t.getOrderId(), List.of()).forEach(s -> {
           ApsSaleConfig apsSaleConfig = saleConfigMap.get(s.getConfigId());
           map.put("sale_" + apsSaleConfig.getParentId(), apsSaleConfig.getId());
@@ -271,9 +277,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<ApsSchedulingVersionItem> itemList = result.getDataList().stream().map(m -> {
         ApsSchedulingVersionItem item = new ApsSchedulingVersionItem().setSchedulingVersionId(req.getId());
         item.setId(IdWorker.getId());
-        item.setFactoryId((Long) m.get("factoryId"));
-        item.setGoodsId((Long) m.get("goodsId"));
-        item.setOrderNo((String) m.get("orderNo"));
+        item.setFactoryId((Long) m.get(ApsStr.FACTORY_ID));
+        item.setGoodsId((Long) m.get(ApsStr.GOODS_ID));
+        item.setOrderNo((String) m.get(ApsStr.ORDER_NO));
         item.setNumberIndex((Long) m.get("numberIndex"));
         item.setOrderId((Long) m.get("id"));
         IntStream.range(0, Math.min(result.getHeaderList().size(), 20)).forEach(i -> {
@@ -327,7 +333,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     List<ApsSchedulingVersionItem> schedulingList = this.apsSchedulingVersionItemService.list(
         new LambdaQueryWrapper<ApsSchedulingVersionItem>().eq(ApsSchedulingVersionItem::getSchedulingVersionId, req.getId()));
     //
-    LocalDate nowDate = LocalDate.now().plusDays(1);
+
+    List<Long> orderIdList = schedulingList.stream().map(ApsSchedulingVersionItem::getOrderId).toList();
+
+    LocalDate nowDate = schedulingVersion.getStartDate();
     LocalDate lastDate = nowDate.plusDays(schedulingVersion.getSchedulingDayCount());
 
     List<LocalDate> localDateBetween = DateUtils.getLocalDateBetween(nowDate, lastDate);
@@ -359,14 +368,20 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
     LambdaQueryWrapper<ApsMakeCapacityFactory> factoryUpdateWrapper = new LambdaQueryWrapper<>();
     LambdaQueryWrapper<ApsMakeCapacitySaleConfig> configLambdaQueryWrapper = new LambdaQueryWrapper<>();
-    LambdaQueryWrapper<CalendarDay> queryWrapper = new LambdaQueryWrapper<>();
+    LambdaQueryWrapper<CalendarDay> calendarDayLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    LambdaQueryWrapper<ApsMakeCapacityGoods> apsMakeCapacityGoodsWrapper = new LambdaQueryWrapper<>();
+    setCapacityWrapper(schedulingVersion.getUseFactoryMakeCapacity(), factoryUpdateWrapper);
+    setCapacityWrapper(schedulingVersion.getUseGoodsMakeCapacity(), apsMakeCapacityGoodsWrapper);
+    setCapacityWrapper(schedulingVersion.getUseSaleConfigMakeCapacity(), configLambdaQueryWrapper);
+    // 工程配置 TODO： 待实现
 
     ymList.forEach(t -> {
-      factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.get(0)).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
-      configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.get(0)).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
-      queryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.get(0)).eq(CalendarDay::getDayMonth, t.get(1)));
+      factoryUpdateWrapper.or(r -> r.eq(ApsMakeCapacityFactory::getYear, t.getFirst()).eq(ApsMakeCapacityFactory::getMonth, t.get(1)));
+      configLambdaQueryWrapper.or(r -> r.eq(ApsMakeCapacitySaleConfig::getYear, t.getFirst()).eq(ApsMakeCapacitySaleConfig::getMonth, t.get(1)));
+      calendarDayLambdaQueryWrapper.or(r -> r.eq(CalendarDay::getDayYear, t.getFirst()).eq(CalendarDay::getDayMonth, t.get(1)));
+      apsMakeCapacityGoodsWrapper.or(r -> r.eq(ApsMakeCapacityGoods::getYear, t.getFirst()).eq(ApsMakeCapacityGoods::getMonth, t.get(1)));
     });
-    Map<String, CalendarDay> calendarDayMap = calendarDayService.list(queryWrapper).stream()
+    Map<String, CalendarDay> calendarDayMap = calendarDayService.list(calendarDayLambdaQueryWrapper).stream()
         .collect(Collectors.toMap(t -> t.getDayYear() + "-" + t.getDayMonth() + "-" + t.getFactoryId(), Function.identity()));
     Map<String, ApsMakeCapacityFactory> makeCapacityFactoryMap = this.apsMakeCapacityFactoryService.list(factoryUpdateWrapper).stream()
         .collect(Collectors.toMap(t -> t.getYear() + "-" + t.getMonth(), Function.identity(), (a, b) -> a));
@@ -374,9 +389,8 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     Map<String, List<ApsMakeCapacitySaleConfig>> makeCapacitySaleConfigMap = this.apsMakeCapacitySaleConfigService.list(configLambdaQueryWrapper).stream()
         .collect(Collectors.groupingBy(t -> t.getYear() + "-" + t.getMonth()));
 
-    LambdaQueryWrapper<ApsMakeCapacityGoods> apsMakeCapacityGoodsWrapper = new LambdaQueryWrapper<>();
-
     List<ApsMakeCapacityGoods> makeCapacityGoodsList = this.apsMakeCapacityGoodsService.list(apsMakeCapacityGoodsWrapper);
+
     Map<String, List<ApsMakeCapacityGoods>> makeCapacityGoodsMap = makeCapacityGoodsList.stream().collect(Collectors.groupingBy(t -> t.getYear() + "-" + t.getMonth()));
 
     List<Limit> limitList = new ArrayList<>();
@@ -387,9 +401,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         .collect(Collectors.toMap(ApsGoods::getId, ApsGoods::getGoodsName));
     Map<Long, List<ApsOrderGoodsSaleConfig>> orderSaleListMap = new HashMap<>();
     Map<Long, ApsSaleConfig> apsSaleConfigMap = new HashMap<>();
+
     if (CollUtil.isNotEmpty(makeCapacitySaleConfigMap)) {
       apsSaleConfigMap.putAll(this.apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity())));
-      orderSaleListMap.putAll(this.apsOrderGoodsSaleConfigService.list().stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
+      orderSaleListMap.putAll(this.apsOrderGoodsSaleConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList)).stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
     }
 
     localDateBetween.forEach(ym -> {
@@ -400,22 +415,23 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       if (Objects.nonNull(apsMakeCapacityFactory)) {
         CalendarDay calendarDay = calendarDayMap.get(ymKey + "-" + apsMakeCapacityFactory.getFactoryId());
         if (Objects.isNull(calendarDay)) {
-          log.info("{}  {} 空节点", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
+          log.info("工厂Id: {}  {} 日期为空，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
-        Object value = ReflectUtil.getFieldValue(calendarDay, "day" + ym.getDayOfMonth());
-        if (Boolean.FALSE.equals(value)) {
-          log.info("{}  {} 移除非工作日", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
+        Field field = getField(calendarDay, "day" + ym.getDayOfMonth());
+        Object value = FieldUtils.getFieldValue(calendarDay, field);
+        if (FALSE.equals(value)) {
+          log.info("工厂ID: {}  {} 非工作日，移除", fnMap.get(apsMakeCapacityFactory.getFactoryId()), currentDate);
           return;
         }
-        Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth());
-        Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth());
+        Integer min = (Integer) FieldUtils.getFieldValue(apsMakeCapacityFactory, getField(apsMakeCapacityFactory, "dayMin" + ym.getDayOfMonth()));
+        Integer max = (Integer) FieldUtils.getFieldValue(apsMakeCapacityFactory, getField(apsMakeCapacityFactory, "dayMax" + ym.getDayOfMonth()));
         Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId()))
-            .setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId())).setFieldName("factoryId").setShowName(fnMap.get(apsMakeCapacityFactory.getFactoryId()))
+            .setFieldValue(value2Str(apsMakeCapacityFactory.getFactoryId())).setFieldName(ApsStr.FACTORY_ID).setShowName(fnMap.get(apsMakeCapacityFactory.getFactoryId()))
             .setLimitTypeEnum(LimitTypeEnum.FACTORY_LIMIT);
         limitList.add(limit);
       } else {
-        log.info("{}  {} 空节点", "工厂", currentDate);
+        log.info("工厂: {}  {} 空节点", "工厂", currentDate);
         return;
       }
       List<ApsMakeCapacityGoods> apsMakeCapacityGoodsList = makeCapacityGoodsMap.get(ymKey);
@@ -423,10 +439,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
         for (ApsMakeCapacityGoods apsMakeCapacityGoods : apsMakeCapacityGoodsList) {
           if (Objects.nonNull(apsMakeCapacityGoods)) {
 
-            Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, "dayMin" + ym.getDayOfMonth());
-            Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacityGoods, "dayMax" + ym.getDayOfMonth());
+            Field minField = getField(apsMakeCapacityGoods, "dayMin" + ym.getDayOfMonth());
+            Field maxField = getField(apsMakeCapacityGoods, "dayMax" + ym.getDayOfMonth());
+            Integer min = (Integer) FieldUtils.getFieldValue(apsMakeCapacityGoods, minField);
+            Integer max = (Integer) FieldUtils.getFieldValue(apsMakeCapacityGoods, maxField);
             Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacityGoods.getGoodsId()))
-                .setFieldName("goodsId").setShowName(gnMap.get(apsMakeCapacityGoods.getGoodsId())).setLimitTypeEnum(LimitTypeEnum.GOODS_LIMIT);
+                .setFieldName(ApsStr.GOODS_ID).setShowName(gnMap.get(apsMakeCapacityGoods.getGoodsId())).setLimitTypeEnum(LimitTypeEnum.GOODS_LIMIT);
             limitList.add(limit);
           }
         }
@@ -440,8 +458,11 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
             return;
           }
           ApsSaleConfig parentSaleConfig = apsSaleConfigMap.get(apsSaleConfig.getParentId());
-          Integer min = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, "dayMin" + ym.getDayOfMonth());
-          Integer max = (Integer) ReflectUtil.getFieldValue(apsMakeCapacitySaleConfig, "dayMax" + ym.getDayOfMonth());
+
+          Field minField = getField(apsMakeCapacitySaleConfig, "dayMin" + ym.getDayOfMonth());
+          Field maxField = getField(apsMakeCapacitySaleConfig, "dayMax" + ym.getDayOfMonth());
+          Integer min = (Integer) FieldUtils.getFieldValue(apsMakeCapacitySaleConfig, minField);
+          Integer max = (Integer) FieldUtils.getFieldValue(apsMakeCapacitySaleConfig, maxField);
           Limit limit = new Limit().setCurrentDate(currentDate).setMin(min).setMax(max).setCurrentCount(0).setFieldValue(value2Str(apsMakeCapacitySaleConfig.getSaleConfigId()))
               .setFieldName(SALE + apsSaleConfig.getParentId()).setShowName(parentSaleConfig.getSaleName() + "_" + apsSaleConfig.getSaleName()).setLimitTypeEnum(SALE_CONFIG_LIMIT);
           limitList.add(limit);
@@ -484,10 +505,10 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
           .setHasEnough(info.getLimitList().stream().noneMatch(t -> t.getCurrentCount() < t.getMin())));
       mapList.forEach(map -> {
         ApsSchedulingVersionCapacity apsSchedulingVersionCapacity = new ApsSchedulingVersionCapacity();
-        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate()).setOrderNo((String) map.get("orderNo"));
+        apsSchedulingVersionCapacity.setSchedulingVersionId(req.getId()).setCurrentDay(info.getCurrentDate()).setOrderNo((String) map.get(ApsStr.ORDER_NO));
         apsSchedulingVersionCapacity.setId(IdWorker.getId());
-        apsSchedulingVersionCapacity.setGoodsId((Long) map.get("goodsId")).setOrderId((Long) map.get("orderId")).setFactoryId((Long) map.get("factoryId"))
-            .setGoodsStatusId((Long) map.get("goodsStatusId"));
+        apsSchedulingVersionCapacity.setGoodsId((Long) map.get(ApsStr.GOODS_ID)).setOrderId((Long) map.get(ApsStr.ORDER_ID)).setFactoryId((Long) map.get(ApsStr.FACTORY_ID))
+            .setGoodsStatusId((Long) map.get(GOODS_STATUS_ID));
         apsSchedulingVersionCapacity.setNumberIndex(index.getAndIncrement());
         IntStream.range(0, limitListFinal.size()).forEach(l -> {
           Limit limit = limitListFinal.get(l);
@@ -532,7 +553,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     apsSchedulingVersionLimitService.saveBatch(insertLimit);
     apsSchedulingVersionCapacityService.remove(new LambdaQueryWrapper<ApsSchedulingVersionCapacity>().eq(ApsSchedulingVersionCapacity::getSchedulingVersionId, req.getId()));
     apsSchedulingGoodsBomTotalService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBomTotal>().eq(ApsSchedulingGoodsBomTotal::getSchedulingId, req.getId()));
-    apsSchedulingGoodsBomService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBom>().eq(ApsSchedulingGoodsBom::getSchedulingId, req.getId()));
+    apsSchedulingGoodsBomService.remove(new LambdaQueryWrapper<ApsSchedulingGoodsBom>().in(ApsSchedulingGoodsBom::getOrderId, orderIdList).eq(ApsSchedulingGoodsBom::getSchedulingId, req.getId()));
     if (CollUtil.isNotEmpty(apsSchedulingVersionCapacityList)) {
       this.apsSchedulingVersionCapacityService.saveBatch(apsSchedulingVersionCapacityList);
     }
@@ -541,7 +562,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       Map<String, List<ApsSchedulingGoodsBom>> bomsTotalMap = apsSchedulingGoodsBomList.stream().collect(Collectors.groupingBy(t -> t.getBomId() + "" + t.getBomUseDate()));
       List<ApsSchedulingGoodsBomTotal> insertApsSchedulingGoodsBomList = new ArrayList<>();
       bomsTotalMap.values().forEach(bomList -> {
-        ApsSchedulingGoodsBom apsSchedulingGoodsBom = bomList.get(0);
+        ApsSchedulingGoodsBom apsSchedulingGoodsBom = bomList.getFirst();
         ApsSchedulingGoodsBomTotal bomTotal = $.copy(apsSchedulingGoodsBom, ApsSchedulingGoodsBomTotal.class);
         insertApsSchedulingGoodsBomList.add(bomTotal);
         IntStream.range(1, bomList.size()).forEach(i -> {
@@ -556,6 +577,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     apsSchedulingGoodsStatusDateService.saveBatch(apsOrderGoodsStatusDateList);
 //    updateApsOrderGoodsStatusDate(apsGoodsList, apsOrderGoodsStatusDateList);
     return new ApsSchedulingVersionUseMakeCapacityRes();
+  }
+
+  private static void setCapacityWrapper(Boolean bool, LambdaQueryWrapper<? extends BaseEntity> wrapper) {
+    if (FALSE.equals(bool)) {
+      wrapper.eq(BaseEntity::getId, Long.MIN_VALUE);
+    }
   }
 
   private void updateApsOrderGoodsStatusDate(Set<OrderGoods> orderGoodsSet, List<ApsOrderGoodsStatusDate> apsOrderGoodsStatusDateList) {
@@ -598,7 +625,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       ret.putAll(BeanUtil.beanToMap(t));
       ret.put("goodsName", gnMap.get(t.getGoodsId()));
       ret.put("userName", unMap.get(t.getOrderId()));
-      ret.put("orderNo", apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
+      ret.put(ApsStr.ORDER_NO, apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
       return ret;
     }).collect(Collectors.toList());
 
@@ -640,7 +667,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       ret.putAll(BeanUtil.beanToMap(t));
       ret.put("goodsName", gnMap.get(t.getGoodsId()));
       ret.put("userName", unMap.get(t.getOrderId()));
-      ret.put("orderNo", apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
+      ret.put(ApsStr.ORDER_NO, apsOrderMap.getOrDefault(t.getOrderId(), new ApsOrder()).getOrderNo());
       ret.put("preNumberIndex", versionItemMap.getOrDefault(t.getOrderId(), new ApsSchedulingVersionItem()).getNumberIndex());
       return ret;
     }).collect(Collectors.toList());
@@ -669,7 +696,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
   private List<Header> getResultHeader(String headerStr) {
     ArrayList<Header> headerList = new ArrayList<>();
-    headerList.add(new Header().setFieldName("orderNo").setShowName("订单号").setWidth(150));
+    headerList.add(new Header().setFieldName(ApsStr.ORDER_NO).setShowName("订单号").setWidth(150));
     headerList.add(new Header().setFieldName("numberIndex").setShowName("预排序号").setWidth(80));
     headerList.add(new Header("goodsName", "商品名称", 100, ""));
     headerList.add(new Header("userName", "用户名", 100, ""));
@@ -684,7 +711,7 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
   private List<Header> getMakeResultHeader(String headerStr) {
     ArrayList<Header> headerList = new ArrayList<>();
 //    headerList.add(new Header().setFieldName("id").setShowName("序号").setWidth(200));
-    headerList.add(new Header().setFieldName("orderNo").setShowName("订单号").setWidth(150));
+    headerList.add(new Header().setFieldName(ApsStr.ORDER_NO).setShowName("订单号").setWidth(150));
     headerList.add(new Header().setFieldName("preNumberIndex").setShowName("预排序号").setWidth(80));
     headerList.add(new Header().setFieldName("numberIndex").setShowName("产能序号").setWidth(80));
     headerList.add(new Header("goodsName", "商品名称", 100, ""));
@@ -722,7 +749,6 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
 
     if (Objects.nonNull(obj)) {
       q.eq(StringUtils.isNoneBlank(obj.getSchedulingVersionNo()), ApsSchedulingVersion::getSchedulingVersionNo, obj.getSchedulingVersionNo())
-
       ;
     }
     q.orderByDesc(ApsSchedulingVersion::getId);

@@ -16,9 +16,6 @@ import lombok.Setter;
 public class BrandImportReq extends BrandDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

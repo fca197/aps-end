@@ -16,8 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsGoodsForecastInsertReq extends ApsGoodsForecastDto {
 
-  public void checkParam() {
-    this.buildMonthList();
-  }
+
 }
 

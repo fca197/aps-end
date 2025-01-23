@@ -22,8 +22,5 @@ public class ApsGoodsForecastMakeBomUseExportQueryPageListReq {
   private ApsGoodsForecastMakeBomUseDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

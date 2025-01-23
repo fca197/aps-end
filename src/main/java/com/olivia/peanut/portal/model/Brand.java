@@ -1,14 +1,12 @@
 package com.olivia.peanut.portal.model;
 
 
-import static com.olivia.sdk.utils.Str.SQLITE;
-
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.olivia.sdk.ann.BelongDb;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 
 /**
  * 品牌信息(Brand)表实体类
@@ -21,7 +19,6 @@ import lombok.experimental.Accessors;
 @Setter
 //
 @TableName("t_brand")
-@BelongDb(dataSourceNames = {SQLITE})
 public class Brand extends BaseEntity {
 
   /***

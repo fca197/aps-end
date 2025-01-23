@@ -5,22 +5,22 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.processLine.*;
 import com.olivia.peanut.portal.mapper.ProcessLineMapper;
 import com.olivia.peanut.portal.model.ProcessLine;
 import com.olivia.peanut.portal.service.ProcessLineService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 流水线信息(ProcessLine)表服务实现类
@@ -98,7 +98,7 @@ public class ProcessLineServiceImpl extends MPJBaseServiceImpl<ProcessLineMapper
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("processId", "所属进程id")
         .addHeader("lineName", "线别名称")
         .addHeader("lineCode", "线别编码")

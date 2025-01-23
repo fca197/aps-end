@@ -2,12 +2,11 @@ package com.olivia.peanut.portal.api.entity.shift;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.shiftItem.ShiftItemDto;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * (Shift)查询对象返回

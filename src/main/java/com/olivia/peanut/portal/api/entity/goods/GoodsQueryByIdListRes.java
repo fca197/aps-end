@@ -1,10 +1,10 @@
 package com.olivia.peanut.portal.api.entity.goods;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 商品信息(Goods)查询对象返回

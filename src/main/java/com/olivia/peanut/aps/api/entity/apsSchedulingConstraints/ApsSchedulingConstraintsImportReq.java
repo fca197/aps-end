@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingConstraintsImportReq extends ApsSchedulingConstraintsDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

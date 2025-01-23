@@ -28,6 +28,9 @@ peanut:
     - /districtCode
     - /test/flow
     - /camunda
+    - /basePreview/info
+    - /apsSchedulingDayConfigVersionDetailMachine/exportQueryPageList
+  #    - /
   #    - /uber/h3/geoToH3Address
   redis-key:
     user-token: ut_
@@ -39,15 +42,16 @@ peanut:
     forecast-main-prefix: MAIN-
     forecast-main-suffix: 预测数据
   orderStatusUpdateNeedDayCount: 60
+  # 钉钉配置， 不接入可不配置
   ding-config-list:
     - ding-code: msgNotice
       ding-name: 消息通知
-      app-id: 3126584161
       client-id: dingAppClientId
       robot-code: dingAppKey
       client-secret: dingAppSecret
       agent-id: dingAppId
       use-stream: true
+  # 钉钉配置， 不接入可不配置
   server-notice-user-id-map:
     common:
       - 1
@@ -55,10 +59,253 @@ peanut:
       - 1
     end:
       - 1
+  filter-table-list: # 数据条件过滤， 不配置则不区分数据，支持单值，多值匹配
+    - column-name: tenant_id
+      one-filter-value: true
+      data-permission-type: tenant_id  # 实现 DataPermissionService 接口， getType()值
+      ignore-path: # 先验证 , 支持通配符，oneFilterValue=true配置表名 ，=false配置mapperId
+        - t_district_code
+        - base_resource
+        - base_table_header
+        - t_file_upload
+        - t_login_account
+        - t_tenant_info
+
+      filter-path: # 后验证
+        - /
+  public-key: >
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxcyfd8+Rv2sbWBXClt
+    /p1XvgaHocgNN0AEiSNWYsbBVvPxTJbHEugmQYeExb39F18XBaglYfK3ocDYuN
+    02TUY4IRmRkwUYlOyJccvtABfIzR8Ca096ecYskO9Qv3TSyJHt8kHX96S/0oZe
+    juRpSQXFOeFjvzju9uvvSlJwa99b5Sp8XLHDgQw6kEataOZTgH/5qg9SR29J8H
+    eTMKBeWvK/YQ05aJLsOZcSFgWEiZVYhQJx5tZwXcJRwYXXQ/HNA4lB6MFDvw+1
+    Qjyq7frCvitLPwqydWhp+ktU1FDeJ/M31xR0XZrpHqsyOTNEOEmyr38OtV8+jv
+    Von60likPjt+eQIDAQAB
+  License-code: >
+    AYa9muOIUGgrF9DLdPuPJmKzf0cEgHy8c5nJM08R6J8TfOjfs8QEmndWQbNQmhdD
+    zGD4ke498osfxPH3XujFOaSFw12Uh/sGm/MK68lDPPVVZEoMfTSsnaJIv25L5Ils
+    wmtrackG/WT2PMw4OHgsEmoVoQtEAjwVBx1UNjPvruWNYjMJE0hvskmE4XVLmyMg
+    6lIo9psHLG2uJa1as7pRuhcXL7kAKs3Pe2fUg1du2HpaAVtk0GQT3cfsOlX8dM//
+    f7qHu9IQJogb4/lrWXHk4SaVD5E0pTMcLvrFguUiXPz4euJrzkbC6FV23XheLorP
+    SZ/ZLoA1Bjah9nPtZOh6NQ==
+db:
+  url: >
+    jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8
+    &useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    &allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
+  username: root
+  password: root
+  mysql-driver: com.mysql.cj.jdbc.Driver
+  data-source-type: com.zaxxer.hikari.HikariDataSource
+
+
 spring:
-  boot:
-    custom:
-      classloader: com.olivia.peanut.MyClassLoader
+  mail:
+    # 参考 https://baijiahao.baidu.com/s?id=1695308391844521693&wfr=spider&for=pc
+    password: 邮箱授权码
+    username: 邮箱地址
+    host: 邮箱发送地址
+    port: 465
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+  shardingsphere:
+    datasource:
+      # 默认数据源
+      sharding:
+        default-data-source-name: db_0
+      names: db_0
+      db_0:
+        type: ${db.data-source-type}
+        driver-class-name: ${db.mysql-driver}
+        jdbc-url: ${db.url}
+        username: ${db.username}
+        password: ${db.password}
+      db_1:
+        type: ${db.data-source-type}
+        driver-class-name: ${db.mysql-driver}
+        jdbc-url: ${db.url}
+        username: ${db.username}
+        password: ${db.password}
+    rules:
+
+      sharding:
+        auditors:
+          mustHasShardingId:
+            type: DML_SHARDING_CONDITIONS
+        tables:
+          aps_scheduling_goods_bom_total:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_total_${0..1}
+            database-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_db_alg
+            table-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_alg
+          aps_rolling_forecast_order_item:
+            actual-data-nodes: db_${0..1}.aps_rolling_forecast_order_item_${0..1}
+            database-strategy:
+              standard:
+                sharding-column: forecast_id
+                sharding-algorithm-name: aps_database_inline_forecast_id
+            table-strategy:
+              standard:
+                sharding-column: forecast_id
+                sharding-algorithm-name: aps_rolling_forecast_order_item_alg
+          aps_goods_bom_buy_plan_item:
+            actual-data-nodes: db_${0..1}.aps_goods_bom_buy_plan_item_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: buy_plan_id
+                sharding-algorithm-name: aps_database_inline_plan_id
+            table-strategy:
+              standard:
+                sharding-column: buy_plan_id
+                sharding-algorithm-name: aps_goods_bom_buy_plan_item_alg
+          aps_order_goods_status_date:
+            actual-data-nodes: db_${0..1}.aps_order_goods_status_date_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_status_date_algorithm
+          aps_order_goods_project_config:
+            actual-data-nodes: db_${0..1}.aps_order_goods_project_config_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_project_config_algorithm
+
+          aps_order_goods_sale_config:
+            actual-data-nodes: db_${0..1}.aps_order_goods_sale_config_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_sale_config_algorithm
+          aps_order_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_order_goods_bom_${0..2}
+            # aps_order_goods_bom库路由
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            # aps_order_goods_bom表路由
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_bom_algorithm
+            audit-strategy:
+              auditor-names:
+                mustHasShardingId
+
+          aps_scheduling_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_scheduling_goods_bom_algorithm
+        #            audit-strategy:
+        #              auditor-names:
+        #                mustHasShardingId
+
+
+        sharding-algorithms:
+          schedulingId_db_alg:
+            type: INLINE
+            props:
+              algorithm-expression: db_${scheduling_id % 1}
+          schedulingId_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_total_${scheduling_id % 1}
+
+          # aps_order_goods_bom库路由算法
+          aps_database_inline_order_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${order_id % 1}
+
+          aps_database_inline_forecast_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${forecast_id % 1}
+
+          aps_database_inline_plan_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${buy_plan_id % 1}
+
+          aps_rolling_forecast_order_item_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_rolling_forecast_order_item_${forecast_id % 1}
+
+
+          aps_goods_bom_buy_plan_item_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_goods_bom_buy_plan_item_${buy_plan_id % 1}
+
+          aps_order_goods_status_date_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_status_date_${order_id % 1}
+
+          aps_order_goods_project_config_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_project_config_${order_id % 1}
+
+          aps_order_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_bom_${order_id % 1}
+
+          aps_scheduling_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_${order_id % 1}
+
+
+          aps_order_goods_sale_config_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_sale_config_${order_id % 1}
+        default-audit-strategy:
+          auditor-names:
+            - mustHasShardingId
+      sql-parser:
+        sql-comment-parse-enabled: false
+    #        sql-parse-enabled: false
+
+    props:
+      check-table-metadata-enabled: false
+      sql-show: true
+      sql-comment-parse-enabled: true
+
+
   application:
     name: peanut-api
   servlet:
@@ -79,7 +326,7 @@ spring:
       #最大连接数，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
       maximum-pool-size: 30
       #最小空闲连接，默认值 10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
-      minimum-idle: 5
+      minimum-idle: 30
       #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
       connection-timeout: 60000
       #空闲连接超时时间，默认值600000ms（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；
@@ -93,25 +340,43 @@ spring:
       connection-init-sql: select 2
       keepalive-time: 30000
       validation-timeout: 3000
-      wait-timeout: 3000
-      unitTest: true
       leakDetectionThreshold: 30000
 
 
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://local:3306/peanut_prod?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&allowMultiQueries=true&autoReconnect=true&rewriteBatchedStatements=true
+    url: >
+      jdbc:mysql://
+      local:3306/peanut_prod
+      ?useUnicode=true
+      &characterEncoding=utf8
+      &useSSL=false
+      &serverTimezone=Asia/Shanghai
+      &allowPublicKeyRetrieval=true
+      &allowMultiQueries=true
+      &autoReconnect=true
+      &rewriteBatchedStatements=true
     username: root
     password: 123456
+    type: com.zaxxer.hikari.HikariDataSource
 
-  redis:
-    redisson:
-      file: classpath:redisson.yml
+  #  redis:
+  #    redisson:
+  #      file: classpath:redisson.yml
   data:
     redis:
       database: 3
       host: redis.com
       password: admin!@#q123
       port: 6379
+      jedis:
+        pool:
+          max-idle: 20
+          min-idle: 20
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml,classpath:/mapper/*/*.xml  # 指定 MyBatis Mapper XML 文件的位置
+  type-aliases-package: com.olivia.peanut.*.model  # 指定实体类所在包名
 
 
 logging:
@@ -121,20 +386,20 @@ logging:
     "org.springframework.jdbc.core": debug
     "org.apache.ibatis.logging.jdbc": debug
 #    com.olivia.peanut.aps.utils.forecast: error
-#    com.olivia.peanut.portal.model: error
+    com.olivia.peanut.sdk: info
 #    com.zaxxer.hikari: trace
 
 
-camunda:
-  bpm:
-    # 是否开启
-    enabled: false
-    auto-deployment-enabled: true
-    admin-user:
-      id: demo
-      # admin 账户必须修改
-      password: demo
-      firstName: Demo
-    webapp:
-      enabled: true
-      index-redirect-enabled: true
+#camunda:
+#  bpm:
+#    # 是否开启
+#    enabled: false
+#    auto-deployment-enabled: true
+#    admin-user:
+#      id: demo
+#      # admin 账户必须修改
+#      password: demo
+#      firstName: Demo
+#    webapp:
+#      enabled: true
+#      index-redirect-enabled: true

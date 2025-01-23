@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class JcxGoodsWarningInsertReq extends JcxGoodsWarningDto {
 
-  public void checkParam() {
-  }
+
 }
 

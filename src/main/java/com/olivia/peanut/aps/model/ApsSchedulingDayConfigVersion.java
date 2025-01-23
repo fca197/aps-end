@@ -1,17 +1,14 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigVersionProductType;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDate;
 
 /**
  * 排程版本(ApsSchedulingDayConfigVersion)表实体类
@@ -46,5 +43,12 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
   private Boolean isIssuedThird;
 
   private String headerList;
+
+  // 生产方式  ， 工艺路径， 制造路径
+  private ApsSchedulingDayConfigVersionProductType productType;
+
+  //
+  private Integer bbb;
+
 }
 

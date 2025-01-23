@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsMakeCapacityFactoryUpdateByIdReq extends ApsMakeCapacityFactoryDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

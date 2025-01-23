@@ -11,16 +11,15 @@ import com.olivia.peanut.portal.model.JcxGoodsWarning;
 import com.olivia.peanut.portal.service.JcxGoodsWarningService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (JcxGoodsWarning)表服务实现类
@@ -102,7 +101,7 @@ public class JcxGoodsWarningServiceImpl extends MPJBaseServiceImpl<JcxGoodsWarni
         .addHeader("goodsName", "商品名称", 200)
         .addHeader("costPrice", "成本价(分)")
         .addHeader("salesPrice", "售卖价(分)")
-//        .addHeader("goodsUnit", "单位")
+//        .addHeader("goodsUnit", "规格")
         //
         .addHeader("goodsInventoryCount", "库存(分)")
         //

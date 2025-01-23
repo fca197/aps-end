@@ -3,13 +3,12 @@ package com.olivia.peanut.aps.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * 订单商品零件表(ApsSchedulingGoodsBom)表实体类
@@ -53,9 +52,9 @@ public class ApsSchedulingGoodsBom extends BaseEntity {
   /***
    *  使用量
    */
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -63,7 +62,7 @@ public class ApsSchedulingGoodsBom extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***

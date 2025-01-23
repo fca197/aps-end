@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingGoodsBomTotalImportReq extends ApsSchedulingGoodsBomTotalDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

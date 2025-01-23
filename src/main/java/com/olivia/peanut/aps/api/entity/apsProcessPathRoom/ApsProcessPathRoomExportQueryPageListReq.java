@@ -22,8 +22,5 @@ public class ApsProcessPathRoomExportQueryPageListReq {
   private ApsProcessPathRoomDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

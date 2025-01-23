@@ -1,18 +1,18 @@
 package com.olivia.peanut.aps.api.entity.apsOrder;
 
 import com.olivia.peanut.aps.api.entity.apsOrderGoods.ApsOrderGoodsDto;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsBom.ApsOrderGoodsBomDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsProjectConfig.ApsOrderGoodsProjectConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleConfig.ApsOrderGoodsSaleConfigDto;
 import com.olivia.peanut.aps.api.entity.apsOrderUser.ApsOrderUserDto;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * (ApsOrder)查询对象返回
@@ -32,6 +32,7 @@ public class ApsOrderDto extends BaseEntityDto {
   private String orderNoParent;
   private String orderRemark;
   private Long orderStatus;
+  private String orderStatusName;
   private BigDecimal orderTotalPrice;
   private BigDecimal reserveAmount;
   private LocalDateTime reserveDatetime;
@@ -49,6 +50,7 @@ public class ApsOrderDto extends BaseEntityDto {
   private List<ApsOrderGoodsDto> goodsList;
   private List<ApsOrderGoodsProjectConfigDto> goodsProjectConfigList;
   private List<ApsOrderGoodsSaleConfigDto> goodsSaleConfigList;
+  private List<ApsOrderGoodsBomDto> apsOrderGoodsBomList;
 }
 
 

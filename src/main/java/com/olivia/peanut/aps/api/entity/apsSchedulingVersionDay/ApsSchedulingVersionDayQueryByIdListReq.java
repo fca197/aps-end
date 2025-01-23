@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingVersionDay;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * (ApsSchedulingVersionDay)查询对象入参
@@ -20,9 +20,6 @@ public class ApsSchedulingVersionDayQueryByIdListReq {
 
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

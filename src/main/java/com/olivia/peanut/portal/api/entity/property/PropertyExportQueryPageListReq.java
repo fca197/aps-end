@@ -22,8 +22,5 @@ public class PropertyExportQueryPageListReq {
   private PropertyDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

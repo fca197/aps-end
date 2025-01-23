@@ -5,11 +5,10 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * BOM 购买计划(ApsGoodsBomBuyPlan)查询对象返回
@@ -44,6 +43,12 @@ public class ApsGoodsBomBuyPlanDto extends BaseEntityDto {
   @NotBlank(message = "计划备注不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String planRemark;
 
+  private String buyPlanType;
+  private String bomUseDate;
+
+  public void setBuyPlanType(Object buyPlanType) {
+    this.buyPlanType = String.valueOf(buyPlanType);
+  }
 }
 
 

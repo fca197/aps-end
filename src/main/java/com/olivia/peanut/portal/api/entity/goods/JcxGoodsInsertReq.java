@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class JcxGoodsInsertReq extends JcxGoodsDto {
 
-  public void checkParam() {
-  }
+
 }
 

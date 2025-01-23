@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class MsgMessageUpdateByIdReq extends MsgMessageDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

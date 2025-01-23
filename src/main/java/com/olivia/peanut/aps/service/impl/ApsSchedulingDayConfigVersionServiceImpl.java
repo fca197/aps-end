@@ -13,6 +13,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListReq;
@@ -39,11 +40,14 @@ import com.olivia.sdk.utils.DynamicsPage.Header;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -102,6 +106,9 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
   @Resource
   ApsSchedulingDayConfigVersionDetailMachineService apsSchedulingDayConfigVersionDetailMachineService;
 
+  @Resource
+  ApsSchedulingDayConfigVersionDetailMachineUseTimeService apsSchedulingDayConfigVersionDetailMachineUseTimeService;
+
 
   @Override
   @Transactional
@@ -113,11 +120,13 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     DynamicsPage<ApsSchedulingDayConfigExportQueryPageListInfoRes> apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage = apsSchedulingDayConfigService.queryPageList(new ApsSchedulingDayConfigExportQueryPageListReq().setQueryPage(false).setData(dayConfigDto));
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage, "排程配置不能为空");
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList(), "排程配置不能为空");
-    ApsSchedulingDayConfigExportQueryPageListInfoRes apsSchedulingDayConfigDto = apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList().get(0);
-    ApsStatus statusServiceOne = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, true));
-    $.requireNonNullCanIgnoreException(statusServiceOne, "订单开始状态位不能为空");
+    ApsSchedulingDayConfigExportQueryPageListInfoRes apsSchedulingDayConfigDto = apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList().getFirst();
 
-    List<ApsSchedulingIssueItem> itemList = apsSchedulingIssueItemService.list(new MPJLambdaWrapper<ApsSchedulingIssueItem>().selectAll(ApsSchedulingIssueItem.class).innerJoin(ApsOrder.class, ApsOrder::getOrderNo, ApsSchedulingIssueItem::getOrderNo).eq(ApsOrder::getOrderStatus, statusServiceOne.getId()).le(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay())
+    List<ApsSchedulingIssueItem> itemList = apsSchedulingIssueItemService.list(new MPJLambdaWrapper<ApsSchedulingIssueItem>().selectAll(ApsSchedulingIssueItem.class)
+        .innerJoin(ApsOrder.class, ApsOrder::getOrderNo, ApsSchedulingIssueItem::getOrderNo)
+        // TODO: 订单状态下单即可排产
+        .eq(ApsOrder::getOrderStatus, ApsOrderStatusEnum.INIT.getCode())
+        .le(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay())
 
     );
 
@@ -176,6 +185,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     tmpList.clear();
 
 
+    // 制造路径
     List<ApsProduceProcess> apsProduceProcesses = apsProduceProcessService.listByIds(apsGoodsList.stream().map(ApsGoods::getProduceProcessId).collect(Collectors.toSet()));
     Map<Long, List<ApsProduceProcessItem>> apsProduceProcessItemMap = apsProduceProcessItemService.list(new LambdaQueryWrapper<ApsProduceProcessItem>().in(ApsProduceProcessItem::getProduceProcessId, apsProduceProcesses.stream().map(BaseEntity::getId).collect(Collectors.toSet()))).stream().collect(Collectors.groupingBy(ApsProduceProcessItem::getProduceProcessId));
     Map<Long, ApsGoods> apsGoodsMap = apsGoodsList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
@@ -183,10 +193,23 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       List<ApsProduceProcessItem> apsProduceProcessItems = apsProduceProcessItemMap.get(apsGoodsMap.get(t.getGoodsId()).getProduceProcessId());
       return new ProduceOrder().setOrderId(t.getOrderId()).setOrderMachineList(apsProduceProcessItems.stream().map(t2 -> new ProduceOrderMachine().setMachineId(t2.getMachineId()).setUseTime(t2.getMachineUseTimeSecond())).toList());
     }).toList();
+    // 制造路径计算
     ProduceProcessComputeRes computeRes = ProduceProcessUtils.compute(new ProduceProcessComputeReq().setProduceStartTime(LocalDateTime.now()).setProduceOrderList(produceOrderList));
     List<ProduceProcessComputeOrderRes> processComputeOrderRes = computeRes.getProcessComputeOrderRes();
     List<ApsSchedulingDayConfigVersionDetailMachine> detailMachineList = processComputeOrderRes.stream().map(t -> $.copy(t, ApsSchedulingDayConfigVersionDetailMachine.class).setSchedulingDayId(dayConfigVersion.getId()).setBeginDateTime(t.getBeginLocalDateTime()).setEndDateTime(t.getEndLocalDateTime())).toList();
     detailMachineList.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
+
+    List<ApsSchedulingDayConfigVersionDetailMachineUseTime> machineUseTimeList =
+        computeRes.getProcessComputeOrderRes().stream().collect(Collectors.groupingBy(ProduceProcessComputeOrderRes::getMachineId))
+            .entrySet().stream().map(t -> new ApsSchedulingDayConfigVersionDetailMachineUseTime()
+                .setSchedulingDayId(dayConfigVersion.getId()).setMachineId(t.getKey()).setMakeProduceCount(t.getValue().size())
+                .setUseTime(t.getValue().stream().mapToLong(ProduceProcessComputeOrderRes::getUseTime).sum())).toList();
+    machineUseTimeList.forEach(t ->
+        t.setUseUsageRate(ObjectUtils.allNotNull(t.getUseTime(), computeRes.getMaxUseSecond()) && ObjectUtils.notEqual(computeRes.getMaxUseSecond(), 0) && ObjectUtils.notEqual(t.getUseTime(), 0) ?
+            new BigDecimal(t.getUseTime()).divide(new BigDecimal(computeRes.getMaxUseSecond()), 8, RoundingMode.HALF_DOWN).multiply(new BigDecimal(100))
+            : new BigDecimal(0)));
+    apsSchedulingDayConfigVersionDetailMachineUseTimeService.saveBatch(machineUseTimeList);
+
     this.save(dayConfigVersion);
     apsSchedulingDayConfigVersionDetailMachineService.saveBatch(detailMachineList);
     versionDetails.forEach(t -> t.setSchedulingDayId(dayConfigVersion.getId()));
@@ -266,7 +289,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
       Map<Long, String> statusNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
       Map<Long, String> roomNameMap = this.apsRoomService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));
       roomDtoList.forEach(rl -> {
-        Header header = new Header().setFieldName(rl.get(0) + "-" + rl.get(1)).setShowName(roomNameMap.get(rl.get(0)) + "/" + statusNameMap.get(rl.get(1))).setWidth(400).setSortValue("");
+        Header header = new Header().setFieldName(rl.getFirst() + "-" + rl.get(1)).setShowName(roomNameMap.get(rl.getFirst()) + "/" + statusNameMap.get(rl.get(1))).setWidth(400).setSortValue("");
         headerList.add(header);
       });
 

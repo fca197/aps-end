@@ -22,8 +22,5 @@ public class JcxGoodsWarningExportQueryPageListReq {
   private JcxGoodsWarningDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

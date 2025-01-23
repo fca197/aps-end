@@ -22,8 +22,5 @@ public class MsgMessageExportQueryPageListReq {
   private MsgMessageDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

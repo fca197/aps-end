@@ -12,17 +12,16 @@ import com.olivia.peanut.aps.service.ApsStatusService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
+import com.olivia.sdk.utils.Str;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * (ApsStatus)表服务实现类
@@ -83,17 +82,10 @@ public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, Ap
   }
 
   // 以下为私有对象封装
-
-
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsStatus> getWrapper(ApsStatusDto obj) {
     MPJLambdaWrapper<ApsStatus> q = new MPJLambdaWrapper<>();
-
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getStatusCode()), ApsStatus::getStatusCode, obj.getStatusCode())
-          .eq(StringUtils.isNoneBlank(obj.getStatusName()), ApsStatus::getStatusName, obj.getStatusName())
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsStatus.class, BaseEntity::getId, ApsStatus::getStatusName, ApsStatus::getStatusCode);
     q.orderByDesc(ApsStatus::getId);
     return q;
 

@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsRollingForecastOrderItemInsertReq extends ApsRollingForecastOrderItemDto {
 
-  public void checkParam() {
-  }
+
 }
 

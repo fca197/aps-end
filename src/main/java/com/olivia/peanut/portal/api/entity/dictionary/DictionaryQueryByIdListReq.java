@@ -1,10 +1,10 @@
 package com.olivia.peanut.portal.api.entity.dictionary;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 字典值(Dictionary)查询对象入参
@@ -20,9 +20,6 @@ public class DictionaryQueryByIdListReq {
 
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

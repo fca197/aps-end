@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class BrandInsertReq extends BrandDto {
 
-  public void checkParam() {
-  }
+
 }
 

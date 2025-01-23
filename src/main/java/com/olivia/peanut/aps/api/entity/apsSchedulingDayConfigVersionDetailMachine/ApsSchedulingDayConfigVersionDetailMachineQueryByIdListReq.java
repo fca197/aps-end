@@ -1,15 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 排程版本详情_机器(ApsSchedulingDayConfigVersionDetailMachine)查询对象入参
@@ -24,9 +19,6 @@ import java.time.LocalDateTime;
 public class ApsSchedulingDayConfigVersionDetailMachineQueryByIdListReq {
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

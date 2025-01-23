@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsOrderGoodsStatusDateImportReq extends ApsOrderGoodsStatusDateDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

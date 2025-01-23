@@ -1,25 +1,15 @@
 package com.olivia.peanut.aps.api.entity.apsOrderGoodsBom;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.util.List;
-
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * 订单商品零件表(ApsOrderGoodsBom)查询对象返回
@@ -38,6 +28,10 @@ public class ApsOrderGoodsBomDto extends BaseEntityDto {
    */
   @NotNull(message = "订单ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long orderId;
+
+
+  @NotNull(message = "商品零件ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private Long goodsBomId;
   /***
    *  商品ID
    */
@@ -69,9 +63,9 @@ public class ApsOrderGoodsBomDto extends BaseEntityDto {
   @NotNull(message = "使用量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomUnit;
   /***
    *  成本价
@@ -79,9 +73,9 @@ public class ApsOrderGoodsBomDto extends BaseEntityDto {
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  使用工位

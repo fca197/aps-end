@@ -15,6 +15,9 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -22,10 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.olivia.sdk.utils.Str.UN_CHECKED;
 
 /**
  * 零件组配置(ApsBomGroup)表服务实现类
@@ -109,16 +109,13 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
   }
 
 
+  @SuppressWarnings(UN_CHECKED)
   private MPJLambdaWrapper<ApsBomGroup> getWrapper(ApsBomGroupDto obj) {
     MPJLambdaWrapper<ApsBomGroup> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q.eq(StringUtils.isNoneBlank(obj.getGroupCode()), ApsBomGroup::getGroupCode, obj.getGroupCode())
-          .eq(StringUtils.isNoneBlank(obj.getGroupName()), ApsBomGroup::getGroupName, obj.getGroupName())
-          .eq(Objects.nonNull(obj.getParentId()), ApsBomGroup::getParentId, obj.getParentId()).eq(StringUtils.isNoneBlank(obj.getPathId()), ApsBomGroup::getPathId, obj.getPathId())
+    $.lambdaQueryWrapper(q, obj, ApsBomGroup.class, ApsBomGroup::getPathId, ApsBomGroup::getGroupName,//
+        ApsBomGroup::getPathId, ApsBomGroup::getGroupCode);
 
-      ;
-    }
     q.orderByDesc(ApsBomGroup::getId);
     return q;
 

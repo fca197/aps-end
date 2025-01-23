@@ -13,15 +13,14 @@ import com.olivia.peanut.portal.service.PropertyService;
 import com.olivia.peanut.portal.service.RoomService;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.IntStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * 资产信息(Property)表服务实现类
@@ -41,7 +40,7 @@ public class PropertyApiImpl implements PropertyApi {
    *
    */
   public @Override PropertyInsertRes insert(PropertyInsertReq req) {
-    req.checkParam();
+
     long id = IdWorker.getId();
     req.setId(id);
     req.setPropertyCode(IdUtils.getUniqueId(id));

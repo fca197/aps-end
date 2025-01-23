@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsMakeCapacitySaleConfigUpdateByIdReq extends ApsMakeCapacitySaleConfigDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

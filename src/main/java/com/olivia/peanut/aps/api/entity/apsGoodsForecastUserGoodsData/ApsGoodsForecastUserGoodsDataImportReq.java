@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsGoodsForecastUserGoodsDataImportReq extends ApsGoodsForecastUserGoodsDataDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -24,8 +24,8 @@ public class ApsStatusDto extends BaseEntityDto {
   private String statusCode;
   @NotBlank(message = "状态名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String statusName;
-  @NotNull(message = "是否订单商品初始化不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Boolean isOrderGoodsInit;
+//  @NotNull(message = "是否订单商品初始化不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  private Boolean isOrderGoodsInit;
 
 }
 

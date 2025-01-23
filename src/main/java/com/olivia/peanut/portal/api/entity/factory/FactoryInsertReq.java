@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 
 public class FactoryInsertReq extends FactoryDto {
 
-  public void checkParam() {
-  }
+
 }
 

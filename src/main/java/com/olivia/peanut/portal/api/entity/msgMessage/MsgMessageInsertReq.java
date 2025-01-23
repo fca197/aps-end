@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class MsgMessageInsertReq extends MsgMessageDto {
 
-  public void checkParam() {
-  }
+
 }
 

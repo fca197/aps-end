@@ -22,8 +22,5 @@ public class ApsGoodsForecastMainMakeSaleDataExportQueryPageListReq {
   private ApsGoodsForecastMainMakeSaleDataDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

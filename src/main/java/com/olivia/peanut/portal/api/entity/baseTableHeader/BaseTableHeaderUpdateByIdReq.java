@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class BaseTableHeaderUpdateByIdReq extends BaseTableHeaderDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -5,22 +5,22 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.jcxOrderItem.*;
 import com.olivia.peanut.portal.mapper.JcxOrderItemMapper;
 import com.olivia.peanut.portal.model.JcxOrderItem;
 import com.olivia.peanut.portal.service.JcxOrderItemService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (JcxOrderItem)表服务实现类
@@ -96,9 +96,9 @@ public class JcxOrderItemServiceImpl extends MPJBaseServiceImpl<JcxOrderItemMapp
 
   private void setQueryListHeader(DynamicsPage<JcxOrderItem> page) {
     page
-        .addHeader("orderId", "订单编号")
+        .addHeader(ApsStr.ORDER_ID, "订单编号")
         .addHeader("orderRemark", "订单备注")
-        .addHeader("goodsId", "$column.comment")
+        .addHeader(ApsStr.GOODS_ID, "$column.comment")
         .addHeader("goodsCount", "售出数量")
         .addHeader("goodsCostPrice", "成本价")
         .addHeader("goodsSalePrice", "售卖价")

@@ -2,11 +2,10 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 
 /**
  * 商品信息(Goods)查询对象返回
@@ -47,20 +46,20 @@ public class JcxGoodsDto extends BaseEntityDto {
   @ExcelProperty("二维码")
   private String goodsQrCode;
   /***
-   *  最低价格 单位分
+   *  最低价格 规格分
    */
   @ExcelProperty("成本价(分)")
 
   private BigDecimal costPrice;
   /***
-   *  最高价格 单位分
+   *  最高价格 规格分
    */
   @ExcelProperty("售卖价(分)")
   private BigDecimal salesPrice;
   /***
-   *  单位
+   *  规格
    */
-  @ExcelProperty("单位")
+  @ExcelProperty("规格")
   private String goodsUnit;
   /***
    *  产品类型

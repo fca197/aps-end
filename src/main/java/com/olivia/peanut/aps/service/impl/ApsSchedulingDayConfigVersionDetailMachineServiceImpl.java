@@ -6,6 +6,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersionDetailMachine.*;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigVersionDetailMachineMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigVersionDetailMachine;
 import com.olivia.peanut.aps.service.ApsMachineService;
@@ -89,9 +90,9 @@ public class ApsSchedulingDayConfigVersionDetailMachineServiceImpl extends MPJBa
   public @Override void setName(List<? extends ApsSchedulingDayConfigVersionDetailMachineDto> list) {
 
     setNameService.setName(list,
-        SetNamePojoUtils.getSetNamePojo(ApsOrderService.class, "orderNo", "orderId", "orderNo"),
+        SetNamePojoUtils.getSetNamePojo(ApsOrderService.class, ApsStr.ORDER_NO, ApsStr.ORDER_ID, ApsStr.ORDER_NO),
         SetNamePojoUtils.getSetNamePojo(ApsMachineService.class, "machineName", "machineId", "machineName"),
-        SetNamePojoUtils.getSetNamePojo(ApsOrderUserService.class, "userName", "orderId", "orderUserName")
+        SetNamePojoUtils.getSetNamePojo(ApsOrderUserService.class, "userName", ApsStr.ORDER_ID, "orderUserName")
     );
 
   }

@@ -18,9 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsGoodsForecastUpdateByIdReq extends ApsGoodsForecastDto {
 
 
-  public void checkParam() {
-    this.buildMonthList();
-  }
-
 }
 

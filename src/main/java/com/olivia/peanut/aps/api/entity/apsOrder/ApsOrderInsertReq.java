@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsOrderInsertReq extends ApsOrderDto {
 
-  public void checkParam() {
-  }
+
 }
 

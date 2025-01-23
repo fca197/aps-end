@@ -16,9 +16,6 @@ import lombok.Setter;
 public class BaseTableHeaderImportReq extends BaseTableHeaderDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

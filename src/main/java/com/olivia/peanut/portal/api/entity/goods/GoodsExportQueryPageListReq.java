@@ -22,8 +22,5 @@ public class GoodsExportQueryPageListReq {
   private JcxGoodsDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

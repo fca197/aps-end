@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class JcxBuyOrderUpdateByIdReq extends JcxBuyOrderDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.api.ApsRollingForecastOrderItemApi;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsRollingForecastOrderItem.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsRollingForecastOrderItemImportListener;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.aps.model.ApsOrder;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrder;
 import com.olivia.peanut.aps.model.ApsRollingForecastOrderItem;
@@ -22,16 +23,14 @@ import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetData;
 import com.olivia.sdk.utils.EasyExcelUtilExportMultipleData.SheetHeader;
 import jakarta.annotation.Resource;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 滚动预测订单节点表(ApsRollingForecastOrderItem)表服务实现类
@@ -124,18 +123,18 @@ public class ApsRollingForecastOrderItemApiImpl implements ApsRollingForecastOrd
     SheetData sheetData = new SheetData();
     sheetData.setSheetName("sheet");
     List<SheetHeader> sheetHeaderList = Lists.newLinkedList();
-    sheetHeaderList.add(new SheetHeader().setShowName("订单号").setFieldName("orderNo").setWidth(200));
+    sheetHeaderList.add(new SheetHeader().setShowName("订单号").setFieldName(ApsStr.ORDER_NO).setWidth(200));
     sheetHeaderList.add(new SheetHeader().setShowName("紧急度").setFieldName("urgencyLevel").setWidth(150));
     sheetHeaderList.add(new SheetHeader().setShowName("当前订单状态").setFieldName("orderStatusName").setWidth(150));
     statusBetween.forEach(statusId -> {
       sheetHeaderList.add(new SheetHeader().setShowName(statusIdNameMap.get(statusId)).setFieldName("status_" + statusId).setWidth(200));
     });
     sheetData.setHeaderList(sheetHeaderList);
-    ArrayList<@Nullable Object> dataList = Lists.newArrayList();
+    ArrayList<Object> dataList = Lists.newArrayList();
 
     apsOrderMap.values().forEach(order -> {
       Map<String, Object> orderMapTmp = new HashMap<>();
-      orderMapTmp.put("orderNo", order.getOrderNo());
+      orderMapTmp.put(ApsStr.ORDER_NO, order.getOrderNo());
       orderMapTmp.put("urgencyLevel", order.getUrgencyLevel());
       orderMapTmp.put("orderStatusName", statusIdNameMap.get(order.getOrderStatus()));
       Map<Long, ApsRollingForecastOrderItem> orderItemMap = orderMap.get(order.getId());

@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * aps 生产机器(ApsMachine)表实体类
@@ -22,6 +19,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 //@SuppressWarnings("serial")
 @TableName("aps_machine")
 public class ApsMachine extends BaseEntity {
+
+
+  private Long factoryId;
   /***
    *  机器编号
    */
@@ -30,6 +30,8 @@ public class ApsMachine extends BaseEntity {
    *  机器名称
    */
   private String machineName;
+
+  private Long sortIndex;
 
 }
 

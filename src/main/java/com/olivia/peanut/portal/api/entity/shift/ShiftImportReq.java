@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ShiftImportReq extends ShiftDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

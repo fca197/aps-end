@@ -3,17 +3,16 @@ package com.olivia.peanut.portal.api.entity.jcxBuyPlan;
 import cn.hutool.core.collection.CollUtil;
 import com.olivia.peanut.portal.api.entity.jcxBuyPlanItem.JcxBuyPlanItemDto;
 import com.olivia.sdk.exception.CanIgnoreException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * (JcxBuyPlan)保存入参
@@ -35,7 +34,7 @@ public class JcxBuyPlanInsertReq extends JcxBuyPlanDto {
     } else {
       Map<Long, List<JcxBuyPlanItemDto>> goodsMap = this.getJcxBuyPlanItemDtoList().stream().collect(Collectors.groupingBy(JcxBuyPlanItemDto::getGoodsId));
       goodsMap.values().stream().filter(list -> list.size() > 1).forEach(list -> {
-        msgList.add("商品id:" + list.get(0).getGoodsName() + "不能重复");
+        msgList.add("商品id:" + list.getFirst().getGoodsName() + "不能重复");
       });
       this.getJcxBuyPlanItemDtoList().stream().filter(t -> StringUtils.isBlank(t.getGoodsName()) || Objects.isNull(t.getGoodsBuyCount()) || t.getGoodsBuyCount() < 1).forEach(t -> {
         msgList.add("商品id:" + t.getGoodsName() + "信息不正确");

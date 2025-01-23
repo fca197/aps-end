@@ -10,13 +10,12 @@ import com.olivia.peanut.aps.service.ApsOrderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * (ApsOrder)表服务实现类
@@ -113,5 +112,10 @@ public class ApsOrderApiImpl implements ApsOrderApi {
   @Override
   public ApsOrderUpdateSchedulingDateRes updateSchedulingDate(ApsOrderUpdateSchedulingDateReq req) {
     return this.apsOrderService.updateSchedulingDate(req);
+  }
+
+  @Override
+  public OrderCreateDayCountRes orderCreateDayCount(OrderCreateDayCountReq req) {
+    return this.apsOrderService.orderCreateDayCount(req);
   }
 }

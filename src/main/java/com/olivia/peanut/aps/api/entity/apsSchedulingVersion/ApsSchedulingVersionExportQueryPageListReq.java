@@ -22,8 +22,5 @@ public class ApsSchedulingVersionExportQueryPageListReq {
   private ApsSchedulingVersionDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

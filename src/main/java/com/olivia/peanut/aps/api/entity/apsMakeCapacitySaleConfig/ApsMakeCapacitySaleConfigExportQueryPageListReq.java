@@ -22,8 +22,5 @@ public class ApsMakeCapacitySaleConfigExportQueryPageListReq {
   private ApsMakeCapacitySaleConfigDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

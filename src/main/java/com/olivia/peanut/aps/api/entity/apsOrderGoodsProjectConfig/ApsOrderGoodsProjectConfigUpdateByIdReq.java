@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsOrderGoodsProjectConfigUpdateByIdReq extends ApsOrderGoodsProjectConfigDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

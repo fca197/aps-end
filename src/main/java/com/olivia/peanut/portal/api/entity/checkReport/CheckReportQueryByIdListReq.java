@@ -1,10 +1,10 @@
 package com.olivia.peanut.portal.api.entity.checkReport;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 报表信息(CheckReport)查询对象入参
@@ -20,9 +20,6 @@ public class CheckReportQueryByIdListReq {
 
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

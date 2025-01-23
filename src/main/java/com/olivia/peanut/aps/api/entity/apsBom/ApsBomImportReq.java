@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsBomImportReq extends ApsBomDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

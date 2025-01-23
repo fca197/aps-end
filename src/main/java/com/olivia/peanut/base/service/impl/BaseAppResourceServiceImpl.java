@@ -19,16 +19,14 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 资源(BaseAppResource)表服务实现类
@@ -130,7 +128,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
 
   }
 
-  @NotNull
   private List<Runnable> getRunnableList(Long id, Set<Long> resourceIdSet) {
     List<Runnable> runnableList = new ArrayList<>();
     runnableList.add(() -> {

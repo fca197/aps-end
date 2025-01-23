@@ -2,11 +2,10 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 
 import jakarta.validation.constraints.NotNull;
-
-import java.math.BigDecimal;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
 
 /**
  * 商品信息(Goods)表实体类
@@ -41,15 +40,15 @@ public class GoodsUpdateIdReq {
    **/
   private String goodsQrCode;
   /**
-   * 最低价格 单位分
+   * 最低价格 规格分
    **/
   private BigDecimal goodsMinPrice;
   /**
-   * 最高价格 单位分
+   * 最高价格 规格分
    **/
   private BigDecimal goodsMaxPrice;
   /**
-   * 单位
+   * 规格
    **/
   private String goodsUnit;
   /**

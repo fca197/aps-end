@@ -13,15 +13,14 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.Str;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (ApsGoodsForecastComputeSaleData)表服务实现类
@@ -79,29 +78,14 @@ public class ApsGoodsForecastComputeSaleDataServiceImpl extends MPJBaseServiceIm
   // 以下为私有对象封装
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsForecastComputeSaleData> getWrapper(ApsGoodsForecastComputeSaleDataDto obj) {
     MPJLambdaWrapper<ApsGoodsForecastComputeSaleData> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getForecastId()), ApsGoodsForecastComputeSaleData::getForecastId, obj.getForecastId())
-          .eq(Objects.nonNull(obj.getSaleConfigId()), ApsGoodsForecastComputeSaleData::getSaleConfigId, obj.getSaleConfigId())
-          .eq(Objects.nonNull(obj.getYear()), ApsGoodsForecastComputeSaleData::getYear, obj.getYear())
-          .eq(Objects.nonNull(obj.getMonth01()), ApsGoodsForecastComputeSaleData::getMonth01, obj.getMonth01())
-          .eq(Objects.nonNull(obj.getMonth02()), ApsGoodsForecastComputeSaleData::getMonth02, obj.getMonth02())
-          .eq(Objects.nonNull(obj.getMonth03()), ApsGoodsForecastComputeSaleData::getMonth03, obj.getMonth03())
-          .eq(Objects.nonNull(obj.getMonth04()), ApsGoodsForecastComputeSaleData::getMonth04, obj.getMonth04())
-          .eq(Objects.nonNull(obj.getMonth05()), ApsGoodsForecastComputeSaleData::getMonth05, obj.getMonth05())
-          .eq(Objects.nonNull(obj.getMonth06()), ApsGoodsForecastComputeSaleData::getMonth06, obj.getMonth06())
-          .eq(Objects.nonNull(obj.getMonth07()), ApsGoodsForecastComputeSaleData::getMonth07, obj.getMonth07())
-          .eq(Objects.nonNull(obj.getMonth08()), ApsGoodsForecastComputeSaleData::getMonth08, obj.getMonth08())
-          .eq(Objects.nonNull(obj.getMonth09()), ApsGoodsForecastComputeSaleData::getMonth09, obj.getMonth09())
-          .eq(Objects.nonNull(obj.getMonth10()), ApsGoodsForecastComputeSaleData::getMonth10, obj.getMonth10())
-          .eq(Objects.nonNull(obj.getMonth11()), ApsGoodsForecastComputeSaleData::getMonth11, obj.getMonth11())
-          .eq(Objects.nonNull(obj.getMonth12()), ApsGoodsForecastComputeSaleData::getMonth12, obj.getMonth12())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsGoodsForecastComputeSaleData.class //
+        , ApsGoodsForecastComputeSaleData::getForecastId, ApsGoodsForecastComputeSaleData::getSaleConfigId,
+        ApsGoodsForecastComputeSaleData::getYear
+    );
     q.orderByDesc(ApsGoodsForecastComputeSaleData::getId);
     return q;
 

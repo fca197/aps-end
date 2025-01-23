@@ -3,13 +3,13 @@ package com.olivia.peanut.aps.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)表实体类
@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingGoodsBomTotal extends BaseEntity {
 
   /***
-   *  订单ID
+   *  排产版本 ID
    */
   private Long schedulingId;
   private Long bomId;
@@ -44,9 +44,9 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
   /***
    *  使用量
    */
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -54,7 +54,7 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***
@@ -70,13 +70,20 @@ public class ApsSchedulingGoodsBomTotal extends BaseEntity {
    */
   private Long factoryId;
 
-  public ApsSchedulingGoodsBomTotal setBomUsageAdd(Integer bomUsage) {
-    this.bomUsage += bomUsage;
+
+  public ApsSchedulingGoodsBomTotal setBomUsageAdd(BigDecimal bomUsage) {
+    if (Objects.isNull(this.bomUsage))
+      this.bomUsage = bomUsage;
+    else
+      this.bomUsage = this.bomUsage.add(bomUsage);
     return this;
   }
 
   public ApsSchedulingGoodsBomTotal setBomCostPriceAdd(BigDecimal bomCostPrice) {
-    this.bomCostPrice = bomCostPrice.add(bomCostPrice);
+    if (Objects.isNull(bomCostPrice))
+      this.bomCostPrice = bomCostPrice;
+    else
+      this.bomCostPrice = this.bomCostPrice.add(bomCostPrice);
     return this;
   }
 }

@@ -3,14 +3,13 @@ package com.olivia.peanut.portal.api.entity.jcxOrder;
 import cn.hutool.core.collection.CollUtil;
 import com.olivia.sdk.exception.CanIgnoreException;
 import com.olivia.sdk.utils.$;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * (JcxOrder)保存入参

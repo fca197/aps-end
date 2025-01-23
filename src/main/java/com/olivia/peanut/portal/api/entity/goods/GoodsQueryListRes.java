@@ -1,13 +1,12 @@
 package com.olivia.peanut.portal.api.entity.goods;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-
-import java.math.BigDecimal;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 商品信息(Goods)查询对象返回
@@ -52,15 +51,15 @@ public class GoodsQueryListRes {
      */
     private String goodsQrCode;
     /***
-     *  最低价格 单位分
+     *  最低价格 规格分
      */
     private BigDecimal goodsMinPrice;
     /***
-     *  最高价格 单位分
+     *  最高价格 规格分
      */
     private BigDecimal goodsMaxPrice;
     /***
-     *  单位
+     *  规格
      */
     private String goodsUnit;
     /***

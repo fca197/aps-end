@@ -1,23 +1,12 @@
 package com.olivia.peanut.aps.api.entity.apsMachine;
 
-import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.util.List;
-
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * aps 生产机器(ApsMachine)查询对象返回
@@ -31,6 +20,9 @@ import jakarta.validation.constraints.NotNull;
 @SuppressWarnings("serial")
 public class ApsMachineDto extends BaseEntityDto {
 
+  @NotNull(groups = {UpdateCheck.class, InsertCheck.class}, message = "工厂不能为空")
+  private Long factoryId;
+  private String factoryName;
   /***
    *  机器编号
    */
@@ -42,6 +34,8 @@ public class ApsMachineDto extends BaseEntityDto {
   @NotBlank(message = "机器名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String machineName;
 
+  @NotNull(message = "排序不能为空")
+  private Long sortIndex;
 }
 
 

@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsSchedulingVersionCapacityInsertReq extends ApsSchedulingVersionCapacityDto {
 
-  public void checkParam() {
-  }
+
 }
 

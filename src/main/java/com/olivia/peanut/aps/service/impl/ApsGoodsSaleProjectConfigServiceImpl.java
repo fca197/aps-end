@@ -21,6 +21,12 @@ import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -29,13 +35,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (ApsGoodsSaleProjectConfig)表服务实现类
@@ -49,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<ApsGoodsSaleProjectConfigMapper, ApsGoodsSaleProjectConfig> implements
     ApsGoodsSaleProjectConfigService {
 
-  private final static int TIME_OUT = 60;
+  private final static int TIME_OUT = 5;
   //  final static Cache<Long, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(TIME_OUT, TimeUnit.MINUTES).build();
   final static Cache<Long, Map<Long, List<ApsGoodsSaleProjectConfig>>> apsGoodsSaleProjectConfigCache = CacheBuilder.newBuilder().maximumSize(100)
       .expireAfterWrite(TIME_OUT, TimeUnit.MINUTES).build();
@@ -128,10 +127,11 @@ public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<Aps
         ApsSaleConfig apsSaleConfig = apsSaleConfigMap.get(saleCode);
         List<ApsGoodsSaleProjectConfig> goodsSaleProjectConfigList = projectConfigMap.get(apsSaleConfig.getId());
         if (CollUtil.isEmpty(goodsSaleProjectConfigList)) {
+          log.warn("sale2project  goodsSaleProjectConfigList is null {} ", apsSaleConfig.getId());
           return;
         }
         if (goodsSaleProjectConfigList.size() == 1) {
-          ApsGoodsSaleProjectConfig apsGoodsSaleProjectConfig = goodsSaleProjectConfigList.get(0);
+          ApsGoodsSaleProjectConfig apsGoodsSaleProjectConfig = goodsSaleProjectConfigList.getFirst();
           projectConfigList.add(apsGoodsSaleProjectConfig.getProjectConfigId());
           return;
         }

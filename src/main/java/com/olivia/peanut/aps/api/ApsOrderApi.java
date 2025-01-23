@@ -82,4 +82,7 @@ public interface ApsOrderApi {
   //schedulingDate
   @PostMapping("/apsOrder/updateSchedulingDate")
   ApsOrderUpdateSchedulingDateRes updateSchedulingDate(@RequestBody @Valid ApsOrderUpdateSchedulingDateReq req);
+
+  @PostMapping("/apsOrder/orderCreateDayCount")
+  OrderCreateDayCountRes orderCreateDayCount(@RequestBody @Valid OrderCreateDayCountReq req);
 }

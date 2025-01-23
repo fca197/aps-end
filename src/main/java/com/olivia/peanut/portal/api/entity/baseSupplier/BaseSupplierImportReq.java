@@ -16,9 +16,6 @@ import lombok.Setter;
 public class BaseSupplierImportReq extends BaseSupplierDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

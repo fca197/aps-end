@@ -1,15 +1,14 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * 订单商品零件表(ApsOrderGoodsBom)表实体类
@@ -28,6 +27,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    *  订单ID
    */
   private Long orderId;
+  private Long goodsBomId;
   /***
    *  商品ID
    */
@@ -53,7 +53,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    */
   private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -61,7 +61,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***
@@ -76,6 +76,7 @@ public class ApsOrderGoodsBom extends BaseEntity {
    *  工厂ID
    */
   private Long factoryId;
+
 
 }
 

@@ -2,13 +2,13 @@ package com.olivia.peanut.aps.model;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.olivia.peanut.aps.enums.ApsGoodsBomBuyPlanTypeEnum;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
 
 /**
  * BOM 购买计划(ApsGoodsBomBuyPlan)表实体类
@@ -39,6 +39,13 @@ public class ApsGoodsBomBuyPlan extends BaseEntity {
    *  计划备注
    */
   private String planRemark;
+
+  /***
+   *
+   */
+  private ApsGoodsBomBuyPlanTypeEnum buyPlanType;
+
+  private String bomUseDate;
 
 }
 

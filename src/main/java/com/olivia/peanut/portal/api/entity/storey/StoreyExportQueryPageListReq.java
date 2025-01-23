@@ -22,8 +22,5 @@ public class StoreyExportQueryPageListReq {
   private StoreyDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

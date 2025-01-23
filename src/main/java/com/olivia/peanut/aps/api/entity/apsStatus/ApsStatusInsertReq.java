@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsStatusInsertReq extends ApsStatusDto {
 
-  public void checkParam() {
-  }
+
 }
 

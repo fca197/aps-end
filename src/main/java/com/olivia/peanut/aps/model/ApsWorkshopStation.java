@@ -19,19 +19,6 @@ import lombok.experimental.Accessors;
 //
 @TableName("aps_workshop_station")
 public class ApsWorkshopStation extends BaseEntity {
-
-  /***
-   *  所属租户id
-   */
-  private Long tenantId;
-  /***
-   *  所属工厂id
-   */
-  private Long factoryId;
-  /***
-   *  所属工段id
-   */
-  private Long sectionId;
   /***
    *  工位名称
    */
@@ -40,14 +27,6 @@ public class ApsWorkshopStation extends BaseEntity {
    *  工位编码
    */
   private String stationCode;
-  /***
-   *  工位类型
-   */
-  private String stationType;
-  /***
-   *  工位状态
-   */
-  private String stationStatus;
 
 
 }

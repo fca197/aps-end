@@ -22,19 +22,22 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.YearMonth;
+import com.olivia.sdk.utils.FieldUtils;
+import com.olivia.sdk.utils.model.YearMonth;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)表服务实现类
@@ -114,7 +117,7 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
     Map<String, ApsRollingForecastFactoryCapacity> capacityMap = Maps.newHashMap();
 
-    LocalDate beginDate = minMaxDate.get(0);
+    LocalDate beginDate = minMaxDate.getFirst();
     LocalDate endDate = minMaxDate.get(1);
     log.info("time range :{} - {}", beginDate, endDate);
 
@@ -182,7 +185,9 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
     localDateBetween.forEach(t -> {
       ApsRollingForecastFactoryCapacity apsRollingForecastFactoryCapacity = capacityMap.get(t.getYear() + "-" + t.getMonthValue());
       if (Objects.nonNull(apsRollingForecastFactoryCapacity)) {
-        Integer capacity = (Integer) ReflectUtil.getFieldValue(apsRollingForecastFactoryCapacity, "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth()));
+        String fieldName = "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth());
+        Field field = getField(apsRollingForecastFactoryCapacity, fieldName);
+        Integer capacity = (Integer) FieldUtils.getFieldValue(apsRollingForecastFactoryCapacity, field);
         capacity = Objects.isNull(capacity) ? 0 : capacity;
         dayList.add(new FactoryCapacityDay().setCapacity(capacity).setLocalDate(t));
       }
@@ -194,12 +199,12 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
     MPJLambdaWrapper<ApsRollingForecastFactoryCapacity> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getFactoryId()), ApsRollingForecastFactoryCapacity::getFactoryId, obj.getFactoryId())
-          .eq(Objects.nonNull(obj.getYear()), ApsRollingForecastFactoryCapacity::getYear, obj.getYear())
-          .eq(Objects.nonNull(obj.getMonth()), ApsRollingForecastFactoryCapacity::getMonth, obj.getMonth())
-
-      ;
+      ApsRollingForecastFactoryCapacity copy = $.copy(obj, ApsRollingForecastFactoryCapacity.class);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getYear);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getMonth);
+      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getFactoryId);
     }
+    q.orderByDesc(ApsRollingForecastFactoryCapacity::getId);
     List<SFunction<ApsRollingForecastFactoryCapacity, ?>> columns = List.of(ApsRollingForecastFactoryCapacity::getYear, ApsRollingForecastFactoryCapacity::getMonth);
     q.orderByDesc(columns);
     return q;

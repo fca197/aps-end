@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingGoodsBomTotal;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 订单商品零件汇总表(ApsSchedulingGoodsBomTotal)查询对象返回
@@ -39,9 +38,9 @@ public class ApsSchedulingGoodsBomTotalDto extends BaseEntityDto {
   /***
    *  使用量
    */
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
   private String bomUnit;
   /***
@@ -49,7 +48,7 @@ public class ApsSchedulingGoodsBomTotalDto extends BaseEntityDto {
    */
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
   private String bomCostPriceUnit;
   /***

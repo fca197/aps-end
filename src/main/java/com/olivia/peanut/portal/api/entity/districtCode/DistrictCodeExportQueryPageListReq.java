@@ -22,8 +22,5 @@ public class DistrictCodeExportQueryPageListReq {
   private DistrictCodeDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

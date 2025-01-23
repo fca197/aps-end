@@ -4,13 +4,12 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 订单商品状态表(ApsOrderGoodsStatusDate)查询对象返回
@@ -25,7 +24,7 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsOrderGoodsStatusDateDto extends BaseEntityDto {
 
-  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long orderId;
   /***
    *  商品ID

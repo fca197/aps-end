@@ -3,11 +3,10 @@ package com.olivia.peanut.portal.api.entity.goods;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 商品信息(Goods)表实体类

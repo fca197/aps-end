@@ -5,12 +5,16 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.storey.*;
 import com.olivia.peanut.portal.mapper.StoreyMapper;
 import com.olivia.peanut.portal.model.Storey;
 import com.olivia.peanut.portal.service.StoreyService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -18,10 +22,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 楼层信息(Storey)表服务实现类
@@ -96,7 +96,7 @@ public class StoreyServiceImpl extends MPJBaseServiceImpl<StoreyMapper, Storey> 
     page
         .addHeader("id", "id")
         .addHeader("tenantId", "所属租户id")
-        .addHeader("factoryId", "所属工厂id")
+        .addHeader(ApsStr.FACTORY_ID, "所属工厂id")
         .addHeader("storeyName", "楼层")
         .addHeader("storeySort", "排序")
         .addHeader("isDelete", "是否删除(0:否 1:是)")

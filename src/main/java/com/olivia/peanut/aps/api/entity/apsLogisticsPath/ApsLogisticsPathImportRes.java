@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsLogisticsPath;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 物流路径表(ApsLogisticsPath)保存返回

@@ -22,8 +22,5 @@ public class ApsGoodsBomBuyPlanExportQueryPageListReq {
   private ApsGoodsBomBuyPlanDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

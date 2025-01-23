@@ -13,12 +13,17 @@ import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
 import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.peanut.aps.service.ApsBomService;
-import com.olivia.sdk.ann.SetUserName;
+import com.olivia.peanut.aps.service.ApsProduceProcessService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.comment.ServiceComment;
+import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,10 +31,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.olivia.sdk.utils.Str.UN_CHECKED;
 
 /**
  * BOM 清单(ApsBom)表服务实现类
@@ -46,6 +48,8 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
   // 以下为私有对象封装
   @Resource
   ApsBomGroupService apsBomGroupService;
+  @Resource
+  SetNameService setNameService;
 
   public @Override ApsBomQueryListRes queryList(ApsBomQueryListReq req) {
 
@@ -81,30 +85,24 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     return DynamicsPage.init(page, listInfoRes);
   }
 
-  @SetUserName
+
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
 
-    if (CollUtil.isEmpty(apsBomDtoList)) {
-    }
-
-
+    setNameService.setName(apsBomDtoList, SetNamePojoUtils.OP_USER_NAME, SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName"));
   }
 
 
+  @SuppressWarnings(UN_CHECKED)
   private MPJLambdaWrapper<ApsBom> getWrapper(ApsBomDto obj) {
     MPJLambdaWrapper<ApsBom> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getGroupId()), ApsBom::getGroupId, obj.getGroupId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsBom::getBomCode, obj.getBomCode())
-          .eq(StringUtils.isNoneBlank(obj.getBomName()), ApsBom::getBomName, obj.getBomName())
-          .eq(Objects.nonNull(obj.getBomCostPrice()), ApsBom::getBomCostPrice, obj.getBomCostPrice())
-          .eq(StringUtils.isNoneBlank(obj.getBomCostPriceUnit()), ApsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
-          .eq(Objects.nonNull(obj.getBomInventory()), ApsBom::getBomInventory, obj.getBomInventory());
+      $.lambdaQueryWrapper(q, obj, ApsBom.class, ApsBom::getGroupId,//
+          ApsBom::getBomCode, ApsBom::getBomName, ApsBom::getSupplyMode, BaseEntity::getId);
       if (Objects.nonNull(obj.getGroupId())) {
         ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());
         if (Objects.nonNull(apsBomGroup)) {
-          List<Long> idList = this.apsBomGroupService.list(
-              new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId).likeRight(ApsBomGroup::getPathId, apsBomGroup.getPathId())).stream().map(BaseEntity::getId).toList();
+          List<Long> idList = this.apsBomGroupService.list(new LambdaQueryWrapper<ApsBomGroup>().select(BaseEntity::getId).likeRight(ApsBomGroup::getPathId, apsBomGroup.getPathId())).stream().map(BaseEntity::getId).toList();
           if (CollUtil.isNotEmpty(idList)) {
             q.in(ApsBom::getGroupId, idList);
           }

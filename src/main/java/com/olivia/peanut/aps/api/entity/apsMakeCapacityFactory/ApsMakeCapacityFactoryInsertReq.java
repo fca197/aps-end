@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsMakeCapacityFactoryInsertReq extends ApsMakeCapacityFactoryDto {
 
-  public void checkParam() {
-  }
+
 }
 

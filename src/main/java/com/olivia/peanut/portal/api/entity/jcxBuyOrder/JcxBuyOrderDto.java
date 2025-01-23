@@ -2,12 +2,11 @@ package com.olivia.peanut.portal.api.entity.jcxBuyOrder;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.api.entity.jcxBuyOrderItem.JcxBuyOrderItemDto;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * (JcxBuyOrder)查询对象返回
@@ -31,10 +30,7 @@ public class JcxBuyOrderDto extends BaseEntityDto {
   private Integer orderStatus;
   private String supplierName;
 
-  @Override
-  public void checkParam() {
 
-  }
 }
 
 

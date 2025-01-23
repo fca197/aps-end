@@ -2,15 +2,16 @@ package com.olivia.peanut.aps.model;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.sdk.utils.BaseEntity;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 /**
  * (ApsOrder)表实体类
@@ -28,7 +29,13 @@ public class ApsOrder extends BaseEntity {
   private String orderNo;
   private String orderNoParent;
   private String orderRemark;
+  /***
+   *@see   ApsOrderStatusEnum
+   */
+
   private Long orderStatus;
+
+
   private BigDecimal orderTotalPrice;
   private BigDecimal reserveAmount;
   private LocalDateTime reserveDatetime;
@@ -43,6 +50,18 @@ public class ApsOrder extends BaseEntity {
    * 越大越紧急
    */
   private Integer urgencyLevel;
+
+
+  public ApsOrder setOrderStatus(@NonNull Long apsOrderStatus) {
+    this.orderStatus = apsOrderStatus;
+    return this;
+  }
+
+  public ApsOrder setOrderStatus(@NonNull ApsOrderStatusEnum apsOrderStatusEnum) {
+
+    this.orderStatus = apsOrderStatusEnum.getCode();
+    return this;
+  }
 
 }
 

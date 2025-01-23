@@ -16,8 +16,5 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsRoomInsertReq extends ApsRoomDto {
 
-  public void checkParam() {
-
-  }
 }
 

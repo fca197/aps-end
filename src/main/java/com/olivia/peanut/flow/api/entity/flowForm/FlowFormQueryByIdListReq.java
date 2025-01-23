@@ -1,15 +1,10 @@
 package com.olivia.peanut.flow.api.entity.flowForm;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 工作流表单表(FlowForm)查询对象入参
@@ -25,9 +20,6 @@ public class FlowFormQueryByIdListReq {
 
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

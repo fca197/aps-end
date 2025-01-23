@@ -14,16 +14,15 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static com.olivia.sdk.utils.Str.UN_CHECKED;
 
 /**
  * BOM 购买计划(ApsGoodsBomBuyPlan)表服务实现类
@@ -84,18 +83,10 @@ public class ApsGoodsBomBuyPlanServiceImpl extends MPJBaseServiceImpl<ApsGoodsBo
   }
 
 
+  @SuppressWarnings(UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsBomBuyPlan> getWrapper(ApsGoodsBomBuyPlanDto obj) {
     MPJLambdaWrapper<ApsGoodsBomBuyPlan> q = new MPJLambdaWrapper<>();
-
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(StringUtils.isNoneBlank(obj.getPlanName()), ApsGoodsBomBuyPlan::getPlanName, obj.getPlanName())
-          .eq(Objects.nonNull(obj.getPlanTotalAmount()), ApsGoodsBomBuyPlan::getPlanTotalAmount, obj.getPlanTotalAmount())
-          .eq(StringUtils.isNoneBlank(obj.getPlanSource()), ApsGoodsBomBuyPlan::getPlanSource, obj.getPlanSource())
-          .eq(StringUtils.isNoneBlank(obj.getPlanRemark()), ApsGoodsBomBuyPlan::getPlanRemark, obj.getPlanRemark())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlan.class, ApsGoodsBomBuyPlan::getPlanName, ApsGoodsBomBuyPlan::getPlanSource);
     q.orderByDesc(ApsGoodsBomBuyPlan::getId);
     return q;
 

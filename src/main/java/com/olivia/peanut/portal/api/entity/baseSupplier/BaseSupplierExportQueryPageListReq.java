@@ -22,8 +22,5 @@ public class BaseSupplierExportQueryPageListReq {
   private BaseSupplierDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

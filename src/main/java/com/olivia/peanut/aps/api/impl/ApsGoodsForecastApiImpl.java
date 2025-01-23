@@ -1,23 +1,25 @@
 package com.olivia.peanut.aps.api.impl;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsGoodsForecastApi;
 import com.olivia.peanut.aps.api.entity.apsGoodsForecast.*;
-import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastImportListener;
+import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastImportListenerAbstract;
 import com.olivia.peanut.aps.model.ApsGoodsForecast;
 import com.olivia.peanut.aps.service.ApsGoodsForecastService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
+import com.olivia.sdk.utils.model.YearMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * (ApsGoodsForecast)表服务实现类
@@ -36,6 +38,8 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
    *
    */
   public @Override ApsGoodsForecastInsertRes insert(ApsGoodsForecastInsertReq req) {
+    String ms = JSON.toJSONString(DateUtils.getMonthList(req.getForecastBeginDate(), req.getForecastEndDate()).stream().map(YearMonth::toString).toList());
+    req.setMonths(ms);
     this.apsGoodsForecastService.save($.copy(req, ApsGoodsForecast.class).setForecastStatus(ForecastStatusEnum.TO_UPLOAD.getCode()));
     return new ApsGoodsForecastInsertRes().setCount(1);
   }
@@ -62,9 +66,10 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
    *
    */
   public @Override ApsGoodsForecastUpdateByIdRes updateById(ApsGoodsForecastUpdateByIdReq req) {
-    req.checkParam();
-    ApsGoodsForecast forecast = $.copy(req, ApsGoodsForecast.class);
 
+    String ms = JSON.toJSONString(DateUtils.getMonthList(req.getForecastBeginDate(), req.getForecastEndDate()).stream().map(YearMonth::toString).toList());
+    req.setMonths(ms);
+    ApsGoodsForecast forecast = $.copy(req, ApsGoodsForecast.class);
     apsGoodsForecastService.updateById(forecast);
     return new ApsGoodsForecastUpdateByIdRes();
 
@@ -83,7 +88,7 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
   }
 
   public @Override ApsGoodsForecastImportRes importData(@RequestParam("file") MultipartFile file) {
-    List<ApsGoodsForecastImportReq> reqList = PoiExcelUtil.readData(file, new ApsGoodsForecastImportListener(), ApsGoodsForecastImportReq.class);
+    List<ApsGoodsForecastImportReq> reqList = PoiExcelUtil.readData(file, new ApsGoodsForecastImportListenerAbstract(), ApsGoodsForecastImportReq.class);
     // 类型转换，  更换枚举 等操作
     List<ApsGoodsForecast> readList = $.copyList(reqList, ApsGoodsForecast.class);
     boolean bool = apsGoodsForecastService.saveBatch(readList);

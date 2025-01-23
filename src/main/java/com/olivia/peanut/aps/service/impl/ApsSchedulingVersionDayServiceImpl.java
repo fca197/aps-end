@@ -14,17 +14,15 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
+import com.olivia.sdk.utils.Str;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * (ApsSchedulingVersionDay)表服务实现类
@@ -87,18 +85,13 @@ public class ApsSchedulingVersionDayServiceImpl extends MPJBaseServiceImpl<ApsSc
 
   }
 
-
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsSchedulingVersionDay> getWrapper(ApsSchedulingVersionDayDto obj) {
     MPJLambdaWrapper<ApsSchedulingVersionDay> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getVersionId()), ApsSchedulingVersionDay::getVersionId, obj.getVersionId())
-          .eq(StringUtils.isNoneBlank(obj.getCurrentDay()), ApsSchedulingVersionDay::getCurrentDay, obj.getCurrentDay())
-          .eq(Objects.nonNull(obj.getHasEnough()), ApsSchedulingVersionDay::getHasEnough, obj.getHasEnough())
+    $.lambdaQueryWrapper(q, obj, ApsSchedulingVersionDay.class, ApsSchedulingVersionDay::getVersionId
+        , ApsSchedulingVersionDay::getCurrentDay, ApsSchedulingVersionDay::getHasEnough);
 
-      ;
-    }
     q.orderByDesc(ApsSchedulingVersionDay::getId);
     return q;
 

@@ -3,11 +3,10 @@ package com.olivia.peanut.aps.api.entity.workshopSection;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 工段信息(WorkshopSection)表实体类

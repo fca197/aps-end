@@ -16,7 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class ApsLogisticsPathInsertReq extends ApsLogisticsPathDto {
 
-  public void checkParam() {
-  }
+
 }
 

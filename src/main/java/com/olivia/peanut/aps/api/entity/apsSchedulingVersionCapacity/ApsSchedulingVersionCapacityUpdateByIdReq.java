@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingVersionCapacityUpdateByIdReq extends ApsSchedulingVersionCapacityDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

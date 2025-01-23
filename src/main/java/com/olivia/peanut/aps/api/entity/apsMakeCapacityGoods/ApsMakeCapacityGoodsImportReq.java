@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsMakeCapacityGoodsImportReq extends ApsMakeCapacityGoodsDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -16,9 +16,6 @@ import lombok.Setter;
 public class StoreyImportReq extends StoreyDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

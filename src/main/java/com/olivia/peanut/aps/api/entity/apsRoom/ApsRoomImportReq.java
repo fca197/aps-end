@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsRoomImportReq extends ApsRoomDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

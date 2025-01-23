@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * aps 生产路径(ApsProduceProcess)表实体类
@@ -22,6 +19,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 //@SuppressWarnings("serial")
 @TableName("aps_produce_process")
 public class ApsProduceProcess extends BaseEntity {
+
+  private Long factoryId;
   /***
    *  生产路径编码
    */

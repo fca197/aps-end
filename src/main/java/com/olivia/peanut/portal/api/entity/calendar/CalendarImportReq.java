@@ -16,9 +16,6 @@ import lombok.Setter;
 public class CalendarImportReq extends CalendarDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

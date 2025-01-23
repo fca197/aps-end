@@ -10,13 +10,12 @@ import com.olivia.peanut.flow.service.FlowFormUserValueService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 工作流表单用户数据表(FlowFormUserValue)表服务实现类
@@ -41,7 +40,7 @@ public class FlowFormUserValueApiImpl implements FlowFormUserValueApi {
   @Override
   public FlowFormUserValueInsertRes insertBadBatch(List<FlowFormUserValueInsertReq> req) {
     $.requireNonNullCanIgnoreException(req, "用户值不能为空");
-    if (req.get(0).getId() == null) {
+    if (req.getFirst().getId() == null) {
       req.forEach(t -> t.setId(IdWorker.getId()));
       this.flowFormUserValueService.saveBatch($.copyList(req, FlowFormUserValue.class));
     } else {

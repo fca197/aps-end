@@ -5,12 +5,11 @@ import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 订单商品零件表(ApsSchedulingGoodsBom)查询对象返回
@@ -58,11 +57,11 @@ public class ApsSchedulingGoodsBomDto extends BaseEntityDto {
    *  使用量
    */
   @NotNull(message = "使用量不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  private Integer bomUsage;
+  private BigDecimal bomUsage;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomUnit;
   /***
    *  成本价
@@ -70,9 +69,9 @@ public class ApsSchedulingGoodsBomDto extends BaseEntityDto {
   @NotNull(message = "成本价不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private BigDecimal bomCostPrice;
   /***
-   *  单位
+   *  规格
    */
-  @NotBlank(message = "成本价单位不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  @NotBlank(message = "成本价规格不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String bomCostPriceUnit;
   /***
    *  使用工位

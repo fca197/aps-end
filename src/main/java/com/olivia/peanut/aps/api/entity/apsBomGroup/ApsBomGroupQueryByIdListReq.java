@@ -1,10 +1,10 @@
 package com.olivia.peanut.aps.api.entity.apsBomGroup;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 零件组配置(ApsBomGroup)查询对象入参
@@ -20,9 +20,6 @@ public class ApsBomGroupQueryByIdListReq {
 
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

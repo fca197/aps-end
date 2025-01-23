@@ -16,17 +16,20 @@ import com.olivia.peanut.aps.model.ApsGoodsForecastMainSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainSaleDataService;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import com.olivia.sdk.utils.model.YearMonth;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.olivia.sdk.utils.FieldUtils.getField;
 
 /**
  * (ApsGoodsForecastMainSaleData)表服务实现类
@@ -122,7 +125,7 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         headerList.add(DateUtil.format(instance.getTime(), DatePattern.NORM_MONTH_FORMAT));
       });
     } else {
-      List<YearMonth> monthList = DateUtils.getMonthList(req.getDateRange().get(0), req.getDateRange().get(1));
+      List<YearMonth> monthList = DateUtils.getMonthList(req.getDateRange().getFirst(), req.getDateRange().get(1));
       monthList.stream().mapToInt(YearMonth::getYear).distinct().forEach(yearSet::add);
       headerList.addAll(monthList.stream().map(YearMonth::toString).toList());
     }
@@ -143,7 +146,8 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         ApsGoodsForecastMainSaleData mainSaleData = v.get(year);
         IntStream.range(1, 13).forEach(m -> {
           String month = m < 10 ? "0" + m : "" + m;
-          data.put(year + "-" + month, ReflectUtil.getFieldValue(mainSaleData, "month" + month));
+          Field field = getField(mainSaleData, "month" + month);
+          data.put(year + "-" + month, FieldUtils.getFieldValue(mainSaleData, field));
         });
       });
 
@@ -153,7 +157,7 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
     dataList.sort(Comparator.comparing(GetDataByGoodsIdRes::getSaleCode));
 //    headerList.add("销售特征值");
     List<Header> list = headerList.stream().map(m -> new Header().setFieldName(m).setShowName(m).setWidth(200)).collect(Collectors.toList());
-    list.add(0, new Header().setFieldName("saleCode").setShowName("销售特征值").setWidth(200));
+    list.addFirst(new Header().setFieldName("saleCode").setShowName("销售特征值").setWidth(200));
     return dynamicsPage.setDataList(dataList).setHeaderList(list);
   }
 }

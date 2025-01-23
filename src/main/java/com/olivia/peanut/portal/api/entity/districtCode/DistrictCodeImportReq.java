@@ -16,9 +16,6 @@ import lombok.Setter;
 public class DistrictCodeImportReq extends DistrictCodeDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -6,16 +6,16 @@ import com.olivia.peanut.aps.api.entity.apsBom.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsBomImportListener;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.service.ApsBomService;
+import com.olivia.sdk.ann.Oplog;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * BOM 清单(ApsBom)表服务实现类
@@ -26,12 +26,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class ApsBomApiImpl implements ApsBomApi {
 
+  private static final String businessType = "apsBom";
   private @Autowired ApsBomService apsBomService;
 
   /****
    * insert
    *
    */
+  @Oplog(content = "零件存储", businessKey = "#req.bomCode", businessType = businessType, paramName = "保存零件")
   public @Override ApsBomInsertRes insert(ApsBomInsertReq req) {
     this.apsBomService.save($.copy(req, ApsBom.class));
     return new ApsBomInsertRes().setCount(1);

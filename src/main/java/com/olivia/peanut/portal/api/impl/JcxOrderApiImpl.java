@@ -10,15 +10,14 @@ import com.olivia.peanut.portal.service.JcxOrderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * (JcxOrder)表服务实现类
@@ -39,7 +38,7 @@ public class JcxOrderApiImpl implements JcxOrderApi {
    */
   @Transactional
   public @Override JcxOrderInsertRes insert(JcxOrderInsertReq req) {
-    req.checkParam();
+
     this.jcxOrderService.save(req);
     return new JcxOrderInsertRes().setCount(1);
   }

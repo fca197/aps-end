@@ -16,9 +16,6 @@ import lombok.Setter;
 public class FileUploadImportReq extends FileUploadDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

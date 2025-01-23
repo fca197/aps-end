@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class ApsLogisticsPathItemUpdateByIdReq extends ApsLogisticsPathItemDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

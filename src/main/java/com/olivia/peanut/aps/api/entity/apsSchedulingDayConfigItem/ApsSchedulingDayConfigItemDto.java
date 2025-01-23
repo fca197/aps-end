@@ -1,24 +1,12 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem;
 
-import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.util.List;
-
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.alibaba.excel.annotation.ExcelProperty;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.checkerframework.checker.units.qual.A;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 排程版本配置表(ApsSchedulingDayConfigItem)查询对象返回

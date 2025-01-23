@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ProcessLineImportReq extends ProcessLineDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

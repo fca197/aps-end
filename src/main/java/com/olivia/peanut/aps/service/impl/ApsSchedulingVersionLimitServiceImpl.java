@@ -13,17 +13,16 @@ import com.olivia.peanut.aps.service.ApsSchedulingVersionLimitService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.Str;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (ApsSchedulingVersionLimit)表服务实现类
@@ -84,21 +83,12 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
   }
 
 
+  @SuppressWarnings({Str.UN_CHECKED})
   private MPJLambdaWrapper<ApsSchedulingVersionLimit> getWrapper(ApsSchedulingVersionLimitDto obj) {
     MPJLambdaWrapper<ApsSchedulingVersionLimit> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getVersionId()), ApsSchedulingVersionLimit::getVersionId, obj.getVersionId())
-          .eq(StringUtils.isNoneBlank(obj.getShowName()), ApsSchedulingVersionLimit::getShowName, obj.getShowName())
-          .eq(StringUtils.isNoneBlank(obj.getFieldName()), ApsSchedulingVersionLimit::getFieldName, obj.getFieldName())
-          .eq(StringUtils.isNoneBlank(obj.getFieldValue()), ApsSchedulingVersionLimit::getFieldValue, obj.getFieldValue())
-          .eq(Objects.nonNull(obj.getCurrentCount()), ApsSchedulingVersionLimit::getCurrentCount, obj.getCurrentCount())
-          .eq(Objects.nonNull(obj.getMin()), ApsSchedulingVersionLimit::getMin, obj.getMin())
-          .eq(Objects.nonNull(obj.getMax()), ApsSchedulingVersionLimit::getMax, obj.getMax())
-
-      ;
-    }
+    $.lambdaQueryWrapper(q, obj, ApsSchedulingVersionLimit.class, BaseEntity::getId,
+        ApsSchedulingVersionLimit::getShowName, ApsSchedulingVersionLimit::getFieldName, ApsSchedulingVersionLimit::getFieldValue);
     q.orderByDesc(ApsSchedulingVersionLimit::getId);
     return q;
 

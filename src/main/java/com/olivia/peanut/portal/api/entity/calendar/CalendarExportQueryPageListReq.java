@@ -22,8 +22,5 @@ public class CalendarExportQueryPageListReq {
   private CalendarDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

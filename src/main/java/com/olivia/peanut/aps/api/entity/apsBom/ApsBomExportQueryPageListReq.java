@@ -22,8 +22,5 @@ public class ApsBomExportQueryPageListReq {
   private ApsBomDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

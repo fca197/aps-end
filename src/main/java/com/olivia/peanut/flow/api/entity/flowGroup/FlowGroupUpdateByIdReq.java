@@ -1,14 +1,7 @@
 package com.olivia.peanut.flow.api.entity.flowGroup;
 
-import java.time.LocalDateTime;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.io.Serializable;
-
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
@@ -23,9 +16,6 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class FlowGroupUpdateByIdReq extends FlowGroupDto {
 
-
-  public void checkParam() {
-  }
 
 }
 

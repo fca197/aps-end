@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class PropertyUpdateByIdReq extends PropertyDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

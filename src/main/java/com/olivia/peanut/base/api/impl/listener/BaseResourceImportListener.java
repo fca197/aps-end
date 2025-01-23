@@ -1,20 +1,11 @@
 package com.olivia.peanut.base.api.impl.listener;
 
 
-import com.olivia.peanut.base.model.BaseResource;
-import org.apache.ibatis.annotations.Mapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.olivia.peanut.base.api.entity.baseResource.*;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
+import com.olivia.peanut.base.api.entity.baseResource.BaseResourceImportReq;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 资源(BaseResource)文件导入监听

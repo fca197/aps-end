@@ -22,8 +22,5 @@ public class ApsMakeCapacityFactoryExportQueryPageListReq {
   private ApsMakeCapacityFactoryDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

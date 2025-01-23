@@ -1,12 +1,11 @@
 package com.olivia.peanut.portal.api.entity.dictionary;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 字典值(Dictionary)查询对象返回

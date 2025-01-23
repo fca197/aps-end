@@ -22,8 +22,5 @@ public class BaseTableHeaderExportQueryPageListReq {
   private BaseTableHeaderDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

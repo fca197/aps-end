@@ -82,9 +82,10 @@ public class ApsGoodsServiceImpl extends MPJBaseServiceImpl<ApsGoodsMapper, ApsG
   public @Override void setName(List<? extends ApsGoodsDto> apsGoodsDtoList) {
 
     setNameService.setName(apsGoodsDtoList,//
-        SetNamePojoUtils.OP_USER_NAME,
-        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName"),
-        SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName")
+        SetNamePojoUtils.OP_USER_NAME
+        , SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName"),
+        SetNamePojoUtils.getSetNamePojo(ApsProcessPathService.class, "processPathName", "processPathId", "processPathName")
+
     );
 
 //    if (CollUtil.isEmpty(ApsGoodsDtoList)) {

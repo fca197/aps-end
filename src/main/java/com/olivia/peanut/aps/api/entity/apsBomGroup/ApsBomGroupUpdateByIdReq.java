@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class ApsBomGroupUpdateByIdReq extends ApsBomGroupDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

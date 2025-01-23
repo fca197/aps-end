@@ -4,12 +4,11 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 订单商品状态表(ApsSchedulingGoodsStatusDate)查询对象返回

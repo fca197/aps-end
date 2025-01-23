@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class JcxGoodsUpdateByIdReq extends JcxGoodsDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

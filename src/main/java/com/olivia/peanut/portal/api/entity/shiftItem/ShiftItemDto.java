@@ -1,11 +1,10 @@
 package com.olivia.peanut.portal.api.entity.shiftItem;
 
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-
-import java.time.LocalTime;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalTime;
 
 /**
  * (ShiftItem)查询对象返回

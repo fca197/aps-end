@@ -15,13 +15,12 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * (ApsGoodsSaleItem)表服务实现类
@@ -106,7 +105,7 @@ public class ApsGoodsSaleItemApiImpl implements ApsGoodsSaleItemApi {
     $.assertTrueCanIgnoreException(CollUtil.isNotEmpty(saleItemList), "没有该记录");
     $.assertTrueCanIgnoreException(saleItemList.size() == 1, "没有该记录或有多条记录");
     this.apsGoodsSaleItemService.update(
-        new LambdaUpdateWrapper<ApsGoodsSaleItem>().eq(BaseEntity::getId, saleItemList.get(0).getId())
+        new LambdaUpdateWrapper<ApsGoodsSaleItem>().eq(BaseEntity::getId, saleItemList.getFirst().getId())
             .set(ApsGoodsSaleItem::getUseForecast, req.getUseForecast()));
     return new UpdateForecastRes();
   }

@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingVersionCapacityImportReq extends ApsSchedulingVersionCapacityDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

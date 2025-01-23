@@ -22,8 +22,5 @@ public class JcxOrderItemExportQueryPageListReq {
   private JcxOrderItemDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

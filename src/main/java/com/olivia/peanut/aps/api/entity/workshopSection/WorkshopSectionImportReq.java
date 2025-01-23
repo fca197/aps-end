@@ -16,9 +16,6 @@ import lombok.Setter;
 public class WorkshopSectionImportReq extends WorkshopSectionDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

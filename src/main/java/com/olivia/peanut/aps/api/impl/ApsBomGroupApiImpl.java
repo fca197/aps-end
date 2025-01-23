@@ -10,14 +10,14 @@ import com.olivia.peanut.aps.service.ApsBomGroupService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-import java.util.Objects;
-
+import com.olivia.sdk.utils.RunUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 零件组配置(ApsBomGroup)表服务实现类
@@ -88,6 +88,7 @@ public class ApsBomGroupApiImpl implements ApsBomGroupApi {
   }
 
   public @Override ApsBomGroupImportRes importData(@RequestParam("file") MultipartFile file) {
+    RunUtils.noImpl();
     List<ApsBomGroupImportReq> reqList = PoiExcelUtil.readData(file, new ApsBomGroupImportListener(), ApsBomGroupImportReq.class);
     // 类型转换，  更换枚举 等操作
     List<ApsBomGroup> readList = $.copyList(reqList, ApsBomGroup.class);

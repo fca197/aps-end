@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsProjectConfigImportReq extends ApsProjectConfigDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

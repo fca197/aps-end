@@ -23,16 +23,15 @@ import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * (JcxBuyOrder)表服务实现类
@@ -118,7 +117,7 @@ public class JcxBuyOrderServiceImpl extends MPJBaseServiceImpl<JcxBuyOrderMapper
   @Override
   @Transactional
   public JcxBuyOrderInsertRes save(JcxBuyOrderInsertReq req) {
-    req.checkParam();
+
     List<JcxBuyPlan> planList = this.jcxBuyPlanService.listByIds(req.getBuyPlanIdList());
     if (planList.size() != req.getBuyPlanIdList().size()) {
       throw new CanIgnoreException("有计划未找到，不能生成采购单");

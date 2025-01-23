@@ -3,12 +3,11 @@ package com.olivia.peanut.aps.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.math.BigDecimal;
 
 /**
  * (ApsGoodsBom)表实体类
@@ -32,11 +31,11 @@ public class ApsGoodsBom extends BaseEntity {
   private String bomName;
   // 用量
   private BigDecimal bomUsage;
-  //单位
+  //规格
   private String bomUnit;
   // 成本价
   private BigDecimal bomCostPrice;
-  // 成本价单位
+  // 成本价规格
   private String bomCostPriceUnit;
   //使用工位
   private Long bomUseWorkStation;

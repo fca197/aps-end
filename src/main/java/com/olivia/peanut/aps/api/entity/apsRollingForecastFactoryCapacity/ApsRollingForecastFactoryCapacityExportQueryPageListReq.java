@@ -22,8 +22,5 @@ public class ApsRollingForecastFactoryCapacityExportQueryPageListReq {
   private ApsRollingForecastFactoryCapacityDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -9,13 +9,12 @@ import com.olivia.peanut.aps.service.ApsGoodsBomBuyPlanItemService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * BOM 购买清单(ApsGoodsBomBuyPlanItem)表服务实现类
@@ -92,5 +91,11 @@ public class ApsGoodsBomBuyPlanItemApiImpl implements ApsGoodsBomBuyPlanItemApi 
     List<ApsGoodsBomBuyPlanItemDto> dataList = $.copyList(list, ApsGoodsBomBuyPlanItemDto.class);
     this.apsGoodsBomBuyPlanItemService.setName(dataList);
     return new ApsGoodsBomBuyPlanItemQueryByIdListRes().setDataList(dataList);
+  }
+
+  @Override
+  public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
+    return this.apsGoodsBomBuyPlanItemService.sendMail2supplier(req);
+
   }
 }

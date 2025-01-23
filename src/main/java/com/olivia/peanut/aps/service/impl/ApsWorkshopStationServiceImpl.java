@@ -10,17 +10,16 @@ import com.olivia.peanut.aps.model.ApsWorkshopStation;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
 import com.olivia.peanut.portal.mapper.WorkshopStationMapper;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.Str;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 工位信息(WorkshopStation)表服务实现类
@@ -59,35 +58,21 @@ public class ApsWorkshopStationServiceImpl extends MPJBaseServiceImpl<WorkshopSt
     } else {
       records = $.copyList(this.list(q), WorkshopStationExportQueryPageListInfoRes.class);
     }
-
     // 类型转换，  更换枚举 等操作
     List<WorkshopStationExportQueryPageListInfoRes> listInfoRes = $.copyList(records, WorkshopStationExportQueryPageListInfoRes.class);
-
     return DynamicsPage.init(page, listInfoRes);
   }
 
   // 以下为私有对象封装
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsWorkshopStation> getWrapper(WorkshopStationDto obj) {
     MPJLambdaWrapper<ApsWorkshopStation> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q
-          .eq(Objects.nonNull(obj.getId()), ApsWorkshopStation::getId, obj.getId())
-          .eq(Objects.nonNull(obj.getTenantId()), ApsWorkshopStation::getTenantId, obj.getTenantId())
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsWorkshopStation::getFactoryId, obj.getFactoryId())
-          .eq(Objects.nonNull(obj.getSectionId()), ApsWorkshopStation::getSectionId, obj.getSectionId())
-          .eq(StringUtils.isNoneBlank(obj.getStationName()), ApsWorkshopStation::getStationName, obj.getStationName())
-          .eq(StringUtils.isNoneBlank(obj.getStationCode()), ApsWorkshopStation::getStationCode, obj.getStationCode())
-          .eq(StringUtils.isNoneBlank(obj.getStationType()), ApsWorkshopStation::getStationType, obj.getStationType())
-          .eq(StringUtils.isNoneBlank(obj.getStationStatus()), ApsWorkshopStation::getStationStatus, obj.getStationStatus())
-          .eq(Objects.nonNull(obj.getCreateTime()), ApsWorkshopStation::getCreateTime, obj.getCreateTime())
-          .eq(Objects.nonNull(obj.getUpdateTime()), ApsWorkshopStation::getUpdateTime, obj.getUpdateTime())
-          .orderByDesc(ApsWorkshopStation::getId)
-      ;
-    }
-
+    $.lambdaQueryWrapper(q, obj, ApsWorkshopStation.class, BaseEntity::getId,
+        ApsWorkshopStation::getStationCode, ApsWorkshopStation::getStationName);
+    q.orderByDesc(ApsWorkshopStation::getId);
     return q;
 
   }

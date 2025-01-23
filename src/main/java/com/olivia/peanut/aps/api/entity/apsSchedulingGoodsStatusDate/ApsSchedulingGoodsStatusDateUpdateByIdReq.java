@@ -17,8 +17,5 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingGoodsStatusDateUpdateByIdReq extends ApsSchedulingGoodsStatusDateDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

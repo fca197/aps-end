@@ -22,8 +22,5 @@ public class ApsProjectConfigExportQueryPageListReq {
   private ApsProjectConfigDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

@@ -1,12 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsRollingForecastFactoryCapacity;
 
 import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.List;
 
 /**
  * 滚动预测(ApsRollingForecastFactoryCapacity)根据ID删除多个入参
@@ -26,9 +25,6 @@ public class ApsRollingForecastFactoryCapacityDeleteByIdListReq {
   @NotEmpty(message = "请选择删除对象")
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

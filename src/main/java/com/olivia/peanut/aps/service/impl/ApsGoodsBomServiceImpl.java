@@ -1,9 +1,5 @@
 package com.olivia.peanut.aps.service.impl;
 
-import static com.olivia.peanut.util.SetNamePojoUtils.FACTORY;
-import static com.olivia.peanut.util.SetNamePojoUtils.GOODS;
-import static com.olivia.peanut.util.SetNamePojoUtils.OP_USER_NAME;
-
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
@@ -19,19 +15,20 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.service.pojo.NameConfig;
 import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static com.olivia.peanut.util.SetNamePojoUtils.*;
 
 /**
  * (ApsGoodsBom)表服务实现类
@@ -88,30 +85,19 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
   public @Override void setName(List<? extends ApsGoodsBomDto> apsGoodsBomDtoList) {
 
     setNameService.setName(apsGoodsBomDtoList, List.of(FACTORY, GOODS,//
-        OP_USER_NAME,
-        new SetNamePojo().setNameFieldName("stationName").setServiceName(ApsWorkshopStationService.class)
-            .setNameConfigList(List.of(new NameConfig().setIdField("bomUseWorkStation").setNameFieldList(List.of("bomUseWorkStationName"))))));
+        OP_USER_NAME, new SetNamePojo().setNameFieldName("stationName").setServiceName(ApsWorkshopStationService.class).setNameConfigList(List.of(new NameConfig().setIdField("bomUseWorkStation").setNameFieldList(List.of("bomUseWorkStationName"))))));
   }
 
   // 以下为私有对象封装
 
 
+  @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsBom> getWrapper(ApsGoodsBomDto obj) {
     MPJLambdaWrapper<ApsGoodsBom> q = new MPJLambdaWrapper<>();
 
-    if (Objects.nonNull(obj)) {
-      q.eq(Objects.nonNull(obj.getGoodsId()), ApsGoodsBom::getGoodsId, obj.getGoodsId()).eq(StringUtils.isNoneBlank(obj.getBomCode()), ApsGoodsBom::getBomCode, obj.getBomCode())
-          .likeRight(StringUtils.isNoneBlank(obj.getBomName()), ApsGoodsBom::getBomName, obj.getBomName())
-          .eq(Objects.nonNull(obj.getBomUsage()), ApsGoodsBom::getBomUsage, obj.getBomUsage())
-          .eq(StringUtils.isNoneBlank(obj.getBomUnit()), ApsGoodsBom::getBomUnit, obj.getBomUnit())
-          .eq(Objects.nonNull(obj.getBomCostPrice()), ApsGoodsBom::getBomCostPrice, obj.getBomCostPrice())
-          .eq(Objects.nonNull(obj.getBomCostPriceUnit()), ApsGoodsBom::getBomCostPriceUnit, obj.getBomCostPriceUnit())
-          .eq(Objects.nonNull(obj.getBomUseWorkStation()), ApsGoodsBom::getBomUseWorkStation, obj.getBomUseWorkStation())
-          .eq(StringUtils.isNoneBlank(obj.getBomUseExpression()), ApsGoodsBom::getBomUseExpression, obj.getBomUseExpression())
-          .eq(Objects.nonNull(obj.getFactoryId()), ApsGoodsBom::getFactoryId, obj.getFactoryId())
+    $.lambdaQueryWrapper(q, obj, ApsGoodsBom.class, ApsGoodsBom::getGoodsId//
+        , BaseEntity::getId, ApsGoodsBom::getBomUseWorkStation, ApsGoodsBom::getBomCode);
 
-      ;
-    }
     q.orderByDesc(ApsGoodsBom::getId);
     return q;
 

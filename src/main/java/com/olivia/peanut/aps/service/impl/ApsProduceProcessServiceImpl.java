@@ -17,6 +17,7 @@ import com.olivia.peanut.aps.service.ApsProduceProcessItemService;
 import com.olivia.peanut.aps.service.ApsProduceProcessService;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -66,9 +67,9 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
   @Transactional
   public void updateById(ApsProduceProcessUpdateByIdReq req) {
     ApsProduceProcess produceProcess = $.copy(req, ApsProduceProcess.class);
-    this.apsProduceProcessItemService.remove(new LambdaQueryWrapper<ApsProduceProcessItem>().eq(ApsProduceProcessItem::getProduceProcessId,req.getId()));
+    this.apsProduceProcessItemService.remove(new LambdaQueryWrapper<ApsProduceProcessItem>().eq(ApsProduceProcessItem::getProduceProcessId, req.getId()));
     List<ApsProduceProcessItem> processItemList = req.getProduceProcessItemDtoList().stream().map(t -> $.copy(t, ApsProduceProcessItem.class)).toList();
-    processItemList.forEach(t -> t.setProduceProcessId(produceProcess.getId()));
+    processItemList.forEach(t -> t.setProduceProcessId(produceProcess.getId()).setId(IdWorker.getId()));
     this.apsProduceProcessItemService.saveBatch(processItemList);
     this.updateById(produceProcess);
   }
@@ -111,7 +112,7 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
 
   public @Override void setName(List<? extends ApsProduceProcessDto> list) {
 
-    //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
+    setNameService.setName(list, SetNamePojoUtils.FACTORY);
     if (CollUtil.isEmpty(list)) {
       return;
     }
@@ -125,6 +126,7 @@ public class ApsProduceProcessServiceImpl extends MPJBaseServiceImpl<ApsProduceP
 
 
     if (Objects.nonNull(obj)) {
+      q.eq(Objects.nonNull(obj.getFactoryId()), ApsProduceProcess::getFactoryId, obj.getFactoryId());
       q.eq(StringUtils.isNoneBlank(obj.getProduceProcessNo()), ApsProduceProcess::getProduceProcessNo, obj.getProduceProcessNo()).eq(StringUtils.isNoneBlank(obj.getProduceProcessName()), ApsProduceProcess::getProduceProcessName, obj.getProduceProcessName())
 
       ;

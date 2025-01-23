@@ -22,8 +22,5 @@ public class ApsSaleConfigExportQueryPageListReq {
   private ApsSaleConfigDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

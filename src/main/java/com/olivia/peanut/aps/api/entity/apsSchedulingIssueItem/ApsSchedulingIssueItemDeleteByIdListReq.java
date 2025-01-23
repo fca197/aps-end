@@ -1,15 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingIssueItem;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
-
-import jakarta.validation.constraints.NotEmpty;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * 排产下发详情(ApsSchedulingIssueItem)根据ID删除多个入参
@@ -29,9 +25,6 @@ public class ApsSchedulingIssueItemDeleteByIdListReq {
   @NotEmpty(message = "请选择删除对象")
   private List<Long> idList;
 
-
-  public void checkParam() {
-  }
 
 }
 

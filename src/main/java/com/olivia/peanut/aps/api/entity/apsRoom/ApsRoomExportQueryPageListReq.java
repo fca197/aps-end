@@ -22,8 +22,5 @@ public class ApsRoomExportQueryPageListReq {
   private ApsRoomDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

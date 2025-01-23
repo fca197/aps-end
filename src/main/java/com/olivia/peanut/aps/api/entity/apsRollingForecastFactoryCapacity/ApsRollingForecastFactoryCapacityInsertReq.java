@@ -17,9 +17,5 @@ import lombok.experimental.Accessors;
 public class ApsRollingForecastFactoryCapacityInsertReq extends ApsRollingForecastFactoryCapacityDto {
 
 
-  public void checkParam() {
-  }
-
-
 }
 

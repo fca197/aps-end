@@ -3,18 +3,17 @@ package com.olivia.peanut.portal.api.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.olivia.peanut.portal.api.UberH3Api;
 import com.olivia.peanut.portal.api.entity.uber.h3.*;
-import com.uber.h3core.H3Core;
 import com.uber.h3core.LengthUnit;
 import com.uber.h3core.util.LatLng;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.olivia.peanut.util.H3Utils.UBER_H3_CORE;
 
 /***
  *
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UberH3ApiImpl implements UberH3Api {
 
-  private static final H3Core UBER_H3_CORE = getUberH3Core();
+
   public static String REDIS_KEY_DRIVER_GEO = "RS_D_G";
   public static String REDIS_KEY_DRIVER_LAT_LNG = "RS_D_G_L_";
   public static String REDIS_KEY_PASSENGER_GEO = "RS_P_G";
@@ -32,10 +31,6 @@ public class UberH3ApiImpl implements UberH3Api {
   StringRedisTemplate redisTemplate;
   int redisTimeOut = 30;
 
-  @SneakyThrows
-  private static H3Core getUberH3Core() {
-    return H3Core.newInstance();
-  }
 
   private UberH3ToGeoBoundaryRes geoToH3AddressTmp(UberH3ToGeoBoundaryReq req) {
     long h3Code = UBER_H3_CORE.latLngToCell(req.getLat(), req.getLng(), req.getRes());

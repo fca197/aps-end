@@ -1,8 +1,5 @@
 package com.olivia.peanut.portal.service.impl;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
@@ -12,6 +9,7 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.con.ApsStr;
 import com.olivia.peanut.portal.api.entity.jcxOrder.*;
 import com.olivia.peanut.portal.api.entity.jcxOrder.JcxOrderInsertReq.GoodsInfo;
 import com.olivia.peanut.portal.api.entity.jcxOrderItem.JcxOrderItemDto;
@@ -25,6 +23,10 @@ import com.olivia.peanut.portal.service.JcxOrderService;
 import com.olivia.sdk.exception.CanIgnoreException;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -35,10 +37,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * (JcxOrder)表服务实现类
@@ -177,7 +177,7 @@ public class JcxOrderServiceImpl extends MPJBaseServiceImpl<JcxOrderMapper, JcxO
   }
 
   private void setQueryListHeader(DynamicsPage<JcxOrder> page) {
-    page.addHeader("orderNo", "订单编号", 200).addHeader("goodsName", "商品名称", 400)
+    page.addHeader(ApsStr.ORDER_NO, "订单编号", 200).addHeader("goodsName", "商品名称", 400)
         .addHeader("orderTotalSalePrice", "总额").addHeader("orderRemark", "订单备注")
         .addHeader("orderStatusName", "订单状态")
         .addHeader("createTime", "创建时间", 200);

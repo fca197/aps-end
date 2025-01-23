@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsRollingForecastFactoryCapacityImportReq extends ApsRollingForecastFactoryCapacityDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

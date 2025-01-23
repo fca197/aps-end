@@ -22,8 +22,5 @@ public class ApsSchedulingConstraintsExportQueryPageListReq {
   private ApsSchedulingConstraintsDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

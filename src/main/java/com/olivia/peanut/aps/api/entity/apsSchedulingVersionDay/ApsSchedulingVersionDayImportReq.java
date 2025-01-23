@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingVersionDayImportReq extends ApsSchedulingVersionDayDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

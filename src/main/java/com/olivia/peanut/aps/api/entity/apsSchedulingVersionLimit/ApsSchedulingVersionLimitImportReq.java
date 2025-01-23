@@ -16,9 +16,6 @@ import lombok.Setter;
 public class ApsSchedulingVersionLimitImportReq extends ApsSchedulingVersionLimitDto {
 
 
-  public void checkParam() {
-  }
-
 }
 
 

@@ -1,8 +1,5 @@
 package com.olivia.peanut.portal.service.impl;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -26,6 +23,9 @@ import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,9 +36,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 /**
  * (JcxBuyPlan)表服务实现类
@@ -135,7 +134,7 @@ public class JcxBuyPlanServiceImpl extends MPJBaseServiceImpl<JcxBuyPlanMapper, 
   @Override
   @Transactional
   public JcxBuyPlanInsertRes save(JcxBuyPlanInsertReq req) {
-    req.checkParam();
+
     JcxBuyPlan jcxBuyPlan = new JcxBuyPlan();
     jcxBuyPlan.setPlanName(req.getPlanName()).setPlanStatus(JcxBuyPlanStatusEnum.INIT.getCode()).setId(IdWorker.getId());
     jcxBuyPlan.setPlanStatus(JcxBuyPlanStatusEnum.INIT.getCode());

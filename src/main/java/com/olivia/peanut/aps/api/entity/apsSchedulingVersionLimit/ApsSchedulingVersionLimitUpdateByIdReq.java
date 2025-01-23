@@ -18,8 +18,5 @@ import lombok.experimental.Accessors;
 public class ApsSchedulingVersionLimitUpdateByIdReq extends ApsSchedulingVersionLimitDto {
 
 
-  public void checkParam() {
-  }
-
 }
 

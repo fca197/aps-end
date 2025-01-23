@@ -22,8 +22,5 @@ public class FactoryExportQueryPageListReq {
   private FactoryDto data;
 
 
-  public void checkParam() {
-  }
-
 }
 

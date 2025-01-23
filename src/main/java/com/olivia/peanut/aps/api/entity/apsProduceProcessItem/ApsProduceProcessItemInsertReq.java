@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 /**
  * aps 生产机器(ApsProduceProcessItem)保存入参
  *
@@ -19,7 +16,6 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class ApsProduceProcessItemInsertReq extends ApsProduceProcessItemDto {
 
-  public void checkParam() {
-  }
+
 }
 
