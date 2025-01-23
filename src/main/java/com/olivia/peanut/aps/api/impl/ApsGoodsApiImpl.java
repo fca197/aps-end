@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsGoodsApi;
 import com.olivia.peanut.aps.api.entity.apsGoods.*;
@@ -8,10 +9,7 @@ import com.olivia.peanut.aps.api.impl.listener.ApsGoodsImportListener;
 import com.olivia.peanut.aps.model.ApsGoods;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.sdk.ann.Oplog;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.PoiExcelUtil;
-import com.olivia.sdk.utils.RunUtils;
+import com.olivia.sdk.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +36,7 @@ public class ApsGoodsApiImpl implements ApsGoodsApi {
   @Oplog(content = "商品存储", businessKey = "#req.bomCode", businessType = businessType, paramName = "保存零件")
 
   public @Override ApsGoodsInsertRes insert(ApsGoodsInsertReq req) {
+    $.assertNotAllNull("工艺路径与制造路径必须选择一种", req.getProcessPathId(), req.getProduceProcessId());
     this.apsGoodsService.save($.copy(req, ApsGoods.class));
     return new ApsGoodsInsertRes().setCount(1);
   }
@@ -65,7 +64,10 @@ public class ApsGoodsApiImpl implements ApsGoodsApi {
    *
    */
   public @Override ApsGoodsUpdateByIdRes updateById(ApsGoodsUpdateByIdReq req) {
+    $.assertNotAllNull("工艺路径与制造路径必须选择一种", req.getProcessPathId(), req.getProduceProcessId());
     apsGoodsService.updateById($.copy(req, ApsGoods.class));
+    apsGoodsService.update(new LambdaUpdateWrapper<ApsGoods>().set(ApsGoods::getProcessPathId, req.getProcessPathId())
+        .set(ApsGoods::getProduceProcessId, req.getProduceProcessId()).eq(BaseEntity::getId, req.getId()));
     return new ApsGoodsUpdateByIdRes();
 
   }
