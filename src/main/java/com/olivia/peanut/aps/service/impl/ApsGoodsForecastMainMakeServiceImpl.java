@@ -24,6 +24,7 @@ import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.DynamicsPage.Header;
+import com.olivia.sdk.utils.FieldUtils;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -156,7 +157,7 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
                 AtomicLong sum = new AtomicLong(0);
                 weekInfoListTmpTmp.forEach(d -> {
                   Field field = getField(saleData, "dayNum" + d.getCurrentDate().getDayOfYear());
-                  Long value = (Long) ReflectUtil.getFieldValue(saleData, field);
+                  Long value = (Long) FieldUtils.getFieldValue(saleData, field);
                   if (Objects.nonNull(value)) {
                     sum.addAndGet(value);
                   }

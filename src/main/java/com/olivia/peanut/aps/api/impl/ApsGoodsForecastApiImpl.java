@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.impl;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsGoodsForecastApi;
 import com.olivia.peanut.aps.api.entity.apsGoodsForecast.*;
@@ -8,8 +9,10 @@ import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastImportListenerAbs
 import com.olivia.peanut.aps.model.ApsGoodsForecast;
 import com.olivia.peanut.aps.service.ApsGoodsForecastService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+import com.olivia.sdk.utils.model.YearMonth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +38,8 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
    *
    */
   public @Override ApsGoodsForecastInsertRes insert(ApsGoodsForecastInsertReq req) {
+    String ms = JSON.toJSONString(DateUtils.getMonthList(req.getForecastBeginDate(), req.getForecastEndDate()).stream().map(YearMonth::toString).toList());
+    req.setMonths(ms);
     this.apsGoodsForecastService.save($.copy(req, ApsGoodsForecast.class).setForecastStatus(ForecastStatusEnum.TO_UPLOAD.getCode()));
     return new ApsGoodsForecastInsertRes().setCount(1);
   }
@@ -62,8 +67,9 @@ public class ApsGoodsForecastApiImpl implements ApsGoodsForecastApi {
    */
   public @Override ApsGoodsForecastUpdateByIdRes updateById(ApsGoodsForecastUpdateByIdReq req) {
 
+    String ms = JSON.toJSONString(DateUtils.getMonthList(req.getForecastBeginDate(), req.getForecastEndDate()).stream().map(YearMonth::toString).toList());
+    req.setMonths(ms);
     ApsGoodsForecast forecast = $.copy(req, ApsGoodsForecast.class);
-
     apsGoodsForecastService.updateById(forecast);
     return new ApsGoodsForecastUpdateByIdRes();
 

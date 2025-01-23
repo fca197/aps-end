@@ -15,6 +15,7 @@ import com.olivia.peanut.base.service.BaseRoleService;
 import com.olivia.peanut.portal.model.*;
 import com.olivia.peanut.portal.service.*;
 import com.olivia.sdk.utils.BaseEntity;
+import com.olivia.sdk.utils.FieldUtils;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,7 +196,7 @@ public class BasePreviewApiImpl implements BasePreviewApi {
               )))).toList()));
       // 日历
       childrenList.add(new SystemConfigPreviewRes.Info().setName("日历").setChildren(calendarAtomic.get().getOrDefault(f.getId(), List.of()).stream().map(t -> new SystemConfigPreviewRes.Info().setName(t.getCalendarName()).setChildren(calendarDayMapAtomic.get().getOrDefault(t.getId(), List.of()).stream().map(t2 -> new SystemConfigPreviewRes.Info().setName(t2.getDayYear() + "/" +
-          t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(ReflectUtil.getFieldValue(t2, getField(t2, "day" + t3)), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
+          t2.getDayMonthAddZero() + " 工作日：" + IntStream.rangeClosed(1, 31).map(t3 -> Objects.equals(FieldUtils.getFieldValue(t2, getField(t2, "day" + t3)), 1) ? 1 : 0).filter(t3 -> t3 == 1).count() + "个")).toList())).toList()));
       // 机器
 
       childrenList.add(new SystemConfigPreviewRes.Info().setName("机器").setChildren(machineMapList.values().stream().map((t) -> new SystemConfigPreviewRes.Info().setName(t.getMachineName())).toList()));

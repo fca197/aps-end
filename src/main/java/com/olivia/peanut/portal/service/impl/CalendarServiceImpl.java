@@ -16,10 +16,7 @@ import com.olivia.peanut.portal.model.Calendar;
 import com.olivia.peanut.portal.model.CalendarDay;
 import com.olivia.peanut.portal.service.CalendarDayService;
 import com.olivia.peanut.portal.service.CalendarService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DateUtils;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.WeekInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -120,7 +117,7 @@ public class CalendarServiceImpl extends MPJBaseServiceImpl<CalendarMapper, Cale
           .eq(CalendarDay::getDayYear, Integer.valueOf(ys)).in(CalendarDay::getDayMonth, mListMap.keySet())).forEach(m -> {
         List<WeekInfo> weekInfos = mListMap.get(m.getDayMonth());
         IntStream.range(1, weekInfos.size()).forEach(i -> {
-          ReflectUtil.invoke(weekInfos.get(i), "setIsWorkDay", TRUE.equals(ReflectUtil.getFieldValue(m, getField(m, "day" + i))));
+          ReflectUtil.invoke(weekInfos.get(i), "setIsWorkDay", TRUE.equals(FieldUtils.getFieldValue(m, getField(m, "day" + i))));
         });
       });
     });

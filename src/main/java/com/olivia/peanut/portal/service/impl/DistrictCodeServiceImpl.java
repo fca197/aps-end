@@ -108,7 +108,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
 
   private void setDistrictNameValue(List<?> list, DistrictCodeSelectType... selectTypes) {
     List<DistrictCodeSelectType> selectTypeList = Arrays.stream(selectTypes).toList();
-    List<Object> codeList = list.stream().map(t -> selectTypeList.stream().map(s -> ReflectUtil.getFieldValue(t, FieldUtils.getField(t, s.name()))).toList())
+    List<Object> codeList = list.stream().map(t -> selectTypeList.stream().map(s -> FieldUtils.getFieldValue(t, FieldUtils.getField(t, s.name()))).toList())
         .flatMap(List::stream).distinct().toList();
 
     Map<String, String> codeNameMap = this.list(new LambdaQueryWrapper<DistrictCode>().in(DistrictCode::getCode, codeList)).stream().collect(Collectors.toMap(DistrictCode::getCode, DistrictCode::getName));
@@ -116,7 +116,7 @@ public class DistrictCodeServiceImpl extends MPJBaseServiceImpl<DistrictCodeMapp
     list.forEach(v -> {
       selectTypeList.stream().forEach(s -> {
         ReflectUtil.setFieldValue(v, FieldUtils.getField(v, s.getShowFieldName()),
-            codeNameMap.get(ReflectUtil.getFieldValue(v, FieldUtils.getField(v, s.name()))));
+            codeNameMap.get(FieldUtils.getFieldValue(v, FieldUtils.getField(v, s.name()))));
       });
     });
 

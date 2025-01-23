@@ -48,7 +48,7 @@ import java.util.stream.IntStream;
 public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<ApsGoodsSaleProjectConfigMapper, ApsGoodsSaleProjectConfig> implements
     ApsGoodsSaleProjectConfigService {
 
-  private final static int TIME_OUT = 60;
+  private final static int TIME_OUT = 5;
   //  final static Cache<Long, Map<String, String>> cache = CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(TIME_OUT, TimeUnit.MINUTES).build();
   final static Cache<Long, Map<Long, List<ApsGoodsSaleProjectConfig>>> apsGoodsSaleProjectConfigCache = CacheBuilder.newBuilder().maximumSize(100)
       .expireAfterWrite(TIME_OUT, TimeUnit.MINUTES).build();
@@ -127,6 +127,7 @@ public class ApsGoodsSaleProjectConfigServiceImpl extends MPJBaseServiceImpl<Aps
         ApsSaleConfig apsSaleConfig = apsSaleConfigMap.get(saleCode);
         List<ApsGoodsSaleProjectConfig> goodsSaleProjectConfigList = projectConfigMap.get(apsSaleConfig.getId());
         if (CollUtil.isEmpty(goodsSaleProjectConfigList)) {
+          log.warn("sale2project  goodsSaleProjectConfigList is null {} ", apsSaleConfig.getId());
           return;
         }
         if (goodsSaleProjectConfigList.size() == 1) {

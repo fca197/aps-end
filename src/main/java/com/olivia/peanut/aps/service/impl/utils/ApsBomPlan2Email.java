@@ -48,7 +48,7 @@ public class ApsBomPlan2Email {
       maxDay.set(Math.max(maxDay.get(), apsBom.getDeliveryCycleDay()));
       localDateBetween.forEach(localDate -> {
         ApsGoodsBomBuyPlanItem planItem = listMap.get(localDate.getYear()).getFirst();
-        Object fieldValue = ReflectUtil.getFieldValue(planItem, FieldUtils.getField(planItem, fieldName + localDate.getDayOfYear()));
+        Object fieldValue = FieldUtils.getFieldValue(planItem, FieldUtils.getField(planItem, fieldName + localDate.getDayOfYear()));
 
         if (Objects.isNull(fieldValue)) {
           return;

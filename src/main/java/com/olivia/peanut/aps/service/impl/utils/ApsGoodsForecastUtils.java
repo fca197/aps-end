@@ -101,7 +101,7 @@ public class ApsGoodsForecastUtils {
           rowTmp.createCell(0).setCellValue(apsGoodsSaleItem.getParentSaleConfigCode() + "/" + apsGoodsSaleItem.getParentSaleConfigName());
           rowTmp.createCell(1).setCellValue(apsGoodsSaleItem.getSaleConfigCode() + "/" + apsGoodsSaleItem.getSaleConfigName());
         });
-        sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 1));
+        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 1));
         IntStream.range(0, sheet.getRow(0).getLastCellNum()).forEach(i -> {
           sheet.setColumnWidth(i, 20 * 256);
         });

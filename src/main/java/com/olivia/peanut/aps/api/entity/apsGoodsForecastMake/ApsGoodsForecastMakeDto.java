@@ -22,7 +22,7 @@ public class ApsGoodsForecastMakeDto extends BaseEntityDto {
 
   @NotNull(message = "预测主表不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long forecastMainId;
-  @NotNull(message = "商品不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "商品不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long goodsId;
   private String goodsName;
   @NotBlank(message = "预测编码不能为空", groups = {InsertCheck.class, UpdateCheck.class})
@@ -33,7 +33,7 @@ public class ApsGoodsForecastMakeDto extends BaseEntityDto {
   private String forecastMakeMonthBeginDate;
   @NotBlank(message = "预测结束时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String forecastMakeMonthEndDate;
-  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "工厂不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long factoryId;
   private String month;
   private String weeks;

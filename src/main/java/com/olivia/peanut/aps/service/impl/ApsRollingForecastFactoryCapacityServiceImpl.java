@@ -22,6 +22,7 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.FieldUtils;
 import com.olivia.sdk.utils.model.YearMonth;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -186,7 +187,7 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
       if (Objects.nonNull(apsRollingForecastFactoryCapacity)) {
         String fieldName = "day" + ((t.getDayOfMonth() < 10) ? "0" + t.getDayOfMonth() : t.getDayOfMonth());
         Field field = getField(apsRollingForecastFactoryCapacity, fieldName);
-        Integer capacity = (Integer) ReflectUtil.getFieldValue(apsRollingForecastFactoryCapacity, field);
+        Integer capacity = (Integer) FieldUtils.getFieldValue(apsRollingForecastFactoryCapacity, field);
         capacity = Objects.isNull(capacity) ? 0 : capacity;
         dayList.add(new FactoryCapacityDay().setCapacity(capacity).setLocalDate(t));
       }

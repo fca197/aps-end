@@ -19,18 +19,18 @@ public class ApsGoodsForecastUserSaleDataDto extends BaseEntityDto {
   private Long forecastId;
   private Long saleConfigId;
   private Integer year;
-  private Long month_01;
-  private Long month_02;
-  private Long month_03;
-  private Long month_04;
-  private Long month_05;
-  private Long month_06;
-  private Long month_07;
-  private Long month_08;
-  private Long month_09;
-  private Long month_10;
-  private Long month_11;
-  private Long month_12;
+  private Double month_01;
+  private Double month_02;
+  private Double month_03;
+  private Double month_04;
+  private Double month_05;
+  private Double month_06;
+  private Double month_07;
+  private Double month_08;
+  private Double month_09;
+  private Double month_10;
+  private Double month_11;
+  private Double month_12;
 
 }
 

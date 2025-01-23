@@ -14,11 +14,8 @@ import com.olivia.peanut.aps.api.entity.apsGoodsForecastMainSaleData.*;
 import com.olivia.peanut.aps.api.impl.listener.ApsGoodsForecastMainSaleDataImportListener;
 import com.olivia.peanut.aps.model.ApsGoodsForecastMainSaleData;
 import com.olivia.peanut.aps.service.ApsGoodsForecastMainSaleDataService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.DateUtils;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
-import com.olivia.sdk.utils.PoiExcelUtil;
 import com.olivia.sdk.utils.model.YearMonth;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +147,7 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
         IntStream.range(1, 13).forEach(m -> {
           String month = m < 10 ? "0" + m : "" + m;
           Field field = getField(mainSaleData, "month" + month);
-          data.put(year + "-" + month, ReflectUtil.getFieldValue(mainSaleData, field));
+          data.put(year + "-" + month, FieldUtils.getFieldValue(mainSaleData, field));
         });
       });
 
