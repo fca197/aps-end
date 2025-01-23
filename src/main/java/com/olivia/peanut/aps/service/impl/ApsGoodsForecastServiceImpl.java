@@ -201,7 +201,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     Map<String, ApsGoodsForecastUserGoodsData> goodsDataMap = this.goodsForecastUserGoodsDataService.list(new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, req.getId())).stream().collect(Collectors.toMap(t -> String.valueOf(t.getYear()), t -> t, (a, b) -> a));
 
     Map<Long, ApsSaleConfig> apsSaleConfigMap = this.saleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, v -> v, (a, b) -> a));
-    List<String> monthList = goodsForecast.getMonthList();
+    List<String> monthListTmp = goodsForecast.getMonthList();
+    List<String> monthList = CollUtil.isEmpty(monthListTmp) ? List.of() : monthListTmp;
     DynamicsPage<GetForecastDataByIdRes> dynamicsPage = new DynamicsPage<>();
     dynamicsPage.addHeader("group", "销售特征组", 200);
     dynamicsPage.addHeader("value", "销售特征组值", 200);

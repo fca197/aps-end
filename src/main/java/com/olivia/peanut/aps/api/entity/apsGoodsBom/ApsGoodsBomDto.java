@@ -88,7 +88,7 @@ public class ApsGoodsBomDto extends BaseEntityDto {
   /***
    * 是否关注
    */
-  @JSONField(label = "isFollow", serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+//  @JSONField(label = "isFollow", serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
   @ExcelProperty(value = "关注", converter = Str2BooleanConverter.class)
   private Boolean isFollow;
 

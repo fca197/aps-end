@@ -58,22 +58,22 @@ public class ApsSchedulingVersionDto extends BaseEntityDto {
   /***
    * 使用工厂产能约束
    */
-  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+//  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
   private Boolean useFactoryMakeCapacity;
   /***
    *  使用产品产能约束
    */
-  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+//  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
   private Boolean useGoodsMakeCapacity;
   /****
    * 使用销售配置产能约束
    */
-  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+//  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
   private Boolean useSaleConfigMakeCapacity;
   /****
    * 使用工程配置产能约束
    */
-  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
+//  @JSONField(serializeUsing = Boolean2StrFeature.class, deserializeUsing = Str2BooleanConverter.class)
   private Boolean useProjectConfigMakeCapacity;
 }
 

@@ -112,6 +112,46 @@
 |-------|------|---------|
 | mysql | 8.0  | mysql版本 |
 
+# 分库分表
+
+## 修改点
+
+> 增加： shardingsphere-jdbc-core-spring-boot-starter 依赖  
+> 排除数据库启动：@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+
+```sql
+ --  删除分库分表sql
+RENAME TABLE peanut_prod.aps_order_goods_bom_0 TO peanut_prod.aps_order_goods_bom;
+RENAME TABLE peanut_prod.aps_order_goods_project_config_0 TO peanut_prod.aps_order_goods_project_config;
+RENAME TABLE peanut_prod.aps_order_goods_sale_config_0 TO peanut_prod.aps_order_goods_sale_config;
+RENAME TABLE peanut_prod.aps_order_goods_status_date_0 TO peanut_prod.aps_order_goods_status_date;
+RENAME TABLE peanut_prod.aps_rolling_forecast_order_item_0 TO peanut_prod.aps_rolling_forecast_order_item;
+RENAME TABLE peanut_prod.aps_scheduling_goods_bom_0 TO peanut_prod.aps_scheduling_goods_bom;
+RENAME TABLE peanut_prod.aps_scheduling_goods_bom_total_0 TO peanut_prod.aps_scheduling_goods_bom_total;
+
+
+-- 执行分库分表sql
+
+RENAME TABLE peanut_prod.aps_order_goods_bom TO peanut_prod.aps_order_goods_bom_0;
+RENAME TABLE peanut_prod.aps_order_goods_project_config TO peanut_prod.aps_order_goods_project_config_0;
+RENAME TABLE peanut_prod.aps_order_goods_sale_config TO peanut_prod.aps_order_goods_sale_config_0;
+RENAME TABLE peanut_prod.aps_order_goods_status_date TO peanut_prod.aps_order_goods_status_date_0;
+RENAME TABLE peanut_prod.aps_rolling_forecast_order_item TO peanut_prod.aps_rolling_forecast_order_item_0;
+RENAME TABLE peanut_prod.aps_scheduling_goods_bom TO peanut_prod.aps_scheduling_goods_bom_0;
+RENAME TABLE peanut_prod.aps_scheduling_goods_bom_total TO peanut_prod.aps_scheduling_goods_bom_total_0;
+
+```
+
+| 表名                                | 数据内容     |
+|-----------------------------------|----------|
+| aps_order_goods_bom_0             | 订单商品零件   | 
+| aps_order_goods_project_config_0  | 订单商品工程特征 | 
+| aps_order_goods_sale_config_0     | 订单商品销售特征 | 
+| aps_order_goods_status_date_0     | 订单商品状态   | 
+| aps_rolling_forecast_order_item_0 | 滚动预测商品状态 | 
+| aps_scheduling_goods_bom_0        | 排产商品零件   | 
+| aps_scheduling_goods_bom_total_0  | 排产商品零件汇总 | 
+
 ---
 
 # idea 相关
