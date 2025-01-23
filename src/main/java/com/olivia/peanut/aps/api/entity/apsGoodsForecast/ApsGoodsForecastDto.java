@@ -56,16 +56,16 @@ public class ApsGoodsForecastDto extends BaseEntityDto {
   @JSONField(label = "forecastEndDate")
 
   private String forecastEndDate;
-  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   @JSONField(label = "month")
 
   private String month;
-  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   @JSONField(label = "months")
 
   private String months;
   @JSONField(label = "forecastStatus")
-  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 
   private Integer forecastStatus;
 

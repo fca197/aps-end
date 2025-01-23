@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings("serial")
 public class ApsOrderGoodsStatusDateDto extends BaseEntityDto {
 
-  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long orderId;
   /***
    *  商品ID

@@ -20,7 +20,7 @@ import lombok.Setter;
 @SuppressWarnings("serial")
 public class ApsSchedulingDayConfigVersionDetailDto extends BaseEntityDto {
 
-  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long schedulingDayId;
   /***
    *  配置类型 sale,part,bom
