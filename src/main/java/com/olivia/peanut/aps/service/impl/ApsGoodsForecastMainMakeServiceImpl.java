@@ -33,9 +33,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.olivia.sdk.utils.FieldUtils.getField;
@@ -154,12 +156,12 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
         saleDataList.stream().filter(t -> t.getSaleConfigCode().equals(code)).forEach(saleData -> {
           weekInfoListTmp.stream().collect(Collectors.groupingBy(t -> t.getCurrentDay().substring(5, 7) + "月" + t.getWeekNumber() + "周"))
               .forEach((mw, weekInfoListTmpTmp) -> {
-                AtomicLong sum = new AtomicLong(0);
+                AtomicReference<BigDecimal> sum = new AtomicReference<>(new BigDecimal(0L));
                 weekInfoListTmpTmp.forEach(d -> {
                   Field field = getField(saleData, "dayNum" + d.getCurrentDate().getDayOfYear());
-                  Long value = (Long) FieldUtils.getFieldValue(saleData, field);
+                  BigDecimal value = (BigDecimal) FieldUtils.getFieldValue(saleData, field);
                   if (Objects.nonNull(value)) {
-                    sum.addAndGet(value);
+                    sum.set(value.add(sum.get()));
                   }
                 });
                 data.put(mw, sum.get());
@@ -177,7 +179,7 @@ public class ApsGoodsForecastMainMakeServiceImpl extends MPJBaseServiceImpl<ApsG
           });
     });
     headerList.sort(Comparator.comparing(Header::getSortValue));
-    headerList.add(0, new Header().setWidth(80).setFieldName("saleConfigCode").setShowName("销售配置编码"));
+    headerList.addFirst(new Header().setWidth(80).setFieldName("saleConfigCode").setShowName("销售配置编码"));
     resArrayList.sort(Comparator.comparing(ApsGoodsForecastMainMakeQueryDataByIdRes::getSaleConfigCode));
     return new DynamicsPage<ApsGoodsForecastMainMakeQueryDataByIdRes>().setHeaderList(headerList).setDataList(resArrayList);
   }

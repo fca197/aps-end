@@ -14,7 +14,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
-import com.olivia.peanut.aps.api.entity.apsOrder.OrderStatusEnum;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingVersion.*;
 import com.olivia.peanut.aps.con.ApsStr;
@@ -229,21 +229,23 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<ConstrainedContent> constrainedList = JSON.parseArray(schedulingConstraints.getConstraintsContext(), ConstrainedContent.class);
 
       // 获取数据
-      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().lt(ApsOrder::getOrderStatus, OrderStatusEnum.DELIVERED.getCode()));
+      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().lt(ApsOrder::getOrderStatus, ApsOrderStatusEnum.DELIVERED.getCode()));
       Map<Long, ApsSaleConfig> saleConfigMap = new HashMap<>();
       Map<Long, List<ApsOrderGoodsSaleConfig>> saleMap = new HashMap<>();
 
+      List<Long> orderIdList = orderList.stream().map(BaseEntity::getId).toList();
+      $.requireNonNullCanIgnoreException(orderIdList, "订单为空");
       if (hasSale(constrainedList, SALE)) {
         saleConfigMap.putAll(apsSaleConfigService.list().stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity())));
         saleMap.putAll(apsOrderGoodsSaleConfigService.list(
-                new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderList.stream().map(BaseEntity::getId).toList())).stream()
+                new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, orderIdList)).stream()
             .collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId)));
       }
 
       Map<Long, String> orderIdNoMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, ApsOrder::getOrderNo));
 
       List<ApsOrderGoods> goodsList = this.apsOrderGoodsService.list(
-          new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, orderList.stream().map(BaseEntity::getId).toList()));
+          new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, orderIdList));
       Map<Long, ApsOrder> oMap = orderList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
       // 分组排序
       List<Map<String, Object>> orgList = goodsList.stream().map(t -> {

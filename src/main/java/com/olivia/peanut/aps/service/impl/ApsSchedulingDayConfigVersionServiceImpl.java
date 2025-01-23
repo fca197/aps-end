@@ -13,6 +13,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
+import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListReq;
@@ -120,10 +121,12 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage, "排程配置不能为空");
     $.requireNonNullCanIgnoreException(apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList(), "排程配置不能为空");
     ApsSchedulingDayConfigExportQueryPageListInfoRes apsSchedulingDayConfigDto = apsSchedulingDayConfigExportQueryPageListInfoResDynamicsPage.getDataList().getFirst();
-    ApsStatus statusServiceOne = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, true));
-    $.requireNonNullCanIgnoreException(statusServiceOne, "订单开始状态位不能为空");
 
-    List<ApsSchedulingIssueItem> itemList = apsSchedulingIssueItemService.list(new MPJLambdaWrapper<ApsSchedulingIssueItem>().selectAll(ApsSchedulingIssueItem.class).innerJoin(ApsOrder.class, ApsOrder::getOrderNo, ApsSchedulingIssueItem::getOrderNo).eq(ApsOrder::getOrderStatus, statusServiceOne.getId()).le(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay())
+    List<ApsSchedulingIssueItem> itemList = apsSchedulingIssueItemService.list(new MPJLambdaWrapper<ApsSchedulingIssueItem>().selectAll(ApsSchedulingIssueItem.class)
+        .innerJoin(ApsOrder.class, ApsOrder::getOrderNo, ApsSchedulingIssueItem::getOrderNo)
+        // TODO: 订单状态下单即可排产
+        .eq(ApsOrder::getOrderStatus, ApsOrderStatusEnum.INIT.getCode())
+        .le(ApsSchedulingIssueItem::getCurrentDay, req.getSchedulingDay())
 
     );
 

@@ -157,7 +157,7 @@ public class ApsGoodsForecastMainSaleDataApiImpl implements ApsGoodsForecastMain
     dataList.sort(Comparator.comparing(GetDataByGoodsIdRes::getSaleCode));
 //    headerList.add("销售特征值");
     List<Header> list = headerList.stream().map(m -> new Header().setFieldName(m).setShowName(m).setWidth(200)).collect(Collectors.toList());
-    list.add(0, new Header().setFieldName("saleCode").setShowName("销售特征值").setWidth(200));
+    list.addFirst(new Header().setFieldName("saleCode").setShowName("销售特征值").setWidth(200));
     return dynamicsPage.setDataList(dataList).setHeaderList(list);
   }
 }

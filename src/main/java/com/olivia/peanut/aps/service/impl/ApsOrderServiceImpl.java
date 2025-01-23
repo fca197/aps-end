@@ -180,8 +180,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     List<ApsOrderGoods> apsOrderGoodList = new ArrayList<>();
     List<ApsOrder> apsOrderList = new ArrayList<>();
     List<ApsOrderUser> apsOrderUserList = new ArrayList<>();
-    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, Boolean.TRUE));
-    Long statusId = Objects.nonNull(apsStatus) ? apsStatus.getId() : null;
+//    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, Boolean.TRUE));
+//    Long statusId = Objects.nonNull(apsStatus) ? apsStatus.getId() : null;
 //           .stream().collect(Collectors.toMap(ApsGoodsSaleItemDto::getSaleConfigId))
     List<ApsProjectConfigExportQueryPageListInfoRes> projectConfigList = this.apsProjectConfigService.queryPageList(new ApsProjectConfigExportQueryPageListReq().setQueryPage(false)).getDataList();
     ArrayList<ApsOrderGoodsProjectConfig> projectConfigArrayList = new ArrayList<>();
@@ -192,11 +192,12 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       long totalPrice = i * MathUtil.randomLong(1000, 2000);
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
-      ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId()).setOrderNoParent("p_" + IdWorker.getId()).setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now()).setMakeFinishDate(dateTime.toLocalDate()).setOrderTotalPrice(new BigDecimal(totalPrice)).setOrderStatus(1L);
+      ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId()).setOrderNoParent("p_" + IdWorker.getId()).setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now())
+          .setMakeFinishDate(dateTime.toLocalDate()).setOrderTotalPrice(new BigDecimal(totalPrice)).setOrderStatus(ApsOrderStatusEnum.INIT);
       apsOrder.setFinishPayedAmount(new BigDecimal(0)).setFinishPayedDatetime(dateTime.plusDays(RandomUtil.randomInt(3, 30)));
       apsOrder.setDeliveryDate(dateTime.plusDays(RandomUtil.randomInt(30, 60)).toLocalDate());
       apsOrder.setId(IdWorker.getId());
-      apsOrder.setOrderStatus(statusId);
+      apsOrder.setOrderStatus(ApsOrderStatusEnum.INIT);
       apsOrderList.add(apsOrder);
       ApsGoods goods = goodsList.get(RandomUtil.randomInt(0, goodsList.size()));
 
@@ -388,6 +389,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       t.setGoodsSaleConfigList($.copyList(saleListMap.get(t.getId()), ApsOrderGoodsSaleConfigDto.class));
       t.setGoodsList($.copyList(goodsListMap.get(t.getId()), ApsOrderGoodsDto.class));
       t.setOrderUser($.copy(userMap.get(t.getId()), ApsOrderUserDto.class));
+      t.setOrderStatusName(ApsOrderStatusEnum.getDescByCode(t.getOrderStatus()));
     });
   }
 
