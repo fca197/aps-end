@@ -12,7 +12,7 @@ public enum ApsOrderStatusEnum {
   INIT(0L, "下单成功"),//
   PAID_RESERVED(10L, "已支付定金"), //
   PAID_FINISHED(30L, "已支付尾款"), //
-
+  MAKE_ING(40L, "制造中"),
   DELIVERED(50L, "已发货"), //
   FINISHED(60L, "已完成"),//
   CANCELLED(70L, "已取消"),
