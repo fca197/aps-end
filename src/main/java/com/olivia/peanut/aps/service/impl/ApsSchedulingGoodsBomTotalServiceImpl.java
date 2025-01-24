@@ -173,7 +173,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
 
   @Override
   @Transactional
-  @RedissonLockAnn(lockBizKeyFlag = "schedulingBom#createBomBuyPlan", loginBizKeyExpression = "#req.schedulingVersionId")
+  @RedissonLockAnn(lockBizKeyFlag = "schedulingBom#createBomBuyPlan", keyExpression = "#req.schedulingVersionId")
   public ApsSchedulingGoodsBomTotalCreateBomBuyPlanRes createBomBuyPlan(ApsSchedulingGoodsBomTotalCreateBomBuyPlanReq req) {
 
 

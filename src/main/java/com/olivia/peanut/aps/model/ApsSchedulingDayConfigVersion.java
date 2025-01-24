@@ -47,8 +47,6 @@ public class ApsSchedulingDayConfigVersion extends BaseEntity {
   // 生产方式  ， 工艺路径， 制造路径
   private ApsSchedulingDayConfigVersionProductType productType;
 
-  //
-  private Integer bbb;
 
 }
 
