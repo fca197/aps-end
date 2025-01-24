@@ -1,5 +1,6 @@
 package com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigVersion;
 
+import com.olivia.peanut.aps.enums.ApsSchedulingDayConfigVersionProductType;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
@@ -32,7 +33,7 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
   private Long factoryId;
   private String factoryName;
 
-  @NotNull(message = "工序ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  //  @NotNull(message = "工序ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long processId;
   private String processName;
   /***
@@ -48,8 +49,13 @@ public class ApsSchedulingDayConfigVersionDto extends BaseEntityDto {
   /***
    *  是否默认
    */
-  @NotNull(message = "是否下发不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotNull(message = "是否下发不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Boolean isIssuedThird;
+
+
+  // 生产方式  ， 工艺路径， 制造路径
+  @NotNull(message = "生产方式不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+  private ApsSchedulingDayConfigVersionProductType productType;
 
   public String getIsIssuedThirdStr() {
 
