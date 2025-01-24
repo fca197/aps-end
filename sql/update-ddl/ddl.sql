@@ -3546,8 +3546,9 @@ create table aps_scheduling_day_config_version
     update_by                 bigint                               null comment '修改人',
     trace_id                  varchar(64)                          null comment '调用链路',
     version_num               int        default 0                 null comment '版本号',
-    process_id                bigint                               not null comment '工艺路径id',
-    header_list               varchar(4096)                        null comment '排产日配置版本表头'
+    process_id   bigint        null comment '工艺路径id',
+    header_list  varchar(4096) null comment '排产日配置版本表头',
+    product_type varchar(10)   null comment '排产生产类型'
 )
     comment '排程版本';
 
