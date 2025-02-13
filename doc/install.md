@@ -21,51 +21,9 @@
 ### 安装步骤
 
 0. maven 配置
+1.
 
-```xml
-
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-    <mirrors>
-      <mirror>
-        <id>mirror</id>
-        <mirrorOf>central,jcenter,!2483310-snapshot-nvNXbv</mirrorOf>
-        <name>mirror</name>
-        <url>https://maven.aliyun.com/nexus/content/groups/public</url>
-      </mirror>
-    </mirrors>
-    <servers>
-      <server>
-        <id>2483310-snapshot-nvNXbv</id>
-        <username>66a05e4f70c8e3d8a56a3c1c</username>
-        <password>8KXHuzGpkXwt</password>
-      </server> 
-    </servers>
-    <profiles>
-         <profile>
-          <id>rdc</id>
-            <properties>
-              <altReleaseDeploymentRepository>
-                2483310-snapshot-nvNXbv::default::https://packages.aliyun.com/maven/repository/2483310-snapshot-nvNXbv
-              </altReleaseDeploymentRepository>
-            </properties>  
-            <repositories>
-              <repository>
-                <id>2483310-snapshot-nvNXbv</id>
-                <url>https://packages.aliyun.com/maven/repository/2483310-snapshot-nvNXbv</url>
-              </repository>
-            </repositories>
-        </profile> 
-    </profiles>
-    <activeProfiles>
-        <activeProfile>rdc</activeProfile>
-    </activeProfiles>
-</settings>
-
- 
-```
+[settings.xml](settings.xml)
 
 1. 下载源码
 
