@@ -125,5 +125,5 @@
 
 6. com.olivia:peanut-sdk: 下载失败
 
-> maven 下载失败, 请修改setting.xml,增加仓库配置 ,或使用 https://gitee.com/slsplatform/aps-end/releases 中jar包下载
+> maven 下载失败, 请修改setting.xml,增加仓库配置 
 
