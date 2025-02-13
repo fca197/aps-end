@@ -21,7 +21,6 @@
 ### 安装步骤
 
 0. maven 配置
-1.
 
 [settings.xml](settings.xml)
 
