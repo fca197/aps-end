@@ -1,6 +1,7 @@
 package com.olivia.peanut.aps.api.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.aps.api.ApsStatusApi;
 import com.olivia.peanut.aps.api.entity.apsStatus.*;
@@ -8,6 +9,7 @@ import com.olivia.peanut.aps.api.impl.listener.ApsStatusImportListener;
 import com.olivia.peanut.aps.model.ApsStatus;
 import com.olivia.peanut.aps.service.ApsStatusService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,8 @@ public class ApsStatusApiImpl implements ApsStatusApi {
    */
   public @Override ApsStatusUpdateByIdRes updateById(ApsStatusUpdateByIdReq req) {
     apsStatusService.updateById($.copy(req, ApsStatus.class));
+    apsStatusService.update(new LambdaUpdateWrapper<ApsStatus>() //
+        .eq(BaseEntity::getId, req.getId()).set(ApsStatus::getOrderStatusId, req.getOrderStatusId()));
     return new ApsStatusUpdateByIdRes();
 
   }

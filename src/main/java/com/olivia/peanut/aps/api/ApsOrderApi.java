@@ -85,4 +85,9 @@ public interface ApsOrderApi {
 
   @PostMapping("/apsOrder/orderCreateDayCount")
   OrderCreateDayCountRes orderCreateDayCount(@RequestBody @Valid OrderCreateDayCountReq req);
+
+  @PostMapping("/apsOrder/statusList")
+  OrderStatusListRes orderStatusList(@RequestBody @Valid OrderStatusListReq req);
+
+
 }

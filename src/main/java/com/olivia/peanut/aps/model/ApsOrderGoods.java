@@ -33,6 +33,7 @@ public class ApsOrderGoods extends BaseEntity {
   private BigDecimal goodsUnitPrice;
   private BigDecimal goodsUnitTotalPrice;
   private Long factoryId;
+  private Long apsStatusId;
 
 }
 

@@ -22,6 +22,6 @@ public interface ApsOrderGoodsService extends MPJBaseService<ApsOrderGoods> {
 
   void setName(List<? extends ApsOrderGoodsDto> apsOrderGoodsDtoList);
 
-  public List<ApsOrderGoods> getApsOrderGoodsByOrderId(Long orderId);
+  List<ApsOrderGoods> getApsOrderGoodsByOrderId(Long orderId);
 }
 

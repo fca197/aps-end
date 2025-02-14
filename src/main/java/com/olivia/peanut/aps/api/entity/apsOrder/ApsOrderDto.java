@@ -33,6 +33,8 @@ public class ApsOrderDto extends BaseEntityDto {
   private String orderRemark;
   private Long orderStatus;
   private String orderStatusName;
+  private Long orderGoodsStatus;
+  private String orderStatusGoodsName;
   private BigDecimal orderTotalPrice;
   private BigDecimal reserveAmount;
   private LocalDateTime reserveDatetime;

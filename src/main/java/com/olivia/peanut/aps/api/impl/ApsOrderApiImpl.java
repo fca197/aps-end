@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -117,5 +118,11 @@ public class ApsOrderApiImpl implements ApsOrderApi {
   @Override
   public OrderCreateDayCountRes orderCreateDayCount(OrderCreateDayCountReq req) {
     return this.apsOrderService.orderCreateDayCount(req);
+  }
+
+  @Override
+  public OrderStatusListRes orderStatusList(OrderStatusListReq req) {
+    return new OrderStatusListRes().setDataList(Arrays.stream(ApsOrderStatusEnum.values())
+        .map(t -> new OrderStatusListRes.Info().setCode(t.getCode()).setDesc(t.getDesc())).toList());
   }
 }
