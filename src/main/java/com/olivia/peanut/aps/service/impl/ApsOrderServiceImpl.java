@@ -146,9 +146,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     ApsOrder apsOrder = $.copy(req, ApsOrder.class);
     apsOrder.setOrderNo(IdUtils.getUniqueId());
     apsOrder.setId(IdWorker.getId());
+    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getOrderStatusId, ApsOrderStatusEnum.INIT.getCode()));
+    $.requireNonNullCanIgnoreException(apsStatus, "订单初始化aps状态为空");
     this.save(apsOrder);
     List<ApsOrderGoods> goodsList = $.copyList(req.getGoodsList(), ApsOrderGoods.class);
-    goodsList.forEach(t -> t.setOrderId(apsOrder.getId()));
+    goodsList.forEach(t -> t.setOrderId(apsOrder.getId()).setApsStatusId(apsStatus.getId()));
     List<ApsOrderGoodsProjectConfig> projectConfigList = $.copyList(req.getGoodsProjectConfigList(), ApsOrderGoodsProjectConfig.class);
     projectConfigList.forEach(t -> t.setOrderId(apsOrder.getId()));
     List<ApsOrderGoodsSaleConfig> saleConfigList = $.copyList(req.getGoodsSaleConfigList(), ApsOrderGoodsSaleConfig.class);
