@@ -1,5 +1,7 @@
 spring:
+
   shardingsphere:
+
     datasource:
       # 默认数据源
       sharding:
