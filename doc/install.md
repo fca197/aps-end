@@ -36,9 +36,8 @@
 
 ```bash
     sql 执行文件 说明:
-     sql/ddl.sql >>  表结构
+     sql/db-sql.zip >>  表结构+数据
      sql/delete-*.sql >>  删除改模块下数据sql
-     sql/data/*.sql >>  插入数据sql, 账户菜单类
      sql/tmp.sql  >> 临时sql, 测试用
     
     cd  peanut-end
