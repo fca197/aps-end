@@ -42,6 +42,7 @@ public class BootstrapApplication {
   public static void main(String[] args) {
     try {
       SpringApplication.run(BootstrapApplication.class, args);
+      log.info(">>>>>>>  BootstrapApplication  start success >>>>>>>");
       ServiceNotice.start();
     } catch (Exception e) {
       ServiceNotice.errorStop(e);

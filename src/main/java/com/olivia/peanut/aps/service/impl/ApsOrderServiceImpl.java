@@ -146,9 +146,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     ApsOrder apsOrder = $.copy(req, ApsOrder.class);
     apsOrder.setOrderNo(IdUtils.getUniqueId());
     apsOrder.setId(IdWorker.getId());
+    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getOrderStatusId, ApsOrderStatusEnum.INIT.getCode()));
+    $.requireNonNullCanIgnoreException(apsStatus, "订单初始化aps状态为空");
     this.save(apsOrder);
     List<ApsOrderGoods> goodsList = $.copyList(req.getGoodsList(), ApsOrderGoods.class);
-    goodsList.forEach(t -> t.setOrderId(apsOrder.getId()));
+    goodsList.forEach(t -> t.setOrderId(apsOrder.getId()).setApsStatusId(apsStatus.getId()));
     List<ApsOrderGoodsProjectConfig> projectConfigList = $.copyList(req.getGoodsProjectConfigList(), ApsOrderGoodsProjectConfig.class);
     projectConfigList.forEach(t -> t.setOrderId(apsOrder.getId()));
     List<ApsOrderGoodsSaleConfig> saleConfigList = $.copyList(req.getGoodsSaleConfigList(), ApsOrderGoodsSaleConfig.class);
@@ -180,7 +182,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     List<ApsOrderGoods> apsOrderGoodList = new ArrayList<>();
     List<ApsOrder> apsOrderList = new ArrayList<>();
     List<ApsOrderUser> apsOrderUserList = new ArrayList<>();
-//    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getIsOrderGoodsInit, Boolean.TRUE));
+    ApsStatus apsStatus = apsStatusService.getOne(new LambdaQueryWrapper<ApsStatus>().eq(ApsStatus::getOrderStatusId, ApsOrderStatusEnum.INIT.getCode()));
+    $.requireNonNullCanIgnoreException(apsStatus, "订单初始化aps状态为空");
 //    Long statusId = Objects.nonNull(apsStatus) ? apsStatus.getId() : null;
 //           .stream().collect(Collectors.toMap(ApsGoodsSaleItemDto::getSaleConfigId))
     List<ApsProjectConfigExportQueryPageListInfoRes> projectConfigList = this.apsProjectConfigService.queryPageList(new ApsProjectConfigExportQueryPageListReq().setQueryPage(false)).getDataList();
@@ -208,8 +211,10 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       apsOrderGoodsBomList.addAll(apsOrderGoodsBomListTmp);
 
 
-      ApsOrderGoods apsOrderGood = new ApsOrderGoods().setOrderId(apsOrder.getId()).setGoodsId(goods.getId()).setGoodsName(goods.getGoodsName()).setGoodsRemark(goods.getGoodsRemark()).setFactoryId(goods.getFactoryId()).setGoodsUnit("").setGoodsUnitPrice(new BigDecimal(RandomUtil.randomInt(100, 999)))
-
+      ApsOrderGoods apsOrderGood = new ApsOrderGoods().setOrderId(apsOrder.getId())
+          .setGoodsId(goods.getId()).setGoodsName(goods.getGoodsName()).setGoodsRemark(goods.getGoodsRemark())
+          .setFactoryId(goods.getFactoryId()).setGoodsUnit("").setGoodsUnitPrice(new BigDecimal(RandomUtil.randomInt(100, 999)))
+          .setApsStatusId(apsStatus.getId())
           .setGoodsTotalPrice(new BigDecimal(totalPrice)).setGoodsAmount(new BigDecimal(RandomUtil.randomInt(50000)));
       apsOrderGoodList.add(apsOrderGood);
       saleConfigList.forEach(saleCode -> {
@@ -307,8 +312,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
   public ApsOrderUpdateOrderStatusRes updateOrderStatus(ApsOrderUpdateOrderStatusReq req) {
     ApsOrder apsOrder = this.getById(req.getOrderId());
     $.requireNonNullCanIgnoreException(apsOrder, "订单不存在");
-    ApsStatus byId = this.apsStatusService.getById(req.getGoodsStatusId());
-    $.requireNonNullCanIgnoreException(byId, "状态不存在");
+    ApsStatus apsStatus = this.apsStatusService.getById(req.getGoodsStatusId());
+    $.requireNonNullCanIgnoreException(apsStatus, "状态不存在");
     List<ApsOrderGoods> apsOrderGoods = apsOrderGoodsService.getApsOrderGoodsByOrderId(apsOrder.getId());
     $.requireNonNullCanIgnoreException(apsOrderGoods, "订单商品不存在");
     ApsOrderGoods orderGoods = apsOrderGoods.getFirst();
@@ -342,8 +347,11 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     if (CollUtil.isNotEmpty(updateList)) {
       this.apsOrderGoodsStatusDateService.updateBatchById(updateList);
     }
-    this.update(new LambdaUpdateWrapper<ApsOrder>().eq(BaseEntity::getId, apsOrder.getId()).set(ApsOrder::getOrderStatus, req.getGoodsStatusId()));
-
+    if (Objects.nonNull(apsStatus.getOrderStatusId())) {
+      this.update(new LambdaUpdateWrapper<ApsOrder>().eq(BaseEntity::getId, apsOrder.getId()).set(ApsOrder::getOrderStatus, apsStatus.getOrderStatusId()));
+    }
+    this.apsOrderGoodsService.update(new LambdaUpdateWrapper<ApsOrderGoods>().eq(ApsOrderGoods::getOrderId, req.getOrderId())
+        .set(ApsOrderGoods::getApsStatusId, req.getGoodsStatusId()));
     this.apsOrderGoodsStatusDateService.update(new LambdaUpdateWrapper<ApsOrderGoodsStatusDate>().eq(ApsOrderGoodsStatusDate::getOrderId, req.getOrderId()).eq(ApsOrderGoodsStatusDate::getGoodsStatusId, req.getGoodsStatusId()).eq(ApsOrderGoodsStatusDate::getGoodsId, orderGoods.getGoodsId()).set(Boolean.TRUE.equals(req.getIsBeginTime()), ApsOrderGoodsStatusDate::getActualMakeBeginTime, LocalDateTime.now()).set(Boolean.FALSE.equals(req.getIsBeginTime()), ApsOrderGoodsStatusDate::getActualMakeEndTime, LocalDateTime.now()));
 
     return new ApsOrderUpdateOrderStatusRes();
@@ -380,6 +388,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     }
     Set<Long> oidSet = apsOrderDtoList.stream().map(BaseEntityDto::getId).collect(Collectors.toSet());
 
+    Map<Long, String> stautsNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
     Map<Long, List<ApsOrderGoodsSaleConfig>> saleListMap = this.apsOrderGoodsSaleConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>().in(ApsOrderGoodsSaleConfig::getOrderId, oidSet)).stream().collect(Collectors.groupingBy(ApsOrderGoodsSaleConfig::getOrderId));
     Map<Long, List<ApsOrderGoodsProjectConfig>> projectListMap = this.apsOrderGoodsProjectConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsProjectConfig>().in(ApsOrderGoodsProjectConfig::getOrderId, oidSet)).stream().collect(Collectors.groupingBy(ApsOrderGoodsProjectConfig::getOrderId));
     Map<Long, List<ApsOrderGoods>> goodsListMap = this.apsOrderGoodsService.list(new LambdaQueryWrapper<ApsOrderGoods>().in(ApsOrderGoods::getOrderId, oidSet)).stream().collect(Collectors.groupingBy(ApsOrderGoods::getOrderId));
@@ -390,6 +399,8 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       t.setGoodsList($.copyList(goodsListMap.get(t.getId()), ApsOrderGoodsDto.class));
       t.setOrderUser($.copy(userMap.get(t.getId()), ApsOrderUserDto.class));
       t.setOrderStatusName(ApsOrderStatusEnum.getDescByCode(t.getOrderStatus()));
+      t.setOrderGoodsStatus(t.getGoodsList().getFirst().getApsStatusId());
+      t.setOrderStatusGoodsName(stautsNameMap.get(t.getOrderGoodsStatus()));
     });
   }
 

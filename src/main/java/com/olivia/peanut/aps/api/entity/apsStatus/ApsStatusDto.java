@@ -4,7 +4,6 @@ import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +26,7 @@ public class ApsStatusDto extends BaseEntityDto {
 //  @NotNull(message = "是否订单商品初始化不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 //  private Boolean isOrderGoodsInit;
 
+  private Long orderStatusId;
 }
 
 

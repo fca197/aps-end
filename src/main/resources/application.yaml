@@ -1,0 +1,193 @@
+spring:
+
+  shardingsphere:
+
+    datasource:
+      # 默认数据源
+      sharding:
+        default-data-source-name: db_0
+      names: db_0
+      db_0:
+        type: ${db.data-source-type}
+        driver-class-name: ${db.mysql-driver}
+        jdbc-url: ${db.url}
+        username: ${db.username}
+        password: ${db.password}
+      db_1:
+        type: ${db.data-source-type}
+        driver-class-name: ${db.mysql-driver}
+        jdbc-url: ${db.url}
+        username: ${db.username}
+        password: ${db.password}
+    rules:
+
+      sharding:
+        auditors:
+          mustHasShardingId:
+            type: DML_SHARDING_CONDITIONS
+        tables:
+          aps_scheduling_goods_bom_total:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_total_${0..1}
+            database-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_db_alg
+            table-strategy:
+              standard:
+                sharding-column: scheduling_id
+                sharding-algorithm-name: schedulingId_alg
+          aps_rolling_forecast_order_item:
+            actual-data-nodes: db_${0..1}.aps_rolling_forecast_order_item_${0..1}
+            database-strategy:
+              standard:
+                sharding-column: forecast_id
+                sharding-algorithm-name: aps_database_inline_forecast_id
+            table-strategy:
+              standard:
+                sharding-column: forecast_id
+                sharding-algorithm-name: aps_rolling_forecast_order_item_alg
+          aps_goods_bom_buy_plan_item:
+            actual-data-nodes: db_${0..1}.aps_goods_bom_buy_plan_item_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: buy_plan_id
+                sharding-algorithm-name: aps_database_inline_plan_id
+            table-strategy:
+              standard:
+                sharding-column: buy_plan_id
+                sharding-algorithm-name: aps_goods_bom_buy_plan_item_alg
+          aps_order_goods_status_date:
+            actual-data-nodes: db_${0..1}.aps_order_goods_status_date_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_status_date_algorithm
+          aps_order_goods_project_config:
+            actual-data-nodes: db_${0..1}.aps_order_goods_project_config_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_project_config_algorithm
+
+          aps_order_goods_sale_config:
+            actual-data-nodes: db_${0..1}.aps_order_goods_sale_config_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_sale_config_algorithm
+          aps_order_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_order_goods_bom_${0..2}
+            # aps_order_goods_bom库路由
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            # aps_order_goods_bom表路由
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_order_goods_bom_algorithm
+            audit-strategy:
+              auditor-names:
+                mustHasShardingId
+
+          aps_scheduling_goods_bom:
+            actual-data-nodes: db_${0..1}.aps_scheduling_goods_bom_${0..2}
+            database-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_database_inline_order_id
+            table-strategy:
+              standard:
+                sharding-column: order_id
+                sharding-algorithm-name: aps_scheduling_goods_bom_algorithm
+        #            audit-strategy:
+        #              auditor-names:
+        #                mustHasShardingId
+
+
+        sharding-algorithms:
+          schedulingId_db_alg:
+            type: INLINE
+            props:
+              algorithm-expression: db_${scheduling_id % 1}
+          schedulingId_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_total_${scheduling_id % 1}
+
+          # aps_order_goods_bom库路由算法
+          aps_database_inline_order_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${order_id % 1}
+
+          aps_database_inline_forecast_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${forecast_id % 1}
+
+          aps_database_inline_plan_id:
+            type: INLINE
+            props:
+              algorithm-expression: db_${buy_plan_id % 1}
+
+          aps_rolling_forecast_order_item_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_rolling_forecast_order_item_${forecast_id % 1}
+
+
+          aps_goods_bom_buy_plan_item_alg:
+            type: INLINE
+            props:
+              algorithm-expression: aps_goods_bom_buy_plan_item_${buy_plan_id % 1}
+
+          aps_order_goods_status_date_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_status_date_${order_id % 1}
+
+          aps_order_goods_project_config_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_project_config_${order_id % 1}
+
+          aps_order_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_bom_${order_id % 1}
+
+          aps_scheduling_goods_bom_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_scheduling_goods_bom_${order_id % 1}
+
+
+          aps_order_goods_sale_config_algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: aps_order_goods_sale_config_${order_id % 1}
+        default-audit-strategy:
+          auditor-names:
+            - mustHasShardingId
+      sql-parser:
+        sql-comment-parse-enabled: false
+    #        sql-parse-enabled: false
+
+    props:
+      check-table-metadata-enabled: false
+      sql-show: true
+      sql-comment-parse-enabled: true

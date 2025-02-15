@@ -22,50 +22,7 @@
 
 0. maven 配置
 
-```xml
-
-<?xml version="1.0" encoding="UTF-8"?>
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-    <mirrors>
-      <mirror>
-        <id>mirror</id>
-        <mirrorOf>central,jcenter,!2483310-snapshot-nvNXbv</mirrorOf>
-        <name>mirror</name>
-        <url>https://maven.aliyun.com/nexus/content/groups/public</url>
-      </mirror>
-    </mirrors>
-    <servers>
-      <server>
-        <id>2483310-snapshot-nvNXbv</id>
-        <username>66a05e4f70c8e3d8a56a3c1c</username>
-        <password>8KXHuzGpkXwt</password>
-      </server> 
-    </servers>
-    <profiles>
-         <profile>
-          <id>rdc</id>
-            <properties>
-              <altReleaseDeploymentRepository>
-                2483310-snapshot-nvNXbv::default::https://packages.aliyun.com/maven/repository/2483310-snapshot-nvNXbv
-              </altReleaseDeploymentRepository>
-            </properties>  
-            <repositories>
-              <repository>
-                <id>2483310-snapshot-nvNXbv</id>
-                <url>https://packages.aliyun.com/maven/repository/2483310-snapshot-nvNXbv</url>
-              </repository>
-            </repositories>
-        </profile> 
-    </profiles>
-    <activeProfiles>
-        <activeProfile>rdc</activeProfile>
-    </activeProfiles>
-</settings>
-
- 
-```
+[settings.xml](settings.xml)
 
 1. 下载源码
 
@@ -79,9 +36,8 @@
 
 ```bash
     sql 执行文件 说明:
-     sql/ddl.sql >>  表结构
+     sql/db-sql.zip >>  表结构+数据
      sql/delete-*.sql >>  删除改模块下数据sql
-     sql/data/*.sql >>  插入数据sql, 账户菜单类
      sql/tmp.sql  >> 临时sql, 测试用
     
     cd  peanut-end
@@ -168,5 +124,5 @@
 
 6. com.olivia:peanut-sdk: 下载失败
 
-> maven 下载失败, 请修改setting.xml,增加仓库配置 ,或使用 https://gitee.com/slsplatform/aps-end/releases 中jar包下载
+> maven 下载失败, 请修改setting.xml,增加仓库配置 
 

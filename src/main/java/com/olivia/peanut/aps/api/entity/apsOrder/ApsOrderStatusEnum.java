@@ -10,12 +10,10 @@ import java.util.Map;
 @AllArgsConstructor
 public enum ApsOrderStatusEnum {
   INIT(0L, "下单成功"),//
-  PAID_RESERVED(10L, "已支付定金"), //
-  PAID_FINISHED(30L, "已支付尾款"), //
-  MAKE_ING(40L, "制造中"),
-  DELIVERED(50L, "已发货"), //
-  FINISHED(60L, "已完成"),//
-  CANCELLED(70L, "已取消"),
+  MAKE_ING(50L, "制造中"),
+  MAKE_OK(80L, "制造完成"), //
+  CANCELLED(99L, "已取消"),//
+  FINISHED(100L, "已完成"),//
   ;
 
   private final Long code;

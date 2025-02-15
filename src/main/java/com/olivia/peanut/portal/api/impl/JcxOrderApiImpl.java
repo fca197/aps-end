@@ -101,6 +101,6 @@ public class JcxOrderApiImpl implements JcxOrderApi {
   }
 
   public @Override GetOrderStatusRes getOrderStatus(GetOrderStatusReq req) {
-    return new GetOrderStatusRes().setOrderStatusName(OrderStatusEnum.orderStatusNameMap);
+    return new GetOrderStatusRes().setOrderStatusName(JcxOrderStatusEnum.orderStatusNameMap);
   }
 }

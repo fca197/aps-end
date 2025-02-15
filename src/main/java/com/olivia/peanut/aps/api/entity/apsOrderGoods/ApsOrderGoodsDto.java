@@ -29,6 +29,7 @@ public class ApsOrderGoodsDto extends BaseEntityDto {
   private BigDecimal goodsUnitPrice;
   private BigDecimal goodsUnitTotalPrice;
   private Long factoryId;
+  private Long apsStatusId;
 }
 
 

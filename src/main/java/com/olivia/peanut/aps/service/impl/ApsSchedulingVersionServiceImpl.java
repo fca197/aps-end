@@ -66,6 +66,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.alibaba.fastjson2.JSON.toJSONString;
 import static com.olivia.peanut.aps.con.ApsStr.GOODS_STATUS_ID;
@@ -229,7 +230,9 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
       List<ConstrainedContent> constrainedList = JSON.parseArray(schedulingConstraints.getConstraintsContext(), ConstrainedContent.class);
 
       // 获取数据
-      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>().lt(ApsOrder::getOrderStatus, ApsOrderStatusEnum.DELIVERED.getCode()));
+      List<ApsOrder> orderList = apsOrderService.list(new LambdaQueryWrapper<ApsOrder>()
+          .in(ApsOrder::getOrderStatus, Stream.of(ApsOrderStatusEnum.INIT).map(ApsOrderStatusEnum::getCode).toList()
+          ));
       Map<Long, ApsSaleConfig> saleConfigMap = new HashMap<>();
       Map<Long, List<ApsOrderGoodsSaleConfig>> saleMap = new HashMap<>();
 
