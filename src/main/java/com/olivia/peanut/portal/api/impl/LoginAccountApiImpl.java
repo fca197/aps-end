@@ -23,8 +23,6 @@ import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,8 +62,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   BaseDeptService deptService;
   @Resource
   private LoginAccountService loginAccountService;
-  @Resource
-  private RedissonClient redissonClient;
+
 
   @Override
   @Timed
@@ -74,21 +71,21 @@ public class LoginAccountApiImpl implements LoginAccountApi {
   public LoginPhonePwdRes loginPhonePwd(LoginPhonePwdReq req) {
 
     LoginUserContext.ignoreTenantId(TRUE);
-    RLock lock = redissonClient.getLock(peanutProperties.getRedisKey().getLoginLock() + req.getLoginPhone());
 
-    lock.lock(3, TimeUnit.SECONDS);
-    LoginAccount loginAccount = this.loginAccountService.getOne(new LambdaQueryWrapper<LoginAccount>().eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
-    $.requireNonNullCanIgnoreException(loginAccount, "用户名密码错误");
-    loginAccount.setUserPwd(null);
-    String token = String.join("_", IdWorker.get32UUID().toUpperCase());
-    String str = JSON.toJSONString(loginAccount);
-    String key = peanutProperties.getRedisKey().getUserToken() + token;
-    log.info("loginPhonePwd ,loginPhone: {} token: {} loginAccount: {}", req.getLoginPhone(), key, str);
-    stringRedisTemplate.opsForValue().set(key, str, 10, TimeUnit.DAYS);
-    return new LoginPhonePwdRes().setToken(token)
-//                .setLoginAccountList(Arrays.asList(loginAccount, loginAccount, loginAccount))
-//                .setMap(Map.of("zzz", "aaa", "xxx", "xaa")).setBigDecimal(new BigDecimal("3232.23312345678909876543234567898765432"))
-        ;
+    return RedisLockUtils.lock(peanutProperties.getRedisKey().getLoginLock() + ":" + req.getLoginPhone(), 5, TimeUnit.MINUTES,
+        () -> {
+          LoginAccount loginAccount = loginAccountService.getOne(new LambdaQueryWrapper<LoginAccount>() //
+              .eq(LoginAccount::getLoginPhone, req.getLoginPhone()).eq(LoginAccount::getUserPwd, req.getPwd()), false);
+          $.requireNonNullCanIgnoreException(loginAccount, "用户名密码错误");
+          loginAccount.setUserPwd(null);
+          String token = String.join("_", IdWorker.get32UUID().toUpperCase());
+          String str = JSON.toJSONString(loginAccount);
+          String key = peanutProperties.getRedisKey().getUserToken() + token;
+          log.info("loginPhonePwd ,loginPhone: {} token: {} loginAccount: {}", req.getLoginPhone(), key, str);
+          stringRedisTemplate.opsForValue().set(key, str, 10, TimeUnit.DAYS);
+          return new LoginPhonePwdRes().setToken(token);
+        });
+
   }
 
   @Override

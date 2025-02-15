@@ -98,7 +98,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   }
 
   @Override
-  @RedissonLockAnn(lockBizKeyFlag = "plan#sendMail", keyExpression = "#req.buyPlanId", unLocked = false)
+  @RedissonLockAnn(lockBizKeyFlag = "plan#sendMail", keyExpression = "#req.buyPlanId")
   public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
     List<ApsGoodsBomBuyPlanItem> planItemList = this.list(new LambdaQueryWrapper<ApsGoodsBomBuyPlanItem>().in(ApsGoodsBomBuyPlanItem::getBuyPlanId, req.getBuyPlanId()));
     $.requireNonNullCanIgnoreException(planItemList, "零件获取为空");
