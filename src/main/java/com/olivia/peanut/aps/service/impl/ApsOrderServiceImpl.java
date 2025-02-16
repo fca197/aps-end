@@ -42,7 +42,6 @@ import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.UserInfo;
 import jakarta.annotation.Resource;
-import jodd.util.MathUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -192,7 +191,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
     Map<Long, List<ApsGoodsBom>> goodsBomMap = this.apsGoodsBomService.list().stream().collect(Collectors.groupingBy(ApsGoodsBom::getGoodsId));
     List<ApsOrderGoodsBom> apsOrderGoodsBomList = new ArrayList<>();
     IntStream.range(1, req.getCreateCount() + 1).forEach(i -> {
-      long totalPrice = i * MathUtil.randomLong(1000, 2000);
+      long totalPrice = i * RandomUtil.randomLong(1000, 2000);
 
       LocalDateTime dateTime = LocalDateTime.now().plus(Duration.ofDays(RandomUtil.randomInt(1, 50)));
       ApsOrder apsOrder = new ApsOrder().setOrderRemark("第" + i + "个订单").setOrderNo(IdUtils.getUniqueId()).setOrderNoParent("p_" + IdWorker.getId()).setReserveAmount(new BigDecimal(RandomUtil.randomLong(400000, 500000))).setReserveDatetime(LocalDateTime.now())
