@@ -206,7 +206,7 @@ public class ApsOrderServiceImpl extends MPJBaseServiceImpl<ApsOrderMapper, ApsO
       List<ApsGoodsBom> apsGoodsBomList = goodsBomMap.getOrDefault(goods.getId(), List.of());
       List<ApsOrderGoodsBom> apsOrderGoodsBomListTmp = apsGoodsBomList.stream().map(t -> $.copy(t, ApsOrderGoodsBom.class).setGoodsBomId(t.getBomId())).toList();// $.copyList(apsGoodsBomList, ApsOrderGoodsBom.class);
 
-      apsOrderGoodsBomListTmp.forEach(t -> t.setOrderId(IdUtils.getId()).setOrderId(apsOrder.getId()).setBomUsage(BigDecimal.valueOf(MathUtil.randomLong(1, 60))).setId(IdUtils.getId()));
+      apsOrderGoodsBomListTmp.forEach(t -> t.setOrderId(IdUtils.getId()).setOrderId(apsOrder.getId()).setBomUsage(BigDecimal.valueOf(RandomUtil.randomLong(1, 60))).setId(IdUtils.getId()));
       apsOrderGoodsBomList.addAll(apsOrderGoodsBomListTmp);
 
 
