@@ -1,8 +1,0 @@
-threads: 2
-# Netty线程池数量
-nettyThreads: 2
-singleServerConfig:
-  address: redis://localhost:6379
-  password: W123Dfsdc.03D%
-  database: 3
-  timeout: 3000
