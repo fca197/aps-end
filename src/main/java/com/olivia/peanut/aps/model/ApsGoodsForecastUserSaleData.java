@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
 /**
  * (ApsGoodsForecastUserSaleData)表实体类
  *
@@ -22,32 +24,33 @@ import lombok.experimental.Accessors;
 public class ApsGoodsForecastUserSaleData extends BaseEntity {
 
   private Long forecastId;
+  private Long saleConfigParentId;
   private Long saleConfigId;
   private Integer year;
   @TableField(value = "month_01")
-  private Double month01;
+  private BigDecimal month01;
   @TableField(value = "month_02")
-  private Double month02;
+  private BigDecimal month02;
   @TableField(value = "month_03")
-  private Double month03;
+  private BigDecimal month03;
   @TableField(value = "month_04")
-  private Double month04;
+  private BigDecimal month04;
   @TableField(value = "month_05")
-  private Double month05;
+  private BigDecimal month05;
   @TableField(value = "month_06")
-  private Double month06;
+  private BigDecimal month06;
   @TableField(value = "month_07")
-  private Double month07;
+  private BigDecimal month07;
   @TableField(value = "month_08")
-  private Double month08;
+  private BigDecimal month08;
   @TableField(value = "month_09")
-  private Double month09;
+  private BigDecimal month09;
   @TableField(value = "month_10")
-  private Double month10;
+  private BigDecimal month10;
   @TableField(value = "month_11")
-  private Double month11;
+  private BigDecimal month11;
   @TableField(value = "month_12")
-  private Double month12;
+  private BigDecimal month12;
 
 
 }
