@@ -303,8 +303,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
           if (Objects.nonNull(saleConfig) && saleConfig.getIsValue() == 1) {
             ApsGoodsForecastUserSaleData saleData = forecastUserSaleDataMap.get(saleConfigId + "-" + year);
             Field field = getField(saleData, "month" + m.substring(5));
-            Double value = (Double) FieldUtils.getFieldValue(saleData, field);
-            allTmpList.add(new SaleItemConfig().setSaleCode(saleConfig.getSaleCode()).setTarget(value).setParentId(saleConfig.getParentId()));
+            BigDecimal value = (BigDecimal) FieldUtils.getFieldValue(saleData, field);
+            allTmpList.add(new SaleItemConfig().setSaleCode(saleConfig.getSaleCode()).setTarget(value.doubleValue()).setParentId(saleConfig.getParentId()));
           }
         });
 
@@ -319,9 +319,9 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
 
         ApsGoodsForecastUserGoodsData userGoodsData = userSaleDataMap.get(year);
         Field field = getField(userGoodsData, "month" + m.substring(5));
-        Double value = (Double) FieldUtils.getFieldValue(userGoodsData, field);
-        DivisionRes divisionRes = OrToolsUtils.division(value.intValue(), groupList);
-        log.info("req compute count {} groupList:{}", value.intValue(), JSON.toJSONString(groupList));
+        Integer value = FieldUtils.getFieldValue(userGoodsData, field);
+        DivisionRes divisionRes = OrToolsUtils.division(value, groupList);
+        log.info("req compute count {} groupList:{}", value, JSON.toJSONString(groupList));
         log.info("ret compute divisionRes {}", JSON.toJSONString(divisionRes));
 //        orToolsComputeResList.removeIf(t -> t.getCount() == 0L);
         divisionRes.getSkuCombineInfoList().forEach(cm -> {
