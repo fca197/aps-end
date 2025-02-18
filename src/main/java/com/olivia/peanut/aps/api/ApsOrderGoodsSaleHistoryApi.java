@@ -1,19 +1,15 @@
 package com.olivia.peanut.aps.api;
 
-import org.springframework.validation.annotation.Validated;
-import com.olivia.sdk.utils.DynamicsPage;
-import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.web.multipart.MultipartFile;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.olivia.sdk.utils.DynamicsPage;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -74,5 +70,13 @@ public interface ApsOrderGoodsSaleHistoryApi {
   @PostMapping("/apsOrderGoodsSaleHistory/queryByIdList")
   ApsOrderGoodsSaleHistoryQueryByIdListRes queryByIdListRes(@RequestBody @Valid ApsOrderGoodsSaleHistoryQueryByIdListReq req);
 
+
+  /***
+   *  查询销售历史到结果表
+   * @param req 如参
+   * @return 结果
+   */
+  @PostMapping("/apsOrderGoodsSaleHistory/selectOrder2History")
+  SelectOrder2HistoryRes selectOrder2History(@RequestBody @Valid SelectOrder2HistoryReq req);
 
 }

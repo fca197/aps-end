@@ -1,14 +1,11 @@
 package com.olivia.peanut.aps.service;
 
-import com.olivia.sdk.utils.DynamicsPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.base.MPJBaseService;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
 import com.olivia.peanut.aps.model.ApsOrderGoodsSaleHistory;
+import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.List;
-
-import com.github.yulichang.base.MPJBaseService;
-
-import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
 
 /**
  * 销售规划订单历史销售占比(ApsOrderGoodsSaleHistory)表服务接口
@@ -21,7 +18,9 @@ public interface ApsOrderGoodsSaleHistoryService extends MPJBaseService<ApsOrder
 
   DynamicsPage<ApsOrderGoodsSaleHistoryExportQueryPageListInfoRes> queryPageList(ApsOrderGoodsSaleHistoryExportQueryPageListReq req);
 
+  SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req);
 
   void setName(List<? extends ApsOrderGoodsSaleHistoryDto> apsOrderGoodsSaleHistoryDtoList);
+
 }
 

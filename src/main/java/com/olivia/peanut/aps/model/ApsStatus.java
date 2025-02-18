@@ -23,8 +23,8 @@ public class ApsStatus extends BaseEntity {
   private String statusCode;
   private String statusName;
   private Integer factoryId;
-//  private Boolean isOrderGoodsInit;
-private Long orderStatusId;
+  //  private Boolean isOrderGoodsInit;
+  private Long orderStatusId;
 
 }
 

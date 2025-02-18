@@ -16,9 +16,6 @@ public enum ApsOrderStatusEnum {
   FINISHED(100L, "已完成"),//
   ;
 
-  private final Long code;
-  private final String desc;
-
   private final static Map<Long, String> kv = new HashMap<>();
 
   static {
@@ -26,6 +23,9 @@ public enum ApsOrderStatusEnum {
       kv.put(value.code, value.desc);
     }
   }
+
+  private final Long code;
+  private final String desc;
 
   public static String getDescByCode(Long code) {
     return kv.get(code);

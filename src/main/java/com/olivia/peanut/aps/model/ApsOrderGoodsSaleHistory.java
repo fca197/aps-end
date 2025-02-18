@@ -1,15 +1,13 @@
 package com.olivia.peanut.aps.model;
 
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.math.BigDecimal;
 
 /**
  * 销售规划订单历史销售占比(ApsOrderGoodsSaleHistory)表实体类
@@ -21,7 +19,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @Getter
 @Setter
 //@SuppressWarnings("serial")
-@TableName("aps_order_goods_sale_history")
+@TableName("aps_order_goods_sale_config_history")
 public class ApsOrderGoodsSaleHistory extends BaseEntity {
   /***
    *  工厂ID
@@ -39,6 +37,7 @@ public class ApsOrderGoodsSaleHistory extends BaseEntity {
    *  销售ID
    */
   private Long saleConfigId;
+  private Integer year;
   /***
    *  1月销售数量
    */

@@ -98,12 +98,11 @@ public class ApsBomSupplierDto extends BaseEntityDto {
   @JSONField(label = "supplierStatus")
 
   private Boolean supplierStatus;
+  private String provinceName, cityName, areaName;
 
   public String getSupplierStatusStr() {
     return Str.booleanToStr(supplierStatus);
   }
-
-  private String provinceName, cityName, areaName;
 }
 
 

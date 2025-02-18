@@ -1,34 +1,20 @@
 package com.olivia.peanut.aps.api.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.olivia.peanut.aps.api.ApsOrderGoodsSaleHistoryApi;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
+import com.olivia.peanut.aps.api.impl.listener.ApsOrderGoodsSaleHistoryImportListener;
 import com.olivia.peanut.aps.model.ApsOrderGoodsSaleHistory;
+import com.olivia.peanut.aps.service.ApsOrderGoodsSaleHistoryService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
-
-import java.util.stream.Collectors;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
-import com.olivia.peanut.aps.service.ApsOrderGoodsSaleHistoryService;
-import com.olivia.peanut.aps.model.*;
-import com.baomidou.mybatisplus.core.conditions.query.*;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
-import org.springframework.web.bind.annotation.*;
-import com.olivia.peanut.aps.api.ApsOrderGoodsSaleHistoryApi;
-
-import com.olivia.peanut.aps.api.impl.listener.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 销售规划订单历史销售占比(ApsOrderGoodsSaleHistory)表服务实现类
@@ -99,11 +85,16 @@ public class ApsOrderGoodsSaleHistoryApiImpl implements ApsOrderGoodsSaleHistory
   }
 
   public @Override ApsOrderGoodsSaleHistoryQueryByIdListRes queryByIdListRes(ApsOrderGoodsSaleHistoryQueryByIdListReq req) {
-    MPJLambdaWrapper<ApsOrderGoodsSaleHistory> q = new MPJLambdaWrapper<ApsOrderGoodsSaleHistory>(ApsOrderGoodsSaleHistory.class)
+    MPJLambdaWrapper<ApsOrderGoodsSaleHistory> q = new MPJLambdaWrapper<>(ApsOrderGoodsSaleHistory.class)
         .selectAll(ApsOrderGoodsSaleHistory.class).in(ApsOrderGoodsSaleHistory::getId, req.getIdList());
     List<ApsOrderGoodsSaleHistory> list = this.apsOrderGoodsSaleHistoryService.list(q);
     List<ApsOrderGoodsSaleHistoryDto> dataList = $.copyList(list, ApsOrderGoodsSaleHistoryDto.class);
     this.apsOrderGoodsSaleHistoryService.setName(dataList);
     return new ApsOrderGoodsSaleHistoryQueryByIdListRes().setDataList(dataList);
+  }
+
+  @Override
+  public SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req) {
+    return this.apsOrderGoodsSaleHistoryService.selectOrder2History(req);
   }
 }

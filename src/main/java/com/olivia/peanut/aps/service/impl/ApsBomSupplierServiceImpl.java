@@ -13,8 +13,6 @@ import com.olivia.peanut.enums.DistrictCodeSelectType;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.DistrictCodeService;
 import com.olivia.sdk.service.SetNameService;
-import com.olivia.sdk.service.pojo.NameConfig;
-import com.olivia.sdk.service.pojo.SetNamePojo;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;
