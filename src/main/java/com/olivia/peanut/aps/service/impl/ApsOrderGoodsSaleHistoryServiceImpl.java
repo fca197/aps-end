@@ -13,10 +13,7 @@ import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsSaleHistoryMapper;
 import com.olivia.peanut.aps.model.*;
-import com.olivia.peanut.aps.service.ApsGoodsService;
-import com.olivia.peanut.aps.service.ApsOrderGoodsSaleConfigService;
-import com.olivia.peanut.aps.service.ApsOrderGoodsSaleHistoryService;
-import com.olivia.peanut.aps.service.ApsSaleConfigService;
+import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.aps.service.impl.po.ApsOrderGoodsSaleHistoryCount;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.filter.LoginUserContext;
@@ -30,10 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
@@ -66,6 +60,9 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
   ApsOrderGoodsSaleConfigService apsOrderGoodsSaleConfigService;
   @Resource
   ApsSaleConfigService apsSaleConfigService;
+
+  @Resource
+  ApsOrderGoodsService apsOrderGoodsService;
 
   public @Override ApsOrderGoodsSaleHistoryQueryListRes queryList(ApsOrderGoodsSaleHistoryQueryListReq req) {
 
@@ -105,8 +102,6 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
   @Override
   @SuppressWarnings("unchecked")
   public SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req) {
-    if (Objects.nonNull(req.getTenantId()))
-      LoginUserContext.setContextThreadLocal(LoginUserContext.getLoginUser().setTenantId(req.getTenantId()));
 
     SelectOrder2HistoryRes res = new SelectOrder2HistoryRes();
     List<ApsGoods> goodsList = apsGoodsService.list();
@@ -114,19 +109,12 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
       log.info("selectOrder2History goodsList is null");
       return res;
     }
-    LocalDateTime beginDate = (switch (req.getSelectType()) {
-      case LAST_MONTH -> YearMonth.from(YearMonth.now()).minusMonths(1).atDay(1);
-      case null -> YearMonth.from(YearMonth.now()).minusMonths(1).atDay(1);
-      case CURRENT_MONTH -> YearMonth.from(YearMonth.now()).atDay(1);
-    }).atTime(LocalTime.MIN);
-    LocalDateTime endDate = (switch (req.getSelectType()) {
-      case LAST_MONTH -> YearMonth.from(LocalDate.now()).minusMonths(1).atEndOfMonth();
-      case null -> YearMonth.from(LocalDate.now()).minusMonths(1).atEndOfMonth();
-      case CURRENT_MONTH -> YearMonth.from(LocalDate.now()).atEndOfMonth();
-    }).atTime(LocalTime.MAX);
+    LocalDateTime beginDate = req.getBeginDate();
+    LocalDateTime endDate = req.getEndDate();
 
 
     List<ApsOrderGoodsSaleHistory> insertList = new ArrayList<>();
+
     goodsList.forEach(goods -> {
       List<Runnable> runnableList = new ArrayList<>();
 
@@ -137,7 +125,8 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
         apsOrderGoodsSaleConfigList.addAll(apsOrderGoodsSaleConfigService.listMaps(new QueryWrapper<ApsOrderGoodsSaleConfig>()//
 //        .in(ApsOrderGoodsSaleConfig::getFactoryId, factoryIdList)
                 .select("config_id saleConfigId", "count(1) total").lambda()//
-                .eq(ApsOrderGoodsSaleConfig::getGoodsId, goodsId).gt(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, endDate).groupBy(ApsOrderGoodsSaleConfig::getConfigId)) //
+                .eq(ApsOrderGoodsSaleConfig::getGoodsId, goodsId) //
+                .ge(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, endDate).groupBy(ApsOrderGoodsSaleConfig::getConfigId)) //
             .stream().map(ApsOrderGoodsSaleHistoryCount::new).toList());
         if (log.isDebugEnabled()) {
           log.debug("apsOrderGoodsSaleConfigList {}", JSON.toJSONString(apsOrderGoodsSaleConfigList));

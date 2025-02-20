@@ -1,5 +1,7 @@
 package com.olivia.peanut.aps.api;
 
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryReq;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryRes;
 import org.springframework.validation.annotation.Validated;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.validation.Valid;
@@ -75,4 +77,11 @@ public interface ApsOrderGoodsHistoryApi {
   ApsOrderGoodsHistoryQueryByIdListRes queryByIdListRes(@RequestBody @Valid ApsOrderGoodsHistoryQueryByIdListReq req);
 
 
+  /***
+   *  查询销售历史到结果表
+   * @param req 如参
+   * @return 结果
+   */
+  @PostMapping("/apsOrderGoodsHistory/selectOrder2History")
+  SelectOrder2HistoryRes selectOrder2History(@RequestBody @Valid SelectOrder2HistoryReq req);
 }

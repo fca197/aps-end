@@ -3,6 +3,8 @@ package com.olivia.peanut.aps.api.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryReq;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryRes;
 import com.olivia.peanut.aps.model.ApsOrderGoodsHistory;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -105,5 +107,10 @@ public class ApsOrderGoodsHistoryApiImpl implements ApsOrderGoodsHistoryApi {
     List<ApsOrderGoodsHistoryDto> dataList = $.copyList(list, ApsOrderGoodsHistoryDto.class);
     this.apsOrderGoodsHistoryService.setName(dataList);
     return new ApsOrderGoodsHistoryQueryByIdListRes().setDataList(dataList);
+  }
+
+  @Override
+  public SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req) {
+    return this.apsOrderGoodsHistoryService.selectOrder2History(req);
   }
 }

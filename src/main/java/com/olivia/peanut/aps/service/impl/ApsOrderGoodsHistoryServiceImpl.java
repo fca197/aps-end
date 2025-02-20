@@ -1,34 +1,40 @@
 package com.olivia.peanut.aps.service.impl;
 
-import org.springframework.aop.framework.AopContext;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsHistory.*;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryReq;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryRes;
+import com.olivia.peanut.aps.mapper.ApsOrderGoodsHistoryMapper;
+import com.olivia.peanut.aps.model.ApsGoods;
+import com.olivia.peanut.aps.model.ApsOrderGoods;
+import com.olivia.peanut.aps.model.ApsOrderGoodsHistory;
+import com.olivia.peanut.aps.service.ApsGoodsService;
+import com.olivia.peanut.aps.service.ApsOrderGoodsHistoryService;
+import com.olivia.peanut.aps.service.ApsOrderGoodsService;
+import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.sdk.service.SetNameService;
+import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.LambdaQueryUtil;
-import com.olivia.sdk.utils.DynamicsPage;
+import org.springframework.aop.framework.AopContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import com.olivia.peanut.aps.mapper.ApsOrderGoodsHistoryMapper;
-import com.olivia.peanut.aps.model.ApsOrderGoodsHistory;
-import com.olivia.peanut.aps.service.ApsOrderGoodsHistoryService;
-import cn.hutool.core.collection.CollUtil;
-//import com.olivia.peanut.aps.service.BaseTableHeaderService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.peanut.aps.api.entity.apsOrderGoodsHistory.*;
-import com.olivia.peanut.util.SetNamePojoUtils;
-import com.olivia.sdk.service.SetNameService;
 
 /**
  * 历史订单记录(ApsOrderGoodsHistory)表服务实现类
@@ -47,6 +53,10 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
   @Resource
   SetNameService setNameService;
 
+  @Resource
+  ApsOrderGoodsService apsOrderGoodsService;
+  @Resource
+  ApsGoodsService apsGoodsService;
 
   public @Override ApsOrderGoodsHistoryQueryListRes queryList(ApsOrderGoodsHistoryQueryListReq req) {
 
@@ -81,6 +91,34 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
 
     return DynamicsPage.init(page, listInfoRes);
   }
+
+  @Override
+  public SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req) {
+    LocalDateTime beginDate = req.getBeginDate();
+    long goodsTotal = this.apsOrderGoodsService.count(new LambdaUpdateWrapper<ApsOrderGoods>() //
+        .ge(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, req.getEndDate()));
+    List<ApsGoods> apsGoodsList = this.apsGoodsService.list();
+    apsGoodsList.forEach(apsGoods -> {
+      long goodsTotalTmp = this.apsOrderGoodsService.count(new LambdaUpdateWrapper<ApsOrderGoods>() //
+          .eq(ApsOrderGoods::getGoodsId, apsGoods.getId())
+          .ge(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, req.getEndDate()));
+      BigDecimal goodBigDecimal = BigDecimal.valueOf(goodsTotalTmp * 1.0 / goodsTotal).setScale(4, RoundingMode.DOWN);
+      ApsOrderGoodsHistory goodsHistory = this.getOne(new LambdaQueryWrapper<ApsOrderGoodsHistory>().eq(ApsOrderGoodsHistory::getGoodsId, apsGoods.getId()).eq(ApsOrderGoodsHistory::getYear, beginDate.getYear()));
+      if (goodsHistory == null) {
+        goodsHistory = new ApsOrderGoodsHistory();
+        goodsHistory.setGoodsId(apsGoods.getId()).setFactoryId(apsGoods.getFactoryId()).setYear(beginDate.getYear());
+      }
+      ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthCount" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodsTotalTmp);
+      ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthRatio" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodBigDecimal);
+      if (Objects.isNull(goodsHistory.getId())) {
+        this.save(goodsHistory);
+      } else {
+        this.updateById(goodsHistory);
+      }
+    });
+    return new SelectOrder2HistoryRes();
+  }
+
 
   // 以下为私有对象封装
 

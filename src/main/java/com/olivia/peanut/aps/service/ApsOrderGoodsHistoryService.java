@@ -1,5 +1,7 @@
 package com.olivia.peanut.aps.service;
 
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryReq;
+import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.SelectOrder2HistoryRes;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.olivia.peanut.aps.model.ApsOrderGoodsHistory;
@@ -23,5 +25,7 @@ public interface ApsOrderGoodsHistoryService extends MPJBaseService<ApsOrderGood
 
 
   void setName(List<? extends ApsOrderGoodsHistoryDto> apsOrderGoodsHistoryDtoList);
+
+  SelectOrder2HistoryRes selectOrder2History(SelectOrder2HistoryReq req);
 }
 
