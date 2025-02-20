@@ -23,12 +23,16 @@ public class ApsOrderGoodsSaleHistoryCount {
    */
   private Long saleConfigId;
 
-  private Integer total;
+  private Long total;
+
+  public ApsOrderGoodsSaleHistoryCount() {
+
+  }
 
   public ApsOrderGoodsSaleHistoryCount(Map<String, Object> map) {
     this.factoryId = (Long) map.get("factoryId");
     this.goodsId = (Long) map.get("goodsId");
     this.saleConfigId = (Long) map.get("saleConfigId");
-    this.total = (Integer) map.get("total");
+    this.total = (Long) map.get("total");
   }
 }
