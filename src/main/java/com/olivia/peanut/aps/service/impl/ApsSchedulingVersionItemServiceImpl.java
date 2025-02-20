@@ -14,6 +14,7 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import com.olivia.sdk.utils.Str;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -90,7 +91,7 @@ public class ApsSchedulingVersionItemServiceImpl extends MPJBaseServiceImpl<ApsS
   private MPJLambdaWrapper<ApsSchedulingVersionItem> getWrapper(ApsSchedulingVersionItemDto obj) {
     MPJLambdaWrapper<ApsSchedulingVersionItem> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsSchedulingVersionItem.class,
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsSchedulingVersionItem.class,
         ApsSchedulingVersionItem::getSchedulingVersionId, ApsSchedulingVersionItem::getOrderId,
         ApsSchedulingVersionItem::getGoodsId
     );

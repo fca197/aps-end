@@ -24,6 +24,7 @@ import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -133,7 +134,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   private MPJLambdaWrapper<ApsGoodsBomBuyPlanItem> getWrapper(ApsGoodsBomBuyPlanItemDto obj) {
     MPJLambdaWrapper<ApsGoodsBomBuyPlanItem> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlanItem.class, ApsGoodsBomBuyPlanItem::getBuyPlanId //
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlanItem.class, ApsGoodsBomBuyPlanItem::getBuyPlanId //
         , ApsGoodsBomBuyPlanItem::getBomId//
         , ApsGoodsBomBuyPlanItem::getBomCode//
         , ApsGoodsBomBuyPlanItem::getBomName

@@ -14,6 +14,7 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +87,7 @@ public class ApsGoodsBomBuyPlanServiceImpl extends MPJBaseServiceImpl<ApsGoodsBo
   @SuppressWarnings(UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsBomBuyPlan> getWrapper(ApsGoodsBomBuyPlanDto obj) {
     MPJLambdaWrapper<ApsGoodsBomBuyPlan> q = new MPJLambdaWrapper<>();
-    $.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlan.class, ApsGoodsBomBuyPlan::getPlanName, ApsGoodsBomBuyPlan::getPlanSource);
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlan.class, ApsGoodsBomBuyPlan::getPlanName, ApsGoodsBomBuyPlan::getPlanSource);
     q.orderByDesc(ApsGoodsBomBuyPlan::getId);
     return q;
 

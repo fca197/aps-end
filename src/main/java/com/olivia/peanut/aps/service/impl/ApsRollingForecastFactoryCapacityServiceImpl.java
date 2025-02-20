@@ -19,10 +19,7 @@ import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.portal.service.FactoryService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.service.SetNameService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.DateUtils;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.FieldUtils;
+import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.model.YearMonth;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -200,9 +197,9 @@ public class ApsRollingForecastFactoryCapacityServiceImpl extends MPJBaseService
 
     if (Objects.nonNull(obj)) {
       ApsRollingForecastFactoryCapacity copy = $.copy(obj, ApsRollingForecastFactoryCapacity.class);
-      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getYear);
-      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getMonth);
-      $.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getFactoryId);
+      LambdaQueryUtil.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getYear);
+      LambdaQueryUtil.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getMonth);
+      LambdaQueryUtil.lambdaQueryWrapper(q, copy, ApsRollingForecastFactoryCapacity::getFactoryId);
     }
     q.orderByDesc(ApsRollingForecastFactoryCapacity::getId);
     List<SFunction<ApsRollingForecastFactoryCapacity, ?>> columns = List.of(ApsRollingForecastFactoryCapacity::getYear, ApsRollingForecastFactoryCapacity::getMonth);

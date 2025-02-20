@@ -14,10 +14,7 @@ import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.service.pojo.NameConfig;
 import com.olivia.sdk.service.pojo.SetNamePojo;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.Str;
+import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -95,7 +92,7 @@ public class ApsGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsGoodsBomMapper
   private MPJLambdaWrapper<ApsGoodsBom> getWrapper(ApsGoodsBomDto obj) {
     MPJLambdaWrapper<ApsGoodsBom> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsGoodsBom.class, ApsGoodsBom::getGoodsId//
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsBom.class, ApsGoodsBom::getGoodsId//
         , BaseEntity::getId, ApsGoodsBom::getBomUseWorkStation, ApsGoodsBom::getBomCode);
 
     q.orderByDesc(ApsGoodsBom::getId);

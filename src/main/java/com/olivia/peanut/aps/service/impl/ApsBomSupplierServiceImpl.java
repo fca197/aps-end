@@ -15,6 +15,7 @@ import com.olivia.peanut.portal.service.DistrictCodeService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -95,7 +96,7 @@ public class ApsBomSupplierServiceImpl extends MPJBaseServiceImpl<ApsBomSupplier
     MPJLambdaWrapper<ApsBomSupplier> q = new MPJLambdaWrapper<>();
 
 
-    $.lambdaQueryWrapper(q, obj, ApsBomSupplier.class
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsBomSupplier.class
         // 查询条件
         , ApsBomSupplier::getBomSupplierName //
         , ApsBomSupplier::getBomSupplierCode //

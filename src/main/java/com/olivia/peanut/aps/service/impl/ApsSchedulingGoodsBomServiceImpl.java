@@ -13,6 +13,7 @@ import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,7 @@ public class ApsSchedulingGoodsBomServiceImpl extends MPJBaseServiceImpl<ApsSche
   private MPJLambdaWrapper<ApsSchedulingGoodsBom> getWrapper(ApsSchedulingGoodsBomDto obj) {
     MPJLambdaWrapper<ApsSchedulingGoodsBom> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsSchedulingGoodsBom.class
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsSchedulingGoodsBom.class
         // 查询条件
         , ApsSchedulingGoodsBom::getSchedulingId //
         , ApsSchedulingGoodsBom::getOrderId //

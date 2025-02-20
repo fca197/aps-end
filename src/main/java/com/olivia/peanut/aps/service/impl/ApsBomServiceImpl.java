@@ -20,6 +20,7 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -97,7 +98,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     MPJLambdaWrapper<ApsBom> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      $.lambdaQueryWrapper(q, obj, ApsBom.class, ApsBom::getGroupId,//
+      LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsBom.class, ApsBom::getGroupId,//
           ApsBom::getBomCode, ApsBom::getBomName, ApsBom::getSupplyMode, BaseEntity::getId);
       if (Objects.nonNull(obj.getGroupId())) {
         ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());

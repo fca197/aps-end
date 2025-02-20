@@ -11,21 +11,16 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsOrderGoodsSaleHistory.*;
 import com.olivia.peanut.aps.mapper.ApsOrderGoodsSaleHistoryMapper;
-import com.olivia.peanut.aps.model.ApsGoods;
-import com.olivia.peanut.aps.model.ApsOrderGoodsSaleConfig;
-import com.olivia.peanut.aps.model.ApsOrderGoodsSaleHistory;
-import com.olivia.peanut.aps.model.ApsSaleConfig;
+import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.ApsGoodsService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsSaleConfigService;
 import com.olivia.peanut.aps.service.ApsOrderGoodsSaleHistoryService;
 import com.olivia.peanut.aps.service.ApsSaleConfigService;
+import com.olivia.peanut.aps.service.impl.po.ApsOrderGoodsSaleHistoryCount;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.service.SetNameService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.RunUtils;
+import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -33,6 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -109,58 +107,73 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
       log.info("selectOrder2History goodsList is null");
       return res;
     }
-    LocalDate beginDate = switch (req.getSelectType()) {
-      case MONTH -> LocalDate.now().minusMonths(1);
-      case DAY -> LocalDate.now().minusDays(1);
-    };
+    LocalDateTime beginDate = (switch (req.getSelectType()) {
+      case LAST_MONTH -> YearMonth.from(YearMonth.now()).minusMonths(1).atDay(1);
+      case null -> YearMonth.from(YearMonth.now()).minusMonths(1).atDay(1);
+      case CURRENT_MONTH -> YearMonth.from(YearMonth.now()).atDay(1);
+    }).atTime(LocalTime.MIN);
+    LocalDateTime endDate = (switch (req.getSelectType()) {
+      case LAST_MONTH -> YearMonth.from(LocalDate.now()).minusMonths(1).atEndOfMonth();
+      case null -> YearMonth.from(LocalDate.now()).minusMonths(1).atEndOfMonth();
+      case CURRENT_MONTH -> YearMonth.from(LocalDate.now()).atEndOfMonth();
+    }).atTime(LocalTime.MAX);
 
-    List<Long> goodsIdList = goodsList.stream().map(BaseEntity::getId).toList();
-    List<Long> factoryIdList = goodsList.stream().map(ApsGoods::getFactoryId).toList();
-    List<ApsOrderGoodsSaleConfig> apsOrderGoodsSaleConfigList = apsOrderGoodsSaleConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>()//
-        .in(ApsOrderGoodsSaleConfig::getFactoryId, factoryIdList).select(ApsOrderGoodsSaleConfig::getConfigId).in(ApsOrderGoodsSaleConfig::getGoodsId, goodsIdList).gt(BaseEntity::getCreateTime, beginDate));
+//    List<Long> goodsIdList = goodsList.stream().map(BaseEntity::getId).toList();
+//    List<Long> factoryIdList = goodsList.stream().map(ApsGoods::getFactoryId).toList();
 
-    if (CollUtil.isEmpty(apsOrderGoodsSaleConfigList)) {
-      log.info("selectOrder2History apsOrderGoodsSaleConfigList is null");
-      return res;
-    }
     List<ApsOrderGoodsSaleHistory> insertList = new ArrayList<>();
+    goodsList.forEach(goods -> {
+      List<Runnable> runnableList = new ArrayList<>();
 
-    List<Runnable> runnableList = new ArrayList<>();
+      Long goodsId = goods.getId();
 
-    runnableList.add(() -> {
+      runnableList.add(() -> {
+        List<ApsOrderGoodsSaleConfig> apsOrderGoodsSaleConfigList = apsOrderGoodsSaleConfigService.list(new LambdaQueryWrapper<ApsOrderGoodsSaleConfig>()//
+//        .in(ApsOrderGoodsSaleConfig::getFactoryId, factoryIdList)
+            .select(ApsOrderGoodsSaleConfig::getConfigId).eq(ApsOrderGoodsSaleConfig::getGoodsId, goodsId).gt(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, endDate));
 
+        if (CollUtil.isEmpty(apsOrderGoodsSaleConfigList)) {
+          log.info("selectOrder2History apsOrderGoodsSaleConfigList is null");
+        }
+      });
 
-      List<Map<String, Object>> listGoodsSaleMaps = this.listMaps(new QueryWrapper<ApsOrderGoodsSaleHistory>().select("factory_id fid ", "goods_id gid", "sale_config_id sid", "count(1) c").lambda().in(ApsOrderGoodsSaleHistory::getFactoryId, factoryIdList) //
-          .in(ApsOrderGoodsSaleHistory::getGoodsId, goodsIdList)//
-          .eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear())//
-          .groupBy(ApsOrderGoodsSaleHistory::getFactoryId, ApsOrderGoodsSaleHistory::getGoodsId, ApsOrderGoodsSaleHistory::getSaleConfigId));
-      log.info("listGoodsSaleMaps {}", JSON.toJSONString(listGoodsSaleMaps));
+      runnableList.add(() -> {
+        List<Map<String, Object>> listGoodsSaleMaps = this.listMaps(new QueryWrapper<ApsOrderGoodsSaleHistory>() //
+            .select("factory_id fid ", "goods_id gid", "sale_config_id sid", "count(1) c").lambda()//
+            .eq(ApsOrderGoodsSaleHistory::getGoodsId, goodsId)//
+            .eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear())//
+            .groupBy(ApsOrderGoodsSaleHistory::getFactoryId, ApsOrderGoodsSaleHistory::getGoodsId, ApsOrderGoodsSaleHistory::getSaleConfigId));
+        log.info("listGoodsSaleMaps {}", JSON.toJSONString(listGoodsSaleMaps));
+
+      });
+      List<ApsOrderGoodsSaleHistoryCount> apsOrderGoodsSaleHistoryCountList = new ArrayList<>();
+      runnableList.add(() -> {
+
+        apsOrderGoodsSaleHistoryCountList.addAll(this.listMaps(new QueryWrapper<ApsOrderGoodsSaleHistory>() //
+            .select("factory_id fid ", "goods_id gid", "count(1) total")//
+            .lambda() //
+            .eq(ApsOrderGoodsSaleHistory::getGoodsId, goodsId)//
+            .eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear())//
+            .groupBy(ApsOrderGoodsSaleHistory::getFactoryId, ApsOrderGoodsSaleHistory::getGoodsId)).stream().map(ApsOrderGoodsSaleHistoryCount::new).toList());
+        log.info("apsOrderGoodsSaleHistoryCountList {}", JSON.toJSONString(apsOrderGoodsSaleHistoryCountList));
+      });
+      Map<Long, Long> saleHistoryIdMap = new HashMap<>();
+      runnableList.add(() -> {
+        Map<Long, Long> tMap = this.lambdaQuery().select(BaseEntity::getId, ApsOrderGoodsSaleHistory::getSaleConfigId).eq(ApsOrderGoodsSaleHistory::getGoodsId, goodsId).eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear()).list().stream().collect(Collectors.toMap(ApsOrderGoodsSaleHistory::getSaleConfigId, BaseEntity::getId));
+        saleHistoryIdMap.putAll(tMap);
+      });
+
+      Map<Long, List<ApsSaleConfig>> saleParentMap = new HashMap<>();
+      runnableList.add(() -> {
+        Map<Long, List<ApsSaleConfig>> saleParentMapTmp = apsSaleConfigService.list(new MPJLambdaWrapper<ApsSaleConfig>().leftJoin(ApsGoodsSaleItem.class, ApsGoodsSaleItem::getSaleConfigId, ApsSaleConfig::getId).eq(ApsGoodsSaleItem::getGoodsId, goodsId)).stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
+            Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
+                list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList())));
+        saleParentMap.putAll(saleParentMapTmp);
+      });
+
+      RunUtils.run("selectOrder2History", runnableList);
 
     });
-    runnableList.add(() -> {
-      List<Map<String, Object>> listGoodsMaps = this.listMaps(new QueryWrapper<ApsOrderGoodsSaleHistory>().select("factory_id fid ", "goods_id gid", "count(1) c").lambda().in(ApsOrderGoodsSaleHistory::getFactoryId, factoryIdList) //
-          .in(ApsOrderGoodsSaleHistory::getGoodsId, goodsIdList)//
-          .eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear())//
-          .groupBy(ApsOrderGoodsSaleHistory::getFactoryId, ApsOrderGoodsSaleHistory::getGoodsId));
-      log.info("listGoodsMaps {}", JSON.toJSONString(listGoodsMaps));
-    });
-    Map<Long, Long> saleHistoryIdMap = new HashMap<>();
-    runnableList.add(() -> {
-      Map<Long, Long> tMap = this.lambdaQuery().select(BaseEntity::getId, ApsOrderGoodsSaleHistory::getSaleConfigId).in(ApsOrderGoodsSaleHistory::getFactoryId, factoryIdList).eq(ApsOrderGoodsSaleHistory::getYear, beginDate.getYear()).list().stream().collect(Collectors.toMap(ApsOrderGoodsSaleHistory::getSaleConfigId, BaseEntity::getId));
-      saleHistoryIdMap.putAll(tMap);
-    });
-
-
-    Map<Long, List<ApsSaleConfig>> saleParentMap = new HashMap<>();
-    runnableList.add(() -> {
-      Map<Long, List<ApsSaleConfig>> saleParentMapTmp = apsSaleConfigService.list().stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
-          Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
-              list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList())));
-      saleParentMap.putAll(saleParentMapTmp);
-    });
-
-
-    RunUtils.run("selectOrder2History", runnableList);
 
     this.saveOrUpdateBatch(insertList);
 
@@ -181,7 +194,7 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
     MPJLambdaWrapper<ApsOrderGoodsSaleHistory> q = new MPJLambdaWrapper<>();
 
 
-    $.lambdaQueryWrapper(q, obj, ApsOrderGoodsSaleHistory.class
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsOrderGoodsSaleHistory.class
         // 查询条件
         , ApsOrderGoodsSaleHistory::getFactoryId //
         , ApsOrderGoodsSaleHistory::getYear, ApsOrderGoodsSaleHistory::getGoodsId //

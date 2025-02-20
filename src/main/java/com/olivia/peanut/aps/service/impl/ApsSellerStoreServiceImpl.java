@@ -16,6 +16,7 @@ import com.olivia.peanut.portal.service.DistrictCodeService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
@@ -109,7 +110,7 @@ public class ApsSellerStoreServiceImpl extends MPJBaseServiceImpl<ApsSellerStore
     MPJLambdaWrapper<ApsSellerStore> q = new MPJLambdaWrapper<>();
 
 
-    $.lambdaQueryWrapper(q, obj, ApsSellerStore.class, ApsSellerStore::getId,
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsSellerStore.class, ApsSellerStore::getId,
         ApsSellerStore::getSellerStoreCode, ApsSellerStore::getSellerStoreName,
         ApsSellerStore::getSellerStorePhone, ApsSellerStore::getSellerStoreProvinceCode, ApsSellerStore::getSellerStoreCityCode
         , ApsSellerStore::getSellerStoreAreaCode);
