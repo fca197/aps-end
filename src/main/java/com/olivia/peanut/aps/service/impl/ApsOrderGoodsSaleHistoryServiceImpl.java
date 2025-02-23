@@ -179,14 +179,16 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
         if (log.isDebugEnabled()) {
           log.debug("saleParentMapTmp {}", JSON.toJSONString(saleParentMapTmp));
         }
+        Set<Long> idSet = saleParentMapTmp.values().stream().map(ApsSaleConfig::getParentId).collect(Collectors.toSet());
         saleAllMap.putAll(saleParentMapTmp);
+        saleAllMap.putAll(apsSaleConfigService.listByIds(idSet).stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity())));
       });
 
       RunUtils.run("selectOrder2History", runnableList);
 
 
       Map<Long, ApsOrderGoodsSaleHistoryCount> historyCountMap = apsOrderGoodsSaleConfigList.stream().collect(Collectors.toMap(ApsOrderGoodsSaleHistoryCount::getSaleConfigId, Function.identity()));
-      saleAllMap.values().stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
+      saleAllMap.values().stream().filter(t -> Objects.equals(t.getIsValue(), 1)).collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
           Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
               list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList()))).forEach((p, ll) -> {
         BigDecimal useBigDecimal = new BigDecimal(0);
@@ -194,7 +196,8 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
           ApsSaleConfig saleConfig = ll.get(i);
           ApsSaleConfig parentSaleConfig = saleAllMap.getOrDefault(saleConfig.getParentId(), new ApsSaleConfig());
           ApsOrderGoodsSaleHistoryCount historyCount = historyCountMap.getOrDefault(saleConfig.getId(), new ApsOrderGoodsSaleHistoryCount());
-          BigDecimal tmp = BigDecimal.valueOf(historyCount.getTotal() * 1.0 / goodsCount.get()).setScale(4, RoundingMode.HALF_UP);
+          Long o = $.firstNotNull(historyCount.getTotal(), 0L);
+          BigDecimal tmp = goodsCount.get() != 0 ? BigDecimal.valueOf(o * 1.0 / goodsCount.get()).setScale(4, RoundingMode.HALF_UP) : BigDecimal.ZERO;
           useBigDecimal = useBigDecimal.add(tmp);
           sale2history(goods, historyCountMap, saleConfig, saleHistoryIdMap, beginDate, tmp, insertList, parentSaleConfig);
         }
@@ -214,6 +217,9 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
                             Map<Long, Long> saleHistoryIdMap, LocalDateTime beginDate, BigDecimal useBigDecimal, List<ApsOrderGoodsSaleHistory> insertList //
       , ApsSaleConfig parentSaleConfig) {
     ApsOrderGoodsSaleHistoryCount historyCount = historyCountMap.getOrDefault(saleConfig.getId(), new ApsOrderGoodsSaleHistoryCount());
+    if (Objects.isNull(historyCount)) {
+      return;
+    }
     ApsOrderGoodsSaleHistory history = apsOrderGoodsSaleHistory(saleHistoryIdMap, saleConfig, goods, beginDate, parentSaleConfig);
     String month = decimalFormat("00", beginDate.getMonthValue());
     ReflectUtil.setFieldValue(history, FieldUtils.getField(ApsOrderGoodsSaleHistory.class, "monthRatio" + month), useBigDecimal);
@@ -225,7 +231,7 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
     ApsOrderGoodsSaleHistory history = new ApsOrderGoodsSaleHistory();
     history.setId(saleHistoryIdMap.get(apsSaleConfig.getId()));
     return history.setSaleConfigId(apsSaleConfig.getId()).setSaleParentId(apsSaleConfig.getParentId()) //
-        .setGoodsId(apsGoods.getId()).setFactoryId(apsGoods.getFactoryId()).setYear(localDateTime.getYear())//
+        .setGoodsId(apsGoods.getId()).setGoodsName(apsGoods.getGoodsName()).setFactoryId(apsGoods.getFactoryId()).setYear(localDateTime.getYear())//
         .setGoodsName(history.getGoodsName()).setSaleConfigName(apsSaleConfig.getSaleName()).setSaleParentConfigName(parentSaleConfig.getSaleName());
   }
 

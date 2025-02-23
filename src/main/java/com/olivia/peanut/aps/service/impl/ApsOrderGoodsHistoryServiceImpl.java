@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -103,6 +104,8 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
     }
     List<ApsGoods> apsGoodsList = this.apsGoodsService.list();
 
+    List<ApsOrderGoodsHistory> saveBatchList = new ArrayList<>();
+    List<ApsOrderGoodsHistory> updateBatchList = new ArrayList<>();
     apsGoodsList.forEach(apsGoods -> {
       long goodsTotalTmp = this.apsOrderGoodsService.count(new LambdaUpdateWrapper<ApsOrderGoods>() //
           .eq(ApsOrderGoods::getGoodsId, apsGoods.getId())
@@ -116,11 +119,14 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
       ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthCount" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodsTotalTmp);
       ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthRatio" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodBigDecimal);
       if (Objects.isNull(goodsHistory.getId())) {
-        this.save(goodsHistory);
+//        this.save(goodsHistory);
+        saveBatchList.add(goodsHistory);
       } else {
-        this.updateById(goodsHistory);
+        updateBatchList.add(goodsHistory);
       }
     });
+    this.saveBatch(saveBatchList);
+    this.updateBatchById(updateBatchList);
     return res;
   }
 
