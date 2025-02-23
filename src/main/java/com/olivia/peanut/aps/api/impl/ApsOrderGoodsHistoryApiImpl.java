@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.olivia.sdk.utils.RunUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -48,6 +49,7 @@ public class ApsOrderGoodsHistoryApiImpl implements ApsOrderGoodsHistoryApi {
    *
    */
   public @Override ApsOrderGoodsHistoryInsertRes insert(ApsOrderGoodsHistoryInsertReq req) {
+    RunUtils.noImpl();
     this.apsOrderGoodsHistoryService.save($.copy(req, ApsOrderGoodsHistory.class));
     return new ApsOrderGoodsHistoryInsertRes().setCount(1);
   }
@@ -57,6 +59,7 @@ public class ApsOrderGoodsHistoryApiImpl implements ApsOrderGoodsHistoryApi {
    *
    */
   public @Override ApsOrderGoodsHistoryDeleteByIdListRes deleteByIdList(ApsOrderGoodsHistoryDeleteByIdListReq req) {
+    RunUtils.noImpl();
     apsOrderGoodsHistoryService.removeByIds(req.getIdList());
     return new ApsOrderGoodsHistoryDeleteByIdListRes();
   }
@@ -74,6 +77,7 @@ public class ApsOrderGoodsHistoryApiImpl implements ApsOrderGoodsHistoryApi {
    *
    */
   public @Override ApsOrderGoodsHistoryUpdateByIdRes updateById(ApsOrderGoodsHistoryUpdateByIdReq req) {
+    RunUtils.noImpl();
     apsOrderGoodsHistoryService.updateById($.copy(req, ApsOrderGoodsHistory.class));
     return new ApsOrderGoodsHistoryUpdateByIdRes();
 

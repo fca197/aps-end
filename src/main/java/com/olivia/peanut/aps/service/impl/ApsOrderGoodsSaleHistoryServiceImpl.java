@@ -16,7 +16,6 @@ import com.olivia.peanut.aps.model.*;
 import com.olivia.peanut.aps.service.*;
 import com.olivia.peanut.aps.service.impl.po.ApsOrderGoodsSaleHistoryCount;
 import com.olivia.peanut.portal.service.BaseTableHeaderService;
-import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.*;
 import jakarta.annotation.Resource;
@@ -167,34 +166,41 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
         }
       });
       // 查询商品销售配置
-      Map<Long, List<ApsSaleConfig>> saleParentMap = new HashMap<>();
+//      Map<Long, List<ApsSaleConfig>> saleParentMap = new HashMap<>();
+      Map<Long, ApsSaleConfig> saleAllMap = new HashMap<>();
       runnableList.add(() -> {
-        Map<Long, List<ApsSaleConfig>> saleParentMapTmp = apsSaleConfigService.list(new MPJLambdaWrapper<ApsSaleConfig>() //
+        Map<Long, ApsSaleConfig> saleParentMapTmp = apsSaleConfigService.list(new MPJLambdaWrapper<ApsSaleConfig>() //
             .leftJoin(ApsGoodsSaleItem.class, ApsGoodsSaleItem::getSaleConfigId, ApsSaleConfig::getId) //
-            .eq(ApsGoodsSaleItem::getGoodsId, goodsId)).stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
-            Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
-                list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList())));
-        saleParentMap.putAll(saleParentMapTmp);
+            .eq(ApsGoodsSaleItem::getGoodsId, goodsId)).stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+//            .stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
+//            Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
+//                list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList())));
+//        saleParentMap.putAll(saleParentMapTmp);
         if (log.isDebugEnabled()) {
           log.debug("saleParentMapTmp {}", JSON.toJSONString(saleParentMapTmp));
         }
+        saleAllMap.putAll(saleParentMapTmp);
       });
 
       RunUtils.run("selectOrder2History", runnableList);
 
 
       Map<Long, ApsOrderGoodsSaleHistoryCount> historyCountMap = apsOrderGoodsSaleConfigList.stream().collect(Collectors.toMap(ApsOrderGoodsSaleHistoryCount::getSaleConfigId, Function.identity()));
-      saleParentMap.forEach((p, ll) -> {
+      saleAllMap.values().stream().collect(Collectors.groupingBy(ApsSaleConfig::getParentId,//
+          Collectors.collectingAndThen(Collectors.<ApsSaleConfig>toList(),//
+              list -> list.stream().sorted(Comparator.comparing(ApsSaleConfig::getSaleCode)).toList()))).forEach((p, ll) -> {
         BigDecimal useBigDecimal = new BigDecimal(0);
         for (int i = 0; i < ll.size() - 1; i++) {
           ApsSaleConfig saleConfig = ll.get(i);
+          ApsSaleConfig parentSaleConfig = saleAllMap.getOrDefault(saleConfig.getParentId(), new ApsSaleConfig());
           ApsOrderGoodsSaleHistoryCount historyCount = historyCountMap.getOrDefault(saleConfig.getId(), new ApsOrderGoodsSaleHistoryCount());
           BigDecimal tmp = BigDecimal.valueOf(historyCount.getTotal() * 1.0 / goodsCount.get()).setScale(4, RoundingMode.HALF_UP);
           useBigDecimal = useBigDecimal.add(tmp);
-          sale2history(goods, historyCountMap, saleConfig, saleHistoryIdMap, beginDate, tmp, insertList);
+          sale2history(goods, historyCountMap, saleConfig, saleHistoryIdMap, beginDate, tmp, insertList, parentSaleConfig);
         }
         ApsSaleConfig saleConfig = ll.getLast();
-        sale2history(goods, historyCountMap, saleConfig, saleHistoryIdMap, beginDate, BigDecimal.ONE.subtract(useBigDecimal), insertList);
+        ApsSaleConfig parentSaleConfig = saleAllMap.getOrDefault(saleConfig.getParentId(), new ApsSaleConfig());
+        sale2history(goods, historyCountMap, saleConfig, saleHistoryIdMap, beginDate, BigDecimal.ONE.subtract(useBigDecimal), insertList, parentSaleConfig);
       });
 
     });
@@ -204,20 +210,23 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
     return res;
   }
 
-  private void sale2history(ApsGoods goods, Map<Long, ApsOrderGoodsSaleHistoryCount> historyCountMap, ApsSaleConfig saleConfig, Map<Long, Long> saleHistoryIdMap, LocalDateTime beginDate, BigDecimal useBigDecimal, List<ApsOrderGoodsSaleHistory> insertList) {
+  private void sale2history(ApsGoods goods, Map<Long, ApsOrderGoodsSaleHistoryCount> historyCountMap, ApsSaleConfig saleConfig, //
+                            Map<Long, Long> saleHistoryIdMap, LocalDateTime beginDate, BigDecimal useBigDecimal, List<ApsOrderGoodsSaleHistory> insertList //
+      , ApsSaleConfig parentSaleConfig) {
     ApsOrderGoodsSaleHistoryCount historyCount = historyCountMap.getOrDefault(saleConfig.getId(), new ApsOrderGoodsSaleHistoryCount());
-    ApsOrderGoodsSaleHistory history = apsOrderGoodsSaleHistory(saleHistoryIdMap, saleConfig, goods, beginDate);
+    ApsOrderGoodsSaleHistory history = apsOrderGoodsSaleHistory(saleHistoryIdMap, saleConfig, goods, beginDate, parentSaleConfig);
     String month = decimalFormat("00", beginDate.getMonthValue());
     ReflectUtil.setFieldValue(history, FieldUtils.getField(ApsOrderGoodsSaleHistory.class, "monthRatio" + month), useBigDecimal);
     ReflectUtil.setFieldValue(history, FieldUtils.getField(ApsOrderGoodsSaleHistory.class, "monthCount" + month), historyCount.getTotal());
     insertList.add(history);
   }
 
-  private ApsOrderGoodsSaleHistory apsOrderGoodsSaleHistory(Map<Long, Long> saleHistoryIdMap, ApsSaleConfig apsSaleConfig, ApsGoods apsGoods, LocalDateTime localDateTime) {
+  private ApsOrderGoodsSaleHistory apsOrderGoodsSaleHistory(Map<Long, Long> saleHistoryIdMap, ApsSaleConfig apsSaleConfig, ApsGoods apsGoods, LocalDateTime localDateTime, ApsSaleConfig parentSaleConfig) {
     ApsOrderGoodsSaleHistory history = new ApsOrderGoodsSaleHistory();
     history.setId(saleHistoryIdMap.get(apsSaleConfig.getId()));
     return history.setSaleConfigId(apsSaleConfig.getId()).setSaleParentId(apsSaleConfig.getParentId()) //
-        .setGoodsId(apsGoods.getId()).setFactoryId(apsGoods.getFactoryId()).setYear(localDateTime.getYear());
+        .setGoodsId(apsGoods.getId()).setFactoryId(apsGoods.getFactoryId()).setYear(localDateTime.getYear())//
+        .setGoodsName(history.getGoodsName()).setSaleConfigName(apsSaleConfig.getSaleName()).setSaleParentConfigName(parentSaleConfig.getSaleName());
   }
 
 

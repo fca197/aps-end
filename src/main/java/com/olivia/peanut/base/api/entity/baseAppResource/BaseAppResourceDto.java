@@ -31,7 +31,6 @@ public class BaseAppResourceDto extends BaseEntityDto {
    */
   @NotNull(message = "资源ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private Long resourceId;
-  private String resourceUrl;
 
 
 }

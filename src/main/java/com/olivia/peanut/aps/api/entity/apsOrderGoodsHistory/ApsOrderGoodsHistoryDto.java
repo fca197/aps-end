@@ -51,6 +51,8 @@ public class ApsOrderGoodsHistoryDto extends BaseEntityDto {
   @NotNull(message = "商品ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 
   private Long goodsId;
+
+  private String goodsName;
   /***
    *  年份
    */

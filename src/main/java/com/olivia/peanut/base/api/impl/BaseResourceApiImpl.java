@@ -8,6 +8,7 @@ import com.olivia.peanut.base.model.BaseResource;
 import com.olivia.peanut.base.service.BaseResourceService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.IdUtils;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 资源(BaseResource)表服务实现类
@@ -32,8 +34,23 @@ public class BaseResourceApiImpl implements BaseResourceApi {
    *
    */
   public @Override BaseResourceInsertRes insert(BaseResourceInsertReq req) {
-    this.baseResourceService.save($.copy(req, BaseResource.class));
+    BaseResource baseResource = $.copy(req, BaseResource.class);
+    Long id = IdUtils.getId();
+    buildPath(req.getParentId(), baseResource, id);
+
+    this.baseResourceService.save(baseResource);
     return new BaseResourceInsertRes().setCount(1);
+  }
+
+  private void buildPath(Long parentId, BaseResource baseResource, Long id) {
+    if (Objects.nonNull(parentId)) {
+      BaseResource parentResource = this.baseResourceService.getById(parentId);
+      baseResource.setPath(parentResource.getPath() + "/" + id);
+    } else {
+      baseResource.setParentId(0L);
+      baseResource.setPath("/0/" + id);
+    }
+    baseResource.setId(id);
   }
 
   /****
@@ -58,10 +75,12 @@ public class BaseResourceApiImpl implements BaseResourceApi {
    *
    */
   public @Override BaseResourceUpdateByIdRes updateById(BaseResourceUpdateByIdReq req) {
-    baseResourceService.updateById($.copy(req, BaseResource.class));
+    BaseResource baseResource = $.copy(req, BaseResource.class);
+    buildPath(req.getParentId(), baseResource, baseResource.getId());
+    baseResourceService.updateById(baseResource);
     return new BaseResourceUpdateByIdRes();
-
   }
+
 
   public @Override DynamicsPage<BaseResourceExportQueryPageListInfoRes> queryPageList(BaseResourceExportQueryPageListReq req) {
     return baseResourceService.queryPageList(req);

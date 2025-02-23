@@ -29,14 +29,18 @@ public class ApsOrderGoodsSaleHistory extends BaseEntity {
    *  商品ID
    */
   private Long goodsId;
+  private String goodsName;
   /***
    *  销售上级ID
    */
   private Long saleParentId;
+
+  private String saleParentConfigName;
   /***
    *  销售ID
    */
   private Long saleConfigId;
+  private String saleConfigName;
   private Integer year;
   /***
    *  1月销售数量

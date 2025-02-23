@@ -97,7 +97,12 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
     LocalDateTime beginDate = req.getBeginDate();
     long goodsTotal = this.apsOrderGoodsService.count(new LambdaUpdateWrapper<ApsOrderGoods>() //
         .ge(BaseEntity::getCreateTime, beginDate).le(BaseEntity::getCreateTime, req.getEndDate()));
+    SelectOrder2HistoryRes res = new SelectOrder2HistoryRes();
+    if (goodsTotal < 1) {
+      return res;
+    }
     List<ApsGoods> apsGoodsList = this.apsGoodsService.list();
+
     apsGoodsList.forEach(apsGoods -> {
       long goodsTotalTmp = this.apsOrderGoodsService.count(new LambdaUpdateWrapper<ApsOrderGoods>() //
           .eq(ApsOrderGoods::getGoodsId, apsGoods.getId())
@@ -106,7 +111,7 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
       ApsOrderGoodsHistory goodsHistory = this.getOne(new LambdaQueryWrapper<ApsOrderGoodsHistory>().eq(ApsOrderGoodsHistory::getGoodsId, apsGoods.getId()).eq(ApsOrderGoodsHistory::getYear, beginDate.getYear()));
       if (goodsHistory == null) {
         goodsHistory = new ApsOrderGoodsHistory();
-        goodsHistory.setGoodsId(apsGoods.getId()).setFactoryId(apsGoods.getFactoryId()).setYear(beginDate.getYear());
+        goodsHistory.setGoodsId(apsGoods.getId()).setGoodsName(apsGoods.getGoodsName()).setFactoryId(apsGoods.getFactoryId()).setYear(beginDate.getYear());
       }
       ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthCount" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodsTotalTmp);
       ReflectUtil.setFieldValue(goodsHistory, FieldUtils.getField(ApsOrderGoodsHistory.class, "monthRatio" + NumberUtil.decimalFormat("00", beginDate.getMonthValue())), goodBigDecimal);
@@ -116,7 +121,7 @@ public class ApsOrderGoodsHistoryServiceImpl extends MPJBaseServiceImpl<ApsOrder
         this.updateById(goodsHistory);
       }
     });
-    return new SelectOrder2HistoryRes();
+    return res;
   }
 
 
