@@ -119,6 +119,7 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
         list.forEach(t -> {
           BaseResource resource = resourceMap.getOrDefault(t.getResourceId(), defaultValue);
           ((BaseAppResourceExportQueryPageListInfoRes) t).setResourceName(resource.getResourceName())
+              .setSortIndex(resource.getSortIndex())
               .setResourceUrl(resource.getResourceUrl()).setResourceName(resource.getResourceName()).setParentId(resource.getParentId());
         });
       }

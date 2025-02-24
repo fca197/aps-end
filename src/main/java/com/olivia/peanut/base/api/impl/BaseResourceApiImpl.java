@@ -43,7 +43,7 @@ public class BaseResourceApiImpl implements BaseResourceApi {
   }
 
   private void buildPath(Long parentId, BaseResource baseResource, Long id) {
-    if (Objects.nonNull(parentId)) {
+    if (Objects.nonNull(parentId) && !Objects.equals(parentId, 0L)) {
       BaseResource parentResource = this.baseResourceService.getById(parentId);
       baseResource.setPath(parentResource.getPath() + "/" + id);
     } else {

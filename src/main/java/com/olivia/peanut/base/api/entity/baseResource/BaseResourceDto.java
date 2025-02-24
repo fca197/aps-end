@@ -33,7 +33,7 @@ public class BaseResourceDto extends BaseEntityDto {
   /***
    *  菜单URL
    */
-  @NotBlank(message = "菜单URL不能为空", groups = {InsertCheck.class, UpdateCheck.class})
+//  @NotBlank(message = "菜单URL不能为空", groups = {InsertCheck.class, UpdateCheck.class})
   private String resourceUrl;
   /***
    *  菜单图标

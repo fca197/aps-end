@@ -20,6 +20,7 @@ public class BaseAppResourceExportQueryPageListInfoRes extends BaseAppResourceDt
   private String resourceName;
   private String resourceUrl;
   private Long parentId;
+  private Integer sortIndex;
 }
 
 

@@ -18,13 +18,14 @@ public class SelectOrder2HistoryReq {
 
   private Long tenantId;
 
+  private SelectOrder2HistoryType selectType;
+
+
   public void setTenantId(Long tenantId) {
     this.tenantId = tenantId;
     if (Objects.nonNull(this.tenantId))
       LoginUserContext.setContextThreadLocal(LoginUserContext.getLoginUser().setTenantId(this.tenantId));
   }
-
-  private SelectOrder2HistoryType selectType;
 
   public LocalDateTime getBeginDate() {
     return (switch (this.getSelectType()) {
