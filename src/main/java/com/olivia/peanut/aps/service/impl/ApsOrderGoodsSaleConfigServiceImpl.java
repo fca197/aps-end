@@ -13,6 +13,7 @@ import com.olivia.peanut.aps.service.ApsOrderGoodsSaleConfigService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BigDecimalUtils;
 import com.olivia.sdk.utils.DynamicsPage;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -75,10 +76,8 @@ public class ApsOrderGoodsSaleConfigServiceImpl extends MPJBaseServiceImpl<ApsOr
   // 以下为私有对象封装
 
   @SetUserName
-  public @Override void setName(List<? extends ApsOrderGoodsSaleConfigDto> apsOrderGoodsSaleConfigDtoList) {
-
-    if (CollUtil.isEmpty(apsOrderGoodsSaleConfigDtoList)) {
-    }
+  public @Override void setName(List<? extends ApsOrderGoodsSaleConfigDto> list) {
+    BigDecimalUtils.valueExpand(list, 100, BigDecimalUtils.MatchType.likeLeft, "monthRatio");
 
 
   }

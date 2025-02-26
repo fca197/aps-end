@@ -9,6 +9,7 @@ import com.olivia.peanut.aps.service.ApsOrderGoodsSaleHistoryService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+import com.olivia.sdk.utils.RunUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +33,7 @@ public class ApsOrderGoodsSaleHistoryApiImpl implements ApsOrderGoodsSaleHistory
    *
    */
   public @Override ApsOrderGoodsSaleHistoryInsertRes insert(ApsOrderGoodsSaleHistoryInsertReq req) {
+    RunUtils.noImpl();
     this.apsOrderGoodsSaleHistoryService.save($.copy(req, ApsOrderGoodsSaleHistory.class));
     return new ApsOrderGoodsSaleHistoryInsertRes().setCount(1);
   }

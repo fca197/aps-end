@@ -85,7 +85,6 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
 
 
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
-
     setNameService.setName(apsBomDtoList, SetNamePojoUtils.OP_USER_NAME, SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName"));
   }
 

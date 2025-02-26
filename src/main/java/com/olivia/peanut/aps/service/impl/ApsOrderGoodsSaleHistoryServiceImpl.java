@@ -242,6 +242,8 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
 
     //   setNameService.setName(list, SetNamePojoUtils.FACTORY, SetNamePojoUtils.OP_USER_NAME);
 
+    BigDecimalUtils.valueExpand(list, 100, BigDecimalUtils.MatchType.likeLeft, "monthRatio");
+
   }
 
 
@@ -283,7 +285,7 @@ public class ApsOrderGoodsSaleHistoryServiceImpl extends MPJBaseServiceImpl<ApsO
     );
 
 
-    q.orderByDesc(ApsOrderGoodsSaleHistory::getId);
+    q.orderByDesc(ApsOrderGoodsSaleHistory::getGoodsId, ApsOrderGoodsSaleHistory::getSaleParentId, ApsOrderGoodsSaleHistory::getSaleConfigId);
     return q;
 
   }

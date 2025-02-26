@@ -50,6 +50,8 @@ public class ApsOrderGoodsSaleHistoryDto extends BaseEntityDto {
   @NotNull(message = "销售ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 
   private Long saleConfigId;
+
+  private Integer year;
   /***
    *  1月销售数量
    */
@@ -219,6 +221,10 @@ public class ApsOrderGoodsSaleHistoryDto extends BaseEntityDto {
 
   private BigDecimal monthRatio12;
 
+
+  private String goodsName;
+  private String saleParentConfigName;
+  private String saleConfigName;
 }
 
 

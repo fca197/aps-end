@@ -7,9 +7,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-//@Mapper
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
-
 public interface ApsBomConverter {
   ApsBomConverter INSTANCE = Mappers.getMapper(ApsBomConverter.class);
 
