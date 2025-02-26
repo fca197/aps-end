@@ -15,6 +15,7 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,7 +114,7 @@ public class ApsBomGroupServiceImpl extends MPJBaseServiceImpl<ApsBomGroupMapper
   private MPJLambdaWrapper<ApsBomGroup> getWrapper(ApsBomGroupDto obj) {
     MPJLambdaWrapper<ApsBomGroup> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsBomGroup.class, ApsBomGroup::getPathId, ApsBomGroup::getGroupName,//
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsBomGroup.class, ApsBomGroup::getPathId, ApsBomGroup::getGroupName,//
         ApsBomGroup::getPathId, ApsBomGroup::getGroupCode);
 
     q.orderByDesc(ApsBomGroup::getId);

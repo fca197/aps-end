@@ -186,6 +186,12 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     return runnableList;
   }
 
+  private static void setCapacityWrapper(Boolean bool, LambdaQueryWrapper<? extends BaseEntity> wrapper) {
+    if (FALSE.equals(bool)) {
+      wrapper.eq(BaseEntity::getId, Long.MIN_VALUE);
+    }
+  }
+
   public @Override ApsSchedulingVersionQueryListRes queryList(ApsSchedulingVersionQueryListReq req) {
 
     MPJLambdaWrapper<ApsSchedulingVersion> q = getWrapper(req.getData());
@@ -580,12 +586,6 @@ public class ApsSchedulingVersionServiceImpl extends MPJBaseServiceImpl<ApsSched
     apsSchedulingGoodsStatusDateService.saveBatch(apsOrderGoodsStatusDateList);
 //    updateApsOrderGoodsStatusDate(apsGoodsList, apsOrderGoodsStatusDateList);
     return new ApsSchedulingVersionUseMakeCapacityRes();
-  }
-
-  private static void setCapacityWrapper(Boolean bool, LambdaQueryWrapper<? extends BaseEntity> wrapper) {
-    if (FALSE.equals(bool)) {
-      wrapper.eq(BaseEntity::getId, Long.MIN_VALUE);
-    }
   }
 
   private void updateApsOrderGoodsStatusDate(Set<OrderGoods> orderGoodsSet, List<ApsOrderGoodsStatusDate> apsOrderGoodsStatusDateList) {

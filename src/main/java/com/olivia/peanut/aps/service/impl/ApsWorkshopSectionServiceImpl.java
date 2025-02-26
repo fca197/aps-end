@@ -11,6 +11,7 @@ import com.olivia.peanut.aps.service.ApsWorkshopSectionService;
 import com.olivia.peanut.portal.mapper.WorkshopSectionMapper;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import com.olivia.sdk.utils.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +72,7 @@ public class ApsWorkshopSectionServiceImpl extends MPJBaseServiceImpl<WorkshopSe
   private MPJLambdaWrapper<ApsWorkshopSection> getWrapper(WorkshopSectionDto obj) {
     MPJLambdaWrapper<ApsWorkshopSection> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsWorkshopSection.class, ApsWorkshopSection::getId, ApsWorkshopSection::getSectionCode, ApsWorkshopSection::getSectionName);
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsWorkshopSection.class, ApsWorkshopSection::getId, ApsWorkshopSection::getSectionCode, ApsWorkshopSection::getSectionName);
     q.orderByDesc(ApsWorkshopSection::getId);
 
     return q;

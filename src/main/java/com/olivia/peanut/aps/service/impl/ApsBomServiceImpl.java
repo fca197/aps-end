@@ -8,6 +8,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsBom.*;
+import com.olivia.peanut.aps.converter.ApsBomConverter;
 import com.olivia.peanut.aps.mapper.ApsBomMapper;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
@@ -20,6 +21,7 @@ import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
@@ -56,7 +58,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     MPJLambdaWrapper<ApsBom> q = getWrapper(req.getData());
     List<ApsBom> list = this.list(q);
 
-    List<ApsBomDto> dataList = list.stream().map(t -> $.copy(t, ApsBomDto.class)).collect(Collectors.toList());
+    List<ApsBomDto> dataList = ApsBomConverter.INSTANCE.queryListRes(list);
 //   //  this.setName(dataList);
     ((ApsBomService) AopContext.currentProxy()).setName(dataList);
 
@@ -75,19 +77,14 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
       IPage<ApsBomExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsBomExportQueryPageListInfoRes.class));
       records = dataList.getRecords();
     } else {
-      records = $.copyList(this.list(q), ApsBomExportQueryPageListInfoRes.class);
+      records = ApsBomConverter.INSTANCE.queryPageListRes(this.list(q));
     }
-
-    // 类型转换，  更换枚举 等操作
-
-    List<ApsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsBomExportQueryPageListInfoRes.class);
-    ((ApsBomService) AopContext.currentProxy()).setName(listInfoRes);
-    return DynamicsPage.init(page, listInfoRes);
+    ((ApsBomService) AopContext.currentProxy()).setName(records);
+    return DynamicsPage.init(page, records);
   }
 
 
   public @Override void setName(List<? extends ApsBomDto> apsBomDtoList) {
-
     setNameService.setName(apsBomDtoList, SetNamePojoUtils.OP_USER_NAME, SetNamePojoUtils.getSetNamePojo(ApsProduceProcessService.class, "produceProcessName", "produceProcessId", "produceProcessName"));
   }
 
@@ -97,7 +94,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     MPJLambdaWrapper<ApsBom> q = new MPJLambdaWrapper<>();
 
     if (Objects.nonNull(obj)) {
-      $.lambdaQueryWrapper(q, obj, ApsBom.class, ApsBom::getGroupId,//
+      LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsBom.class, ApsBom::getGroupId,//
           ApsBom::getBomCode, ApsBom::getBomName, ApsBom::getSupplyMode, BaseEntity::getId);
       if (Objects.nonNull(obj.getGroupId())) {
         ApsBomGroup apsBomGroup = apsBomGroupService.getById(obj.getGroupId());

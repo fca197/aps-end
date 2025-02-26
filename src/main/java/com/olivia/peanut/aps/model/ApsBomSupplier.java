@@ -1,11 +1,8 @@
 package com.olivia.peanut.aps.model;
 
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.Str;
-import com.olivia.sdk.utils.fastjson.Boolean2StrFeature;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

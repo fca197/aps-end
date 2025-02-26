@@ -9,10 +9,7 @@ import com.olivia.peanut.aps.api.entity.workshopStation.*;
 import com.olivia.peanut.aps.model.ApsWorkshopStation;
 import com.olivia.peanut.aps.service.ApsWorkshopStationService;
 import com.olivia.peanut.portal.mapper.WorkshopStationMapper;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.Str;
+import com.olivia.sdk.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +67,7 @@ public class ApsWorkshopStationServiceImpl extends MPJBaseServiceImpl<WorkshopSt
   private MPJLambdaWrapper<ApsWorkshopStation> getWrapper(WorkshopStationDto obj) {
     MPJLambdaWrapper<ApsWorkshopStation> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsWorkshopStation.class, BaseEntity::getId,
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsWorkshopStation.class, BaseEntity::getId,
         ApsWorkshopStation::getStationCode, ApsWorkshopStation::getStationName);
     q.orderByDesc(ApsWorkshopStation::getId);
     return q;

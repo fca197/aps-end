@@ -44,6 +44,12 @@
     # 修改mysql,redis配置
     resources/application.yml
        spring:
+          mail:
+            # 参考 https://baijiahao.baidu.com/s?id=1695308391844521693&wfr=spider&for=pc
+            password: 邮箱授权码
+            username: 邮箱地址
+            host: 邮箱发送地址
+            port: 465
          datasource:
            url: jdbc:mysql://127.0.0.1:3306/peanut?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
            username: root

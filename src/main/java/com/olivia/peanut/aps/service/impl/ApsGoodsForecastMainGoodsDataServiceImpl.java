@@ -13,6 +13,7 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import com.olivia.sdk.utils.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +83,7 @@ public class ApsGoodsForecastMainGoodsDataServiceImpl extends MPJBaseServiceImpl
   @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsGoodsForecastMainGoodsData> getWrapper(ApsGoodsForecastMainGoodsDataDto obj) {
     MPJLambdaWrapper<ApsGoodsForecastMainGoodsData> q = new MPJLambdaWrapper<>();
-    $.lambdaQueryWrapper(q, obj, ApsGoodsForecastMainGoodsData.class, ApsGoodsForecastMainGoodsData::getGoodsId, ApsGoodsForecastMainGoodsData::getYear, ApsGoodsForecastMainGoodsData::getForecastMainId);
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsForecastMainGoodsData.class, ApsGoodsForecastMainGoodsData::getGoodsId, ApsGoodsForecastMainGoodsData::getYear, ApsGoodsForecastMainGoodsData::getForecastMainId);
     q.orderByDesc(ApsGoodsForecastMainGoodsData::getId);
     return q;
 

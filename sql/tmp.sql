@@ -1,21 +1,42 @@
-create table if not exists base_h3_code
+create table if not exists aps_order_goods_history
 (
-    id      bigint comment 'ID 自增' primary key,
-    lat     decimal(13, 6) comment '纬度',
-    lng     decimal(13, 6) comment '经度',
-    value0  bigint comment '第0级对应的h3值',
-    tenant_id          bigint                               null comment '租户ID',
-    is_delete          tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
-    create_time        datetime   default CURRENT_TIMESTAMP null comment '创建时间',
-    create_by          bigint                               null comment '创建人',
-    update_time        datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
-    update_by          bigint                               null comment '修改人',
-    trace_id           varchar(64)                          null comment '调用链路',
-    version_num        int        default 0                 null comment '版本号',
-    key idx_lat (lat),
-    key idx_lng (lng)
+    id            bigint comment 'ID 自增' primary key,
+    factory_id    bigint                               null comment '工厂ID',
+    goods_id      bigint                               null comment '商品ID',
+    year          int                                  null comment '年份',
+    month_count01 decimal(10, 6)                       null comment '1月销售数量',
+    month_ratio01 decimal(10, 6)                       null comment '1月销售占比',
+    month_count02 decimal(10, 6)                       null comment '2月销售数量',
+    month_ratio02 decimal(10, 6)                       null comment '2月销售占比',
+    month_count03 decimal(10, 6)                       null comment '3月销售数量',
+    month_ratio03 decimal(10, 6)                       null comment '3月销售占比',
+    month_count04 decimal(10, 6)                       null comment '4月销售数量',
+    month_ratio04 decimal(10, 6)                       null comment '4月销售占比',
+    month_count05 decimal(10, 6)                       null comment '5月销售数量',
+    month_ratio05 decimal(10, 6)                       null comment '5月销售占比',
+    month_count06 decimal(10, 6)                       null comment '6月销售数量',
+    month_ratio06 decimal(10, 6)                       null comment '6月销售占比',
+    month_count07 decimal(10, 6)                       null comment '7月销售数量',
+    month_ratio07 decimal(10, 6)                       null comment '7月销售占比',
+    month_count08 decimal(10, 6)                       null comment '8月销售数量',
+    month_ratio08 decimal(10, 6)                       null comment '8月销售占比',
+    month_count09 decimal(10, 6)                       null comment '9月销售数量',
+    month_ratio09 decimal(10, 6)                       null comment '9月销售占比',
+    month_count10 decimal(10, 6)                       null comment '10月销售数量',
+    month_ratio10 decimal(10, 6)                       null comment '10月销售占比',
+    month_count11 decimal(10, 6)                       null comment '11月销售数量',
+    month_ratio11 decimal(10, 6)                       null comment '11月销售占比',
+    month_count12 decimal(10, 6)                       null comment '12月销售数量',
+    month_ratio12 decimal(10, 6)                       null comment '12月销售占比',
+    tenant_id     bigint                               null comment '租户ID',
+    is_delete     tinyint(1) default 0                 null comment '是否删除 0 否,1 是',
+    create_time   datetime   default CURRENT_TIMESTAMP null comment '创建时间',
+    create_by     bigint                               null comment '创建人',
+    update_time   datetime   default CURRENT_TIMESTAMP null on update CURRENT_TIMESTAMP comment '修改时间',
+    update_by     bigint                               null comment '修改人',
+    trace_id      varchar(64)                          null comment '调用链路',
+    version_num   int        default 0                 null comment '版本号',
+    key idx_good (goods_id)
 
-) comment 'H3对应的值';
-
-
+) comment '历史订单记录';
 

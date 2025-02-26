@@ -27,7 +27,6 @@ import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.redisson.Redisson;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,8 +63,7 @@ public class ApsSchedulingGoodsBomTotalServiceImpl extends MPJBaseServiceImpl<Ap
   ApsGoodsBomBuyPlanItemService apsGoodsBomBuyPlanItemService;
   @Resource
   ApsGoodsBomBuyPlanService apsGoodsBomBuyPlanService;
-  @Resource
-  Redisson redisson;
+
   @Resource
   ApsBomService apsBomService;
 

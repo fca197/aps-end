@@ -24,6 +24,7 @@ import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -98,7 +99,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   }
 
   @Override
-  @RedissonLockAnn(lockBizKeyFlag = "plan#sendMail", keyExpression = "#req.buyPlanId", unLocked = false)
+  @RedissonLockAnn(lockBizKeyFlag = "plan#sendMail", keyExpression = "#req.buyPlanId")
   public SendMail2supplierRes sendMail2supplier(SendMail2supplierReq req) {
     List<ApsGoodsBomBuyPlanItem> planItemList = this.list(new LambdaQueryWrapper<ApsGoodsBomBuyPlanItem>().in(ApsGoodsBomBuyPlanItem::getBuyPlanId, req.getBuyPlanId()));
     $.requireNonNullCanIgnoreException(planItemList, "零件获取为空");
@@ -133,7 +134,7 @@ public class ApsGoodsBomBuyPlanItemServiceImpl extends MPJBaseServiceImpl<ApsGoo
   private MPJLambdaWrapper<ApsGoodsBomBuyPlanItem> getWrapper(ApsGoodsBomBuyPlanItemDto obj) {
     MPJLambdaWrapper<ApsGoodsBomBuyPlanItem> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlanItem.class, ApsGoodsBomBuyPlanItem::getBuyPlanId //
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsBomBuyPlanItem.class, ApsGoodsBomBuyPlanItem::getBuyPlanId //
         , ApsGoodsBomBuyPlanItem::getBomId//
         , ApsGoodsBomBuyPlanItem::getBomCode//
         , ApsGoodsBomBuyPlanItem::getBomName

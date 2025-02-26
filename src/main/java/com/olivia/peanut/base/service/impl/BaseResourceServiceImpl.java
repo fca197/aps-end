@@ -92,7 +92,7 @@ public class BaseResourceServiceImpl extends MPJBaseServiceImpl<BaseResourceMapp
     if (Objects.nonNull(obj)) {
       q
           .eq(StringUtils.isNoneBlank(obj.getResourceCode()), BaseResource::getResourceCode, obj.getResourceCode())
-          .eq(StringUtils.isNoneBlank(obj.getResourceName()), BaseResource::getResourceName, obj.getResourceName())
+          .like(StringUtils.isNoneBlank(obj.getResourceName()), BaseResource::getResourceName, obj.getResourceName())
           .eq(StringUtils.isNoneBlank(obj.getResourceUrl()), BaseResource::getResourceUrl, obj.getResourceUrl())
           .eq(StringUtils.isNoneBlank(obj.getResourceIcon()), BaseResource::getResourceIcon, obj.getResourceIcon())
           .eq(StringUtils.isNoneBlank(obj.getResourceType()), BaseResource::getResourceType, obj.getResourceType())

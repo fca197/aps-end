@@ -2,12 +2,10 @@ package com.olivia.peanut.aps.api.entity.apsGoodsBom;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.Str;
-import com.olivia.sdk.utils.fastjson.Boolean2StrFeature;
 import com.olivia.sdk.utils.fastjson.Str2BooleanConverter;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

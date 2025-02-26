@@ -13,6 +13,7 @@ import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.LambdaQueryUtil;
 import com.olivia.sdk.utils.Str;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +83,7 @@ public class ApsGoodsForecastComputeSaleDataServiceImpl extends MPJBaseServiceIm
   private MPJLambdaWrapper<ApsGoodsForecastComputeSaleData> getWrapper(ApsGoodsForecastComputeSaleDataDto obj) {
     MPJLambdaWrapper<ApsGoodsForecastComputeSaleData> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsGoodsForecastComputeSaleData.class //
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsGoodsForecastComputeSaleData.class //
         , ApsGoodsForecastComputeSaleData::getForecastId, ApsGoodsForecastComputeSaleData::getSaleConfigId,
         ApsGoodsForecastComputeSaleData::getYear
     );

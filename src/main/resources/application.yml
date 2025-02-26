@@ -21,15 +21,16 @@ peanut:
       enable: true
   url-white-list:
     - /loginAccount/login/phone/pwd
-    - /h2-console
-    - /fileUpload/getFileByte/
+    #    - /h2-console
+    #    - /fileUpload/getFileByte/
     - /actuator
-    - /apsGoodsSaleProjectConfig/sale2project
-    - /districtCode
-    - /test/flow
-    - /camunda
-    - /basePreview/info
-    - /apsSchedulingDayConfigVersionDetailMachine/exportQueryPageList
+    #    - /apsGoodsSaleProjectConfig/sale2project
+    #    - /districtCode
+    #    - /test/flow
+    #    - /camunda
+    #    - /basePreview/info
+    - /apsOrderGoodsSaleHistory/selectOrder2History
+    - /apsOrderGoodsHistory/selectOrder2History
   #    - /
   #    - /uber/h3/geoToH3Address
   redis-key:

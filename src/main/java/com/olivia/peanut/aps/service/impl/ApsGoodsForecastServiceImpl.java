@@ -135,9 +135,13 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
   @Transactional
   public UploadTemplateRes uploadTemplate(Long id, MultipartFile multipartFile) {
     ApsGoodsForecast goodsForecast = this.getById(id);
-    Map<String, ApsSaleConfig> saleConfigMap = saleConfigService.list().stream().collect(Collectors.toMap(ApsSaleConfig::getSaleCode, Function.identity(), (a, b) -> a));
+    List<ApsSaleConfig> apsSaleConfigList = saleConfigService.list();
+    Map<Long, ApsSaleConfig> apsSaleConfigMap = apsSaleConfigList.stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+    Map<String, ApsSaleConfig> saleConfigMap = apsSaleConfigList.stream().collect(Collectors.toMap(ApsSaleConfig::getSaleCode, Function.identity(), (a, b) -> a));
 //    List<ApsGoodsForecastUserGoodsData> userGoodsDataList = new ArrayList<>();
     List<String> monthList = goodsForecast.getMonthList();
+    //monthList ["2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10"]
+    log.info("uploadTemplate {} monthList : {}", id, monthList);
 //    List<Integer> yearList = monthList.stream().map(t -> t.substring(0, 4)).distinct().map(Integer::valueOf).toList();
 
     Map<String, ApsGoodsForecastUserGoodsData> goodsDataMap = new LinkedHashMap<>();
@@ -167,16 +171,42 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
         IntStream.range(3, monthList.size() + 3).forEach(i -> {
           BigDecimal bigDecimal = BigDecimal.valueOf(sheet.getRow(t).getCell(i).getNumericCellValue());
           String moth = monthList.get(i - 3);
-          Long saleConfigId = saleConfigMap.get(sheet.getRow(t).getCell(1).getStringCellValue().split("/")[0]).getId();
+          ApsSaleConfig apsSaleConfig = saleConfigMap.get(sheet.getRow(t).getCell(1).getStringCellValue().split("/")[0]);
+          Long saleConfigId = apsSaleConfig.getId();
           log.info("row:{} moth:{}  columnIndex {} {}", t, moth, i, bigDecimal);
           String key = moth.substring(0, 4) + "-" + saleConfigId;
           ApsGoodsForecastUserSaleData saleData = goodsForecastUserSaleDataMap.getOrDefault(key, new ApsGoodsForecastUserSaleData());
-          saleData.setForecastId(id).setSaleConfigId(saleConfigId).setYear(Integer.valueOf(moth.substring(0, 4)));
+          saleData.setForecastId(id).setSaleConfigParentId(apsSaleConfig.getParentId()).setSaleConfigId(saleConfigId).setYear(Integer.valueOf(moth.substring(0, 4)));
 
-          ReflectUtil.setFieldValue(saleData, "month" + moth.substring(5), bigDecimal.doubleValue());
+          ReflectUtil.setFieldValue(saleData, "month" + moth.substring(5), bigDecimal);
           goodsForecastUserSaleDataMap.put(key, saleData);
         });
       });
+      Collection<ApsGoodsForecastUserSaleData> forecastUserSaleDataList = goodsForecastUserSaleDataMap.values();
+
+
+      Map<Integer, Map<Long, List<ApsGoodsForecastUserSaleData>>> apsGoodsForecastUserSaleDataMap = new HashMap<>();
+      forecastUserSaleDataList.stream().collect(Collectors.groupingBy(ApsGoodsForecastUserSaleData::getYear))//
+          .forEach((p, sl) -> {
+            Map<Long, List<ApsGoodsForecastUserSaleData>> listMap = sl.stream().collect(Collectors.groupingBy(ApsGoodsForecastUserSaleData::getSaleConfigParentId));
+            apsGoodsForecastUserSaleDataMap.put(sl.getFirst().getYear(), listMap);
+          });
+
+      monthList.forEach(month -> {
+        String[] ym = month.split("-");
+        Integer year = Integer.valueOf(ym[0]);
+        apsGoodsForecastUserSaleDataMap.get(year).forEach((p, sl) -> {
+          BigDecimal totalBigDecimal = sl.stream().map(t -> (BigDecimal) FieldUtils.getFieldValue(t, getField(ApsGoodsForecastUserSaleData.class, "month" + ym[1]))).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+          Long saleConfigParentId = sl.getFirst().getSaleConfigParentId();
+          log.info("ID：{} totalBigDecimal  month:  {} {} {}", id, month, totalBigDecimal, saleConfigParentId);
+          if (totalBigDecimal.compareTo(BigDecimal.ONE) != 0) {
+            excelErrorMsgList.add(new ExcelErrorMsg()
+                .setErrMsg(apsSaleConfigMap.get(saleConfigParentId).getSaleName() + "在" + month + "总和不为1,值为" + totalBigDecimal));
+          }
+        });
+      });
+
+
       if (CollUtil.isNotEmpty(excelErrorMsgList)) {
         return new UploadTemplateRes().setExcelErrorMsgList(excelErrorMsgList).setSubCode(300);
       }
@@ -184,7 +214,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
       this.goodsForecastUserGoodsDataService.remove(new LambdaQueryWrapper<ApsGoodsForecastUserGoodsData>().eq(ApsGoodsForecastUserGoodsData::getForecastId, id));
       this.goodsForecastUserGoodsDataService.saveBatch(goodsDataMap.values());
       this.goodsForecastUserSaleDataService.remove(new LambdaQueryWrapper<ApsGoodsForecastUserSaleData>().eq(ApsGoodsForecastUserSaleData::getForecastId, id));
-      this.goodsForecastUserSaleDataService.saveBatch(goodsForecastUserSaleDataMap.values());
+      this.goodsForecastUserSaleDataService.saveBatch(forecastUserSaleDataList);
       this.update(new LambdaUpdateWrapper<ApsGoodsForecast>().eq(ApsGoodsForecast::getId, id).set(ApsGoodsForecast::getForecastStatus, ForecastStatusEnum.TO_COMPUTED.getCode()));
     } catch (Exception e) {
       log.error("excel 解析错误", e);
@@ -273,8 +303,8 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
           if (Objects.nonNull(saleConfig) && saleConfig.getIsValue() == 1) {
             ApsGoodsForecastUserSaleData saleData = forecastUserSaleDataMap.get(saleConfigId + "-" + year);
             Field field = getField(saleData, "month" + m.substring(5));
-            Double value = (Double) FieldUtils.getFieldValue(saleData, field);
-            allTmpList.add(new SaleItemConfig().setSaleCode(saleConfig.getSaleCode()).setTarget(value).setParentId(saleConfig.getParentId()));
+            BigDecimal value = (BigDecimal) FieldUtils.getFieldValue(saleData, field);
+            allTmpList.add(new SaleItemConfig().setSaleCode(saleConfig.getSaleCode()).setTarget(value.doubleValue()).setParentId(saleConfig.getParentId()));
           }
         });
 
@@ -289,9 +319,9 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
 
         ApsGoodsForecastUserGoodsData userGoodsData = userSaleDataMap.get(year);
         Field field = getField(userGoodsData, "month" + m.substring(5));
-        Double value = (Double) FieldUtils.getFieldValue(userGoodsData, field);
-        DivisionRes divisionRes = OrToolsUtils.division(value.intValue(), groupList);
-        log.info("req compute count {} groupList:{}", value.intValue(), JSON.toJSONString(groupList));
+        Integer value = FieldUtils.getFieldValue(userGoodsData, field);
+        DivisionRes divisionRes = OrToolsUtils.division(value, groupList);
+        log.info("req compute count {} groupList:{}", value, JSON.toJSONString(groupList));
         log.info("ret compute divisionRes {}", JSON.toJSONString(divisionRes));
 //        orToolsComputeResList.removeIf(t -> t.getCount() == 0L);
         divisionRes.getSkuCombineInfoList().forEach(cm -> {

@@ -26,29 +26,29 @@ public class ApsGoodsForecastUserGoodsData extends BaseEntity {
   private Integer year;
 
   @TableField(value = "month_01")
-  private Double month01;
+  private Integer month01;
   @TableField(value = "month_02")
-  private Double month02;
+  private Integer month02;
   @TableField(value = "month_03")
-  private Double month03;
+  private Integer month03;
   @TableField(value = "month_04")
-  private Double month04;
+  private Integer month04;
   @TableField(value = "month_05")
-  private Double month05;
+  private Integer month05;
   @TableField(value = "month_06")
-  private Double month06;
+  private Integer month06;
   @TableField(value = "month_07")
-  private Double month07;
+  private Integer month07;
   @TableField(value = "month_08")
-  private Double month08;
+  private Integer month08;
   @TableField(value = "month_09")
-  private Double month09;
+  private Integer month09;
   @TableField(value = "month_10")
-  private Double month10;
+  private Integer month10;
   @TableField(value = "month_11")
-  private Double month11;
+  private Integer month11;
   @TableField(value = "month_12")
-  private Double month12;
+  private Integer month12;
 
 
 }

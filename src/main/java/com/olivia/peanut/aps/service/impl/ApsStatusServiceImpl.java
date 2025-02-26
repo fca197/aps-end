@@ -11,10 +11,7 @@ import com.olivia.peanut.aps.model.ApsStatus;
 import com.olivia.peanut.aps.service.ApsStatusService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.Str;
+import com.olivia.sdk.utils.*;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +82,7 @@ public class ApsStatusServiceImpl extends MPJBaseServiceImpl<ApsStatusMapper, Ap
   @SuppressWarnings(Str.UN_CHECKED)
   private MPJLambdaWrapper<ApsStatus> getWrapper(ApsStatusDto obj) {
     MPJLambdaWrapper<ApsStatus> q = new MPJLambdaWrapper<>();
-    $.lambdaQueryWrapper(q, obj, ApsStatus.class, BaseEntity::getId, ApsStatus::getStatusName, ApsStatus::getStatusCode);
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsStatus.class, BaseEntity::getId, ApsStatus::getStatusName, ApsStatus::getStatusCode);
     q.orderByDesc(ApsStatus::getId);
     return q;
 

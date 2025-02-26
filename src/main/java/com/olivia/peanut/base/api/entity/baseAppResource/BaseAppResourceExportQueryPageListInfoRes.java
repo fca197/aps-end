@@ -16,6 +16,11 @@ import lombok.experimental.Accessors;
 @SuppressWarnings("serial")
 public class BaseAppResourceExportQueryPageListInfoRes extends BaseAppResourceDto {
 
+
+  private String resourceName;
+  private String resourceUrl;
+  private Long parentId;
+  private Integer sortIndex;
 }
 
 

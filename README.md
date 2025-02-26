@@ -106,6 +106,10 @@
 | DingConfig.dingName          | String           | 钉钉名称                                 |     |
 | DingConfig.useStream         | boolean          | 是否启用钉钉监听                             |     |
 
+### 后端参数(spring:)
+
+[见安装手册](doc/install.md)
+
 # 数据库
 
 | 组建名称  | 依赖版本 | 说明      |

@@ -16,6 +16,7 @@ import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.Resource;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +50,8 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
   BaseAppService baseAppService;
   @Resource
   BaseRoleResourceService baseRoleResourceService;
+  @Resource
+  BaseResourceService baseResourceService;
 
   // 以下为私有对象封装
   @Resource
@@ -91,7 +95,9 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
   }
 
   public @Override void setName(List<? extends BaseAppResourceDto> list) {
-
+    if (CollUtil.isEmpty(list)) {
+      return;
+    }
     if (!Boolean.TRUE.equals(LoginUserContext.getLoginUser().isAdmin())) {
 
       Long id = LoginUserContext.getLoginUser().getId();
@@ -104,7 +110,26 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
       list.removeIf(t -> !resourceIdSet.contains(t.getResourceId()));
 
     } else {
-      setNameService.setName(list, SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "resourceUrl", "resourceId", "resourceUrl"));
+      BaseAppResourceDto baseAppResourceDto = list.getFirst();
+
+      if (baseAppResourceDto instanceof BaseAppResourceExportQueryPageListInfoRes) {
+        Set<Long> idSet = list.parallelStream().map(BaseAppResourceDto::getResourceId).collect(Collectors.toSet());
+        Map<Long, BaseResource> resourceMap = this.baseResourceService.listByIds(idSet).stream().collect(Collectors.toMap(BaseEntity::getId, Function.identity()));
+        BaseResource defaultValue = new BaseResource();
+        list.forEach(t -> {
+          BaseResource resource = resourceMap.getOrDefault(t.getResourceId(), defaultValue);
+          ((BaseAppResourceExportQueryPageListInfoRes) t).setResourceName(resource.getResourceName())
+              .setSortIndex(resource.getSortIndex())
+              .setResourceUrl(resource.getResourceUrl()).setResourceName(resource.getResourceName()).setParentId(resource.getParentId());
+        });
+      }
+
+//      setNameService.setName(list,//
+//          SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "resourceUrl", "resourceId", "resourceUrl"),
+//          SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "resourceName", "resourceId", "resourceName"),
+////          SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "id", "resourceId", "id"),
+//          SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "parentId", "resourceId", "parentId"),
+//          SetNamePojoUtils.getSetNamePojo(BaseResourceService.class, "resourceComment", "resourceId", "resourceComment"));
     }
 
   }
@@ -119,7 +144,6 @@ public class BaseAppResourceServiceImpl extends MPJBaseServiceImpl<BaseAppResour
           obj.setAppId(one.getId());
         }
       }
-
       q.eq(Objects.nonNull(obj.getAppId()), BaseAppResource::getAppId, obj.getAppId())
           .eq(Objects.nonNull(obj.getResourceId()), BaseAppResource::getResourceId, obj.getResourceId());
     }

@@ -53,5 +53,7 @@ public class BaseResource extends BaseEntity {
    */
   private String path;
 
+  private Integer sortIndex;
+
 }
 

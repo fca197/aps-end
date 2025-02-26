@@ -12,10 +12,7 @@ import com.olivia.peanut.aps.model.ApsSchedulingVersionLimit;
 import com.olivia.peanut.aps.service.ApsSchedulingVersionLimitService;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.comment.ServiceComment;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
-import com.olivia.sdk.utils.Str;
+import com.olivia.sdk.utils.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,7 +84,7 @@ public class ApsSchedulingVersionLimitServiceImpl extends MPJBaseServiceImpl<Aps
   private MPJLambdaWrapper<ApsSchedulingVersionLimit> getWrapper(ApsSchedulingVersionLimitDto obj) {
     MPJLambdaWrapper<ApsSchedulingVersionLimit> q = new MPJLambdaWrapper<>();
 
-    $.lambdaQueryWrapper(q, obj, ApsSchedulingVersionLimit.class, BaseEntity::getId,
+    LambdaQueryUtil.lambdaQueryWrapper(q, obj, ApsSchedulingVersionLimit.class, BaseEntity::getId,
         ApsSchedulingVersionLimit::getShowName, ApsSchedulingVersionLimit::getFieldName, ApsSchedulingVersionLimit::getFieldValue);
     q.orderByDesc(ApsSchedulingVersionLimit::getId);
     return q;
