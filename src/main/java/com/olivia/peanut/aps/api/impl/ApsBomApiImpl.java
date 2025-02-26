@@ -7,7 +7,6 @@ import com.olivia.peanut.aps.api.impl.listener.ApsBomImportListener;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.service.ApsBomService;
 import com.olivia.sdk.ann.Oplog;
-import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.olivia.peanut.aps.converter.ApsBomConverter.*;
 
 /**
  * BOM 清单(ApsBom)表服务实现类
@@ -35,7 +36,8 @@ public class ApsBomApiImpl implements ApsBomApi {
    */
   @Oplog(content = "零件存储", businessKey = "#req.bomCode", businessType = businessType, paramName = "保存零件")
   public @Override ApsBomInsertRes insert(ApsBomInsertReq req) {
-    this.apsBomService.save($.copy(req, ApsBom.class));
+    ApsBom apsBom = INSTANCE.insertReq(req);
+    this.apsBomService.save(apsBom);
     return new ApsBomInsertRes().setCount(1);
   }
 
@@ -61,7 +63,7 @@ public class ApsBomApiImpl implements ApsBomApi {
    *
    */
   public @Override ApsBomUpdateByIdRes updateById(ApsBomUpdateByIdReq req) {
-    apsBomService.updateById($.copy(req, ApsBom.class));
+    apsBomService.updateById(INSTANCE.updateReq(req));
     return new ApsBomUpdateByIdRes();
 
   }
@@ -74,14 +76,14 @@ public class ApsBomApiImpl implements ApsBomApi {
     DynamicsPage<ApsBomExportQueryPageListInfoRes> page = queryPageList(req);
     List<ApsBomExportQueryPageListInfoRes> list = page.getDataList();
     // 类型转换，  更换枚举 等操作
-    List<ApsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(list, ApsBomExportQueryPageListInfoRes.class);
-    PoiExcelUtil.export(ApsBomExportQueryPageListInfoRes.class, listInfoRes, "BOM 清单");
+//    List<ApsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(list, ApsBomExportQueryPageListInfoRes.class);
+    PoiExcelUtil.export(ApsBomExportQueryPageListInfoRes.class, list, "BOM 清单");
   }
 
   public @Override ApsBomImportRes importData(@RequestParam("file") MultipartFile file) {
     List<ApsBomImportReq> reqList = PoiExcelUtil.readData(file, new ApsBomImportListener(), ApsBomImportReq.class);
     // 类型转换，  更换枚举 等操作
-    List<ApsBom> readList = $.copyList(reqList, ApsBom.class);
+    List<ApsBom> readList = INSTANCE.importReq(reqList);
     boolean bool = apsBomService.saveBatch(readList);
     int c = bool ? readList.size() : 0;
     return new ApsBomImportRes().setCount(c);
@@ -91,7 +93,7 @@ public class ApsBomApiImpl implements ApsBomApi {
     MPJLambdaWrapper<ApsBom> q = new MPJLambdaWrapper<ApsBom>(ApsBom.class)
         .selectAll(ApsBom.class).in(ApsBom::getId, req.getIdList());
     List<ApsBom> list = this.apsBomService.list(q);
-    List<ApsBomDto> dataList = $.copyList(list, ApsBomDto.class);
+    List<ApsBomDto> dataList = INSTANCE.queryListRes(list);// $.copyList(list, ApsBomDto.class);
     this.apsBomService.setName(dataList);
     return new ApsBomQueryByIdListRes().setDataList(dataList);
   }

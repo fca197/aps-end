@@ -8,6 +8,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.aps.api.entity.apsBom.*;
+import com.olivia.peanut.aps.converter.ApsBomConverter;
 import com.olivia.peanut.aps.mapper.ApsBomMapper;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomGroup;
@@ -57,7 +58,7 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
     MPJLambdaWrapper<ApsBom> q = getWrapper(req.getData());
     List<ApsBom> list = this.list(q);
 
-    List<ApsBomDto> dataList = list.stream().map(t -> $.copy(t, ApsBomDto.class)).collect(Collectors.toList());
+    List<ApsBomDto> dataList = ApsBomConverter.INSTANCE.queryListRes(list);
 //   //  this.setName(dataList);
     ((ApsBomService) AopContext.currentProxy()).setName(dataList);
 
@@ -76,14 +77,10 @@ public class ApsBomServiceImpl extends MPJBaseServiceImpl<ApsBomMapper, ApsBom> 
       IPage<ApsBomExportQueryPageListInfoRes> dataList = list.convert(t -> $.copy(t, ApsBomExportQueryPageListInfoRes.class));
       records = dataList.getRecords();
     } else {
-      records = $.copyList(this.list(q), ApsBomExportQueryPageListInfoRes.class);
+      records = ApsBomConverter.INSTANCE.queryPageListRes(this.list(q));
     }
-
-    // 类型转换，  更换枚举 等操作
-
-    List<ApsBomExportQueryPageListInfoRes> listInfoRes = $.copyList(records, ApsBomExportQueryPageListInfoRes.class);
-    ((ApsBomService) AopContext.currentProxy()).setName(listInfoRes);
-    return DynamicsPage.init(page, listInfoRes);
+    ((ApsBomService) AopContext.currentProxy()).setName(records);
+    return DynamicsPage.init(page, records);
   }
 
 
