@@ -1,7 +1,6 @@
 package com.olivia.peanut.task.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import org.apache.ibatis.annotations.Mapper;
 

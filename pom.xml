@@ -108,11 +108,13 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>1.6.3</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <groupId>com.peanut</groupId>
@@ -121,8 +123,8 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <!--        <version>3.2.0</version>-->
-        <version>3.4.3</version>
+        <version>3.2.0</version>
+        <!--        <version>3.4.3</version>-->
     </parent>
     <properties>
         <java.version>21</java.version>

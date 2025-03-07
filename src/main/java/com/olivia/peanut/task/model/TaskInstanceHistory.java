@@ -1,15 +1,12 @@
 package com.olivia.peanut.task.model;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.olivia.peanut.task.engine.entity.vo.TaskExecStatus;
 import com.olivia.sdk.utils.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 /**
  * 任务实例历史(TaskInstanceHistory)表实体类
@@ -17,7 +14,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author makejava
  * @since 2025-03-06 13:27:08
  */
-//@Accessors(chain = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 //@SuppressWarnings("serial")
@@ -31,6 +28,8 @@ public class TaskInstanceHistory extends BaseEntity {
    *  任务ID
    */
   private Long taskId;
+
+  private String taskName;
   /***
    *  任务节点ID
    */
@@ -55,6 +54,8 @@ public class TaskInstanceHistory extends BaseEntity {
    *  耗时
    */
   private Long useTime;
+
+  private Integer execLoop;
 
 }
 

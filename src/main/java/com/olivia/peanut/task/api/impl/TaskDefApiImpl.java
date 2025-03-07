@@ -4,6 +4,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.task.api.TaskDefApi;
 import com.olivia.peanut.task.api.entity.taskDef.*;
 import com.olivia.peanut.task.api.impl.listener.TaskDefImportListener;
+import com.olivia.peanut.task.engine.BaseTaskEngine;
 import com.olivia.peanut.task.model.TaskDef;
 import com.olivia.peanut.task.service.TaskDefService;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -86,11 +87,16 @@ public class TaskDefApiImpl implements TaskDefApi {
   }
 
   public @Override TaskDefQueryByIdListRes queryByIdListRes(TaskDefQueryByIdListReq req) {
-    MPJLambdaWrapper<TaskDef> q = new MPJLambdaWrapper<TaskDef>(TaskDef.class)
-        .selectAll(TaskDef.class).in(TaskDef::getId, req.getIdList());
+    MPJLambdaWrapper<TaskDef> q = new MPJLambdaWrapper<TaskDef>(TaskDef.class).selectAll(TaskDef.class).in(TaskDef::getId, req.getIdList());
     List<TaskDef> list = this.taskDefService.list(q);
     List<TaskDefDto> dataList = INSTANCE.queryListRes(list);
     this.taskDefService.setName(dataList);
     return new TaskDefQueryByIdListRes().setDataList(dataList);
+  }
+
+  @Override
+  public TaskStartRes taskStart(TaskStartReq req) {
+    Long taskId = BaseTaskEngine.getInstance().startTaskId(req.getTaskId());
+    return new TaskStartRes().setTaskId(taskId);
   }
 }

@@ -70,5 +70,7 @@ public interface TaskDefApi {
   @PostMapping("/taskDef/queryByIdList")
   TaskDefQueryByIdListRes queryByIdListRes(@RequestBody @Valid TaskDefQueryByIdListReq req);
 
+  @PostMapping("/taskDef/start")
+  TaskStartRes taskStart(@RequestBody @Valid TaskStartReq req);
 
 }

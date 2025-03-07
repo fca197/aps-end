@@ -3,7 +3,6 @@ package com.olivia.peanut.aps.converter;
 import com.olivia.peanut.aps.api.entity.apsBom.*;
 import com.olivia.peanut.aps.model.ApsBom;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 

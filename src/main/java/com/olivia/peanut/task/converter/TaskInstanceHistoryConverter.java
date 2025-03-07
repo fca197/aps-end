@@ -3,8 +3,6 @@ package com.olivia.peanut.task.converter;
 import com.olivia.peanut.task.api.entity.taskInstanceHistory.*;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import org.mapstruct.Mapper;
-import org.mapstruct.MapperConfig;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 

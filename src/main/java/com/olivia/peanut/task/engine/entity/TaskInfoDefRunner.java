@@ -15,7 +15,7 @@ import com.olivia.peanut.task.model.TaskInstanceHistory;
 import com.olivia.peanut.task.service.TaskInstanceHistoryService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.RunUtils;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,73 +26,93 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TaskInfoDefRunner implements Runnable {
 
+  //  @NonNull
   private final Long instanceId;
+  //  @NonNull
   private final Long lastTaskInstanceId;
+  //  @NonNull
   private final List<TaskInfoDef> taskInfoDefList;
+  //  @NonNull
   private final TaskInfoDef currentTaskInfoDef;
+
+
+  private final AtomicInteger execLoop = new AtomicInteger();
 
   @Override
   public void run() {
     long startTime = System.currentTimeMillis();
     TaskInstanceHistoryService taskInstanceHistoryService = SpringUtil.getBean(TaskInstanceHistoryService.class);
-    TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory();
+    TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory().setInstanceId(instanceId);
+
+    Long taskInstanceId = IdWorker.getId();
+    taskInstanceHistory.setId(taskInstanceId);
+    taskInstanceHistory.setTaskName(currentTaskInfoDef.getTaskName());
+    taskInstanceHistory.setExecLoop(execLoop.get());
     Map<String, Object> outMap = null;
-    long taskInstanceId = IdWorker.getId();
     boolean isToNextTask = true;
 
     try {
       // 获取上一个任务的历史记录
       TaskInstanceHistory lastHistory = getLastTaskHistory(taskInstanceHistoryService);
       String taskOutput = $.firstNotNull(lastHistory.getTaskOutput(), "{}");
+      log.info("lastTaskInstanceId {} taskOutput:{}", lastTaskInstanceId, taskOutput);
       Map<String, Object> lastOutMap = JSON.parseObject(taskOutput);
 
       // 映射输入数据
       mappingDataMap(lastOutMap, currentTaskInfoDef.getInputMappingList());
       lastHistory.setTaskInput(JSON.toJSONString(lastOutMap));
-
+      log.info("lastTaskInstanceId {} getTaskInput:{}", lastTaskInstanceId, lastHistory.getTaskInput());
       // 入参校验
-      if (!checkInputCondition(lastOutMap)) {
+
+      boolean checkInputCondition = checkInputCondition(lastOutMap);
+      log.info("lastTaskInstanceId {} task {}: {} not run checkInputCondition:{}", lastTaskInstanceId, currentTaskInfoDef.getId(), currentTaskInfoDef.getTaskName(), checkInputCondition);
+
+      if (!checkInputCondition) {
         return;
       }
-
-      taskInstanceHistory.setId(taskInstanceId);
-
-      // 前置监听器
+      log.info("前置监听器 {}", currentTaskInfoDef.getPrefixListenerName());
       execListener(currentTaskInfoDef.getPrefixListenerName(), taskInstanceId, lastOutMap);
 
+      log.info("开始执行任务 {}", taskInstanceId);
       // 开始执行任务
       outMap = executeTask(taskInstanceId, lastOutMap);
+      log.info("开始执行任务 {} 成功， 开始转换数据结构", taskInstanceId);
 
       // 映射输出数据
       mappingDataMap(outMap, currentTaskInfoDef.getOutputMappingList());
       log.debug("后置转换器 instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
 
       // 后置监听器
+      log.info("后置监听器 {}", currentTaskInfoDef.getSuffixListenerName());
       execListener(currentTaskInfoDef.getSuffixListenerName(), taskInstanceId, lastOutMap);
+      log.info("task run end time:{}", System.currentTimeMillis() - startTime);
     } catch (ExecutionException | TimeoutException e) {
-//      log.error("任务执行出错，超时或执行异常", e);
-//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-//      isToNextTask = false;
-//    } catch (InterruptedException e) {
-//      Thread.currentThread().interrupt();
-//      log.error("任务执行被中断", e);
-//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-//      isToNextTask = false;
+      log.error("任务执行出错，超时或执行异常", e);
+      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      isToNextTask = false;
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      log.error("任务执行被中断", e);
+      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      isToNextTask = false;
     } catch (Exception e) {
-//      log.error("任务执行出现未知异常", e);
-//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-//      isToNextTask = false;
+      log.error("任务执行出现未知异常", e);
+      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      isToNextTask = false;
     }
 
     // 保存任务执行结果
+    log.info("保存任务执行结果 {}", taskInstanceId);
     saveTaskHistory(taskInstanceHistoryService, taskInstanceHistory, outMap, startTime);
 
     // 执行下一个任务
+    log.info("执行下一个任务 {} isToNextTask {} ", taskInstanceId, isToNextTask);
     if (isToNextTask) {
       executeNextTasks(taskInstanceHistoryService, taskInstanceId);
     }
@@ -140,9 +160,7 @@ public class TaskInfoDefRunner implements Runnable {
   private Map<String, Object> executeTask(long taskInstanceId, Map<String, Object> lastOutMap) throws ExecutionException, InterruptedException, TimeoutException {
     TaskType taskType = currentTaskInfoDef.getTaskType();
     TaskRunnerExec taskRunnerExec = SpringUtil.getBean(taskType.name().toLowerCase() + "TaskRunnerExec");
-    return CompletableFuture.<Map<String, Object>>supplyAsync(() ->
-        taskRunnerExec.exec(new ExecTaskReq(instanceId, lastTaskInstanceId, taskInstanceId, taskInfoDefList, currentTaskInfoDef, lastOutMap))
-    ).get(currentTaskInfoDef.getTimeOut(), TimeUnit.MILLISECONDS);
+    return CompletableFuture.<Map<String, Object>>supplyAsync(() -> taskRunnerExec.exec(new ExecTaskReq(instanceId, lastTaskInstanceId, taskInstanceId, taskInfoDefList, currentTaskInfoDef, lastOutMap))).get(currentTaskInfoDef.getTimeOut(), TimeUnit.MILLISECONDS);
   }
 
   /**
@@ -166,18 +184,15 @@ public class TaskInfoDefRunner implements Runnable {
    * @param taskInstanceId             当前任务实例 ID
    */
   private void executeNextTasks(TaskInstanceHistoryService taskInstanceHistoryService, long taskInstanceId) {
-    List<TaskInfoDef> infoDefList = taskInfoDefList.stream()
-        .filter(t -> Objects.equals(t.getSourceTaskId(), currentTaskInfoDef.getId()))
-        .toList();
-    List<TaskInfoDefRunner> runnerList = infoDefList.stream()
-        .map(t -> new TaskInfoDefRunner(instanceId, taskInstanceHistoryService.getById(taskInstanceId).getId(), taskInfoDefList, t))
-        .toList();
+    List<TaskInfoDef> infoDefList = taskInfoDefList.stream().filter(t -> Objects.equals(t.getSourceTaskId(), currentTaskInfoDef.getId())).toList();
+    List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskInstanceHistoryService.getById(taskInstanceId).getId(), taskInfoDefList, t)).toList();
     RunUtils.run("下个任务执行 " + taskInstanceId, runnerList);
   }
 
   /**
    * 映射数据
-   * @param map 数据映射
+   *
+   * @param map         数据映射
    * @param mappingList 映射列表
    */
   public void mappingDataMap(Map<String, Object> map, List<Mapping> mappingList) {
@@ -196,9 +211,10 @@ public class TaskInfoDefRunner implements Runnable {
 
   /**
    * 执行监听器
-   * @param listenerName 监听器名称
+   *
+   * @param listenerName   监听器名称
    * @param taskInstanceId 任务实例 ID
-   * @param lastOutMap 上一个任务的输出结果
+   * @param lastOutMap     上一个任务的输出结果
    */
   public void execListener(String listenerName, Long taskInstanceId, Map<String, Object> lastOutMap) {
     if (StringUtils.isNotBlank(listenerName)) {

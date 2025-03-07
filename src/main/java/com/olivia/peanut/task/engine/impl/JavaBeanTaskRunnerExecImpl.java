@@ -8,10 +8,12 @@ import com.olivia.peanut.task.engine.entity.ExecTaskReq;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component("java_bean" + "TaskRunnerExec")
 public class JavaBeanTaskRunnerExecImpl implements TaskRunnerExec {
   @Override
-  public JSONObject exec(ExecTaskReq req) {
+  public Map<String, Object> exec(ExecTaskReq req) {
     TaskInfoDef currentTaskInfoDef = req.getCurrentTaskInfoDef();
     String taskBeanName = currentTaskInfoDef.getTaskBeanName();
     TaskBeanExec taskBeanExec = SpringUtil.getBean(taskBeanName, TaskBeanExec.class);

@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.olivia.peanut.aps.converter.ApsBomConverter.*;
+import static com.olivia.peanut.aps.converter.ApsBomConverter.INSTANCE;
 
 /**
  * BOM 清单(ApsBom)表服务实现类
