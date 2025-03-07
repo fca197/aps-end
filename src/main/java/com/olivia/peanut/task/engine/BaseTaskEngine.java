@@ -59,9 +59,9 @@ public class BaseTaskEngine {
     TaskInfoDef taskInfoDef = taskInfoDefList.stream().filter(t -> Objects.equals(t.getTaskType(), TaskType.BEGIN)).findFirst().orElseThrow(() -> new RunException("任务中没有开始环节"));
 
     Long instanceId = IdUtils.getId();
-    TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory()
-        .setTaskOutput("{}").setTaskInput("{}")
-        .setTaskId(taskId).setTaskDefId(taskInfoDef.getId()).setInstanceId(instanceId).setTaskExecStatus(TaskExecStatus.SUCCESS).setUseTime(0L);
+    TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory();
+//        .setTaskOutput("{}").setTaskInput("{}")
+//        .setTaskId(taskId).setTaskDefId(taskInfoDef.getId()).setInstanceId(instanceId).setTaskExecStatus(TaskExecStatus.SUCCESS).setUseTime(0L);
     Long taskHistoryId = IdUtils.getId();
     taskInstanceHistory.setId(taskHistoryId);
     taskInstanceHistoryService.save(taskInstanceHistory);

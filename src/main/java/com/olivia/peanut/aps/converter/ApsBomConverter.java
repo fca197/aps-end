@@ -2,15 +2,19 @@ package com.olivia.peanut.aps.converter;
 
 import com.olivia.peanut.aps.api.entity.apsBom.*;
 import com.olivia.peanut.aps.model.ApsBom;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper
+    (unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ApsBomConverter {
   ApsBomConverter INSTANCE = Mappers.getMapper(ApsBomConverter.class);
 
+  //  @Mapping(source = "bomCode",target = "bomCode")
   ApsBom insertReq(ApsBomInsertReq req);
 
   ApsBom updateReq(ApsBomUpdateByIdReq req);

@@ -32,7 +32,8 @@ import com.olivia.sdk.utils.fastjson.Str2BooleanConverter;
  */
 //@Accessors(chain=true)
 @Getter
-@Setter
+@Setter 
+
 @SuppressWarnings("serial")
 public class TaskInstanceHistoryDto extends BaseEntityDto {
 

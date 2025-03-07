@@ -75,18 +75,18 @@ public class TaskInfoDefRunner implements Runnable {
       // 后置监听器
       execListener(currentTaskInfoDef.getSuffixListenerName(), taskInstanceId, lastOutMap);
     } catch (ExecutionException | TimeoutException e) {
-      log.error("任务执行出错，超时或执行异常", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-      isToNextTask = false;
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      log.error("任务执行被中断", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-      isToNextTask = false;
+//      log.error("任务执行出错，超时或执行异常", e);
+//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+//      isToNextTask = false;
+//    } catch (InterruptedException e) {
+//      Thread.currentThread().interrupt();
+//      log.error("任务执行被中断", e);
+//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+//      isToNextTask = false;
     } catch (Exception e) {
-      log.error("任务执行出现未知异常", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
-      isToNextTask = false;
+//      log.error("任务执行出现未知异常", e);
+//      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+//      isToNextTask = false;
     }
 
     // 保存任务执行结果

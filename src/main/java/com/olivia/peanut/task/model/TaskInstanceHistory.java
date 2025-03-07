@@ -17,7 +17,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
  * @author makejava
  * @since 2025-03-06 13:27:08
  */
-@Accessors(chain = true)
+//@Accessors(chain = true)
 @Getter
 @Setter
 //@SuppressWarnings("serial")
