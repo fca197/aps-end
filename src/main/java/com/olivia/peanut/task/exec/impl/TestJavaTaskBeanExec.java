@@ -1,7 +1,7 @@
 package com.olivia.peanut.task.exec.impl;
 
-import com.olivia.peanut.task.engine.TaskBeanExec;
 import com.olivia.peanut.task.engine.entity.ExecTaskReq;
+import com.olivia.peanut.task.engine.exec.JavaTaskBeanExec;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 @Component("test")
-public class TestTaskBeanExec implements TaskBeanExec {
+public class TestJavaTaskBeanExec implements JavaTaskBeanExec {
   @Override
   public Map<String, Object> exec(ExecTaskReq req) {
     log.info("exec");

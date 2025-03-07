@@ -2,52 +2,15 @@
 
 ````json lines
 
-[
-  {
-    id: '2',
-    type: "begin,end,javaBean,http",
-    taskName: "任务名称",
-    javaBean: {
-      taskName: "",
-      taskType: "springBean,javaClass"
-    },
-    http: {
-      url: "https://test.cn/a/b/c",
-      reqMethod: "post,get",
-      dataConverter: "toJson,toParam",
-      signTypeName: "ignore"
-    },
-    data: {
-      key1: "value1"
-    },
-    prefixListener: "",
-    suffixListener: "",
-    config: {
-      "retryCount": 3,
-      retryInterval: 33,
-      timeOut: 3000,
-      abend: "all,task,ignore"
-    },
-    outputMapping: {
-      "inputKey1": "data.key1",
-      "inputKey2": "data.key2"
-    },
-    inputMapping: {
-      "outputKey1": "response.data.field1",
-      "outputKey2": "response.data.field2"
-    },
-    target: [
-      {
-        condition: "a==b",
-        targetId: "2"
-      }
-    ]
-  }
-]
 
 ````
 
 ## 任务配置
+
+| 任务类型 | 实现接口         | 注意事项                           |
+|------|--------------|--------------------------------|
+| java | TaskBeanExec | 如果是springBean类型，指定@Component() |
+| java | TaskBeanExec | 如果是javaClass类型，使用完整类名          |
 
 ## 任务引擎
 
@@ -71,3 +34,17 @@
 3. 后置监听器
 4. 结束
 5. 异常抛出
+
+# 任务引擎实现
+
+包名:  com.olivia.peanut.task.engine
+
+| 类名                         | 实现功能      | 备注                                                        |
+|----------------------------|-----------|-----------------------------------------------------------|
+| BaseTaskEngine             | 引擎主入口     | Long startTaskId(Long taskId) 开始一个任务                      |
+| TaskInfoDefRunner          | 任务执行封装类   | 任务实际执行具体实现                                                |
+| TaskRunnerExec             | 任务分发执行类   | 实现java或http接口调用                                           |
+| JavaBeanTaskRunnerExecImpl | java 任务实现 | TaskRunnerExec实现类， 流程配置主要实现该接口，可以配置springBean或javaClass调用 |
+| HttpTaskRunnerExecImpl     | http接口调用  | TaskRunnerExec实现类， 使用HttpClient进行post或get地址调用             |
+| EndRunnerExecImpl          | 结束日志输出    | TaskRunnerExec实现类， 紧记录日志                                  |
+| TaskListener               | java监听器   | 实现前置或后置监听器                                                |
