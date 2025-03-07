@@ -4,14 +4,7 @@
 
 
 ````
-
-## 任务配置
-
-| 任务类型 | 实现接口         | 注意事项                           |
-|------|--------------|--------------------------------|
-| java | TaskBeanExec | 如果是springBean类型，指定@Component() |
-| java | TaskBeanExec | 如果是javaClass类型，使用完整类名          |
-
+ 
 ## 任务引擎
 
 1. 发起，任务ID
@@ -39,12 +32,14 @@
 
 包名:  com.olivia.peanut.task.engine
 
-| 类名                         | 实现功能      | 备注                                                        |
-|----------------------------|-----------|-----------------------------------------------------------|
-| BaseTaskEngine             | 引擎主入口     | Long startTaskId(Long taskId) 开始一个任务                      |
-| TaskInfoDefRunner          | 任务执行封装类   | 任务实际执行具体实现                                                |
-| TaskRunnerExec             | 任务分发执行类   | 实现java或http接口调用                                           |
-| JavaBeanTaskRunnerExecImpl | java 任务实现 | TaskRunnerExec实现类， 流程配置主要实现该接口，可以配置springBean或javaClass调用 |
-| HttpTaskRunnerExecImpl     | http接口调用  | TaskRunnerExec实现类， 使用HttpClient进行post或get地址调用             |
-| EndRunnerExecImpl          | 结束日志输出    | TaskRunnerExec实现类， 紧记录日志                                  |
-| TaskListener               | java监听器   | 实现前置或后置监听器                                                |
+| 类名                         | 实现功能       | 备注                                                                             |
+|----------------------------|------------|--------------------------------------------------------------------------------|
+| BaseTaskEngine             | 引擎主入口      | Long startTaskId(Long taskId) 开始一个任务                                           |
+| TaskInfoDefRunner          | 任务执行封装类    | 任务实际执行具体实现                                                                     |
+| TaskRunnerExec             | 任务分发执行类    | 实现java或http接口调用,后续有其他类型调用需实现该接口， 注解： @Component("类型名称（小写）" + "TaskRunnerExec") |
+| JavaBeanTaskRunnerExecImpl | java 任务实现  | TaskRunnerExec实现类， 流程配置主要实现该接口                                                 |
+| HttpTaskRunnerExecImpl     | http接口调用   | TaskRunnerExec实现类， 使用HttpClient进行post或get地址调用                                  |
+| EndRunnerExecImpl          | 结束日志输出     | TaskRunnerExec实现类， 仅记录日志 ，标志流程结束                                               |
+| TaskListener               | java监听器    | 实现前置或后置监听器                                                                     |
+| JavaTaskBeanExec           | java 任务执行器 | 任务环节中任务实现这个接口，支持spring或javaClass                                               |
+|                            |            |                                                                                |
