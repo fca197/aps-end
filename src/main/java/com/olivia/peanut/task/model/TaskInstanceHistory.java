@@ -55,7 +55,23 @@ public class TaskInstanceHistory extends BaseEntity {
    */
   private Long useTime;
 
+  /****
+   * 执行次数
+   */
   private Integer execLoop;
+
+  /***
+   * 检查次数
+   */
+  private Long checkLoop;
+  /****
+   * 检查状态
+   */
+  private TaskExecStatus checkExecStatus;
+  /****
+   * 检查异常信息
+   */
+  private String checkExceptionMsg;
 
 }
 

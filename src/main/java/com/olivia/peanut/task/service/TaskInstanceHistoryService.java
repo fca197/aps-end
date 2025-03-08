@@ -20,5 +20,6 @@ public interface TaskInstanceHistoryService extends MPJBaseService<TaskInstanceH
 
 
   void setName(List<? extends TaskInstanceHistoryDto> taskInstanceHistoryDtoList);
+
 }
 

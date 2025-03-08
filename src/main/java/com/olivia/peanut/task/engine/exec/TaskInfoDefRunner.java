@@ -3,19 +3,23 @@ package com.olivia.peanut.task.engine.exec;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.olivia.peanut.task.engine.entity.ExecTaskReq;
+import com.olivia.peanut.task.engine.entity.TaskCheckRunnerReq;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
 import com.olivia.peanut.task.engine.entity.vo.*;
 import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import com.olivia.peanut.task.service.TaskInstanceHistoryService;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.RunUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.List;
@@ -40,6 +44,7 @@ public class TaskInfoDefRunner implements Runnable {
   private final List<TaskInfoDef> taskInfoDefList;
   //  @NonNull
   private final TaskInfoDef currentTaskInfoDef;
+
   private final Long taskId;
 
 
@@ -47,7 +52,8 @@ public class TaskInfoDefRunner implements Runnable {
 
   @Override
   public void run() {
-    String va = SpringUtil.getBean(StringRedisTemplate.class).opsForValue().get(EXEC_ERROR_LOCK + instanceId);
+    String lockKey = EXEC_ERROR_LOCK + instanceId;
+    String va = SpringUtil.getBean(StringRedisTemplate.class).opsForValue().get(lockKey);
     if (StringUtils.isNotBlank(va)) {
       log.warn("instanceId {} 存在异常的任务，需要终止所有任务 ,异常任务ID : {}", instanceId, va);
       return;
@@ -83,24 +89,26 @@ public class TaskInfoDefRunner implements Runnable {
       if (!checkInputCondition) {
         return;
       }
-      log.info("前置监听器 {}", currentTaskInfoDef.getPrefixListenerName());
+      log.info("前置监听器 instanceId {} taskInstanceId {} {}", instanceId, taskInstanceId, currentTaskInfoDef.getPrefixListenerName());
       execListener(currentTaskInfoDef.getPrefixListenerName(), taskInstanceId, lastOutMap);
 
-      log.info("开始执行任务 {}", taskInstanceId);
+      log.info("开始执行任务 instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
       // 开始执行任务
       outMap = executeTask(taskInstanceId, lastOutMap);
-      log.info("开始执行任务 {} 成功， 开始转换数据结构", taskInstanceId);
+      log.info("开始执行任务 instanceId : {} taskInstanceId: {} 成功， 开始转换数据结构", instanceId, taskInstanceId);
 
       // 映射输出数据
       mappingDataMap(outMap, currentTaskInfoDef.getOutputMappingList());
       log.info("后置转换器 instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
 
       // 后置监听器
-      log.info("后置监听器 {}", currentTaskInfoDef.getSuffixListenerName());
+      log.info("后置监听器 instanceId {} taskInstanceId {} {}", instanceId, taskInstanceId, currentTaskInfoDef.getSuffixListenerName());
+
       execListener(currentTaskInfoDef.getSuffixListenerName(), taskInstanceId, lastOutMap);
       log.info("task run end time:{}", System.currentTimeMillis() - startTime);
+      log.info("task end  instanceId {} taskInstanceId {} task run end time:{}", instanceId, taskInstanceId, System.currentTimeMillis() - startTime);
       currentInstanceHistory.setTaskExecStatus(TaskExecStatus.SUCCESS);
-    } catch (ExecutionException | TimeoutException e) {
+    } catch (ExecutionException | TimeoutException | NoSuchBeanDefinitionException e) {
       log.error("任务执行出错，超时或执行异常", e);
       currentInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
       isToNextTask = false;
@@ -127,14 +135,21 @@ public class TaskInfoDefRunner implements Runnable {
       if (Objects.isNull(exceptionStop) || ExceptionStop.IGNORE.equals(exceptionStop)) {
         isToNextTask = true;
       } else if (ExceptionStop.ALL.equals(exceptionStop)) {
-        SpringUtil.getBean(StringRedisTemplate.class).opsForValue().set(EXEC_ERROR_LOCK + instanceId, String.valueOf(taskInstanceId), 1, TimeUnit.MINUTES);
+        SpringUtil.getBean(StringRedisTemplate.class).opsForValue().set(lockKey, String.valueOf(taskInstanceId), 1, TimeUnit.MINUTES);
+        log.error("任务终止标识添加功 lockKey: {} instanceId :{} taskInstanceId : {}", lockKey, instanceId, taskInstanceId);
       }
-//      else if (ExceptionStop.TASK.equals(exceptionStop)) {
-//        isToNextTask = false;
-//      }
     }
     if (isToNextTask) {
-      executeNextTasks(taskInstanceHistoryService, taskInstanceId);
+      try {
+        executeTaskCheck(currentInstanceHistory, outMap, () -> executeNextTasks(taskInstanceHistoryService, taskInstanceId));
+      } catch (Exception e) {
+        log.info("任务执行后续任务 instanceId {} taskInstanceId {} error ", instanceId, taskInstanceId, e);
+
+        taskInstanceHistoryService.update(new LambdaUpdateWrapper<TaskInstanceHistory>().set(TaskInstanceHistory::getCheckExceptionMsg, e.getMessage()).set(TaskInstanceHistory::getCheckExecStatus, TaskExecStatus.FAILURE_EXCEPTION).set(TaskInstanceHistory::getCheckLoop, 0L).eq(BaseEntity::getId, taskInstanceId));
+      }
+    } else {
+      log.info("任务不能执行后续任务 isToNextTask is false instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
+
     }
   }
 
@@ -177,10 +192,23 @@ public class TaskInfoDefRunner implements Runnable {
    * @throws InterruptedException 中断异常
    * @throws TimeoutException     超时异常
    */
-  private Map<String, Object> executeTask(long taskInstanceId, Map<String, Object> lastOutMap) throws ExecutionException, InterruptedException, TimeoutException {
+  private Map<String, Object> executeTask(long taskInstanceId, Map<String, Object> lastOutMap) throws NoSuchBeanDefinitionException, ExecutionException, InterruptedException, TimeoutException {
     TaskType taskType = currentTaskInfoDef.getTaskType();
     TaskRunnerExec taskRunnerExec = SpringUtil.getBean(taskType.name().toLowerCase() + "TaskRunnerExec");
-    return CompletableFuture.<Map<String, Object>>supplyAsync(() -> taskRunnerExec.exec(new ExecTaskReq(instanceId, lastTaskInstanceId, taskInstanceId, taskInfoDefList, currentTaskInfoDef, lastOutMap))).get(currentTaskInfoDef.getTimeOut(), TimeUnit.MILLISECONDS);
+    return CompletableFuture.supplyAsync(() -> taskRunnerExec.exec(new ExecTaskReq(instanceId, lastTaskInstanceId, taskInstanceId, taskInfoDefList, currentTaskInfoDef, lastOutMap)), RunUtils.getExecutorService()).get(currentTaskInfoDef.getTimeOut(), TimeUnit.MILLISECONDS);
+
+  }
+
+  private void executeTaskCheck(TaskInstanceHistory taskInstanceHistory, Map<String, Object> lastOutMap, Runnable successRun) {
+    CheckType taskType = currentTaskInfoDef.getCheckType();
+    String runKey = "executeTaskCheck " + taskInstanceHistory.getId();
+//    taskType = CheckType.HTTP;
+    if (Objects.isNull(taskType)) {
+      RunUtils.run(runKey, successRun);
+      return;
+    }
+    TaskCheckRunnerExec checkRunnerExec = SpringUtil.getBean(taskType.name().toLowerCase() + "TaskCheckRunnerExec");
+    RunUtils.run(runKey, () -> checkRunnerExec.exec(new TaskCheckRunnerReq(taskInstanceHistory, taskInfoDefList, currentTaskInfoDef, lastOutMap, successRun)));
   }
 
   /**
