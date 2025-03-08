@@ -1,6 +1,6 @@
 # 任务编排 demo
 
-````json lines
+````json
 [
   {
     "id": "0",
@@ -110,27 +110,35 @@
 
 包名:  com.olivia.peanut.task.engine
 
-| 类名                         | 实现功能       | 备注                                                                             |
-|----------------------------|------------|--------------------------------------------------------------------------------|
-| BaseTaskEngine             | 引擎主入口      | Long startTaskId(Long taskId) 开始一个任务                                           |
-| TaskInfoDefRunner          | 任务执行封装类    | 任务实际执行具体实现                                                                     |
-| TaskRunnerExec             | 任务分发执行类    | 实现java或http接口调用,后续有其他类型调用需实现该接口， 注解： @Component("类型名称（小写）" + "TaskRunnerExec") |
-| JavaBeanTaskRunnerExecImpl | java 任务实现  | TaskRunnerExec实现类， 流程配置主要实现该接口                                                 |
-| HttpTaskRunnerExecImpl     | http接口调用   | TaskRunnerExec实现类， 使用HttpClient进行post或get地址调用                                  |
-| EndRunnerExecImpl          | 结束日志输出     | TaskRunnerExec实现类， 仅记录日志 ，标志流程结束                                               |
-| TaskListener               | java监听器    | 实现前置或后置监听器                                                                     |
-| JavaTaskBeanExec           | java 任务执行器 | 任务环节中任务实现这个接口，支持spring或javaClass                                               |
-| TaskCheckRunnerExec        | 任务检查接口     | 任务配置中心检查任务状态接口                                                                 |
-| HttpTaskCheckRunnerExec    | 任务检查接口     | TaskCheckRunnerExec实现类，返回结果为 {"data":true} 时，确认正确，进行下一轮                        |
-| JavaTaskCheckRunnerExec    | java任务检查接口 | TaskCheckRunnerExec实现类  ，支持spring或javaClass，两种必须实现JavaTaskCheckBeanExec接口      |
-| JavaTaskCheckBeanExec      | 任务检查接口     | 自定义java实现接口，检查任务是否成功，用户需自己定义任务是否成功                                             |
-| TestJavaTaskCheckBeanExec  | 任务检查接口     | JavaTaskCheckBeanExec 实现类，默认task执行成功                                           |
+
+| 类名                       | 实现功能         | 备注                                                                                                             |
+| -------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------- |
+| BaseTaskEngine             | 引擎主入口       | Long startTaskId(Long taskId) 开始一个任务                                                                       |
+| TaskInfoDefRunner          | 任务执行封装类   | 任务实际执行具体实现                                                                                             |
+| TaskRunnerExec             | 任务分发执行类   | 实现java或http接口调用,后续有其他类型调用需实现该接口， 注解： @Component("类型名称（小写）" + "TaskRunnerExec") |
+| JavaBeanTaskRunnerExecImpl | java 任务实现    | TaskRunnerExec实现类， 流程配置主要实现该接口                                                                    |
+| HttpTaskRunnerExecImpl     | http接口调用     | TaskRunnerExec实现类， 使用HttpClient进行post或get地址调用                                                       |
+| EndRunnerExecImpl          | 结束日志输出     | TaskRunnerExec实现类， 仅记录日志 ，标志流程结束                                                                 |
+| TaskListener               | java监听器       | 实现前置或后置监听器                                                                                             |
+| JavaTaskBeanExec           | java 任务执行器  | 任务环节中任务实现这个接口，支持spring或javaClass                                                                |
+| TaskCheckRunnerExec        | 任务检查接口     | 任务配置中心检查任务状态接口                                                                                     |
+| HttpTaskCheckRunnerExec    | 任务检查接口     | TaskCheckRunnerExec实现类，返回结果为 {"data":true} 时，确认正确，进行下一轮                                     |
+| JavaTaskCheckRunnerExec    | java任务检查接口 | TaskCheckRunnerExec实现类  ，支持spring或javaClass，两种必须实现JavaTaskCheckBeanExec接口                        |
+| JavaTaskCheckBeanExec      | 任务检查接口     | 自定义java实现接口，检查任务是否成功，用户需自己定义任务是否成功                                                 |
+| TestJavaTaskCheckBeanExec  | 任务检查接口     | JavaTaskCheckBeanExec 实现类，默认task执行成功                                                                   |
 
 # task 类调用图
 
-```mermaid
-graph TB;
-A("开始") -.-> B{"判断？"}
-B ---|否| C["否：执行逻辑"]
-B ==>|是| D["是：执行逻辑"]
+
+### 4. 使用PlantUML
+类似地，如果你在一个支持PlantUML的环境中（例如在一些在线编辑器或者特定的IDE插件中），你可以使用PlantUML来绘制流程图：
+``` flow
+st=>start: 开始
+op=>operation: 操作
+cond=>condition: 确认?
+e=>end: 结束
+st->op->cond
+cond(yes)->e
+cond(no)->op
+
 ```
