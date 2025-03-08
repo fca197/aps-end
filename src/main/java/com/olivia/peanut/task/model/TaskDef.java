@@ -36,5 +36,9 @@ public class TaskDef extends BaseEntity {
    */
   private String taskDefContent;
 
+  private Long execCount = 0L;
+
+  public static String EXEC_COUNT_ADD_SQL = "exec_count =exec_count+1";
+
 }
 

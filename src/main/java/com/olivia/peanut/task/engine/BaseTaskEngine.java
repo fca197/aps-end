@@ -1,6 +1,7 @@
 package com.olivia.peanut.task.engine;
 
 import com.alibaba.fastjson2.JSON;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
 import com.olivia.peanut.task.engine.entity.vo.TaskExecStatus;
 import com.olivia.peanut.task.engine.entity.vo.TaskType;
@@ -11,6 +12,7 @@ import com.olivia.peanut.task.service.TaskDefService;
 import com.olivia.peanut.task.service.TaskInstanceHistoryService;
 import com.olivia.sdk.exception.RunException;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.IdUtils;
 import com.olivia.sdk.utils.RunUtils;
 import jakarta.annotation.PostConstruct;
@@ -58,15 +60,16 @@ public class BaseTaskEngine {
     List<TaskInfoDef> taskInfoDefList = JSON.parseArray(taskDef.getTaskDefContent(), TaskInfoDef.class);
     TaskInfoDef taskInfoDef = taskInfoDefList.stream().filter(t -> Objects.equals(t.getTaskType(), TaskType.BEGIN)).findFirst().orElseThrow(() -> new RunException("任务中没有开始环节"));
 
+    this.taskDefService.update(new LambdaUpdateWrapper<TaskDef>().setSql(TaskDef.EXEC_COUNT_ADD_SQL).eq(BaseEntity::getId, taskId));
     Long instanceId = IdUtils.getId();
     TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory()
         .setTaskOutput("{}").setTaskInput("{}").setTaskName(taskDef.getTaskName())
-        .setTaskId(taskId).setTaskDefId(taskInfoDef.getId()).setInstanceId(instanceId).setTaskExecStatus(TaskExecStatus.SUCCESS).setUseTime(0L);
+        .setTaskId(taskId).setTaskDefId(taskInfoDef.getId()).setInstanceId(instanceId).setTaskExecStatus(TaskExecStatus.SUCCESS).setUseTime(0L).setExecLoop(0);
     Long taskHistoryId = IdUtils.getId();
     taskInstanceHistory.setId(taskHistoryId);
     taskInstanceHistoryService.save(taskInstanceHistory);
     List<TaskInfoDef> infoDefList = taskInfoDefList.stream().filter(t -> Objects.equals(t.getSourceTaskId(), taskInfoDef.getId())).toList();
-    List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskHistoryId, taskInfoDefList, t)).toList();
+    List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskHistoryId, taskInfoDefList, t, taskId)).toList();
     RunUtils.run("下个任务执行 " + instanceId, runnerList);
     return instanceId;
   }

@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.googlecode.aviator.AviatorEvaluator;
 import com.olivia.peanut.task.engine.entity.ExecTaskReq;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
-import com.olivia.peanut.task.engine.entity.vo.Mapping;
-import com.olivia.peanut.task.engine.entity.vo.MappingType;
-import com.olivia.peanut.task.engine.entity.vo.TaskExecStatus;
-import com.olivia.peanut.task.engine.entity.vo.TaskType;
+import com.olivia.peanut.task.engine.entity.vo.*;
 import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import com.olivia.peanut.task.service.TaskInstanceHistoryService;
@@ -19,6 +16,7 @@ import com.olivia.sdk.utils.RunUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.List;
 import java.util.Map;
@@ -33,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class TaskInfoDefRunner implements Runnable {
 
+  private static final String EXEC_ERROR_LOCK = "TASK:ERROR:";
   //  @NonNull
   private final Long instanceId;
   //  @NonNull
@@ -41,25 +40,31 @@ public class TaskInfoDefRunner implements Runnable {
   private final List<TaskInfoDef> taskInfoDefList;
   //  @NonNull
   private final TaskInfoDef currentTaskInfoDef;
+  private final Long taskId;
 
 
-  private final AtomicInteger execLoop = new AtomicInteger();
+  private final AtomicInteger execLoop = new AtomicInteger(0);
 
   @Override
   public void run() {
+    String va = SpringUtil.getBean(StringRedisTemplate.class).opsForValue().get(EXEC_ERROR_LOCK + instanceId);
+    if (StringUtils.isNotBlank(va)) {
+      log.warn("instanceId {} 存在异常的任务，需要终止所有任务 ,异常任务ID : {}", instanceId, va);
+      return;
+    }
     long startTime = System.currentTimeMillis();
     TaskInstanceHistoryService taskInstanceHistoryService = SpringUtil.getBean(TaskInstanceHistoryService.class);
-    TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory().setInstanceId(instanceId);
+    TaskInstanceHistory currentInstanceHistory = new TaskInstanceHistory().setInstanceId(instanceId);
 
     Long taskInstanceId = IdWorker.getId();
-    taskInstanceHistory.setId(taskInstanceId);
-    taskInstanceHistory.setTaskName(currentTaskInfoDef.getTaskName());
-    taskInstanceHistory.setExecLoop(execLoop.get());
+    currentInstanceHistory.setId(taskInstanceId);
+    currentInstanceHistory.setTaskId(taskId).setTaskDefId(currentTaskInfoDef.getId()).setTaskName(currentTaskInfoDef.getTaskName());
+    currentInstanceHistory.setExecLoop(execLoop.get());
     Map<String, Object> outMap = null;
     boolean isToNextTask = true;
 
     try {
-      // 获取上一个任务的历史记录
+      log.info("获取上一个任务的历史记录 instanceId : {} currentInstanceHistory {}", instanceId, currentInstanceHistory);
       TaskInstanceHistory lastHistory = getLastTaskHistory(taskInstanceHistoryService);
       String taskOutput = $.firstNotNull(lastHistory.getTaskOutput(), "{}");
       log.info("lastTaskInstanceId {} taskOutput:{}", lastTaskInstanceId, taskOutput);
@@ -67,12 +72,13 @@ public class TaskInfoDefRunner implements Runnable {
 
       // 映射输入数据
       mappingDataMap(lastOutMap, currentTaskInfoDef.getInputMappingList());
-      lastHistory.setTaskInput(JSON.toJSONString(lastOutMap));
+      currentInstanceHistory.setTaskInput(JSON.toJSONString(lastOutMap));
       log.info("lastTaskInstanceId {} getTaskInput:{}", lastTaskInstanceId, lastHistory.getTaskInput());
+//      currentInstanceHistory.setTaskInput()
       // 入参校验
 
       boolean checkInputCondition = checkInputCondition(lastOutMap);
-      log.info("lastTaskInstanceId {} task {}: {} not run checkInputCondition:{}", lastTaskInstanceId, currentTaskInfoDef.getId(), currentTaskInfoDef.getTaskName(), checkInputCondition);
+      log.info("lastTaskInstanceId {} task {}: {}  check run checkInputCondition:{}", lastTaskInstanceId, currentTaskInfoDef.getId(), currentTaskInfoDef.getTaskName(), checkInputCondition);
 
       if (!checkInputCondition) {
         return;
@@ -87,33 +93,46 @@ public class TaskInfoDefRunner implements Runnable {
 
       // 映射输出数据
       mappingDataMap(outMap, currentTaskInfoDef.getOutputMappingList());
-      log.debug("后置转换器 instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
+      log.info("后置转换器 instanceId {} taskInstanceId {}", instanceId, taskInstanceId);
 
       // 后置监听器
       log.info("后置监听器 {}", currentTaskInfoDef.getSuffixListenerName());
       execListener(currentTaskInfoDef.getSuffixListenerName(), taskInstanceId, lastOutMap);
       log.info("task run end time:{}", System.currentTimeMillis() - startTime);
+      currentInstanceHistory.setTaskExecStatus(TaskExecStatus.SUCCESS);
     } catch (ExecutionException | TimeoutException e) {
       log.error("任务执行出错，超时或执行异常", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      currentInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
       isToNextTask = false;
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       log.error("任务执行被中断", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      currentInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
       isToNextTask = false;
     } catch (Exception e) {
       log.error("任务执行出现未知异常", e);
-      taskInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
+      currentInstanceHistory.setTaskExecStatus(TaskExecStatus.FAILURE_EXCEPTION).setExceptionMsg(e.getLocalizedMessage());
       isToNextTask = false;
     }
 
     // 保存任务执行结果
     log.info("保存任务执行结果 {}", taskInstanceId);
-    saveTaskHistory(taskInstanceHistoryService, taskInstanceHistory, outMap, startTime);
+    saveTaskHistory(taskInstanceHistoryService, currentInstanceHistory, outMap, startTime);
+
 
     // 执行下一个任务
-    log.info("执行下一个任务 {} isToNextTask {} ", taskInstanceId, isToNextTask);
+    ExceptionStop exceptionStop = currentTaskInfoDef.getExceptionStop();
+    log.info("执行下一个任务 {} isToNextTask {} exceptionStop {} ", taskInstanceId, isToNextTask, exceptionStop);
+    if (!isToNextTask) {
+      if (Objects.isNull(exceptionStop) || ExceptionStop.IGNORE.equals(exceptionStop)) {
+        isToNextTask = true;
+      } else if (ExceptionStop.ALL.equals(exceptionStop)) {
+        SpringUtil.getBean(StringRedisTemplate.class).opsForValue().set(EXEC_ERROR_LOCK + instanceId, String.valueOf(taskInstanceId), 1, TimeUnit.MINUTES);
+      }
+//      else if (ExceptionStop.TASK.equals(exceptionStop)) {
+//        isToNextTask = false;
+//      }
+    }
     if (isToNextTask) {
       executeNextTasks(taskInstanceHistoryService, taskInstanceId);
     }
@@ -138,10 +157,10 @@ public class TaskInfoDefRunner implements Runnable {
   private boolean checkInputCondition(Map<String, Object> lastOutMap) {
     String sourceTaskCondition = currentTaskInfoDef.getSourceTaskCondition();
     if (StringUtils.isNotBlank(sourceTaskCondition)) {
-      log.debug("入参校验 ,{}", sourceTaskCondition);
+      log.info("入参校验 ,{}", sourceTaskCondition);
       Boolean bool = (Boolean) AviatorEvaluator.execute(sourceTaskCondition, lastOutMap);
       if (!Boolean.TRUE.equals(bool)) {
-        log.debug("任务进入条件不通过 ");
+        log.info("任务进入条件不通过 ");
         return false;
       }
     }
@@ -186,7 +205,7 @@ public class TaskInfoDefRunner implements Runnable {
    */
   private void executeNextTasks(TaskInstanceHistoryService taskInstanceHistoryService, long taskInstanceId) {
     List<TaskInfoDef> infoDefList = taskInfoDefList.stream().filter(t -> Objects.equals(t.getSourceTaskId(), currentTaskInfoDef.getId())).toList();
-    List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskInstanceHistoryService.getById(taskInstanceId).getId(), taskInfoDefList, t)).toList();
+    List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskInstanceHistoryService.getById(taskInstanceId).getId(), taskInfoDefList, t, taskId)).toList();
     RunUtils.run("下个任务执行 " + taskInstanceId, runnerList);
   }
 
