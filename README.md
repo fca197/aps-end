@@ -1,3 +1,7 @@
+# 免责声明
+
+[免责声明](doc%2Fdisclaimers.md)
+
 # 安装文档
 
 [用户安装手册](doc/install.md)
