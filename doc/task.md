@@ -127,18 +127,7 @@
 | JavaTaskCheckBeanExec      | 任务检查接口     | 自定义java实现接口，检查任务是否成功，用户需自己定义任务是否成功                                                 |
 | TestJavaTaskCheckBeanExec  | 任务检查接口     | JavaTaskCheckBeanExec 实现类，默认task执行成功                                                                   |
 
-# task 类调用图
 
+# 任务引擎类流转示意图
 
-### 4. 使用PlantUML
-类似地，如果你在一个支持PlantUML的环境中（例如在一些在线编辑器或者特定的IDE插件中），你可以使用PlantUML来绘制流程图：
-``` flow
-st=>start: 开始
-op=>operation: 操作
-cond=>condition: 确认?
-e=>end: 结束
-st->op->cond
-cond(yes)->e
-cond(no)->op
-
-```
+![示例图](./image/task_class_description.png)

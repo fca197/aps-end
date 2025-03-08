@@ -53,15 +53,15 @@ public class BaseTaskEngine {
    * @param taskId 任务ID
    * @return 任务实例ID
    */
-  public Long startTaskId(Long taskId) {
+  public Long startTaskByTaskDefId(Long taskId) {
     TaskDef taskDef = taskDefService.getById(taskId);
     $.requireNonNullCanIgnoreException(taskDef, "任务不存在 " + taskId);
     $.assertTrueCanIgnoreException(StringUtils.isNoneBlank(taskDef.getTaskDefContent()), "任务不存在 " + taskId);
     List<TaskInfoDef> taskInfoDefList = JSON.parseArray(taskDef.getTaskDefContent(), TaskInfoDef.class);
-    TaskInfoDef taskInfoDef = taskInfoDefList.stream().filter(t -> Objects.equals(t.getTaskType(), TaskType.BEGIN)).findFirst().orElseThrow(() -> new RunException("任务中没有开始环节"));
 
     this.taskDefService.update(new LambdaUpdateWrapper<TaskDef>().setSql(TaskDef.EXEC_COUNT_ADD_SQL).eq(BaseEntity::getId, taskId));
     Long instanceId = IdUtils.getId();
+    TaskInfoDef taskInfoDef = taskInfoDefList.stream().filter(t -> Objects.equals(t.getTaskType(), TaskType.BEGIN)).findFirst().orElseThrow(() -> new RunException("任务中没有开始环节"));
     TaskInstanceHistory taskInstanceHistory = new TaskInstanceHistory()
         .setTaskOutput("{}").setTaskInput("{}").setTaskName(taskDef.getTaskName())
         .setTaskId(taskId).setTaskDefId(taskInfoDef.getId()).setInstanceId(instanceId).setTaskExecStatus(TaskExecStatus.SUCCESS).setUseTime(0L).setExecLoop(0);
