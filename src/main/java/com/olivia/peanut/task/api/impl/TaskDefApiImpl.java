@@ -1,12 +1,15 @@
 package com.olivia.peanut.task.api.impl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.olivia.peanut.task.api.TaskDefApi;
 import com.olivia.peanut.task.api.entity.taskDef.*;
 import com.olivia.peanut.task.api.impl.listener.TaskDefImportListener;
 import com.olivia.peanut.task.engine.BaseTaskEngine;
+import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.peanut.task.model.TaskDef;
 import com.olivia.peanut.task.service.TaskDefService;
+import com.olivia.sdk.model.KVEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.olivia.peanut.task.converter.TaskDefConverter.INSTANCE;
 
@@ -98,5 +103,15 @@ public class TaskDefApiImpl implements TaskDefApi {
   public TaskStartRes taskStart(TaskStartReq req) {
     Long taskId = BaseTaskEngine.getInstance().startTaskId(req.getTaskId());
     return new TaskStartRes().setTaskId(taskId);
+  }
+
+  @Override
+  public TaskListenerListRes taskListenerList(TaskListenerListReq req) {
+    Map<String, TaskListener> beansOfTypeMap = SpringUtil.getBeansOfType(TaskListener.class);
+    List<KVEntity> list = beansOfTypeMap.values().stream().map(TaskListener::getTaskListenerName).collect(Collectors.toList());
+
+    List<KVEntity> retList = KVEntity.mergeEntities(list);
+
+    return new TaskListenerListRes().setList(retList);
   }
 }

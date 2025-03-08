@@ -14,7 +14,7 @@ public interface TaskListener {
    * 返回监听器类型
    * @return 该监听器列表
    */
-  List<KVEntity> getTaskListenerName();
+  KVEntity getTaskListenerName();
 
   /***
    * 执行监听器

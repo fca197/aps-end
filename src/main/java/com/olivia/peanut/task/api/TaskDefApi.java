@@ -1,6 +1,7 @@
 package com.olivia.peanut.task.api;
 
 import com.olivia.peanut.task.api.entity.taskDef.*;
+import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -73,4 +74,6 @@ public interface TaskDefApi {
   @PostMapping("/taskDef/start")
   TaskStartRes taskStart(@RequestBody @Valid TaskStartReq req);
 
+  @PostMapping("/taskDef/listener/list")
+  TaskListenerListRes taskListenerList(@RequestBody @Valid TaskListenerListReq req);
 }
