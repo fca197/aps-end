@@ -8,6 +8,7 @@ import com.olivia.peanut.task.engine.entity.TaskCheckRunnerReq;
 import com.olivia.peanut.task.engine.entity.vo.TaskExecStatus;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import com.olivia.peanut.task.service.TaskInstanceHistoryService;
+import com.olivia.sdk.model.KVEntity;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.BaseEntity;
 import com.olivia.sdk.utils.RunUtils;
@@ -17,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 public interface TaskCheckRunnerExec {
   Logger log = LoggerFactory.getLogger(TaskCheckRunnerExec.class);
+
+  KVEntity getTaskCheckRunnerName();
 
   void exec(TaskCheckRunnerReq req);
 

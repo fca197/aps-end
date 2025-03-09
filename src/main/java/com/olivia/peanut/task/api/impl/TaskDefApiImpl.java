@@ -6,12 +6,17 @@ import com.olivia.peanut.task.api.TaskDefApi;
 import com.olivia.peanut.task.api.entity.taskDef.*;
 import com.olivia.peanut.task.api.impl.listener.TaskDefImportListener;
 import com.olivia.peanut.task.engine.BaseTaskEngine;
+import com.olivia.peanut.task.engine.exec.JavaTaskBeanExec;
+import com.olivia.peanut.task.engine.exec.JavaTaskCheckBeanExec;
+import com.olivia.peanut.task.engine.exec.TaskCheckRunnerExec;
+import com.olivia.peanut.task.engine.exec.TaskRunnerExec;
 import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.peanut.task.model.TaskDef;
 import com.olivia.peanut.task.service.TaskDefService;
 import com.olivia.sdk.model.KVEntity;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.PoiExcelUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.olivia.peanut.task.converter.TaskDefConverter.INSTANCE;
@@ -107,11 +113,40 @@ public class TaskDefApiImpl implements TaskDefApi {
 
   @Override
   public TaskListenerListRes taskListenerList(TaskListenerListReq req) {
-    Map<String, TaskListener> beansOfTypeMap = SpringUtil.getBeansOfType(TaskListener.class);
-    List<KVEntity> list = beansOfTypeMap.values().stream().map(TaskListener::getTaskListenerName).collect(Collectors.toList());
 
-    List<KVEntity> retList = KVEntity.mergeEntities(list);
-
+    List<KVEntity> retList = getTaskNameList(TaskListener.class, TaskListener::getTaskListenerName);
     return new TaskListenerListRes().setList(retList);
+  }
+
+  @Override
+  public GetTaskRunnerExecNameRes getTaskRunnerExecName(GetTaskRunnerExecNameReq req) {
+
+    List<KVEntity> retList = getTaskNameList(TaskRunnerExec.class, TaskRunnerExec::getTaskRunnerExecName);
+
+    return new GetTaskRunnerExecNameRes().setList(retList);
+  }
+
+  @Override
+  public GetJavaTaskCheckBeanExecRes getJavaTaskCheckBeanExecName(GetJavaTaskCheckBeanExecReq req) {
+    List<KVEntity> retList = getTaskNameList(JavaTaskCheckBeanExec.class, JavaTaskCheckBeanExec::getJavaTaskCheckBeanExecName);
+    return new GetJavaTaskCheckBeanExecRes().setList(retList);
+  }
+
+  @Override
+  public GetTaskCheckRunnerExecNameRes getTaskCheckRunnerExecName(GetTaskCheckRunnerExecNameReq req) {
+    List<KVEntity> retList = getTaskNameList(TaskCheckRunnerExec.class, TaskCheckRunnerExec::getTaskCheckRunnerName);
+    return new GetTaskCheckRunnerExecNameRes().setList(retList);
+  }
+
+  @Override
+  public GetJavaTaskBeanExecNameRes getJavaTaskBeanExecName(GetJavaTaskBeanExecNameReq req) {
+    List<KVEntity> retList = getTaskNameList(JavaTaskBeanExec.class, JavaTaskBeanExec::getJavaTaskBeanExecName);
+    return new GetJavaTaskBeanExecNameRes().setList(retList);
+  }
+
+  private static @NotNull <T> List<KVEntity> getTaskNameList(Class<T> clazz, Function<? super T, KVEntity> mapper) {
+    Map<String, T> beansOfTypeMap = SpringUtil.getBeansOfType(clazz);
+    List<KVEntity> list = beansOfTypeMap.values().stream().map(mapper).collect(Collectors.toList());
+    return KVEntity.mergeEntities(list);
   }
 }

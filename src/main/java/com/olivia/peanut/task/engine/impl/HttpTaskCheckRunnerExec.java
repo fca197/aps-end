@@ -4,13 +4,16 @@ import cn.hutool.core.util.BooleanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
+import com.google.common.collect.Lists;
 import com.olivia.peanut.task.engine.entity.TaskCheckRunnerReq;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
 import com.olivia.peanut.task.engine.entity.vo.HttpReqMethod;
 import com.olivia.peanut.task.engine.exec.TaskCheckRunnerExec;
 import com.olivia.peanut.task.model.TaskInstanceHistory;
 import com.olivia.sdk.exception.RunException;
+import com.olivia.sdk.model.KVEntity;
 import com.olivia.sdk.utils.RunUtils;
+import com.olivia.sdk.utils.Str;
 import com.olivia.sdk.utils.ValueUtils;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +29,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component("http" + "TaskCheckRunnerExec")
+@Component("httpTaskCheckRunnerExec")
 public class HttpTaskCheckRunnerExec implements TaskCheckRunnerExec {
+  @Override
+  public KVEntity getTaskCheckRunnerName() {
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("HTTP", "httpTaskCheckRunnerExec")));
+  }
+
   @Override
   public void exec(TaskCheckRunnerReq req) {
 

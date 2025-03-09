@@ -3,11 +3,14 @@ package com.olivia.peanut.task.engine.impl;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
+import com.google.common.collect.Lists;
 import com.olivia.peanut.task.engine.exec.TaskRunnerExec;
 import com.olivia.peanut.task.engine.entity.ExecTaskReq;
 import com.olivia.peanut.task.engine.entity.TaskInfoDef;
 import com.olivia.peanut.task.engine.entity.vo.HttpReqMethod;
 import com.olivia.sdk.exception.RunException;
+import com.olivia.sdk.model.KVEntity;
+import com.olivia.sdk.utils.Str;
 import com.olivia.sdk.utils.ValueUtils;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
@@ -24,9 +27,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component("http" + "TaskRunnerExec")
+@Component("httpTaskRunnerExec")
 public class HttpTaskRunnerExecImpl implements TaskRunnerExec {
 
+  @Override
+  public KVEntity getTaskRunnerExecName() {
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("HTTP", "httpTaskRunnerExec")));
+  }
 
   @Override
   @SneakyThrows

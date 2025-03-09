@@ -1,7 +1,6 @@
 package com.olivia.peanut.task.api;
 
 import com.olivia.peanut.task.api.entity.taskDef.*;
-import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.DynamicsPage;
@@ -76,4 +75,17 @@ public interface TaskDefApi {
 
   @PostMapping("/taskDef/listener/list")
   TaskListenerListRes taskListenerList(@RequestBody @Valid TaskListenerListReq req);
+
+  @PostMapping("/taskDef/taskRunnerExec/list")
+  GetTaskRunnerExecNameRes getTaskRunnerExecName(@RequestBody @Valid GetTaskRunnerExecNameReq req);
+
+  @PostMapping("/taskDef/javaTaskCheckBeanExec/list")
+  GetJavaTaskCheckBeanExecRes getJavaTaskCheckBeanExecName(@RequestBody @Valid GetJavaTaskCheckBeanExecReq req);
+
+  @PostMapping("/taskDef/taskCheckRunnerExec/list")
+  GetTaskCheckRunnerExecNameRes getTaskCheckRunnerExecName(@RequestBody @Valid GetTaskCheckRunnerExecNameReq req);
+
+  @PostMapping("/taskDef/javaTaskBeanExec/list")
+  GetJavaTaskBeanExecNameRes getJavaTaskBeanExecName(@RequestBody @Valid GetJavaTaskBeanExecNameReq req);
+
 }
