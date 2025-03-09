@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class TestTaskListener implements TaskListener {
   @Override
   public KVEntity getTaskListenerName() {
-    return (KVEntity.of("测试", "test").setChildrenList(Lists.newArrayList(KVEntity.of("测试二级", "test2"))));
+    return (KVEntity.of("测试", "test").setChildrenList(Lists.newArrayList(KVEntity.of("监听器", "test2"))));
   }
 
   @Override

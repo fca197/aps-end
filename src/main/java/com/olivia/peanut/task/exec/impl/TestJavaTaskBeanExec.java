@@ -17,7 +17,7 @@ import java.util.Map;
 public class TestJavaTaskBeanExec implements JavaTaskBeanExec {
   @Override
   public KVEntity getJavaTaskBeanExecName() {
-    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("TEST", "testJavaTaskBeanExec")));
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("测试java执行", "testJavaTaskBeanExec")));
   }
 
   @Override

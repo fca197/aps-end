@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component("javaBeanTaskRunnerExec")
+@Component("java_bean" + "TaskRunnerExec")
 public class JavaBeanTaskRunnerExecImpl implements TaskRunnerExec {
 
   @Override
   public KVEntity getTaskRunnerExecName() {
-    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("JAVA", "javaBeanTaskRunnerExec")));
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("JAVA执行", "JAVA_BEAN")));
   }
 
   @Override

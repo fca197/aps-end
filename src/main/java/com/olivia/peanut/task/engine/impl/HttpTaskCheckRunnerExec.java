@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public class HttpTaskCheckRunnerExec implements TaskCheckRunnerExec {
   @Override
   public KVEntity getTaskCheckRunnerName() {
-    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("HTTP", "httpTaskCheckRunnerExec")));
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("HTTP检查请求", "HTTP")));
   }
 
   @Override

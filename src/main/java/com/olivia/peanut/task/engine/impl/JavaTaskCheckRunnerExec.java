@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class JavaTaskCheckRunnerExec implements TaskCheckRunnerExec {
   @Override
   public KVEntity getTaskCheckRunnerName() {
-    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("JAVA", "javaTaskCheckRunnerExec")));
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("JAVA检查", "JAVA")));
   }
 
   @Override

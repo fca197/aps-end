@@ -194,7 +194,7 @@ public class TaskInfoDefRunner implements Runnable {
    */
   private Map<String, Object> executeTask(long taskInstanceId, Map<String, Object> lastOutMap) throws NoSuchBeanDefinitionException, ExecutionException, InterruptedException, TimeoutException {
     TaskType taskType = currentTaskInfoDef.getTaskType();
-    TaskRunnerExec taskRunnerExec = SpringUtil.getBean(taskType.name().toLowerCase());
+    TaskRunnerExec taskRunnerExec = SpringUtil.getBean(taskType.name().toLowerCase() + "TaskRunnerExec");
     return CompletableFuture.supplyAsync(() -> taskRunnerExec.exec(new ExecTaskReq(instanceId, lastTaskInstanceId, taskInstanceId, taskInfoDefList, currentTaskInfoDef, lastOutMap)), RunUtils.getExecutorService()).get(currentTaskInfoDef.getTimeOut(), TimeUnit.MILLISECONDS);
 
   }

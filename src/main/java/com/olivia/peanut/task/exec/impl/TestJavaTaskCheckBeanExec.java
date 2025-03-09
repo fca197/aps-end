@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class TestJavaTaskCheckBeanExec implements JavaTaskCheckBeanExec {
   @Override
   public KVEntity getJavaTaskCheckBeanExecName() {
-    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("TEST", "testJavaTaskCheckBeanExec")));
+    return KVEntity.of(Str.DEFAULT_ZN, Str.DEFAULT).setChildrenList(Lists.newArrayList(KVEntity.of("测试java检查", "testJavaTaskCheckBeanExec")));
   }
 
   @Override
