@@ -21,8 +21,8 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
-                            <build-time>2024-03-24 12:00:00</build-time>
-                            <build-version>1.0.2</build-version>
+                            <build-time>${maven.build.timestamp}</build-time>
+                            <build-version>${version}</build-version>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -69,7 +69,7 @@
         </dependency>
         <dependency>
             <artifactId>peanut-sdk</artifactId>
-            <groupId>com.olivia</groupId>
+            <groupId>cn.solveplan</groupId>
             <version>1.5.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -138,4 +138,10 @@
     </properties>
     <url>http://maven.apache.org</url>
     <version>1.2.0-SNAPSHOT</version>
+    <repositories>
+        <repository>
+            <id>ossrh-snapshots</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        </repository>
+    </repositories>
 </project>

@@ -235,6 +235,7 @@ public class TaskInfoDefRunner implements Runnable {
     List<TaskInfoDef> infoDefList = taskInfoDefList.stream().filter(t -> Objects.equals(t.getSourceTaskId(), currentTaskInfoDef.getId())).toList();
     List<TaskInfoDefRunner> runnerList = infoDefList.stream().map(t -> new TaskInfoDefRunner(instanceId, taskInstanceHistoryService.getById(taskInstanceId).getId(), taskInfoDefList, t, taskId)).toList();
     RunUtils.run("下个任务执行 " + taskInstanceId, runnerList);
+
   }
 
   /**

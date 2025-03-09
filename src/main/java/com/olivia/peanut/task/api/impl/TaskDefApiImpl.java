@@ -107,7 +107,7 @@ public class TaskDefApiImpl implements TaskDefApi {
 
   @Override
   public TaskStartRes taskStart(TaskStartReq req) {
-    Long taskId = BaseTaskEngine.getInstance().startTaskByTaskDefId(req.getTaskId());
+    Long taskId = BaseTaskEngine.getInstance().startTaskByTaskDefId(req);
     return new TaskStartRes().setTaskId(taskId);
   }
 
