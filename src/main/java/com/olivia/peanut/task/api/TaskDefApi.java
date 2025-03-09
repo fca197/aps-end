@@ -88,4 +88,7 @@ public interface TaskDefApi {
   @PostMapping("/taskDef/javaTaskBeanExec/list")
   GetJavaTaskBeanExecNameRes getJavaTaskBeanExecName(@RequestBody @Valid GetJavaTaskBeanExecNameReq req);
 
+  @PostMapping("/taskDef/aiTaskBeanExec/list")
+  GetAITaskBeanExecNameRes getAITaskBeanExecName(@RequestBody @Valid GetAITaskBeanExecNameReq req);
+
 }

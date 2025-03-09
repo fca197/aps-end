@@ -6,10 +6,7 @@ import com.olivia.peanut.task.api.TaskDefApi;
 import com.olivia.peanut.task.api.entity.taskDef.*;
 import com.olivia.peanut.task.api.impl.listener.TaskDefImportListener;
 import com.olivia.peanut.task.engine.BaseTaskEngine;
-import com.olivia.peanut.task.engine.exec.JavaTaskBeanExec;
-import com.olivia.peanut.task.engine.exec.JavaTaskCheckBeanExec;
-import com.olivia.peanut.task.engine.exec.TaskCheckRunnerExec;
-import com.olivia.peanut.task.engine.exec.TaskRunnerExec;
+import com.olivia.peanut.task.engine.exec.*;
 import com.olivia.peanut.task.engine.listener.TaskListener;
 import com.olivia.peanut.task.model.TaskDef;
 import com.olivia.peanut.task.service.TaskDefService;
@@ -142,6 +139,12 @@ public class TaskDefApiImpl implements TaskDefApi {
   public GetJavaTaskBeanExecNameRes getJavaTaskBeanExecName(GetJavaTaskBeanExecNameReq req) {
     List<KVEntity> retList = getTaskNameList(JavaTaskBeanExec.class, JavaTaskBeanExec::getJavaTaskBeanExecName);
     return new GetJavaTaskBeanExecNameRes().setList(retList);
+  }
+
+  @Override
+  public GetAITaskBeanExecNameRes getAITaskBeanExecName(GetAITaskBeanExecNameReq req) {
+    List<KVEntity> retList = getTaskNameList(AITaskBeanExec.class, AITaskBeanExec::getAITaskBeanExecName);
+    return new GetAITaskBeanExecNameRes().setList(retList);
   }
 
   private static @NotNull <T> List<KVEntity> getTaskNameList(Class<T> clazz, Function<? super T, KVEntity> mapper) {

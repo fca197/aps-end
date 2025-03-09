@@ -43,7 +43,7 @@ public class TaskInfoDef {
    * 任务名称
    */
   private String taskBeanName;
-
+  private String taskAiName;
 
   /***
    * http 类型任务 请求地址
@@ -116,6 +116,5 @@ public class TaskInfoDef {
    * 反回值映射
    */
   private List<Mapping> outputMappingList;
-
 
 }

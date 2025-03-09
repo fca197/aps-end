@@ -197,7 +197,7 @@ logging:
     #    org.springframework: trace
     "org.springframework.jdbc.core": debug
     "org.apache.ibatis.logging.jdbc": debug
-#    com.olivia.peanut.aps.utils.forecast: error
+    #    com.olivia.peanut.aps.utils.forecast: error
     com.olivia.peanut.sdk: info
 #    com.zaxxer.hikari: trace
 
@@ -215,3 +215,18 @@ logging:
 #    webapp:
 #      enabled: true
 #      index-redirect-enabled: true
+
+
+ai-properties:
+  # https://www.volcengine.com/docs/82379/1399008
+  dou-bao:
+    api-key: ai-test
+    # https://www.volcengine.com/docs/82379/1302013
+    ark-base-url: ark.cn-beijing.volces.com
+    timeout: 3000
+    connect_timeout: 3000
+    retry-times: 3
+    max-idle-connections: 4
+    keep-alive-duration: 4
+
+
