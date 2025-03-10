@@ -70,7 +70,7 @@
         <dependency>
             <artifactId>peanut-sdk</artifactId>
             <groupId>cn.solveplan</groupId>
-            <version>1.5.0-SNAPSHOT</version>
+            <version>${peanut.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -104,18 +104,7 @@
         <!--            <artifactId>hanlp</artifactId>-->
         <!--            <version>portable-1.8.5</version>-->
         <!--        </dependency>-->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.6.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.6.3</version>
-            <scope>provided</scope>
-        </dependency>
+
 
         <!-- 豆包AI -->
         <dependency>
@@ -129,8 +118,19 @@
             <optional>true</optional>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.solveplan</groupId>
+            <artifactId>peanut-task</artifactId>
+            <version>${peanut.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-    <groupId>com.peanut</groupId>
+    <groupId>cn.solveplan</groupId>
     <modelVersion>4.0.0</modelVersion>
     <name>peanut-portal</name>
     <parent>
@@ -140,6 +140,7 @@
         <!--        <version>3.4.3</version>-->
     </parent>
     <properties>
+        <peanut.version>1.5.0-SNAPSHOT</peanut.version>
         <java.version>21</java.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
