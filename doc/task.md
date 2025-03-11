@@ -126,7 +126,9 @@
 | JavaTaskCheckRunnerExec    | java任务检查接口 | TaskCheckRunnerExec实现类  ，支持spring或javaClass，两种必须实现JavaTaskCheckBeanExec接口      |
 | JavaTaskCheckBeanExec      | 任务检查接口     | 自定义java实现接口，检查任务是否成功，用户需自己定义任务是否成功                                             |
 | TestJavaTaskCheckBeanExec  | 任务检查接口     | JavaTaskCheckBeanExec 实现类，默认task执行成功                                           |
-| AITaskBeanExec             | AI 接口实现类   | ai接口处理，接入AI需实现该接口                                                              |
+| AITaskBeanExec             | AI 接口      | ai接口处理，接入AI需实现该接口                                                              |
+| DeepSeekAITaskBeanExec     | AI 接口实现类   | AITaskBeanExec实现类, deepSeek接入实现                                                |
+| DouBaoAITaskBeanExec       | AI 接口实现类   | AITaskBeanExec实现类, DouBao接入实现                                                  |
 
 # 任务引擎类流转示意图
 
