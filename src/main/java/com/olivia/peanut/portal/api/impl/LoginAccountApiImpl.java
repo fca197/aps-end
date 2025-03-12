@@ -3,7 +3,6 @@ package com.olivia.peanut.portal.api.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -95,7 +94,7 @@ public class LoginAccountApiImpl implements LoginAccountApi {
     String key = peanutProperties.getRedisKey().getUserToken() + token;
     String str = stringRedisTemplate.opsForValue().get(key);
     $.requireNonNullCanIgnoreException(str, "登录已过期");
-    return JSON.parseObject(str, GetUserInfoRes.class);
+    return JSON.readValue(str, GetUserInfoRes.class);
   }
 
   @Override

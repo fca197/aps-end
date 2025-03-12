@@ -1,7 +1,7 @@
 package com.olivia.menu;
 
 import cn.hutool.core.collection.CollUtil;
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 
 import java.nio.charset.StandardCharsets;
@@ -37,7 +37,7 @@ public class Menu {
         "menu.json",
         StandardCharsets.UTF_8, Menu.class.getClassLoader());
 
-    List<Menu> menus = JSON.parseArray(menu, Menu.class);
+    List<Menu> menus = JSON.readList(menu, Menu.class);
     setMenuId(menus, 0L);
     log.info("{}", JSON.toJSONString(menus));
 

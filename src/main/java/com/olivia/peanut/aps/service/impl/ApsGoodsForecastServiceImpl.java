@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ReflectUtil;
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -360,7 +359,7 @@ public class ApsGoodsForecastServiceImpl extends MPJBaseServiceImpl<ApsGoodsFore
     saleDataMap.forEach((sd, sdv) -> {
       ComputeResultRes e = new ComputeResultRes();
       e.put("saleConfigCode", sdv.getSaleConfigCode());
-      e.setSaleConfigCode(e.getString("saleConfigCode"));
+      e.setSaleConfigCode((String) e.get("saleConfigCode"));
       retList.add(e);
       ApsGoodsForecastComputeSaleData saleData = saleDataMap.get(sd);
       monthList.stream().filter(t -> t.substring(0, 4).equals(StringUtils.right(sd, 4))).forEach(m -> {

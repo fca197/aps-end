@@ -1,6 +1,6 @@
 package com.olivia.sdk.utils;
 
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import com.olivia.peanut.aps.api.entity.apsGoodsBom.ApsGoodsBomDto;
 import com.olivia.peanut.aps.utils.model.ApsGoodsBomVo;
 

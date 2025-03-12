@@ -2,8 +2,6 @@ package com.olivia.peanut.aps.service.impl.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.olivia.peanut.aps.api.entity.apsGoodsBomBuyPlanItem.SendMail2supplierReq;
 import com.olivia.peanut.aps.model.ApsBom;
 import com.olivia.peanut.aps.model.ApsBomSupplier;
@@ -16,8 +14,10 @@ import com.olivia.peanut.portal.service.TenantInfoService;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.DateUtils;
 import com.olivia.sdk.utils.FieldUtils;
+import com.olivia.sdk.utils.JSON;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,9 +52,9 @@ public class ApsBomPlan2Email {
         if (Objects.isNull(fieldValue)) {
           return;
         }
-        JSONObject jsonObject = JSON.parseObject(String.valueOf(fieldValue));
-        if (TRUE.equals(jsonObject.getBooleanValue("lack"))) {
-          buyMap.put(localDate.minusDays(apsBom.getDeliveryCycleDay()), jsonObject.getBigDecimal("buy_inv").abs());
+        Map<String, Object> jsonObject = JSON.readValue(String.valueOf(fieldValue));
+        if (TRUE.equals(jsonObject.get("lack"))) {
+          buyMap.put(localDate.minusDays(apsBom.getDeliveryCycleDay()), BigDecimal.valueOf((Double) jsonObject.get("buy_inv")).abs());
         }
       });
     });

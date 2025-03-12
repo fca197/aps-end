@@ -1,6 +1,6 @@
 package com.olivia.peanut.task.converter;
 
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.olivia.peanut.task.api.entity.taskInstanceHistory.TaskInstanceHistoryInsertReq;
 import com.olivia.peanut.task.model.TaskInstanceHistory;

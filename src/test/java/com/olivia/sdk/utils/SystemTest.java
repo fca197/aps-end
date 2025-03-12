@@ -1,7 +1,7 @@
 package com.olivia.sdk.utils;
 
 import cn.hutool.system.SystemUtil;
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;

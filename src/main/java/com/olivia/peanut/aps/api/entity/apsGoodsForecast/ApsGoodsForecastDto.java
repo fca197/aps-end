@@ -1,6 +1,6 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecast;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+// import com.alibaba.fastjson2.annotation.JSONField;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
@@ -24,7 +24,7 @@ public class ApsGoodsForecastDto extends BaseEntityDto {
   /***
    *  商品ID
    */
-  @JSONField(label = "goodsId")
+  //@JSONField(label = "goodsId")
   @NotNull(message = "商品ID不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 
   private Long goodsId;
@@ -32,39 +32,39 @@ public class ApsGoodsForecastDto extends BaseEntityDto {
    *  预测编码
    */
   @NotBlank(message = "预测编码不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "forecastNo")
+  //@JSONField(label = "forecastNo")
 
   private String forecastNo;
   /***
    *  预测名称
    */
   @NotBlank(message = "预测名称不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "forecastName")
+  //@JSONField(label = "forecastName")
 
   private String forecastName;
   /***
    *  开始时间
    */
   @NotBlank(message = "开始时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "forecastBeginDate")
+  //@JSONField(label = "forecastBeginDate")
 
   private String forecastBeginDate;
   /***
    *  结束时间
    */
   @NotBlank(message = "结束时间不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "forecastEndDate")
+  //@JSONField(label = "forecastEndDate")
 
   private String forecastEndDate;
   //  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "month")
+  //@JSONField(label = "month")
 
   private String month;
   //  @NotBlank(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
-  @JSONField(label = "months")
+  //@JSONField(label = "months")
 
   private String months;
-  @JSONField(label = "forecastStatus")
+  //@JSONField(label = "forecastStatus")
 //  @NotNull(message = "${column.comment}不能为空", groups = {InsertCheck.class, UpdateCheck.class})
 
   private Integer forecastStatus;

@@ -2,16 +2,14 @@ package com.olivia.peanut.aps.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.gson.Gson;
 import com.olivia.peanut.aps.api.entity.apsOrder.ApsOrderStatusEnum;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigDto;
 import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfig.ApsSchedulingDayConfigExportQueryPageListInfoRes;
@@ -33,12 +31,10 @@ import com.olivia.peanut.portal.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.RedissonLockAnn;
 import com.olivia.sdk.service.SetNameService;
-import com.olivia.sdk.utils.$;
-import com.olivia.sdk.utils.BaseEntity;
-import com.olivia.sdk.utils.DynamicsPage;
+import com.olivia.sdk.utils.*;
 import com.olivia.sdk.utils.DynamicsPage.Header;
-import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -95,8 +91,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
 
   @Resource
   ApsFactoryService apsFactoryService;
-  @Resource
-  Gson gson;
+
 
   @Resource
   ApsGoodsService apsGoodsService;
@@ -271,6 +266,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     return DynamicsPage.init(page, listInfoRes);
   }
 
+  @SneakyThrows
   @Override
   public ApsSchedulingDayConfigVersionDetailListRes detailList(ApsSchedulingDayConfigVersionDetailListReq req) {
     ApsSchedulingDayConfigVersion configVersion = this.getById(req.getId());
@@ -302,8 +298,7 @@ public class ApsSchedulingDayConfigVersionServiceImpl extends MPJBaseServiceImpl
     List<Header> headerList = new ArrayList<>();
     if (StringUtils.isNoneBlank(headerListStr)) {
 
-      List<List<Long>> roomDtoList = gson.fromJson(headerListStr, new TypeReference<List<List<Long>>>() {
-      }.getType());
+      List<List<Long>> roomDtoList = JSON.readValue(headerListStr);
 
       Map<Long, String> statusNameMap = this.apsStatusService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsStatus::getStatusName));
       Map<Long, String> roomNameMap = this.apsRoomService.list().stream().collect(Collectors.toMap(BaseEntity::getId, ApsRoom::getRoomName));

@@ -1,6 +1,6 @@
 package com.olivia.peanut.aps.model.sub.constrained;
 
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import com.olivia.peanut.aps.utils.constrained.model.sub.OperatorEnum;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.ConstrainedField;
 import com.olivia.peanut.aps.utils.constrained.model.sub.constrained.FieldConfig;

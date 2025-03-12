@@ -1,9 +1,11 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecastMake;
 
-import com.alibaba.fastjson2.JSONObject;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
+import java.util.HashMap;
 
 /***
  *
@@ -11,7 +13,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class ApsGoodsForecastMakeQueryUseBomByIdRes extends JSONObject {
+public class ApsGoodsForecastMakeQueryUseBomByIdRes extends HashMap<String, Object> {
 
   private String bomName;
 }

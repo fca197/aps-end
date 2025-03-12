@@ -2,7 +2,7 @@ package com.olivia.sdk.utils;
 
 import static com.olivia.sdk.utils.DateUtils.getLocalDateBetween;
 
-import com.alibaba.fastjson2.JSON;
+import com.olivia.sdk.utils.JSON;
 import com.olivia.sdk.utils.model.WeekInfo;
 
 import java.time.LocalDate;

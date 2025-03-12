@@ -3,7 +3,6 @@ package com.olivia.peanut.aps.api.impl.listener;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.excel.context.AnalysisContext;
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -14,6 +13,7 @@ import com.olivia.sdk.dto.ExcelErrorMsg;
 import com.olivia.sdk.exception.RunException;
 import com.olivia.sdk.listener.AbstractImportListener;
 import com.olivia.sdk.utils.BaseEntity;
+import com.olivia.sdk.utils.JSON;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;

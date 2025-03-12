@@ -1,6 +1,6 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecast;
 
-import com.alibaba.fastjson2.JSONObject;
+import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Setter
 @Getter
 @Accessors(chain = true)
-public class GetForecastDataByIdRes extends JSONObject {
+public class GetForecastDataByIdRes extends HashMap<String, Object> {
 
   private String saleConfigCode;
 }

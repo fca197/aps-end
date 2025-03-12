@@ -1,6 +1,6 @@
 package com.olivia.peanut.portal.api.impl;
 
-import com.alibaba.fastjson2.JSON;
+
 import com.aliyun.dingtalkoauth2_1_0.Client;
 import com.aliyun.dingtalkoauth2_1_0.models.GetSsoUserInfoHeaders;
 import com.aliyun.dingtalkoauth2_1_0.models.GetSsoUserInfoRequest;
@@ -18,6 +18,7 @@ import com.olivia.sdk.comment.DingConfigComment;
 import com.olivia.sdk.config.PeanutProperties;
 import com.olivia.sdk.config.entity.DingConfig;
 import com.olivia.sdk.utils.$;
+import com.olivia.sdk.utils.JSON;
 import com.olivia.sdk.utils.Str;
 import jakarta.annotation.Resource;
 import lombok.SneakyThrows;
