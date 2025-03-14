@@ -1,6 +1,5 @@
 package com.olivia.peanut.aps.api.entity.apsGoodsForecastMake;
 
-import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

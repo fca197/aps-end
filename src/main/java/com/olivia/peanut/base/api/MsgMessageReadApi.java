@@ -4,7 +4,6 @@ package com.olivia.peanut.base.api;
 import com.olivia.peanut.base.api.entity.msgMessage.MsgMessageMaskReadReq;
 import com.olivia.peanut.base.api.entity.msgMessage.MsgMessageMaskReadRes;
 import com.olivia.peanut.base.api.entity.msgMessageRead.*;
-
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.DynamicsPage;

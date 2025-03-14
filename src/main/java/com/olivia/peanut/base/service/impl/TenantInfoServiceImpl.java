@@ -6,7 +6,6 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.base.api.entity.tenantInfo.*;
-
 import com.olivia.peanut.base.mapper.TenantInfoMapper;
 import com.olivia.peanut.base.model.TenantInfo;
 import com.olivia.peanut.base.service.TenantInfoService;

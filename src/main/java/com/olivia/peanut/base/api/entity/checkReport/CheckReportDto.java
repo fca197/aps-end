@@ -2,7 +2,6 @@ package com.olivia.peanut.base.api.entity.checkReport;
 
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
-
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import lombok.Getter;
 import lombok.Setter;

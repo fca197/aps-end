@@ -7,12 +7,11 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.olivia.peanut.base.api.entity.checkReport.*;
-
+import com.olivia.peanut.base.model.Factory;
+import com.olivia.peanut.base.service.FactoryService;
 import com.olivia.peanut.portal.mapper.CheckReportMapper;
 import com.olivia.peanut.portal.model.CheckReport;
-import com.olivia.peanut.base.model.Factory;
 import com.olivia.peanut.portal.service.CheckReportService;
-import com.olivia.peanut.base.service.FactoryService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import com.olivia.sdk.utils.RunUtils;

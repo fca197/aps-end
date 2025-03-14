@@ -2,9 +2,8 @@ package com.olivia.peanut.base.service;
 
 import com.github.yulichang.base.MPJBaseService;
 import com.olivia.peanut.base.api.entity.districtCode.*;
-import com.olivia.peanut.enums.DistrictCodeSelectType;
-
 import com.olivia.peanut.base.model.DistrictCode;
+import com.olivia.peanut.enums.DistrictCodeSelectType;
 import com.olivia.sdk.utils.DynamicsPage;
 
 import java.util.Collection;

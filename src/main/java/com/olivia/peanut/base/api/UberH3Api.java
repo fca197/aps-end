@@ -1,7 +1,6 @@
 package com.olivia.peanut.base.api;
 
 import com.olivia.peanut.base.api.entity.h3.*;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

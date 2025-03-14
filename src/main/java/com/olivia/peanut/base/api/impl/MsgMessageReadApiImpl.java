@@ -8,10 +8,9 @@ import com.olivia.peanut.base.api.MsgMessageReadApi;
 import com.olivia.peanut.base.api.entity.msgMessage.MsgMessageMaskReadReq;
 import com.olivia.peanut.base.api.entity.msgMessage.MsgMessageMaskReadRes;
 import com.olivia.peanut.base.api.entity.msgMessageRead.*;
-
-import com.olivia.peanut.portal.api.impl.listener.MsgMessageReadImportListener;
 import com.olivia.peanut.base.model.MsgMessageRead;
 import com.olivia.peanut.base.service.MsgMessageReadService;
+import com.olivia.peanut.portal.api.impl.listener.MsgMessageReadImportListener;
 import com.olivia.sdk.filter.LoginUser;
 import com.olivia.sdk.filter.LoginUserContext;
 import com.olivia.sdk.utils.*;

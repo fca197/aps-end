@@ -1,7 +1,6 @@
 package com.olivia.peanut.base.api.entity.shift;
 
 import com.olivia.peanut.base.api.entity.shiftItem.ShiftItemDto;
-
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import lombok.Getter;
 import lombok.Setter;

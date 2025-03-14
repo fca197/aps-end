@@ -1,7 +1,6 @@
 package com.olivia.peanut.base.api;
 
 import com.olivia.peanut.base.api.entity.account.*;
-
 import com.olivia.sdk.utils.DynamicsPage;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

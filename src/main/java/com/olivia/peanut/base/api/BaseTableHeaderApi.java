@@ -1,7 +1,7 @@
 package com.olivia.peanut.base.api;
 
 
-import com.olivia.peanut.base.api.entity.baseTableHeader.*; 
+import com.olivia.peanut.base.api.entity.baseTableHeader.*;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.DynamicsPage;
