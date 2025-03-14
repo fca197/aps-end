@@ -9,7 +9,7 @@ import com.olivia.peanut.base.api.entity.baseApp.*;
 import com.olivia.peanut.base.mapper.BaseAppMapper;
 import com.olivia.peanut.base.model.BaseApp;
 import com.olivia.peanut.base.service.BaseAppService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;

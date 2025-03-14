@@ -10,7 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsSchedulingDayConfigItem.*;
 import com.olivia.peanut.aps.mapper.ApsSchedulingDayConfigItemMapper;
 import com.olivia.peanut.aps.model.ApsSchedulingDayConfigItem;
 import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;

@@ -9,7 +9,7 @@ import com.olivia.peanut.aps.api.entity.apsMachine.*;
 import com.olivia.peanut.aps.mapper.ApsMachineMapper;
 import com.olivia.peanut.aps.model.ApsMachine;
 import com.olivia.peanut.aps.service.ApsMachineService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.ann.SetUserName;
 import com.olivia.sdk.service.SetNameService;

@@ -9,7 +9,7 @@ import com.olivia.peanut.base.api.entity.baseRoleResource.*;
 import com.olivia.peanut.base.mapper.BaseRoleResourceMapper;
 import com.olivia.peanut.base.model.BaseRoleResource;
 import com.olivia.peanut.base.service.BaseRoleResourceService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;

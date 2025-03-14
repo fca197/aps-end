@@ -9,7 +9,7 @@ import com.olivia.peanut.base.api.entity.baseUserDept.*;
 import com.olivia.peanut.base.mapper.BaseUserDeptMapper;
 import com.olivia.peanut.base.model.BaseUserDept;
 import com.olivia.peanut.base.service.BaseUserDeptService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;

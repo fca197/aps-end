@@ -1,5 +1,6 @@
 package com.olivia.peanut.base.api.entity.baseUserResource;
 
+
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;

@@ -1,7 +1,7 @@
 package com.olivia.peanut.aps.service.pojo;
 
 import com.olivia.peanut.aps.api.entity.apsProcessPath.ApsProcessPathDto;
-import com.olivia.peanut.portal.model.ShiftItem;
+import com.olivia.peanut.base.model.ShiftItem;
 import com.olivia.sdk.utils.model.WeekInfo;
 import lombok.Getter;
 import lombok.Setter;

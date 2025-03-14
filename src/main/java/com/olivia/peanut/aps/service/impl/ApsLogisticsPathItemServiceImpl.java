@@ -10,7 +10,7 @@ import com.olivia.peanut.aps.api.entity.apsLogisticsPathItem.*;
 import com.olivia.peanut.aps.mapper.ApsLogisticsPathItemMapper;
 import com.olivia.peanut.aps.model.ApsLogisticsPathItem;
 import com.olivia.peanut.aps.service.ApsLogisticsPathItemService;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.sdk.utils.$;
 import com.olivia.sdk.utils.DynamicsPage;
 import jakarta.annotation.Resource;

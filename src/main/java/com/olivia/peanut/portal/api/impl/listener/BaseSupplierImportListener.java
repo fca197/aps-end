@@ -3,7 +3,7 @@ package com.olivia.peanut.portal.api.impl.listener;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.olivia.peanut.portal.api.entity.baseSupplier.BaseSupplierImportReq;
+import com.olivia.peanut.base.api.entity.baseSupplier.BaseSupplierImportReq;
 
 import java.util.Map;
 

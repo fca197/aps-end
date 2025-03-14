@@ -1,7 +1,8 @@
 package com.olivia.peanut.portal.api;
 
 
-import com.olivia.peanut.portal.api.entity.checkReport.*;
+import com.olivia.peanut.base.api.entity.checkReport.*;
+
 import com.olivia.sdk.ann.InsertCheck;
 import com.olivia.sdk.ann.UpdateCheck;
 import com.olivia.sdk.utils.DynamicsPage;

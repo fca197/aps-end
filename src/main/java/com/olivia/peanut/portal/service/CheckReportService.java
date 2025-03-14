@@ -1,10 +1,10 @@
 package com.olivia.peanut.portal.service;
 
 import com.github.yulichang.base.MPJBaseService;
-import com.olivia.peanut.portal.api.entity.checkReport.CheckReportExportQueryPageListInfoRes;
-import com.olivia.peanut.portal.api.entity.checkReport.CheckReportExportQueryPageListReq;
-import com.olivia.peanut.portal.api.entity.checkReport.CheckReportQueryListReq;
-import com.olivia.peanut.portal.api.entity.checkReport.CheckReportQueryListRes;
+import com.olivia.peanut.base.api.entity.checkReport.CheckReportExportQueryPageListInfoRes;
+import com.olivia.peanut.base.api.entity.checkReport.CheckReportExportQueryPageListReq;
+import com.olivia.peanut.base.api.entity.checkReport.CheckReportQueryListReq;
+import com.olivia.peanut.base.api.entity.checkReport.CheckReportQueryListRes;
 import com.olivia.peanut.portal.model.CheckReport;
 import com.olivia.sdk.utils.DynamicsPage;
 

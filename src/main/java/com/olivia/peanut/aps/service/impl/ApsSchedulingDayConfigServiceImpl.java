@@ -17,7 +17,7 @@ import com.olivia.peanut.aps.service.ApsProcessPathService;
 import com.olivia.peanut.aps.service.ApsSchedulingDayConfigItemService;
 import com.olivia.peanut.aps.service.ApsSchedulingDayConfigService;
 import com.olivia.peanut.portal.api.entity.BaseEntityDto;
-import com.olivia.peanut.portal.service.BaseTableHeaderService;
+import com.olivia.peanut.base.service.BaseTableHeaderService;
 import com.olivia.peanut.util.SetNamePojoUtils;
 import com.olivia.sdk.service.SetNameService;
 import com.olivia.sdk.utils.$;
