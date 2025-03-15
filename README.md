@@ -28,6 +28,11 @@
 | 任务模块 | peanut-task   | 任务编排,历史查询，AI接入 | 接入依赖  <artifactId>peanut-task</artifactId>   | 版本同项目版本 |
 | 任务模块 | peanut-flow   | 工作流相关          | 接入依赖  <artifactId>peanut-flow</artifactId>   | 版本同项目版本 |
 | 任务模块 | peanut-litter | 进存销，盘点项目       | 接入依赖  <artifactId>peanut-litter</artifactId> | 版本同项目版本 |
+| 任务模块 | peanut-aps    | 排产排程系统         | 接入依赖  <artifactId>peanut-aps</artifactId>    | 版本同项目版本 |
+
+## 项目依赖
+
+![img.png](./doc/image/peanut-model.png)
 
 # 技术栈
 

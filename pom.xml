@@ -125,7 +125,7 @@
         </dependency>
         <dependency>
             <groupId>cn.solveplan</groupId>
-            <artifactId>peanut-base</artifactId>
+            <artifactId>peanut-aps</artifactId>
             <version>${peanut.version}</version>
         </dependency>
         <dependency>
