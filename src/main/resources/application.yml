@@ -29,8 +29,6 @@ peanut:
     #    - /test/flow
     #    - /camunda
     #    - /basePreview/info
-    - /apsOrderGoodsSaleHistory/selectOrder2History
-    - /apsOrderGoodsHistory/selectOrder2History
   #    - /
   #    - /uber/h3/geoToH3Address
   redis-key:

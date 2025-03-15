@@ -9,6 +9,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
+                    <mainClass>com.olivia.BootstrapApplication</mainClass>
+
                 </configuration>
                 <groupId>org.springframework.boot</groupId>
             </plugin>
@@ -78,21 +80,6 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>9.1.0</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
-        <!--            <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>-->
-        <!--            <version>${camunda.spring-boot.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
-        <!--            <artifactId>camunda-bpm-spring-boot-starter</artifactId>-->
-        <!--            <version>${camunda.spring-boot.version}</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.camunda.bpm.springboot</groupId>-->
-        <!--            <artifactId>camunda-bpm-spring-boot-starter-rest</artifactId>-->
-        <!--            <version>${camunda.spring-boot.version}</version>-->
-        <!--        </dependency>-->
 
         <!--        分词-->
         <!--        <dependency>-->

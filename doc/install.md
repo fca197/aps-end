@@ -85,7 +85,7 @@
 ```bash
  
     rm -rf   log.log
-    nohup java  -Dfile.encoding=UTF-8    -Xms512m -Xmx3000m  -XX:+UseZGC  -jar   -Dspring.profiles.active=fwq  -Dserver.port=8080 app.jar >  log.log  2>&1 &
+    nohup java  -Dfile.encoding=UTF-8    -Xms512m -Xmx3000m    -jar   -Dspring.profiles.active=fwq  -Dserver.port=8080 app.jar >  log.log  2>&1 &
   
 ```
 
