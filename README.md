@@ -22,9 +22,12 @@
 
 # 项目拆解
 
-| 模块名称 | 模块依赖        | 包含内容           | 使用说明                                       | 备注      |
-|------|-------------|----------------|--------------------------------------------|---------|
-| 任务模块 | peanut-task | 任务编排,历史查询，AI接入 | 接入依赖  <artifactId>peanut-task</artifactId> | 版本同项目版本 |
+| 模块名称 | 模块依赖          | 包含内容           | 使用说明                                         | 备注      |
+|------|---------------|----------------|----------------------------------------------|---------|
+| 任务模块 | peanut-base   | 基础配置           | 接入依赖  <artifactId>peanut-base</artifactId>   | 版本同项目版本 |
+| 任务模块 | peanut-task   | 任务编排,历史查询，AI接入 | 接入依赖  <artifactId>peanut-task</artifactId>   | 版本同项目版本 |
+| 任务模块 | peanut-flow   | 工作流相关          | 接入依赖  <artifactId>peanut-flow</artifactId>   | 版本同项目版本 |
+| 任务模块 | peanut-litter | 进存销，盘点项目       | 接入依赖  <artifactId>peanut-litter</artifactId> | 版本同项目版本 |
 
 # 技术栈
 
