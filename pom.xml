@@ -124,6 +124,11 @@
             <version>${peanut.version}</version>
         </dependency>
         <dependency>
+            <groupId>cn.solveplan</groupId>
+            <artifactId>peanut-base</artifactId>
+            <version>${peanut.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
