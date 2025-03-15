@@ -101,13 +101,6 @@
         <!--            <version>portable-1.8.5</version>-->
         <!--        </dependency>-->
 
-
-        <!-- 豆包AI -->
-        <dependency>
-            <groupId>com.volcengine</groupId>
-            <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
-            <version>0.1.155</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
