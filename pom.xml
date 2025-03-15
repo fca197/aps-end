@@ -1,6 +1,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <artifactId>peanut-aps</artifactId>
+    <artifactId>peanut-portal</artifactId>
 
     <build>
         <finalName>app</finalName>
@@ -67,11 +67,7 @@
             <groupId>org.springframework.boot</groupId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <artifactId>peanut-sdk</artifactId>
-            <groupId>cn.solveplan</groupId>
-            <version>${peanut.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
@@ -137,7 +133,7 @@
     </dependencies>
     <groupId>cn.solveplan</groupId>
     <modelVersion>4.0.0</modelVersion>
-    <name>peanut-aps</name>
+    <name>peanut-portal</name>
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
