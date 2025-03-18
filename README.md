@@ -22,13 +22,15 @@
 
 # 项目拆解
 
-| 模块名称 | 模块依赖          | 包含内容           | 使用说明                                         | 备注      |
-|------|---------------|----------------|----------------------------------------------|---------|
-| 任务模块 | peanut-base   | 基础配置           | 接入依赖  <artifactId>peanut-base</artifactId>   | 版本同项目版本 |
-| 任务模块 | peanut-task   | 任务编排,历史查询，AI接入 | 接入依赖  <artifactId>peanut-task</artifactId>   | 版本同项目版本 |
-| 任务模块 | peanut-flow   | 工作流相关          | 接入依赖  <artifactId>peanut-flow</artifactId>   | 版本同项目版本 |
-| 任务模块 | peanut-litter | 进存销，盘点项目       | 接入依赖  <artifactId>peanut-litter</artifactId> | 版本同项目版本 |
-| 任务模块 | peanut-aps    | 排产排程系统         | 接入依赖  <artifactId>peanut-aps</artifactId>    | 版本同项目版本 |
+> 项目可按需引入，也可单独启动， 启动更自由
+
+| 模块名称    | 模块依赖          | 包含内容           | 仓库地址                                                |
+|---------|---------------|----------------|-----------------------------------------------------|
+| 基础模块    | peanut-base   | 基础配置           | [仓库地址](https://gitee.com/slsplatform/peanut-base)   |
+| 任务模块    | peanut-task   | 任务编排,历史查询，AI接入 | [仓库地址](https://gitee.com/slsplatform/peanut-task)   |
+| 工作流模块   | peanut-flow   | 工作流相关 ,未完全实现   | [仓库地址](https://gitee.com/slsplatform/peanut-flow )  |
+| 测试模块    | peanut-litter | 进存销，盘点项目，测试项目  | [仓库地址](https://gitee.com/slsplatform/peanut-litter) |
+| aps排产排程 | peanut-aps    | 排产排程系统         | [仓库地址](https://gitee.com/slsplatform/peanut-aps)    |
 
 ## 项目依赖
 
