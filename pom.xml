@@ -97,12 +97,12 @@
         <dependency>
             <groupId>cn.solveplan</groupId>
             <artifactId>peanut-task</artifactId>
-            <version>${peanut.version}</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cn.solveplan</groupId>
             <artifactId>peanut-aps</artifactId>
-            <version>${peanut.version}</version>
+            <version>1.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
