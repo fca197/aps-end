@@ -2,6 +2,10 @@
 
 [免责声明](doc%2Fdisclaimers.md)
 
+# 商业授权书
+
+[商业授权书](doc/softwareBusinessLicenseManual.docx)
+
 # 项目文档
 
 [飞书文档](https://p7bwvczxyf.feishu.cn/drive/folder/Ou5TfjCrplXBLbd2bWlcVXsmn6g?from=from_copylink)
