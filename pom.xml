@@ -102,12 +102,12 @@
         <dependency>
             <groupId>cn.solveplan</groupId>
             <artifactId>peanut-aps</artifactId>
-            <version>1.5.2-SNAPSHOT</version>
+            <version>1.5.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>cn.solveplan</groupId>
             <artifactId>peanut-sdk</artifactId>
-            <version>1.5.2-SNAPSHOT</version>
+            <version>1.5.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
