@@ -139,5 +139,5 @@
 
 8. 数据库导入失败
 
-> 如有报错：MySQL: Error Code: 1118 Row size too large (> 8126). Changing some columns to TEXT or BLOB
-> 则设置： set innodb_strict_mode = 0; 
+> 如有报错：MySQL: Error Code: 1118 Row size too large (> 8126). Changing some columns to TEXT or BLOB  
+> 则执行sql关闭严格模式： set innodb_strict_mode = 0; 

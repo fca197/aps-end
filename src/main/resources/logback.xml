@@ -15,12 +15,12 @@
     <!--  <property name="LOG_PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{traceId}] [%thread] %logger{18}[%file:%line] %msg%n"/>-->
     <!-- 控制台输出 -->
     <logger level="debug" name="com.olivia"></logger>
-    <logger level="info" name="com.olivia.sdk"></logger>
+    <!--    <logger level="info" name="com.olivia.sdk"></logger>-->
     <logger level="info" name="org.apache.coyote.http11"></logger>
     <logger level="info" name="org.apache.catalina.loader"></logger>
     <!--  <logger  name="org.springframework" level="debug"></logger>-->
     <!--  <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread{5}] [%X{TRACE_ID},%X{SPAN_ID}] %-5level %logger{50} - %msg%n</pattern>-->
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="console"/>
     </root>
 
