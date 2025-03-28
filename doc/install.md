@@ -136,3 +136,8 @@
 7. 缺少依赖，如： peanut-task 格式为: peanut-XXXX
 
 > 问题原因： 依赖暂时不提供该版本， 请联系开发人员申请该模块权限，或者取消模块依赖。
+
+8. 数据库导入失败
+
+> 如有报错：MySQL: Error Code: 1118 Row size too large (> 8126). Changing some columns to TEXT or BLOB
+> 则设置： set innodb_strict_mode = 0; 
