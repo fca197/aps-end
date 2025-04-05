@@ -1,0 +1,13 @@
+sh  mvn
+echo '打包成功'
+
+ssh root@39.100.100.120  'rm -rf  /opt/app/app.jar '
+echo '旧文件删除成功'
+
+scp target/app.jar root@39.100.100.120:/opt/app/app.jar
+
+echo '文件上传成功'
+
+ssh root@39.100.100.120  'sh /opt/app/run.sh'
+
+echo '启动'

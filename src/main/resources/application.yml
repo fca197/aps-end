@@ -72,6 +72,8 @@ peanut:
 
       filter-path: # 后验证
         - /
+  private-key: >
+
   public-key: >
     MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxcyfd8+Rv2sbWBXClt
     /p1XvgaHocgNN0AEiSNWYsbBVvPxTJbHEugmQYeExb39F18XBaglYfK3ocDYuN
@@ -81,12 +83,17 @@ peanut:
     Qjyq7frCvitLPwqydWhp+ktU1FDeJ/M31xR0XZrpHqsyOTNEOEmyr38OtV8+jv
     Von60likPjt+eQIDAQAB
   License-code: >
-    AYa9muOIUGgrF9DLdPuPJmKzf0cEgHy8c5nJM08R6J8TfOjfs8QEmndWQbNQmhdD
-    zGD4ke498osfxPH3XujFOaSFw12Uh/sGm/MK68lDPPVVZEoMfTSsnaJIv25L5Ils
-    wmtrackG/WT2PMw4OHgsEmoVoQtEAjwVBx1UNjPvruWNYjMJE0hvskmE4XVLmyMg
-    6lIo9psHLG2uJa1as7pRuhcXL7kAKs3Pe2fUg1du2HpaAVtk0GQT3cfsOlX8dM//
-    f7qHu9IQJogb4/lrWXHk4SaVD5E0pTMcLvrFguUiXPz4euJrzkbC6FV23XheLorP
-    SZ/ZLoA1Bjah9nPtZOh6NQ==
+    J6FLgIQ7UgqqUw2d6j4tBiIrCwF6I1jDFNgvHr7tJXyRTQg8/I+fY6DNg3NkO
+    vmIaye7ZcDLANd2p3qAvKSuIQ4/v/hHMhNPW+b/5um0Z/6MTM/fXqevAUTNh
+    VhH19/Q8799HA+zOus8n5ZOoCBJosqnulYMAk7oQVv2kkZk5KXk4za9SIg71C
+    jZoksLoPh3n+wpHSsYt2Pjo3nY85crMumkHF7f54apQtV12hKG23qOpAXlKE5
+    xsNzf/CriJzjgvNwgThAOIPX36lsrCIG9sHkEZLja84IwOJAVfPHdIr0htIhii
+    K2SMf24MiiI2pC0MKTDgqc8QapXYbAnYKcUz9edwOKDpHloct9juR0w/E8AQRU
+    vS2qZ8HCQJifvOYgzB2NdrGR0NEuS0+wsXtkpG+yMzH1NYzY7jqm3vHcnhg6uIp
+    MZFyp3ya6JplK01K/Gb43LNpbJFHLKIOGD6FiznYIAj1SZBJca6JwQzwEAdDUDU
+    RYIs9lnSnf2oa4oQIFIqaWdEBZaYt37DCU3f/zu2LpcQKxFTPovi+CSHaN2teky
+    XEvGQYa9jEZAwxtg+Zm9Kkoaw6hw1Fq2fBcPoE/ejCV1BSQYXyQiA1u4LBRlpXz
+    3pVRxs4wck7bVRtojfUJM7vnwv62QpUPeiiGqoDQ+LGQP92/yXOIJ8WfUbpCxbgY=
 db:
   url: >
     jdbc:mysql://localhost:3306/peanut_prod?useUnicode=true&characterEncoding=utf8
@@ -177,16 +184,29 @@ spring:
       database: 3
       host: redis.com
       password: admin!@#q123
+      timeout: 5000ms # 连接和读写超时时间设置为 5 秒
       port: 6379
-      jedis:
+      lettuce:
         pool:
-          max-idle: 20
-          min-idle: 20
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+        shutdown-timeout: 100ms
+        client-options:
+          # 配置重试机制
+          retry:
+            # 最大重试次数
+            max-attempts: 3
+            # 重试间隔（毫秒）
+            interval-duration: 100ms
+
 
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*.xml,classpath:/mapper/*/*.xml  # 指定 MyBatis Mapper XML 文件的位置
   type-aliases-package: com.olivia.peanut.*.model  # 指定实体类所在包名
+
 
 
 logging:
