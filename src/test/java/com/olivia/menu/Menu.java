@@ -1,7 +1,7 @@
 package com.olivia.menu;
 
 import cn.hutool.core.collection.CollUtil;
-import com.olivia.peanut.task.api.entity.taskDef.TaskDefUpdateByIdRes;
+//import com.olivia.peanut.task.api.entity.taskDef.TaskDefUpdateByIdRes;
 import com.olivia.sdk.utils.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 
@@ -70,8 +70,8 @@ public class Menu {
 
   @Test
   public void test3() {
-    com.olivia.peanut.task.api.entity.taskDef.TaskDefUpdateByIdRes res = new TaskDefUpdateByIdRes();
-    String jsonString = JSON.toJSONString(res);
-    log.info("{}", jsonString);
+//    com.olivia.peanut.task.api.entity.taskDef.TaskDefUpdateByIdRes res = new TaskDefUpdateByIdRes();
+//    String jsonString = JSON.toJSONString(res);
+//    log.info("{}", jsonString);
   }
 }

@@ -2,17 +2,18 @@
 
 # 定义服务器IP变量
 SERVER_IP="39.100.100.120"
-sh mvn.sh
-
-# 删除远程服务器旧文件
-ssh root@${SERVER_IP}  "ps -ef|grep java|grep -v grep|awk  '{print "kill -9 " $2}' |sh"
-echo '旧文件删除成功'
-ssh root@${SERVER_IP}  "ps -ef |grep java"
-
-# 上传新文件
-scp target/app.jar root@${SERVER_IP}:/opt/app/app.jar
-echo '文件上传成功'
+#sh mvn.sh
+#
+## 删除远程服务器旧文件
+#ssh root@${SERVER_IP}  "ps -ef|grep java|grep -v grep|awk  '{print \"kill -9 \" $2}' |sh"
+#echo '旧文件删除成功'
+#ssh root@${SERVER_IP}  "ps -ef |grep java"
+#ssh root@${SERVER_IP}  "mv /opt/app/app.jar /opt/app/app.jar_$(date +%Y%m%d%H%M%S)"
+#
+## 上传新文件
+#scp target/app.jar root@${SERVER_IP}:/opt/app/app.jar
+#echo '文件上传成功'
 
 # 修改文件权限
-ssh root@${SERVER_IP}  'sh  /opt/app/run.sh'
-echo '授权成功'
+ssh root@${SERVER_IP}  'sh /opt/app/run.sh'
+echo '开始启动'
